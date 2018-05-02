@@ -5,7 +5,7 @@
 	class TestModel extends Database{
 		
 		public function __construct(){
-			$this->openConnection();
+			// $this->openConnection();
 		}
 
 		public function getAll(){

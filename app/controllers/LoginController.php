@@ -9,16 +9,16 @@
 		// protected $logout = "ABCD";
 
 		public function __construct(){
+			
+		}
+
+		public function index(){
 			$this->auth();
 
 			$jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
 			if(!$jenis){
 				if($this->auth->isLogin()) $this->redirect(BASE_URL);
 			}
-		}
-
-		public function index(){
-			$jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
 
 			// cek jenis login
 			if($jenis) $this->loginMobile();
@@ -70,7 +70,7 @@
 		}
 
 		public function logout(){
-			session_start();
+			// session_start();
 			session_unset();
 			session_destroy();
 

@@ -14,6 +14,10 @@
 
 	$request = isset($_SERVER['PATH_INFO']) ? preg_replace("|/*(.+?)/*$|", "\\1", $_SERVER['PATH_INFO']) : DEFAULT_CONTROLLER;
 
+	// session_start();
+	// session_unset();
+	// session_destroy();
+	
 	$route = new Route();
 	$route->setUri($request)->getController();
 
