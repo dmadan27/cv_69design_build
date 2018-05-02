@@ -20,8 +20,8 @@
 
 		public function getController(){
 			$uri = explode('/', $this->__request);
-			$class = isset($uri[0]) && ($uri[0] != "") ? ucfirst($uri[0]) : DEFAULT_CONTROLLER; // class
-			$method = isset($uri[1]) ? $uri[1] : 'index';	// method
+			$class = isset($uri[0]) && ($uri[0] != "") ? strtolower(ucfirst($uri[0])) : DEFAULT_CONTROLLER; // class
+			$method = isset($uri[1]) ? strtolower(ucfirst($uri[1])) : 'index';	// method
 			$param = isset($uri[2]) ? $uri[2] : false;	// param
 
 			// set request controller - class
