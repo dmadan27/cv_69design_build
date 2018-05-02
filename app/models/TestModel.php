@@ -2,10 +2,10 @@
 	/**
 	* 
 	*/
-	class TestModel{
+	class TestModel extends Database{
 		
 		public function __construct(){
-
+			$this->openConnection();
 		}
 
 		public function getAll(){

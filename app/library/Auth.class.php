@@ -7,6 +7,7 @@
 		protected $login;
 		protected $lockscreen;
 		protected $jenis;
+		protected $token;
 
 		public function __construct(){
 			// $this->jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
@@ -29,15 +30,33 @@
 		}
 
 		public function isLogin(){
+			$this->jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
 			$this->login = isset($_SESSION['sess_login']) ? $_SESSION['sess_login'] : false;
 			// $this->lockscreen = isset($_SESSION['sess_locksreen']) ? $_SESSION['sess_locksreen'] : false;
 
-			if(!$this->login) return false;
-			else return true;
+			if($this->jenis){
+				$token = isset($_POST['token']) ? $_POST['token'] : false;
+
+				// get token di db
+
+				if (($token == "") || ($token !== $this->token)) return false;
+				else if(($token != "") && ($token === $this->token)) return true;
+			}
+			else{
+				if(!$this->login) return false;
+				else return true;
+			}
+				
 		}
 
-		private function cekAuthMobile(){
+		public function cekAuthMobile(){
+			$status = $this->isLogin() ? true : false;
 
+			$output = array(
+				'status' => $status,
+			);
+
+			echo json_encode($output);
 		}
 
 		private function getAkses($user){
