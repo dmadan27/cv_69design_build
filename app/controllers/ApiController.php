@@ -9,6 +9,8 @@
 			$this->auth->cekAuthMobile();
 		}
 
-		
+		public function index(){
+			
+		}
 
 	}

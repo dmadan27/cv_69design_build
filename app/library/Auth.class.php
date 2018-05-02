@@ -7,7 +7,7 @@
 		protected $login;
 		protected $lockscreen;
 		protected $jenis;
-		protected $token;
+		protected $token = 'ABCD';
 
 		public function __construct(){
 			// $this->jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
