@@ -20,7 +20,7 @@
 
 		public function getController(){
 			$uri = explode('/', $this->__request);
-			$class = isset($uri[0]) && ($uri[0] != "") ? $uri[0] : DEFAULT_CONTROLLER; // class
+			$class = isset($uri[0]) && ($uri[0] != "") ? ucfirst($uri[0]) : DEFAULT_CONTROLLER; // class
 			$method = isset($uri[1]) ? $uri[1] : 'index';	// method
 			$param = isset($uri[2]) ? $uri[2] : false;	// param
 
@@ -33,7 +33,7 @@
 
 				// load controller dan class
 				require_once $this->__controller;
-				$class = ucfirst($class);
+				// $class = ucfirst($class);
 				// $namespace = "app".DS."controllers".DS;
 				// $class = $namespace.$class;
 				$obj = new $class();
