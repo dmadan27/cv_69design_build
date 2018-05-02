@@ -21,7 +21,7 @@
 			$jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
 
 			// cek jenis login
-			if($jenis) $this->loginMobile($token);
+			if($jenis) $this->loginMobile();
 			else{
 				if($_SERVER['REQUEST_METHOD'] == "POST") $this->loginSistem();
 				else $this->view('login');
@@ -34,7 +34,7 @@
 			$pass = isset($_POST['pass']) ? $_POST['pass'] : false;
 
 			if(($user === $this->username) && ($pass === $this->password)){
-				echo "Berhasil Masuk Mobile(Token Baru)";
+				// echo "Berhasil Masuk Mobile(Token Baru)";
 				// generate token
 
 				$token = $this->auth->getToken();
