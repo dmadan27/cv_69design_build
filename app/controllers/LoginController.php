@@ -10,43 +10,47 @@
 
 		public function __construct(){
 			$this->auth();
-			if($this->auth->isLogin()){
-				$this->redirect(BASE_URL);
+
+			$jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
+			if(!$jenis){
+				if($this->auth->isLogin()) $this->redirect(BASE_URL);
 			}
 		}
 
 		public function index(){
 			$jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
-			$token = isset($_POST['token']) ? $_POST['token'] : false;
 
 			// cek jenis login
-			if($jenis) $this->login_mobile($token);
+			if($jenis) $this->loginMobile($token);
 			else{
 				if($_SERVER['REQUEST_METHOD'] == "POST") $this->loginSistem();
 				else $this->view('login');
 			}
 		}
 
-		private function loginMobile($token){
-			// get token di db
+		private function loginMobile(){
+			// validasi pengguna
+			$user = isset($_POST['user']) ? $_POST['user'] : false;
+			$pass = isset($_POST['pass']) ? $_POST['pass'] : false;
 
-			// cek token
-			if (($token == "") || ($token !== $this->token)) {
-				// validasi pengguna
-				$user = isset($_POST['user']) ? $_POST['user'] : false;
-				$pass = isset($_POST['pass']) ? $_POST['pass'] : false;
+			if(($user === $this->username) && ($pass === $this->password)){
+				echo "Berhasil Masuk Mobile(Token Baru)";
+				// generate token
 
-				if(($user === $this->username) && ($pass === $this->password)){
-					echo "Berhasil Masuk Mobile(Token Baru)";
-				}
-				else{
-					echo "Gagal Masuk Mobile";
-				}
-
+				$token = $this->auth->getToken();
+				$status = true;
 			}
-			else {
-				echo "Berhasil Masuk";
+			else{
+				$token = null;
+				$status = false;	
 			}
+
+			$output = array(
+				'token' => $token,
+				'status' => $status,
+			);
+
+			echo json_encode($output);
 		}
 
 		private function loginSistem(){
