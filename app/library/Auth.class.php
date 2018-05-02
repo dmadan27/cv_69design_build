@@ -7,15 +7,13 @@
 		protected $login;
 		protected $lockscreen;
 		protected $jenis;
-		protected $token = 'ABCD';
+		protected $token;
 
-		public function __construct(){
-			// $this->jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
-
-			// if(($this->jenis) && (strtolower($this->jenis) === 'mobile')) $this->cekAuthMobile();
-			// else $this->cekAuth();
-		}
-
+		/**
+		* Fungsi cek auth sistem
+		* Untuk mengecek status user sudah login atau belum
+		* jika belum login maka akan diarahkan ke login
+		*/
 		public function cekAuth(){
 			if(!$this->isLogin()){
 				session_unset();
@@ -23,33 +21,15 @@
 				header('Location: '.BASE_URL.'login');
 				die();
 			}
-			// else{
-			// 	header('Location: '.BASE_URL);
-			// 	die();
-			// }
 		}
 
-		public function isLogin(){
-			$this->jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
-			$this->login = isset($_SESSION['sess_login']) ? $_SESSION['sess_login'] : false;
-			// $this->lockscreen = isset($_SESSION['sess_locksreen']) ? $_SESSION['sess_locksreen'] : false;
-
-			if($this->jenis){
-				$token = isset($_POST['token']) ? $_POST['token'] : false;
-
-				// get token di db
-
-				if (($token == "") || ($token !== $this->token)) return false;
-				else if(($token != "") && ($token === $this->token)) return true;
-			}
-			else{
-				if(!$this->login) return false;
-				else return true;
-			}
-				
-		}
-
+		/**
+		* Fungsi cek auth mobile
+		* untuk mengecek status user mobile sudah login atau belum
+		* mengecek expired token
+		*/
 		public function cekAuthMobile(){
+			$this->mobileOnly();
 			$this->jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
 			if($this->jenis){
 				$status = $this->isLogin() ? true : false;
@@ -60,14 +40,51 @@
 
 				echo json_encode($output);
 			}
-			else die();
+		}
 
+		/**
+		* pengecekan status login untuk sistem dan mobile
+		*/
+		public function isLogin(){
+			$this->jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
+			$this->login = isset($_SESSION['sess_login']) ? $_SESSION['sess_login'] : false;
+			// $this->lockscreen = isset($_SESSION['sess_locksreen']) ? $_SESSION['sess_locksreen'] : false;
+
+			if($this->jenis){ // untuk mobile
+				$token = isset($_POST['token']) ? $_POST['token'] : false;
+
+				// get token di db
+
+				if (($token == "") || ($token !== $this->token)) return false;
+				else if(($token != "") && ($token === $this->token)) return true;
+			}
+			else{ // untuk sistem
+				if(!$this->login) return false;
+				else return true;
+			}
+		}
+
+		/**
+		* Fungsi untuk mencegah sistem mengakses fungsi khusus mobile
+		* jika jenis false atau jenis bukan mobile maka akan dilempar ke home
+		*/
+		public function mobileOnly(){
+			$this->jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
+
+			if((!$this->jenis) || ($this->jenis != 'mobile')){
+				header('Location: '.BASE_URL);
+				die();
+			}
 		}
 
 		private function getAkses($user){
 
 		}
 
+		/**
+		* Fungsi untuk mendapatkan token yang sudah di generate
+		* untuk token mobile, dan token crsf yang akan dipasang disetiap module
+		*/
 		public function getToken(){
 			$token = "";
 		    $codeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -82,8 +99,10 @@
 		    return $token;
 		}
 
-		private function crypto_rand_secure($min, $max)
-		{
+		/**
+		* Fungsi untuk generate random yang secure
+		*/
+		private function crypto_rand_secure($min, $max){
 		    $range = $max - $min;
 		    if ($range < 1) return $min; // not so random...
 		    $log = ceil(log($range, 2));
