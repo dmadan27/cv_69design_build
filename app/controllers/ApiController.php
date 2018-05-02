@@ -6,6 +6,7 @@
 		
 		public function __construct(){
 			$this->auth();
+			$this->auth->mobileOnly();
 			$this->auth->cekAuthMobile();
 		}
 
