@@ -68,7 +68,7 @@
 
 		}
 
-		private function getToken(){
+		public function getToken(){
 			$token = "";
 		    $codeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		    $codeAlphabet.= "abcdefghijklmnopqrstuvwxyz";
