@@ -23,6 +23,10 @@
 		</div>
 
 		<!-- load default js -->
+		<script type="text/javascript">
+		    var BASE_URL = "<?php print BASE_URL; ?>";
+		    var urlParams = <?php echo json_encode($_GET, JSON_HEX_TAG);?>;
+		</script>
 		<?php require_once "layout/js/js.php"; ?>
 	</body>
 </html>
