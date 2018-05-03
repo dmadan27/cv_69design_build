@@ -17,6 +17,6 @@
 	</ul>
 </li>
 <!-- menu data saldo kas kecil -->
-<li class=""><a href="<?= BASE_URL."saldo/"; ?>"><i class="fa fa-link"></i> <span>Data Saldo</span></a></li>
+<li class=""><a href="<?= BASE_URL."saldo-kas-kecil/"; ?>"><i class="fa fa-link"></i> <span>Data Saldo</span></a></li>
 <!-- menu data sub kas kecil -->
 <li class=""><a href="<?= BASE_URL."sub-kas-kecil/"; ?>"><i class="fa fa-link"></i> <span>Data Sub Kas Kecil</span></a></li>
