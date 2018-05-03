@@ -1,28 +1,39 @@
 <?php
+	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	
 	/**
 	* Class Controller, Parent Class
 	* Method Method Utama
 	*/
 	class Controller{
-		// public function __construct(){
-
-		// }
-
+		
+		/**
+		*
+		*/
 		final protected function page(){
 			$view = new Page();
 			return $view;
 		}
 
+		/**
+		*
+		*/
 		final protected function model($modelName){
 			require_once ROOT.DS.'app'.DS.'models'.DS.ucfirst($modelName).'.php';
 			$class = ucfirst($modelName);
 			$this->$modelName = new $class();
 		}
 
+		/**
+		*
+		*/
 		final protected function auth($auth = 'auth'){
 			$this->$auth = new Auth();
 		}
 
+		/**
+		*
+		*/
 		final protected function layout($content, $config = null, $data = null){
 			$view = $this->page();
 
@@ -47,10 +58,16 @@
 			// set content
 			$view->setContent($content);
 
+			// set menu sidebar
+			$view->setMenuSidebar();
+
 			// get layout
 			$view->render();
 		}
 
+		/**
+		*
+		*/
 		final protected function view($view){
 			$temp = explode('/', $view);
 			if (count($temp) > 1){
@@ -60,6 +77,9 @@
 			require_once ROOT.DS.'app'.DS.'views'.DS.$view.'.php';
 		}
 
+		/**
+		*
+		*/
 		final public function redirect($url){
 			header("Location: ".$url);
 			die();

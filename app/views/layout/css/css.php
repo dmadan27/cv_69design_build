@@ -1,3 +1,5 @@
+<?php Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung"); ?>
+
 <link rel="stylesheet" href="<?= BASE_URL."assets/bower_components/bootstrap/dist/css/bootstrap.min.css"; ?>">
 <!-- Font Awesome -->
 <link rel="stylesheet" href="<?= BASE_URL."assets/bower_components/font-awesome/css/font-awesome.min.css"; ?>">

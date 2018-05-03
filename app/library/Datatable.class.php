@@ -1,4 +1,6 @@
 <?php
+	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	
 	/**
 	* 
 	*/
@@ -12,6 +14,14 @@
 		protected $query;
 
 		/**
+		* Hal pertama kali yang dijalankan adalah set property sesuai dengan $config yg dikirim
+		* format congig ada 5 poin penting
+		* tabel => berupa string, nama tabel atau view
+		* kolomOrder => berupa array, yang isinya harus disesuaikan dengan tabel yg dibuat di view
+		* kolomCari => berupa array, apa saja yang dapat dicari
+		* orderBy => berupa array dan memakai key, 
+		* key berupa apa yg di order, dan valuenya jenis order
+		* kondisi => berupa string, yaitu Where manual
 		*/
 		public function __construct($config){
 			// set tabel
@@ -27,6 +37,7 @@
 		}
 
 		/**
+		* Fungsi set query awal default untuk datatable
 		*/
 		final public function setDataTable(){
 			$search = isset($_POST['search']['value']) ? $_POST['search']['value'] : false;
@@ -72,6 +83,7 @@
 		}
 
 		/**
+		* fungsi untuk get query datatable komplit
 		*/
 		final public function getDataTable(){
 			$this->setDataTable();
@@ -84,6 +96,8 @@
 		}
 
 		/**
+		* untuk mendapatkan filter record
+		* sebagai pendukung dalam pagenation datatable
 		*/
 		final public function recordFilter(){
 			$koneksi = $this->openConnection();
@@ -94,6 +108,8 @@
 		}
 
 		/**
+		* untuk mendapatkan semua jumlah data
+		* sebagai pendukung dalam pagenation datatable
 		*/
 		final public function recordTotal(){
 			$koneksi = $this->openConnection();

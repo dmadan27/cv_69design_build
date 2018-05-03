@@ -1,3 +1,5 @@
+<?php Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung"); ?>
+
 <!-- Main Footer -->
 <footer class="main-footer">
 	<!-- To the right -->

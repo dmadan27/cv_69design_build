@@ -1,11 +1,13 @@
+<?php Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung"); ?>
+
 <!-- Header -->
 <header class="main-header">
 	<!-- logo -->
-	<a href="" class="logo">
+	<a href="<?= BASE_URL ?>" class="logo">
 		<!-- logo mini -->
-		<span class="logo-mini"></span>
+		<span class="logo-mini">69</span>
 		<!-- logo default -->
-		<span class="logo-lg"></span>
+		<span class="logo-lg">69 Design & Build</span>
 	</a>
 
 	<!-- header navbar -->

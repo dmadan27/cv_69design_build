@@ -1,4 +1,5 @@
 <?php
+	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 	// namespace app\controllers;
 
 	/**
@@ -9,7 +10,7 @@
 		public function __construct(){
 			$this->auth();
 			$this->auth->cekAuth();
-			$this->model('TestModel');
+			// $this->model('TestModel');
 		}
 
 		public function index(){
@@ -34,9 +35,13 @@
 				'js' => $js,
 			);
 
-			$data = $this->TestModel->getAll();
+			// $data = $this->TestModel->getAll();
 			
-			$this->layout('test/list', $config, $data);
+			$this->layout('test/list', $config);
+		}
+
+		public function getList(){
+
 		}
 
 		public function form(){

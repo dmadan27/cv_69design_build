@@ -1,4 +1,5 @@
 <?php
+	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 	// namespace app\controllers;
 
 	class Login extends Controller{
