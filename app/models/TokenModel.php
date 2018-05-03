@@ -19,6 +19,22 @@
 		/**
 		* 
 		*/
+		public function getToken($user){
+			$query = "SELECT t.token, t.tgl_exp FROM token_sub_kas_kecil t ";
+			$query .= "JOIN sub_kas_kecil skc ON skc.id = t.id_sub_kas_kecil ";
+			$query .= "WHERE skc.email = :user";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':user', $user);
+			$result = $statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+
+		/**
+		* 
+		*/
 		public function insert($data){
 			$query = "INSERT INTO token_sub_kas_kecil (id_sub_kas_kecil, token, tgl_buat, tgl_exp) ";
 			$query .= "VALUES (:id_sub_kas_kecil, :token, :tgl_buat, :tgl_exp)";

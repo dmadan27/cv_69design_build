@@ -36,12 +36,13 @@
 			// if($this->jenis){
 			$status = $this->isLogin() ? true : false;
 
-			$output = array(
-				'status' => $status,
-			);
+			// $output = array(
+			// 	'status' => $status,
+			// );
 
-			echo json_encode($output);
+			// echo json_encode($output);
 			// }
+			return $status;
 		}
 
 		/**
@@ -53,12 +54,26 @@
 			// $this->lockscreen = isset($_SESSION['sess_locksreen']) ? $_SESSION['sess_locksreen'] : false;
 
 			if($this->jenis){ // untuk mobile
+				$user = isset($_POST['user']) ? $_POST['user'] : false;
 				$token = isset($_POST['token']) ? $_POST['token'] : false;
 
 				// get token di db
+				require_once ROOT.DS.'app'.DS.'models'.DS.'TokenModel.php';
+				$tokenModel = new TokenModel();
+				$this->token = $tokenModel->getToken($user);
 
-				if (($token == "") || ($token !== $this->token)) return false;
-				else if(($token != "") && ($token === $this->token)) return true;
+				if($this->token){
+					// pengecekan token, dan tgl exp
+					if ( ($token == "") 
+						|| (!password_verify($token, $this->token['token'])) 
+						|| (time() > strtotime($this->token['tgl_exp'])) ) 
+						return false;
+					else if( ($token != "") 
+						&& (password_verify($token, $this->token['token'])) 
+						&& (time() <= strtotime($this->token['tgl_exp'])) ) 
+						return true;
+				}
+				else return false;
 			}
 			else{ // untuk sistem
 				if(!$this->login) return false;

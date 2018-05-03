@@ -6,75 +6,60 @@
 	*/
 	class Api extends Controller{
 		
+		/**
+		* 
+		*/		
 		public function __construct(){
 			$this->auth();
 			$this->auth->mobileOnly();
-			$this->auth->cekAuthMobile();
 		}
 
+		/**
+		* 
+		*/
 		public function index(){
-
+			$this->list_pengajuan();
 		}
 
-		private function list_pengajuan(){
-			$page = isset($_POST['page']) ? $_POST['page'] : false;
+		/**
+		* 
+		*/
+		public function list_pengajuan(){
+			if($this->auth->cekAuthMobile()){
+				// $page = isset($_POST['page']) ? $_POST['page'] : false;
 
-			// load model A
+				// load model A
+				$this->model('Pengajuan_sub_kas_kecilModel');
+				$data = $this->Pengajuan_sub_kas_kecilModel->getAll_pending();
 
-			// get datanya
-			$data = array(
-				array(
-					'nama' => 'Ujang Jeprut',
-					'umur' => 20,
-				),
-				array(
-					'nama' => 'Ujang Jeprut',
-					'umur' => 20,
-				),
-				array(
-					'nama' => 'Ujang Jeprut',
-					'umur' => 20,
-				),
-				array(
-					'nama' => 'Ujang Jeprut',
-					'umur' => 20,
-				),
-				array(
-					'nama' => 'Ujang Jeprut',
-					'umur' => 20,
-				),
-				array(
-					'nama' => 'Ujang Jeprut',
-					'umur' => 20,
-				),
-				array(
-					'nama' => 'Ujang Jeprut',
-					'umur' => 20,
-				),
-				array(
-					'nama' => 'Ujang Jeprut',
-					'umur' => 20,
-				),
-				array(
-					'nama' => 'Ujang Jeprut',
-					'umur' => 20,
-				),
-				array(
-					'nama' => 'Ujang Jeprut',
-					'umur' => 20,
-				),
-			);
+				// echo "<pre>";
+				// var_dump($data);
 
-			// pembagian data berdasarkan request
+				// get datanya
 
-			$output = array(
-				'listPengajuan' => $data, // data
-				'prev' => null, // prev page
-				'next' => null, // next page
-				'page' => $page, // page
-			);
+				// pembagian data berdasarkan request
 
+				$status = true;
+				$output = array(
+					'status' => $status,
+					'listPengajuan' => $data, // data
+					'prev' => null, // prev page
+					'next' => null, // next page
+					'page' => null, // page
+				);
+			}
+			else{
+				$output = array(
+					'status' => false,
+				);
+			}
+				
 			echo json_encode($output);
 		}
+
+		/**
+		* 
+		*/
+		public function list_
 
 	}
