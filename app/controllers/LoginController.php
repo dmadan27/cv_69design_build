@@ -70,16 +70,41 @@
 			$user = isset($_POST['user']) ? $_POST['user'] : false;
 			$pass = isset($_POST['pass']) ? $_POST['pass'] : false;
 
-			if(($user === $this->username) && ($pass === $this->password)){
-				// echo "Berhasil Masuk Mobile(Token Baru)";
-				// generate token
+			// get user
+			$this->model('sub_kas_kecilModel');
+			$dataUser = $this->sub_kas_kecilModel->getUser($user);
 
-				$token = $this->auth->getToken();
-				$status = true;
+			if(!$dataUser){
+				$token = null;
+				$status = false;
 			}
 			else{
-				$token = null;
-				$status = false;	
+				// if(password_verify($pass, $dataUser['password'])) {
+				if($pass == $dataUser['password']) {
+					$status = true;
+					
+					// generate token
+					$token = md5($this->auth->getToken());
+					$tokenSave = password_hash($token, PASSWORD_BCRYPT);
+					$dataToken = array(
+						'id_sub_kas_kecil' => $dataUser['id'],
+						'token' => $tokenSave,
+						'tgl_buat' => date('Y-m-d H:i:s'),
+						'tgl_exp' => date('Y-m-d H:i:s', time()+(60*60*24*30)),
+					);
+
+					$this->model('tokenModel');
+					
+					// get data token lama dan hapus
+					$this->tokenModel->delete($dataUser['id']);
+
+					// tambah token baru
+					$this->tokenModel->insert($dataToken);	
+				}
+				else{
+					$token = null;
+					$status = false;
+				}
 			}
 
 			$output = array(
