@@ -32,16 +32,16 @@
 		*/
 		public function cekAuthMobile(){
 			$this->mobileOnly();
-			$this->jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
-			if($this->jenis){
-				$status = $this->isLogin() ? true : false;
+			// $this->jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
+			// if($this->jenis){
+			$status = $this->isLogin() ? true : false;
 
-				$output = array(
-					'status' => $status,
-				);
+			$output = array(
+				'status' => $status,
+			);
 
-				echo json_encode($output);
-			}
+			echo json_encode($output);
+			// }
 		}
 
 		/**
