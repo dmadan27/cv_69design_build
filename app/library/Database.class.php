@@ -11,8 +11,10 @@
 		}
 
 		public function openConnection(){
+			$dbHost = DB_HOST;
+			$dbName = DB_NAME;
 			try{
-				$koneksi = new PDO("mysql:host=DB_HOST;dbname=DB_NAME", DB_USERNAME, DB_PASSWORD);
+				$koneksi = new PDO("mysql:host=$dbHost;dbname=$dbName", DB_USERNAME, DB_PASSWORD);
 				$koneksi->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 				return $koneksi;
@@ -22,7 +24,7 @@
 			}
 		}
 
-		public function closeConnection(){
+		public function closeConnection($koneksi){
 			$koneksi = null;
 		}
 	}
