@@ -11,6 +11,7 @@
 	require_once "app/library/Controller.class.php";
 	require_once "app/library/Page.class.php";
 	require_once "app/library/Auth.class.php";
+	require_once "app/library/Datatable.class.php";
 
 	$request = isset($_SERVER['PATH_INFO']) ? preg_replace("|/*(.+?)/*$|", "\\1", $_SERVER['PATH_INFO']) : DEFAULT_CONTROLLER;
 
