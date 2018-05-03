@@ -1,13 +1,13 @@
 <?php
 
-class SubKasKecil extends Controller{
+class Sub_kas_kecil extends Controller{
 
 
 
 	public function __construct(){
 			$this->auth();
 			$this->auth->cekAuth();
-			$this->model('SubKasKecilModel');
+			$this->model('sub_kas_kecilModel');
 	}
 
 
@@ -34,7 +34,7 @@ class SubKasKecil extends Controller{
 				'js' => $js,
 			);
 
-			$data = $this->SubKasKecilModel->getAll();
+			$data = $this->sub_kas_kecilModel->getAll();
 			
 			$this->layout('sub_kas_kecil/list', $config, $data);
 		}	
