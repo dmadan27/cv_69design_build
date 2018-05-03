@@ -11,6 +11,8 @@
 		protected $kondisi;
 		protected $query;
 
+		/**
+		*/
 		public function __construct($config){
 			// set tabel
 			$this->table = $config['tabel'];
@@ -24,6 +26,8 @@
 			$this->kondisi = $config['kondisi'];
 		}
 
+		/**
+		*/
 		final public function setDataTable(){
 			$search = isset($_POST['search']['value']) ? $_POST['search']['value'] : false;
 			$order = isset($_POST['order']) ? $_POST['order'] : false;
@@ -67,22 +71,30 @@
 			$this->query .= "$qWhere $qOrder ";
 		}
 
+		/**
+		*/
 		final public function getDataTable(){
 			$this->setDataTable();
 			$qLimit = "";
 			if($_POST['length'] != -1) $qLimit .= 'LIMIT '.$_POST['start'].', '.$_POST['length'];
-		
-			return $this->query .= "$qLimit";
+			
+			$this->query .= "$qLimit";
+			
+			return $this->query; 
 		}
 
+		/**
+		*/
 		final public function recordFilter(){
 			$koneksi = $this->openConnection();
-			$statement = $koneksi->prepare($this->setDataTable(););
+			$statement = $koneksi->prepare($this->setDataTable());
 			$statement->execute();
 
 			return $statement->rowCount();
 		}
 
+		/**
+		*/
 		final public function recordTotal(){
 			$koneksi = $this->openConnection();
 
