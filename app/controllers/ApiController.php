@@ -60,6 +60,6 @@
 		/**
 		* 
 		*/
-		public function list_
+		
 
 	}
