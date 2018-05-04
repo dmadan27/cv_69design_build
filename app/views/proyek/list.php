@@ -23,7 +23,20 @@
 				<div class="box">
 					<!-- box header -->
 					<div class="box-header">
-						<h3 class="box-title"></h3>
+						<div class="row">
+							<h3 class="box-title"></h3>
+						</div>
+						<!-- panel button -->
+						<div class="row">
+							<div class="col-md-12 col-sm-12 col-xs-12">
+								<div class="btn-group">
+									<!-- tambah -->
+									<a href="<?= BASE_URL."proyek/form/" ?>" class="btn btn-default btn-flat" role="button"><i class="fa fa-plus"></i> Tambah</a>
+									<!-- export -->
+									<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+								</div>
+							</div>
+						</div>
 					</div>
 					<!-- box body -->
 					<div class="box-body">
