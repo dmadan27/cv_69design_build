@@ -10,6 +10,7 @@
 
 		public function __construct(){
 			$this->auth();
+			$this->model('UserModel');
 		}
 
 		/**
@@ -40,20 +41,43 @@
 			$pass = isset($_POST['pass']) ? $_POST['pass'] : false;
 
 			// get username
+			$dataUser = $this->UserModel->getUser($user);
 
 			// cek username
+			if(!$dataUser){
+				$status = false;
+			}
+			else{
+				$this->password = $dataUser['password'];
+				if(password_verify($pass, $this->password)){
+					$status = true;
+					$_SESSION['sess_login'] = true;
+					$_SESSION['sess_locksreen'] = false;
+					$_SESSION['sess_level'] = $dataUser['level'];
+				}
+				else{
+					$status = false;
+				}
+			}
 
 			// cek jenis
 
-			if(($user === $this->username) && ($pass === $this->password)){
-				$_SESSION['sess_login'] = true;
-				$_SESSION['sess_locksreen'] = false;
+			// if(($user === $this->username) && ($pass === $this->password)){
+			// 	$_SESSION['sess_login'] = true;
+			// 	$_SESSION['sess_locksreen'] = false;
 
-				$this->redirect(BASE_URL);
-			}
-			else{
-				
-			}
+			// 	// $this->redirect(BASE_URL);
+			// 	$status = true;
+			// }
+			// else{
+			// 	$status = false;
+			// }
+
+			$output = array(
+				'status' => $status,
+			);
+
+			echo json_encode($output);
 		}
 
 		/**
