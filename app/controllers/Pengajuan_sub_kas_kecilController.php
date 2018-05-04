@@ -25,15 +25,15 @@ class Pengajuan_sub_kas_kecil extends Controller{
 			$config = array(
 				'title' => array(
 					'main' => 'Data Pengajuan Sub Kas Kecil',
-					'sub' => 'Ini adalah halaman Pengajuan Sub Kas Kecil, yang mengandung data pengajuan dari sub kas kecil yang diperoleh dari lapangan',
+					'sub' => '',
 				),
 				'css' => $css,
 				'js' => $js,
 			);
 
-			$data = $this->Pengajuan_sub_kas_kecilModel->getAll();
+			// $data = $this->Pengajuan_sub_kas_kecilModel->getAll();
 			
-			$this->layout('pengajuan_sub_kas_kecil/list', $config, $data);
+			$this->layout('pengajuan_sub_kas_kecil/list', $config);
 		}	
 
 
