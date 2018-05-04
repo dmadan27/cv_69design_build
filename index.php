@@ -22,7 +22,7 @@
 	$request = isset($_SERVER['PATH_INFO']) ? preg_replace("|/*(.+?)/*$|", "\\1", $_SERVER['PATH_INFO']) : DEFAULT_CONTROLLER;
 
 	// $_SESSION['sess_level'] = 'KAS BESAR';
-	$_SESSION['sess_level'] = 'KAS KECIL';
+	// $_SESSION['sess_level'] = 'KAS KECIL';
 	// $_SESSION['sess_level'] = 'OWNER';
 	// $_SESSION['sess_level'] = '';
 
