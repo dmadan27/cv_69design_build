@@ -1,4 +1,4 @@
-<div class="form-lupa-password">
+<div class="form-lupa-password" style="display: none">
 	<p class="login-box-msg">Masukkan Email Anda<br>Intruksi Selanjutnya Akan Dikirim ke Email Anda</p>
 	<form id="form_lupa_password">
 		<div class="form-group has-feedback">

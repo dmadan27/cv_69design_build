@@ -4,8 +4,8 @@
 
 	class Login extends Controller{
 
-		protected $username = 'ABCD';
-		protected $password = 'ABCD';
+		protected $username;
+		protected $password;
 		protected $token;
 
 		public function __construct(){
@@ -37,26 +37,44 @@
 		* set session default
 		*/
 		private function loginSistem(){
-			$user = isset($_POST['user']) ? $_POST['user'] : false;
-			$pass = isset($_POST['pass']) ? $_POST['pass'] : false;
+			$this->username = isset($_POST['user']) ? $_POST['user'] : false;
+			$this->password = isset($_POST['pass']) ? $_POST['pass'] : false;
+
+			$errorUser = $errorPass = "";
 
 			// get username
-			$dataUser = $this->UserModel->getUser($user);
+			$dataUser = $this->UserModel->getUser($this->username);
 
 			// cek username
 			if(!$dataUser){
 				$status = false;
+				$errorUser = "Username atau Password Anda Salah";
+				$errorPass = $errorUser;
 			}
 			else{
-				$this->password = $dataUser['password'];
-				if(password_verify($pass, $this->password)){
+				if(password_verify($this->password, $dataUser['password'])){
 					$status = true;
 					$_SESSION['sess_login'] = true;
 					$_SESSION['sess_locksreen'] = false;
 					$_SESSION['sess_level'] = $dataUser['level'];
+
+					// set data profil sesuai dgn jenis user
+					if(strtolower($dataUser['level']) == 'kas besar') 
+						$dataProfil = $this->UserModel->getKasBesar($this->username);
+					else 
+						$dataProfil = $this->UserModel->getKasKecil($this->username);
+
+					$_SESSION['sess_id'] = $dataProfil['id'];
+					$_SESSION['sess_nama'] = $dataProfil['nama'];
+					$_SESSION['sess_alamat'] = $dataProfil['alamat'];
+					$_SESSION['sess_email'] = $dataProfil['email'];
+					$_SESSION['sess_foto'] = $dataProfil['foto'];
+					$_SESSION['sess_status'] = $dataProfil['status'];
 				}
 				else{
 					$status = false;
+					$errorUser = "Username atau Password Anda Salah";
+					$errorPass = $errorUser;
 				}
 			}
 
@@ -73,8 +91,14 @@
 			// 	$status = false;
 			// }
 
+			$error = array(
+				'user' => $errorUser,
+				'pass' => $errorPass,
+			);
+
 			$output = array(
 				'status' => $status,
+				'error' => $error,
 			);
 
 			echo json_encode($output);

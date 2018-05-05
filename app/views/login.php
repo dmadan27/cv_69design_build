@@ -14,10 +14,12 @@
 	  	<link rel="stylesheet" href="<?= BASE_URL."assets/bower_components/font-awesome/css/font-awesome.min.css"; ?>">
 	  	<!-- Ionicons -->
 	  	<link rel="stylesheet" href="<?= BASE_URL."assets/bower_components/Ionicons/css/ionicons.min.css"; ?>">
-	  	<!-- Theme style -->
-	  	<link rel="stylesheet" href="<?= BASE_URL."assets/dist/css/AdminLTE.min.css"; ?>">
 	  	<!-- iCheck -->
 	  	<link rel="stylesheet" href="<?= BASE_URL."assets/plugins/iCheck/square/blue.css" ?>">
+	  	<!-- pace -->
+	  	<link rel="stylesheet" type="text/css" href="<?= BASE_URL."assets/bower_components/PACE/themes/red/pace-theme-flash.css"; ?>">
+	  	<!-- Theme style -->
+	  	<link rel="stylesheet" href="<?= BASE_URL."assets/dist/css/AdminLTE.min.css"; ?>">
 
 	  	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 	  	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -56,90 +58,14 @@
 		<!-- iCheck -->
 		<script src="<?= BASE_URL."assets/plugins/iCheck/icheck.min.js"; ?>"></script>
 
-		<!-- js custom -->
+		<!-- pace js -->
+		<script type="text/javascript" src="<?= BASE_URL."assets/bower_components/PACE/pace.min.js"; ?>"></script>
 		<script type="text/javascript">
-			$(document).ready(function(){
-				// init awal
-				$('.form-lupa-password').fadeOut();
-
-				$('#lupaPassword').on('click', function(){
-					resetForm();
-					$('.form-login').slideUp();
-					$('.form-lupa-password').fadeIn();
-				});
-
-				$('#back_login').on('click', function(){
-					resetForm();
-					$('.form-lupa-password').slideUp();
-					$('.form-login').slideDown();
-				});
-
-				// submit login
-				$('#form_login').submit(function(e){
-					e.preventDefault();
-					submit_login();
-
-					return false;
-				});
-
-				// submit lupa password
-				$('#form_lupa_password').submit(function(e){
-					e.preventDefault();
-					submit_lupaPassword();
-
-					return false;
-				});
-
-				// on change field
-				// ============================ //				
+			$(document).ajaxStart(function(){
+				Pace.restart();
 			});
-			
-			/**
-			*
-			*/
-			function submit_login(){
-				$.ajax({
-					url: BASE_URL+'login/',
-					type: 'POST',
-					dataType: 'json',
-					data:{
-						'user': $('#user').val().trim(),
-						'pass': $('#pass').val().trim(),
-					},
-					beforeSend: function(){
-
-					},
-					success: function(output){
-						console.log(output);
-						if(output.status) document.location=BASE_URL;
-						else{
-							// set error
-						}
-					},
-					error: function (jqXHR, textStatus, errorThrown) { // error handling
-			            console.log(jqXHR, textStatus, errorThrown);
-			        }
-				})
-			}
-
-			/**
-			*
-			*/
-			function submit_lupaPassword(){
-
-			}
-
-			/**
-			*
-			*/
-			function resetForm(){
-				// form login
-				$('#form_login').trigger('reset');
-
-				// form lupa password
-				$('#form_lupa_password').trigger('reset');
-			}			
-
 		</script>
+		<!-- js custom -->
+		<script type="text/javascript" src="<?= BASE_URL."app/views/login/js/initLogin.js" ?>"></script>
 	</body>
 </html>
