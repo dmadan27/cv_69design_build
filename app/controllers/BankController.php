@@ -1,20 +1,20 @@
 <?php 
-class Bank extends Controller{
+	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 
+	class Bank extends Controller{
 
-	public function __construct(){
+		public function __construct(){
 			$this->auth();
 			$this->auth->cekAuth();
 			$this->model('BankModel');
-	}	
+		}	
 
-
-	public function index(){
+		public function index(){
 			$this->list();
 		}
 
 
-	private function list(){
+		private function list(){
 			// $this->auth->cekAuth();
 			$css = array('assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css');
 			$js = array(
@@ -46,6 +46,4 @@ class Bank extends Controller{
 			else $this->edit($id);
 		}
 
-
-
-}
+	}
