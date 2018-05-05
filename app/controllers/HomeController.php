@@ -14,9 +14,24 @@
 		*/
 		public function index(){
 			// cek jenis user
+			switch (strtolower($_SESSION['sess_level'])) {
+				// arahkan ke beranda masing-masing
+				case 'kas besar':
+					$this->beranda_kasBesar();
+					break;
+					
+				case 'kas kecil':
+					$this->beranda_kasKecil();
+					break;
 
-			// arahkan ke beranda masing-masing
-			$this->beranda_kasKecil();
+				case 'owner':
+					$this->beranda_owner();
+					break;
+
+				default:
+					die();
+					break;
+			}
 		}
 
 		/**
