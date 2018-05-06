@@ -1,9 +1,13 @@
 <?php
-class Kas_besarModel extends Database{
+	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	
+	/**
+	* 
+	*/
+	class Kas_besarModel extends Database{
 
-
-	protected $koneksi;
-	protected $dataTable;
+		protected $koneksi;
+		protected $dataTable;
 
 		/**
 		* 
@@ -64,4 +68,4 @@ class Kas_besarModel extends Database{
 		public function __destruct(){
 			$this->closeConnection($this->koneksi);
 		}
-}
+	}

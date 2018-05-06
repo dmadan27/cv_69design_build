@@ -60,6 +60,7 @@
 
 		/**
 		* fungsi untuk mengarahkan request yg tidak tersedia ke page error
+		* masih tahap pengembangan
 		*/
 		protected function error($error){
 			switch ($error) {

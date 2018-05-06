@@ -4,15 +4,21 @@
 	/**
 	* 
 	*/
-	class TestModel extends Database{
+	class ExampleModel extends Database{
 		
 		protected $koneksi;
 		protected $dataTable;
 
+		/**
+		* 
+		*/
 		public function __construct(){
 			$this->koneksi = $this->openConnection();
 		}
 
+		/**
+		* 
+		*/
 		public function getAllDataTable($config){
 			$dataTable = new Datatable($config);
 
@@ -23,6 +29,9 @@
 			return $result;
 		}
 
+		/**
+		* 
+		*/
 		public function getAll(){
 			$data = array(
 				array(
@@ -49,4 +58,12 @@
 
 			return $data;
 		}
+
+		/**
+		* 
+		*/
+		public function __destruct(){
+			$this->closeConnection($this->koneksi);
+		}
+
 	}

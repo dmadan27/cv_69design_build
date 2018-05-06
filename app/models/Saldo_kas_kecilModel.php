@@ -1,8 +1,13 @@
 <?php
-class Saldo_kas_kecilModel extends Database{
+	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 
-	protected $koneksi;
-	protected $dataTable;
+	/**
+	* 
+	*/
+	class Saldo_kas_kecilModel extends Database{
+
+		protected $koneksi;
+		protected $dataTable;
 
 		/**
 		* 
@@ -57,4 +62,5 @@ class Saldo_kas_kecilModel extends Database{
 		public function __destruct(){
 			$this->closeConnection($this->koneksi);
 		}
-}
+		
+	}

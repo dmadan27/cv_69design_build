@@ -2,15 +2,23 @@
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 	// namespace app\controllers;
 
+	/**
+	* Class home, default controller
+	* load class auth
+	* cek auth
+	*/
 	class Home extends Controller{
 
+		/**
+		* Load class auth, cek auth
+		*/
 		public function __construct(){
 			$this->auth();
 			$this->auth->cekAuth();
 		}
 
 		/**
-		* 
+		* Fungsi index, cek session level dan arahkan beranda sesuai dengan session level
 		*/
 		public function index(){
 			// cek jenis user
@@ -35,7 +43,7 @@
 		}
 
 		/**
-		*
+		* Beranda owner
 		*/
 		private function beranda_owner(){
 			// config css-js
@@ -57,7 +65,7 @@
 		}
 
 		/**
-		*
+		* Beranda Kas Besar
 		*/
 		private function beranda_kasBesar(){
 			// config css-js
@@ -79,7 +87,7 @@
 		}
 
 		/**
-		*
+		* Beranda Kas Kecil
 		*/
 		private function beranda_kasKecil(){
 			// config css-js

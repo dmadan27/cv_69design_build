@@ -1,4 +1,9 @@
 <?php
+	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+
+	/**
+	* 
+	*/
 	class Sub_kas_kecilModel extends Database{
 
 		protected $koneksi;

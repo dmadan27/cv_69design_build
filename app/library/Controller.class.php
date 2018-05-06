@@ -6,17 +6,9 @@
 	* Method Method Utama
 	*/
 	class Controller{
-		
-		/**
-		*
-		*/
-		final protected function page(){
-			$view = new Page();
-			return $view;
-		}
 
 		/**
-		*
+		* Fungsi untuk load Library Model.class.php
 		*/
 		final protected function model($modelName){
 			require_once ROOT.DS.'app'.DS.'models'.DS.ucfirst($modelName).'.php';
@@ -25,14 +17,34 @@
 		}
 
 		/**
-		*
+		* Fungsi untuk load library Page.class.php
+		*/
+		final protected function page(){
+			$view = new Page();
+			return $view;
+		}
+
+		/**
+		* Fungsi untuk load library Auth.class.php
 		*/
 		final protected function auth($auth = 'auth'){
 			$this->$auth = new Auth();
 		}
 
 		/**
-		*
+		* Fungsi untuk templating layout content, css, js, dan data
+		* terdapat 3 parameter
+		* $content => halaman/content yang ingin dipasang di template layout. contoh: list, test/list
+		* $config => default nilai berupa null, jika diisi harus berupa array
+		* $config = array(
+			'title' => array(
+				'main' => '',
+				'sub' => '',
+			),
+			'css' => array(),
+			'js' => array()
+		)
+		* $data => data yang ingin dilampirkan di layout, dapat berupa array ataupun var langsung
 		*/
 		final protected function layout($content, $config = null, $data = null){
 			$view = $this->page();
@@ -66,7 +78,7 @@
 		}
 
 		/**
-		*
+		* Fungsi untuk load view secara langsung tanpa ada hubungan dengan layout
 		*/
 		final protected function view($view){
 			$temp = explode('/', $view);
@@ -78,9 +90,10 @@
 		}
 
 		/**
-		*
+		* Fungsi untuk redirect ke halaman tertentu
+		* jika diisi kosong secara default mengarah ke home
 		*/
-		final public function redirect($url){
+		final public function redirect($url = BASE_URL){
 			header("Location: ".$url);
 			die();
 		}

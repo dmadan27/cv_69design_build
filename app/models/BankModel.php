@@ -1,10 +1,13 @@
 <?php
-Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 
-class BankModel extends Database{
+	/**
+	* 
+	*/
+	class BankModel extends Database{
 
-	protected $koneksi;
-	protected $dataTable;
+		protected $koneksi;
+		protected $dataTable;
 
 		/**
 		* 
@@ -53,5 +56,4 @@ class BankModel extends Database{
 			$this->closeConnection($this->koneksi);
 		}
 
-
-}
+	}

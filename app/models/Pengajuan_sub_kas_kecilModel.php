@@ -57,4 +57,10 @@
 			return $result;
 		}
 
+		/**
+		* 
+		*/
+		public function __destruct(){
+			$this->closeConnection($this->koneksi);
+		}
 	}

@@ -2,16 +2,16 @@
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 	
 	/**
-	* 
+	* Class DataTable Server Side
 	*/
 	class Datatable extends Database{
 		
-		protected $tabel;
-		protected $kolomOrder;
-		protected $kolomCari;
-		protected $orderBy;
-		protected $kondisi;
-		protected $query;
+		protected $tabel; // nama tabel
+		protected $kolomOrder; // kolom2 yg akan di order
+		protected $kolomCari; // kolom2 yg akan dicari
+		protected $orderBy; // jenis pengurutan data
+		protected $kondisi; // where clause
+		protected $query; // query
 
 		/**
 		* Hal pertama kali yang dijalankan adalah set property sesuai dengan $config yg dikirim

@@ -2,12 +2,18 @@
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 	// namespace app\controllers;
 
+	/**
+	* Class login. Untuk melakukan login ke sistem, lockscreen dan logout
+	*/
 	class Login extends Controller{
 
 		protected $username;
 		protected $password;
 		protected $token;
 
+		/**
+		* Construct. Load class Auth
+		*/
 		public function __construct(){
 			$this->auth();
 			$this->model('UserModel');
@@ -35,6 +41,7 @@
 		* pengecekan user dan password berdasarkan jenis user
 		* pemberian hak akses berdasarkan level
 		* set session default
+		* return berupa json
 		*/
 		private function loginSistem(){
 			$this->username = isset($_POST['user']) ? $_POST['user'] : false;
@@ -80,17 +87,7 @@
 
 			// cek jenis
 
-			// if(($user === $this->username) && ($pass === $this->password)){
-			// 	$_SESSION['sess_login'] = true;
-			// 	$_SESSION['sess_locksreen'] = false;
-
-			// 	// $this->redirect(BASE_URL);
-			// 	$status = true;
-			// }
-			// else{
-			// 	$status = false;
-			// }
-
+			// pesan error
 			$error = array(
 				'user' => $errorUser,
 				'pass' => $errorPass,

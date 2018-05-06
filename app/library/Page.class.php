@@ -29,7 +29,7 @@
 		}
 
 		/**
-		*
+		* Fungsi untuk set header
 		*/
 		public function setHeader(){
 			ob_start();
@@ -38,7 +38,7 @@
 		}
 
 		/**
-		*
+		* Fungsi untuk set sidebar
 		*/
 		public function setSidebar(){
 			ob_start();
@@ -47,7 +47,7 @@
 		}
 
 		/**
-		*
+		* Fungsi untuk set content
 		*/
 		public function setContent($content){
 			$temp = explode('/', $content);
@@ -61,14 +61,14 @@
 		}
 
 		/**
-		*
+		* Fungsi untuk set data
 		*/
 		public function setData($data){
 			$this->data = $data;
 		}
 
 		/**
-		*
+		* Fungsi untuk set footer
 		*/
 		public function setFooter(){
 			ob_start();
@@ -77,7 +77,7 @@
 		}
 
 		/**
-		*
+		* Fungsi untuk set menu sidebar dinamis
 		*/
 		public function setMenuSidebar(){
 			$level = isset($_SESSION['sess_level']) ? $_SESSION['sess_level'] : false;
@@ -111,21 +111,21 @@
 		}
 
 		/**
-		*
+		* Fungsi untuk menambah css custom kedalam layout
 		*/
 		public function addCSS($cssPath){
 			$this->css[] = $cssPath;
 		}
 
 		/**
-		*
+		* Fungsi untuk menambah js custom kecalam layout
 		*/
 		public function addJS($jsPath){
 			$this->js[] = $jsPath;
 		}
 
 		/**
-		*
+		* Fungsi untuk mencetak css yang telah di tambah custom ke dalam layout
 		*/
 		public function getCSS(){
 			foreach ($this->css as $value) {
@@ -134,7 +134,7 @@
 		}
 
 		/**
-		*
+		* Fungsi untuk mencetak js yang telah ditambah custom ke dalam layout
 		*/
 		public function getJS(){
 			foreach ($this->js as $value) {
@@ -143,7 +143,7 @@
 		}
 
 		/**
-		*
+		* Fungsi rendering layout yang telah di set komponen2nya sebelumnya
 		*/
 		public function render(){
 			$this->setHeader();

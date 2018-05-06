@@ -1,9 +1,13 @@
 <?php
-class Mutasi_BankModel extends Database{
+	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	
+	/**
+	* 
+	*/
+	class Mutasi_BankModel extends Database{
 
-
-	protected $koneksi;
-	protected $dataTable;
+		protected $koneksi;
+		protected $dataTable;
 
 		/**
 		* 
@@ -31,10 +35,7 @@ class Mutasi_BankModel extends Database{
 					'Uang Masuk' => '10000000',
 					'Uang Keluar' => '0',
 					'saldo' => '20000000',					
-				),
-				
-				
-				
+				),				
 			);
 
 			return $data;
@@ -60,4 +61,5 @@ class Mutasi_BankModel extends Database{
 		public function __destruct(){
 			$this->closeConnection($this->koneksi);
 		}
-}
+		
+	}

@@ -1,8 +1,11 @@
 <?php 
-	
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung"); 
 
+	/**
+	* 
+	*/
 	class Laporan_pengajuan_sub_kas_kecilModel extends Database{
+		
 		protected $koneksi;
 		protected $dataTable;
 
@@ -71,4 +74,5 @@
 		public function __destruct(){
 			$this->closeConnection($this->koneksi);
 		}
-}
+
+	}
