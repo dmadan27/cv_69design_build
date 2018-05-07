@@ -39,6 +39,13 @@
 		}
 
 		/**
+		* Fungsi untuk load library Validation.class.php
+		*/
+		final protected function validation($validation = 'validation'){
+			$this->$validation = new Validation();
+		}
+
+		/**
 		* Fungsi untuk templating layout content, css, js, dan data
 		* terdapat 3 parameter
 		* $content => halaman/content yang ingin dipasang di template layout. contoh: list, test/list
