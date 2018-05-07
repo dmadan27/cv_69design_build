@@ -32,6 +32,13 @@
 		}
 
 		/**
+		* Fungsi untuk load library Helper.class.php
+		*/
+		final protected function helper($helper = 'helper'){
+			$this->$helper = new Helper();
+		}
+
+		/**
 		* Fungsi untuk templating layout content, css, js, dan data
 		* terdapat 3 parameter
 		* $content => halaman/content yang ingin dipasang di template layout. contoh: list, test/list
