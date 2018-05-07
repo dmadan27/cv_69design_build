@@ -55,4 +55,28 @@
 		public function get_list(){
 
 		}
+
+		public function form(){
+
+  			$css = array(
+  				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
+  				
+  			);
+			$js = array(
+				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
+				'app/views/proyek/js/initForm.js',
+			);
+
+
+			$config = array(
+				'title' => array(
+					'main' => 'Data Proyek',
+					'sub' => '',
+				),
+				'css' => $css,
+				'js' => $js,
+			);
+
+			$this->layout('proyek/form', $config);
+		}
 	}
