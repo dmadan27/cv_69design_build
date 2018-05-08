@@ -2,9 +2,9 @@
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 
 	/**
-	* 
+	* Class BankModel, implementasi ke ModelInterface
 	*/
-	class BankModel extends Database{
+	class BankModel extends Database implements ModelInterface{
 
 		protected $koneksi;
 		protected $dataTable;
@@ -14,40 +14,70 @@
 		*/
 		public function __construct(){
 			$this->koneksi = $this->openConnection();
+			$this->dataTable = new Datatable();
+		}
+
+		/**
+		* 
+		*/
+		public function getAllDataTable($config){
+			$this->dataTable->set_config($config);
+			$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
+			$statement->execute();
+			$result = $statement->fetchAll();
+
+			return $result;
+		}
+
+		/**
+		* 
+		*/
+		public function recordFilter(){
+			return $this->dataTable->recordFilter();
+
+		}
+
+		/**
+		* 
+		*/
+		public function recordTotal(){
+			return $this->dataTable->recordTotal();
 		}
 
 		/**
 		* 
 		*/
 		public function getAll(){
-			$data = array(
-				array(
-					'nama' => 'BNI',
-					'Saldo' => 200000,
-				),
-				array(
-					'nama' => 'BRI',
-					'Saldo' => 100000,
-				),
-				
-			);
-
-			return $data;
+			
 		}
 
 		/**
 		* 
 		*/
-		// public function getUser($username){
-		// 	$query = "SELECT * FROM sub_kas_kecil WHERE BINARY email = :username";
+		public function getById($id){
 
-		// 	$statement = $this->koneksi->prepare($query);
-		// 	$statement->bindParam(':username', $username);
-		// 	$statement->execute();
-		// 	$result = $statement->fetch(PDO::FETCH_ASSOC);
+		}
 
-		// 	return $result;
-		// }
+		/**
+		* 
+		*/
+		public function insert($data){
+
+		}
+
+		/**
+		* 
+		*/
+		public function update($data){
+
+		}
+
+		/**
+		* 
+		*/
+		public function delete($id){
+			
+		}
 
 		/**
 		* 
