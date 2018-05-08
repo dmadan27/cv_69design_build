@@ -23,9 +23,9 @@
 		* key berupa apa yg di order, dan valuenya jenis order
 		* kondisi => berupa string, yaitu Where manual
 		*/
-		public function __construct($config){
+		final public function set_config($config){
 			// set tabel
-			$this->table = $config['tabel'];
+			$this->tabel = $config['tabel'];
 			// set kolom order
 			$this->kolomOrder = $config['kolomOrder'];
 			// set kolom cari
@@ -43,7 +43,7 @@
 			$search = isset($_POST['search']['value']) ? $_POST['search']['value'] : false;
 			$order = isset($_POST['order']) ? $_POST['order'] : false;
 
-			$this->query = "SELECT * FROM $this->table ";
+			$this->query = "SELECT * FROM $this->tabel ";
 
 			if($this->kondisi === false){
 				// jika ada request pencarian
@@ -101,7 +101,8 @@
 		*/
 		final public function recordFilter(){
 			$koneksi = $this->openConnection();
-			$statement = $koneksi->prepare($this->setDataTable());
+
+			$statement = $koneksi->prepare($this->query);
 			$statement->execute();
 
 			return $statement->rowCount();
