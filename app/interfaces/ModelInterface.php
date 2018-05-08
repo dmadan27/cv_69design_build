@@ -5,6 +5,7 @@
 	* 
 	*/
 	interface ModelInterface{
+		
 		/**
 		* 
 		*/
@@ -29,4 +30,5 @@
 		* 
 		*/
 		public function delete($id);
+		
 	}
