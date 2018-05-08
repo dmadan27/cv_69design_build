@@ -18,13 +18,13 @@
 		* 
 		*/
 		public function index(){
-			$this->list_pengajuan();
+			$this->pengajuan();
 		}
 
 		/**
 		* 
 		*/
-		public function list_pengajuan(){
+		public function pengajuan(){
 			if($this->auth->cekAuthMobile()){
 				// $page = isset($_POST['page']) ? $_POST['page'] : false;
 
@@ -60,6 +60,41 @@
 		/**
 		* 
 		*/
-		
+		public function add_pengajuan(){
+
+		}
+
+		/**
+		* 
+		*/
+		public function add_laporan(){
+
+		}
+
+		/**
+		* 
+		*/
+		public function proyek(){
+
+		}
+
+		/**
+		* 
+		*/
+		public function profil(){
+			
+		}
+
+		/**
+		* 
+		*/
+		public function mutasi(){
+
+		}
+
+		/**
+		* 
+		*/
+		public 
 
 	}
