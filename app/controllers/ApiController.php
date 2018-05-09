@@ -6,12 +6,15 @@
 	*/
 	class Api extends Controller{
 		
+		protected $status = true;
+		
 		/**
 		* 
 		*/		
 		public function __construct(){
 			$this->auth();
 			$this->auth->mobileOnly();
+			if(!$this->auth->cekAuthMobile()) $this->status = false;
 		}
 
 		/**
@@ -25,35 +28,26 @@
 		* 
 		*/
 		public function pengajuan(){
-			if($this->auth->cekAuthMobile()){
-				// $page = isset($_POST['page']) ? $_POST['page'] : false;
 
-				// load model A
-				$this->model('Pengajuan_sub_kas_kecilModel');
-				$data = $this->Pengajuan_sub_kas_kecilModel->getAll_pending();
+			$page = (isset($_POST['page']) && !empty($_POST['page'])) ? $_POST['page'] : 1;	
 
-				// echo "<pre>";
-				// var_dump($data);
+			$this->model('Pengajuan_sub_kas_kecilModel');
+		
+			$dataPengajuan = $this->Pengajuan_sub_kas_kecilModel->getAll_mobile($page);
+			$totalData = $this->Pengajuan_sub_kas_kecilModel->get_recordTotal_mobile();
+			$totalPage = ceil($totalData/10);
 
-				// get datanya
+			$next = ($page < $totalPage) ? ($page + 1) : null;
 
-				// pembagian data berdasarkan request
+			$output = array(
+				'list_pengajuan' => $dataPengajuan,
+				'next' => $next,
+				'status' => $this->status,
+				// 'page' => $page,
+				// 'totalData' => $totalData,
+				// 'totalPage' => $totalPage,
+			);
 
-				$status = true;
-				$output = array(
-					'status' => $status,
-					'listPengajuan' => $data, // data
-					'prev' => null, // prev page
-					'next' => null, // next page
-					'page' => null, // page
-				);
-			}
-			else{
-				$output = array(
-					'status' => false,
-				);
-			}
-				
 			echo json_encode($output);
 		}
 
@@ -95,6 +89,6 @@
 		/**
 		* 
 		*/
-		public 
+		
 
 	}

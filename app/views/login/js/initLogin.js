@@ -58,8 +58,8 @@ function submit_login(){
 		type: 'POST',
 		dataType: 'json',
 		data:{
-			'user': $('#user').val().trim(),
-			'pass': $('#pass').val().trim(),
+			'username': $('#username').val().trim(),
+			'password': $('#password').val().trim(),
 		},
 		// beforeSend: function(){
 		// 	Pace.restart();

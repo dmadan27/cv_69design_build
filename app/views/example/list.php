@@ -31,6 +31,7 @@
 								<tr>
 									<th>Nama</th>
 									<th>Umur</th>
+									<th style="width: 150px">Aksi</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -40,6 +41,15 @@
 										foreach($value as $row){
 											echo "<td>".$row."</td>";
 										}
+										?>
+										<td>
+											<div class="btn-group">
+												<button type="button" class="btn btn-info btn-flat"><i class="fa fa-pencil"></i></button>
+												<button type="button" class="btn btn-info btn-flat"><i class="fa fa-pencil"></i></button>
+												<button type="button" class="btn btn-info btn-flat"><i class="fa fa-pencil"></i></button>
+											</div>
+										</td>
+										<?php
 										echo "</tr>";
 									}
 								?>

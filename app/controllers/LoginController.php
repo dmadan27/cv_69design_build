@@ -89,8 +89,8 @@
 
 			// pesan error
 			$error = array(
-				'user' => $errorUser,
-				'pass' => $errorPass,
+				'username' => $errorUser,
+				'password' => $errorPass,
 			);
 
 			$output = array(
@@ -112,8 +112,8 @@
 			$this->auth->mobileOnly();
 
 			// validasi pengguna
-			$user = isset($_POST['user']) ? $_POST['user'] : false;
-			$pass = isset($_POST['pass']) ? $_POST['pass'] : false;
+			$user = isset($_POST['username']) ? $_POST['username'] : false;
+			$pass = isset($_POST['password']) ? $_POST['password'] : false;
 
 			// get user
 			$this->model('sub_kas_kecilModel');

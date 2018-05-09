@@ -34,7 +34,7 @@
 			$this->mobileOnly();
 			// $this->jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
 			// if($this->jenis){
-			$status = $this->isLogin() ? true : false;
+			return $status = $this->isLogin() ? true : false;
 
 			// $output = array(
 			// 	'status' => $status,
@@ -42,7 +42,6 @@
 
 			// echo json_encode($output);
 			// }
-			return $status;
 		}
 
 		/**
@@ -54,7 +53,7 @@
 			// $this->lockscreen = isset($_SESSION['sess_locksreen']) ? $_SESSION['sess_locksreen'] : false;
 
 			if($this->jenis){ // untuk mobile
-				$user = isset($_POST['user']) ? $_POST['user'] : false;
+				$user = isset($_POST['username']) ? $_POST['username'] : false;
 				$token = isset($_POST['token']) ? $_POST['token'] : false;
 
 				// get token di db
