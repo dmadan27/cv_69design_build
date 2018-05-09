@@ -44,8 +44,8 @@
 		* return berupa json
 		*/
 		private function loginSistem(){
-			$this->username = isset($_POST['user']) ? $_POST['user'] : false;
-			$this->password = isset($_POST['pass']) ? $_POST['pass'] : false;
+			$this->username = isset($_POST['username']) ? $_POST['username'] : false;
+			$this->password = isset($_POST['password']) ? $_POST['password'] : false;
 
 			$errorUser = $errorPass = "";
 
