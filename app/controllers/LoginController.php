@@ -153,6 +153,7 @@
 			}
 
 			$output = array(
+				'id' => $dataUser['id'],
 				'token' => $token,
 				'status' => $status,
 			);
