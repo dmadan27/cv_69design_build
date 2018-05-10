@@ -18,8 +18,11 @@
 	require_once "app/library/Validation.class.php";
 
 	// load abstract
+	require_once "app/abstracts/CrudAbstract.php";
+	require_once "app/abstracts/Crud_modalsAbstract.php";
 
 	// load interface
+	require_once "app/interfaces/ModelInterface.php";
 
 	$request = isset($_SERVER['PATH_INFO']) ? preg_replace("|/*(.+?)/*$|", "\\1", $_SERVER['PATH_INFO']) : DEFAULT_CONTROLLER;
 
