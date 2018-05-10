@@ -92,6 +92,8 @@
 				foreach($dataBank as $row){
 					$no_urut++;
 
+					$status = ($row['status'] == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-danger">'.$row['status'].'</span>';
+
 					// button aksi
 					$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
 					$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".', '."'".$token_edit."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
@@ -103,7 +105,7 @@
 					$dataRow[] = $no_urut;
 					$dataRow[] = $row['nama'];
 					$dataRow[] = $this->helper->cetakRupiah($row['saldo']);
-					$dataRow[] = $row['status'];
+					$dataRow[] = $status;
 					$dataRow[] = $aksi;
 
 					$data[] = $dataRow;

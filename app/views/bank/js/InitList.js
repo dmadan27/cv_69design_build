@@ -34,8 +34,10 @@ $(document).ready(function(){
             }
         ],
         createdRow: function(row, data, dataIndex){
-        	// rata kanan untuk data saldo
-        	$('td:eq(2)', row).addClass('text-right');
+        	for(var i = 0; i < 5; i++){
+        		if(i != 1 && i != 2) $('td:eq('+i+')', row).addClass('text-center'); 
+         		if(i == 2) $('td:eq('+i+')', row).addClass('text-right'); // rata kanan untuk data saldo
+        	}
         }
     });
 
