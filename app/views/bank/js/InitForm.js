@@ -34,9 +34,10 @@ $(document).ready(function(){
 */
 function getDataForm(){
 	var data = new FormData();
+	var saldo = parseFloat($('#saldo').val().trim()) ? parseFloat($('#saldo').val().trim()) : "";
 
 	data.append('nama', $('#nama').val().trim()); // nama bank
-	data.append('saldo', parseFloat($('#saldo').val().trim())); // saldo awal
+	data.append('saldo', saldo); // saldo awal
 	data.append('action', $('#submit_bank').val().trim()); // action
 
 	return data;
