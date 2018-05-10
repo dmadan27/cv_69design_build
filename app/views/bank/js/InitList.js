@@ -24,7 +24,7 @@ $(document).ready(function(){
             url: BASE_URL+"bank/get-list/",
             type: 'POST',
             data: {
-                "token" : $('#token').val().trim(),
+                "token_bank_list" : $('#token_bank_list').val().trim(),
             }
         },
         "columnDefs": [
@@ -38,6 +38,25 @@ $(document).ready(function(){
         	$('td:eq(2)', row).addClass('text-right');
         }
     });
+
+    // init toastr
+    toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": false,
+      "progressBar": true,
+      "positionClass": "toast-top-right",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "5000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
 });
 
 /**

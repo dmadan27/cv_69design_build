@@ -62,7 +62,16 @@
 		* 
 		*/
 		public function insert($data){
+			$status = "AKTIF";
+			$query = "INSERT INTO bank (nama, saldo, status) VALUES (:nama, :saldo, :status);";
 
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':nama', $data['nama']);
+			$statement->bindParam(':saldo', $data['saldo']);
+			$statement->bindParam(':status', $status);
+			$result = $statement->execute();
+
+			return $result;
 		}
 
 		/**

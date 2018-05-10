@@ -8,17 +8,35 @@
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-                <h4 class="modal-title">Default Modal</h4>
+                <h4 class="modal-title">Form Data Bank</h4>
 			</div>
-			<!-- body modal -->
-			<div class="modal-body">
-				
-			</div>
-			<!-- modal footer -->
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
-			</div>
+			<form id="form_bank" role="form">
+				<!-- body modal -->
+				<div class="modal-body">
+					<!-- field nama -->
+					<div class="form-group field-nama has-feedback">
+						<label for="nama">Nama Bank</label>
+						<input type="text" name="nama" id="nama" class="form-control field" placeholder="Masukkan Nama Bank">
+						<span class="help-block small pesan pesan-nama"></span>
+					</div>
+
+					<!-- saldo awal -->
+					<div class="form-group field-saldo has-feedback">
+						<label for="saldo">Saldo Awal</label>
+						<div class="input-group">
+							<span class="input-group-addon">Rp</span>
+			                <input type="number" min="0" step="any" name="saldo" id="saldo" class="form-control field" placeholder="Masukkan Nama Bank">
+			                <span class="input-group-addon">.00</span>
+						</div>
+						<span class="help-block small pesan pesan-saldo"></span>
+					</div>
+				</div>
+				<!-- modal footer -->
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Kembali</button>
+	                <button type="submit" id="submit_bank" class="btn btn-primary" value="tambah">Simpan Data</button>
+				</div>
+			</form>
 		</div>
 	</div>
 </div>

@@ -39,7 +39,7 @@
 						</div>
 					<!-- box body -->
 					<div class="box-body">
-						<input type="hidden" id="token" value="<?= $this->data['tokenCrsf']; ?>">
+						<input type="hidden" id="token_bank_list" value="<?= $this->data['token_bank_list']; ?>">
 						<table id="bankTable" class="table table-bordered table-hover">
 							<thead>
 								<tr>
