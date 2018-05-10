@@ -233,7 +233,7 @@
 		* Fungsi validasi untuk angka
 		* hanya mengecek angka, yang di cek hanya angkanya saja, bukan nilainya
 		*/
-		private function valid_angka(){
+		private function valid_angka($data){
 			$cek = true;
 			$pattern = "/^[0-9]*$/";
 
@@ -261,7 +261,7 @@
 		* Fungsi validasi untuk nilai
 		* hanya mengecek angka, dan nilainya yg dicek
 		*/
-		private function valid_nilai(){
+		private function valid_nilai($data){
 			$cek = true;
 			$pattern = "/^[0-9.]*$/";
 
@@ -287,7 +287,7 @@
 		/**
 		* Fungsi validasi untuk email
 		*/
-		private function valid_email(){
+		private function valid_email($data){
 			$cek = true;
 
 			// cek pattern
@@ -369,7 +369,7 @@
 	        	case UPLOAD_ERR_NO_FILE:
 	            	$output = array(
 						'cek' => false,
-						'error' => "Upload Gagal, Tidak File Yang Terupload",
+						'error' => "Upload Gagal, Tidak Ada File Yang Terupload",
 					);
 
 					return $output;
