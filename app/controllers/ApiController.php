@@ -59,6 +59,26 @@
 		}
 
 		/**
+		*
+		*/
+		public function detail_pengajuan($id_pengajuan){
+			$this->model('Pengajuan_sub_kas_kecilModel');
+			$dataDetail = $this->Pengajuan_sub_kas_kecilModel->getById_mobile(strtoupper($id_pengajuan));
+
+			$output = array(
+				'detail_pengajuan' => $dataDetail,
+				'status' => $this->status,
+			);
+
+			echo json_encode($output);
+
+			// $temp = 0;
+			// for($i=1; $i<1000000; $i++){
+			// 	$temp += $i;
+			// }
+		}
+
+		/**
 		* 
 		*/
 		public function add_laporan(){
