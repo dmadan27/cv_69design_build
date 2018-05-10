@@ -19,7 +19,7 @@
 		/**
 		* public function action_add()
 		*/
-		abstract protected function action_add($data);
+		abstract protected function action_add();
 
 		/**
 		* protected function edit()
@@ -29,7 +29,7 @@
 		/**
 		* public function action_edit()
 		*/
-		abstract protected function action_edit($data);
+		abstract protected function action_edit();
 
 		/**
 		* public function detail()
