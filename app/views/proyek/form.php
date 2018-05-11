@@ -17,7 +17,7 @@
                 <div class="row box box-primary">
                       <div class="box">
                         <div class="box-header">
-                            Tambah Data Proyek
+                            <label>Tambah Data Proyek</label>
                         </div>
                           <form action="" method="" enctype="">
                           
@@ -63,6 +63,10 @@
                                               <span class="help-block small pesan pesan-alamat"></span>
                                             </div>
 
+                                            <div class="clearfix">
+                                              
+                                            </div>
+
                                         </div>
 
                                         <div class="col-md-6">
@@ -100,11 +104,18 @@
                                                  <input type="text" class="form-control field" id="cco" name="cco" placeholder="Change Contract Order">
                                               <span class="help-block small pesan pesan-cco"></span>
                                             </div>
+
+                                            <div class="form-group">
+                                              <button type="submit" name="" id="" class="btn btn-default pull-left">Reset</button>
+                                             <button type="submit" name="" id="" class="btn btn-primary">Tambah</button>
+                                            </div>
+
+                          </form>  
+                                              
+                                            
                                         </div>
 
-
-
-                          </form>                
+                                                      
                       </div>
                 </div>
               </section>
@@ -114,7 +125,7 @@
                 <div class="row box box-primary">
                       <div class="box">
                         <div class="box-header">
-                            Detail Proyek
+                            <label>Detail Proyek</label>
                         </div>
                           <form action="" method="" enctype="">
                           
@@ -152,7 +163,13 @@
                                               <label for="total">Total</label>
                                               <input type="text" class="form-control field" id="total" name="total" placeholder="Total">
                                               <span class="help-block small pesan pesan-total"></span>
-                                            </div>  
+                                            </div>
+
+                                             <div class="form-group">
+                                              <button type="submit" name="" id="" class="btn btn-default pull-left">Reset</button>
+                                             <button type="submit" name="" id="" class="btn btn-primary">Tambah</button>
+                                            </div>
+  
 
 
                                          
@@ -171,6 +188,12 @@
                                                  </select>
                                               <span class="help-block small pesan pesan-kota"></span>
                                             </div>  
+
+                                             <div class="form-group">
+                                              <button type="submit" name="" id="" class="btn btn-default pull-left">Reset</button>
+                                             <button type="submit" name="" id="" class="btn btn-primary">Tambah</button>
+                                            </div>
+  
 
                                             
                                         </div>
