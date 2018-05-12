@@ -28,12 +28,10 @@
 			// set config untuk layouting
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
-				'assets/bower_components/toastr/build/toastr.min.css',
 			);
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
-				'assets/bower_components/toastr/build/toastr.min.js',
 				'app/views/bank/js/initList.js',
 				'app/views/bank/js/initForm.js',
 			);
@@ -83,9 +81,11 @@
 
 				$token_edit = md5($this->auth->getToken()); // md5
 				$_SESSION['token_bank_edit'] = $token_edit; // md5 di hash
+				$token_edit = password_hash($token_edit, PASSWORD_BCRYPT);
 
 				$token_hapus = md5($this->auth->getToken()); // md5
 				$_SESSION['token_bank_hapus'] = $token_hapus; // md5 di hash
+				$token_hapus = password_hash($token_hapus, PASSWORD_BCRYPT);
 
 				$data = array();
 				$no_urut = $_POST['start'];
@@ -127,13 +127,91 @@
 		*/
 		public function action_add(){
 			$data = isset($_POST) ? $_POST : false;
-			$status = false;
-
-			if(!$data){
+			if(!password_verify($_SESSION['token_bank_list'], $data['token'])) $this->redirect(BASE_URL.'bank/');
+			else{
 				$status = false;
 				$error = "";
-			}
+
+				if(!$data){
+					$notif = array(
+						'title' => "Pesan Berhasil",
+						'message' => "Tambah Data Bank Baru Berhasil",
+					);
+				}
+				else{
+					// validasi data
+					$validasi = $this->set_validation($data);
+					$cek = $validasi['cek'];
+					$error = $validasi['error'];
+
+					if($cek){
+						// validasi inputan
+						$data = array(
+							'nama' => $this->validation->validInput($data['nama']),
+							'saldo' => $this->validation->validInput($data['saldo']),
+						);
+
+						// insert db
+
+						// transact
+
+						if($this->BankModel->insert($data)) {
+							$status = true;
+							$notif = array(
+								'title' => "Pesan Berhasil",
+								'message' => "Tambah Data Bank Baru Berhasil",
+							);
+						}
+						else {
+							$notif = array(
+								'title' => "Pesan Gagal",
+								'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+							);
+						}
+
+						// commit
+					}
+					else {
+						$notif = array(
+							'title' => "Pesan Pemberitahuan",
+							'message' => "Silahkan Cek Kembali Form Isian",
+						);
+					}
+				}
+
+				$output = array(
+					'status' => $status,
+					'notif' => $notif,
+					'error' => $error,
+					// 'data' => $data
+				);
+
+				echo json_encode($output);
+			}			
+		}
+
+		/**
+		*
+		*/
+		public function edit($id){
+			$token = isset($_POST['token_bank_edit']) ? $_POST['token_bank_edit'] : false;
+			if(!password_verify($_SESSION['token_bank_edit'], $token)) $this->redirect(BASE_URL.'bank/');
 			else{
+				$data = !empty($this->BankModel->getById($id)) ? $this->BankModel->getById($id) : false;
+
+				echo json_encode($data);
+			}
+		}
+
+		/**
+		*
+		*/
+		public function action_edit(){
+			$data = isset($_POST) ? $_POST : false;
+			if(!password_verify($_SESSION['token_bank_edit'], $data['token'])) $this->redirect(BASE_URL.'bank/');
+			else{
+				$status = false;
+	
 				// validasi data
 				$validasi = $this->set_validation($data);
 				$cek = $validasi['cek'];
@@ -142,23 +220,22 @@
 				if($cek){
 					// validasi inputan
 					$data = array(
-						'nama' => $this->validation->validInput($data['nama']),
-						'saldo' => $this->validation->validInput($data['saldo']),
+						'id' => $this->validation->validInput($data['id']),
+						'nama' => $this->validation->validInput($data['nama'])
 					);
 
-					// insert db
+					// update db
 
 					// transact
 
-					if($this->BankModel->insert($data)) {
+					if($this->BankModel->update($data)) {
 						$status = true;
 						$notif = array(
 							'title' => "Pesan Berhasil",
-							'message' => "Tambah Data Bank Baru Berhasil",
+							'message' => "Edit Data Bank Berhasil",
 						);
 					}
 					else {
-						$status = false;
 						$notif = array(
 							'title' => "Pesan Gagal",
 							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
@@ -168,7 +245,6 @@
 					// commit
 				}
 				else {
-					$status = false;
 					$notif = array(
 						'title' => "Pesan Pemberitahuan",
 						'message' => "Silahkan Cek Kembali Form Isian",
@@ -180,37 +256,10 @@
 				'status' => $status,
 				'notif' => $notif,
 				'error' => $error,
+				// 'data' => $data
 			);
 
 			echo json_encode($output);
-		}
-
-		/**
-		*
-		*/
-		private function set_validation($data){
-			$required = ($data['action'] == "edit") ? 'not_required' : 'required';
-
-			// nama bank
-			$this->validation->set_rules($data['nama'], 'Nama Bank', 'nama', 'string | 1 | 255 | required');
-			// saldo awal
-			$this->validation->set_rules($data['saldo'], 'Saldo Awal Bank', 'saldo', 'nilai | 0 | 99999999999 | '.$required);
-
-			return $this->validation->run();
-		}
-
-		/**
-		*
-		*/
-		public function edit($id){
-
-		}
-
-		/**
-		*
-		*/
-		public function action_edit(){
-
 		}
 
 		/**
@@ -224,7 +273,7 @@
 		*
 		*/
 		public function detele($id){
-
+			
 		}
 
 		/**
@@ -232,6 +281,20 @@
 		*/
 		public function export(){
 
+		}
+
+		/**
+		*
+		*/
+		private function set_validation($data){
+			$required = ($data['action'] == "action-edit") ? 'not_required' : 'required';
+
+			// nama bank
+			$this->validation->set_rules($data['nama'], 'Nama Bank', 'nama', 'string | 1 | 255 | required');
+			// saldo awal
+			$this->validation->set_rules($data['saldo'], 'Saldo Awal Bank', 'saldo', 'nilai | 0 | 99999999999 | '.$required);
+
+			return $this->validation->run();
 		}
 
 	}

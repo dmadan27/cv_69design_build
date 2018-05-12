@@ -1,10 +1,16 @@
 $(document).ready(function(){
+	$('#submit_bank').prop('disabled', true);
+
 	// button tambah
 	$('#tambah').on('click', function(){
-		$('.field-saldo').css('display', 'block');
-		$('#submit_bank').prop('value', 'tambah');
-		resetForm();
-		$('#modalBank').modal();
+		if($('#token_bank_list').val().trim().toLowerCase() != ""){
+			resetForm();
+			$('.field-saldo').css('display', 'block');
+			$('#submit_bank').prop('value', 'action-add');
+			$('#submit_bank').prop('disabled', false);
+			$('#submit_bank').html('Simpan Data');
+			$('#modalBank').modal();
+		}
 	});
 
 	// submit bank
@@ -25,8 +31,8 @@ $(document).ready(function(){
 			$('.field-'+this.id).removeClass('has-error').removeClass('has-success');
 			$(".pesan-"+this.id).text('');	
 		}
-
 	});
+
 });
 
 /**
@@ -35,6 +41,12 @@ $(document).ready(function(){
 function getDataForm(){
 	var data = new FormData();
 	var saldo = parseFloat($('#saldo').val().trim()) ? parseFloat($('#saldo').val().trim()) : "";
+
+	if($('#submit_bank').val().trim().toLowerCase() == "action-edit"){
+		data.append('token', $('#token_bank_edit').val().trim());
+		data.append('id', $('#id').val().trim());
+	}
+	else data.append('token', $('#token_bank_list').val().trim());
 
 	data.append('nama', $('#nama').val().trim()); // nama bank
 	data.append('saldo', saldo); // saldo awal
@@ -50,7 +62,7 @@ function submit(){
 	var data = getDataForm();
 
 	$.ajax({
-		url: BASE_URL+'bank/action-add/',
+		url: BASE_URL+'bank/'+$('#submit_bank').val().trim()+'/',
 		type: 'POST',
 		dataType: 'json',
 		data: data,
@@ -63,9 +75,9 @@ function submit(){
 		},
 		success: function(output){
 			console.log(output);
-			$('#submit_bank').prop('disabled', false);
-			$('#submit_bank').html('Simpan Data');
 			if(!output.status) {
+				$('#submit_bank').prop('disabled', false);
+				$('#submit_bank').html($('#submit_bank').text());
 				setError(output.error);
 				toastr.warning(output.notif.message, output.notif.title);
 			}
@@ -85,8 +97,37 @@ function submit(){
 /**
 *
 */
-function getEdit(id){
-	$('#modalBank').modal();
+function getEdit(id, token){
+	if(token != ""){
+		resetForm();
+		$('.field-saldo').css('display', 'none');
+		$('#submit_bank').prop('value', 'action-edit');
+		$('#submit_bank').prop('disabled', false);
+		$('#submit_bank').html('Edit Data');
+
+		$.ajax({
+			url: BASE_URL+'bank/edit/'+id,
+			type: 'post',
+			dataType: 'json',
+			data: {"token_bank_edit": token},
+			beforeSend: function(){
+
+			},
+			success: function(output){
+				if(output){
+					$('#modalBank').modal();
+					$('#token_bank_edit').val(token);
+					setValue(output);
+				}	
+			},
+			error: function (jqXHR, textStatus, errorThrown){ // error handling
+	            console.log(jqXHR, textStatus, errorThrown);
+	        }
+		})
+	}
+	else{ // error handling
+
+	}
 }
 
 /**
@@ -104,6 +145,16 @@ function setError(error){
 			$('.field-'+index).removeClass('has-error').addClass('has-success');
 			$('.pesan-'+index).text('');	
 		}
+	});
+}
+
+/**
+*
+*/
+function setValue(value){
+	$.each(value, function(index, item){
+		item = (parseFloat(item)) ? (parseFloat(item)) : item;
+		$('#'+index).val(item);
 	});
 }
 

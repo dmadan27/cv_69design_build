@@ -11,6 +11,8 @@
                 <h4 class="modal-title">Form Data Bank</h4>
 			</div>
 			<form id="form_bank" role="form">
+				<input type="hidden" id="id">
+				<input type="hidden" id="token_bank_edit">
 				<!-- body modal -->
 				<div class="modal-body">
 					<!-- field nama -->

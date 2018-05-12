@@ -41,24 +41,6 @@ $(document).ready(function(){
         }
     });
 
-    // init toastr
-    toastr.options = {
-      "closeButton": true,
-      "debug": false,
-      "newestOnTop": false,
-      "progressBar": true,
-      "positionClass": "toast-top-right",
-      "preventDuplicates": false,
-      "onclick": null,
-      "showDuration": "300",
-      "hideDuration": "1000",
-      "timeOut": "5000",
-      "extendedTimeOut": "1000",
-      "showEasing": "swing",
-      "hideEasing": "linear",
-      "showMethod": "fadeIn",
-      "hideMethod": "fadeOut"
-    }
 });
 
 /**
@@ -72,5 +54,16 @@ function getView(id){
 *
 */
 function getDelete(id){
-
+// 	// swal(
+//  //  		'Good job!',
+//  //  		'You clicked the button!',
+//  //  		'success'
+// 	// )
+// 	alert('You clicked the button!')
+// 	swal({
+//   type: 'error',
+//   title: 'Oops...',
+//   // text: 'Something went wrong!',
+//   footer: '<a href>Why do I have this issue?</a>',
+// })
 }

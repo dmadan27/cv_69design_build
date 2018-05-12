@@ -55,7 +55,14 @@
 		* 
 		*/
 		public function getById($id){
+			$query = "SELECT * FROM bank WHERE id = :id;";
 
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
 		}
 
 		/**
@@ -78,7 +85,14 @@
 		* 
 		*/
 		public function update($data){
+			$query = "UPDATE bank SET nama = :nama WHERE id = :id;";
 
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':nama', $data['nama']);
+			$statement->bindParam(':id', $data['id']);
+			$result = $statement->execute();
+
+			return $result;
 		}
 
 		/**
