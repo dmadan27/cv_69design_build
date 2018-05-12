@@ -5,6 +5,10 @@
 <link rel="stylesheet" href="<?= BASE_URL."assets/bower_components/font-awesome/css/font-awesome.min.css"; ?>">
 <!-- Ionicons -->
 <link rel="stylesheet" href="<?= BASE_URL."assets/bower_components/Ionicons/css/ionicons.min.css"; ?>">
+<!-- sweet alert 2 -->
+<link rel="stylesheet" href="<?= BASE_URL."assets/bower_components/sweetalert2/dist/sweetalert2.min.css"; ?>">
+<!-- toastr -->
+<link rel="stylesheet" href="<?= BASE_URL."assets/bower_components/toastr/build/toastr.min.css"; ?>">
 <!-- Theme style -->
 <?php $this->getCSS(); ?>
 <!-- pace -->
