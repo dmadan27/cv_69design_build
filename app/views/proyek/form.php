@@ -19,7 +19,7 @@
                         <div class="box-header">
                             <label>Tambah Data Proyek</label>
                         </div>
-                          <form action="" method="" enctype="">
+                          <form action="" method="" enctype="" id="form_proyek" role="form">
                           
                                         <div class="col-md-6">
                                            <div class="form-group">

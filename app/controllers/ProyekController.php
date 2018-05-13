@@ -79,4 +79,75 @@
 
 			$this->layout('proyek/form', $config);
 		}
+
+		public function action_add(){
+			$data = isset($_POST) ? $_POST : false;
+
+			if(!$data){
+				$notif = array(
+					'title' => "Pesan Berhasil",
+					'message' => "Tambah Data Proyek Berhasil",
+				);
+			}
+			else{
+				// validasi data
+				$validasi = $this->set_validation($data);
+				$cek = $validasi['cek'];
+				$error = $validasi['error'];
+
+				if($cek){
+					// validasi input
+					$data = array(
+						'pemilik' => $this->validation->validInput($data['pemilik']),
+						'tgl' => $this->validation->validInput($data['tgl']),
+						'pembangunan' => $this->validation->validInput($data['pembangunan']),
+						'luas_area' => $this->validation->validInput($data['luas_area']),
+						'alamat' => $this->validation->validInput($data['alamat']),
+						'kota' => $this->validation->validInput($data['kota']),
+						'estimasi' => $this->validation->validInput($data['estimasi']),
+						'total' => $this->validation->validInput($data['total']),
+						'dp' => $this->validation->validInput($data['dp']),
+						'cco' => $this->validation->validInput($data['cco']),
+						
+							
+					);
+
+					// insert db
+					// transact
+
+					if($this->ProyekModel->insert($data)){
+						$status = true;
+						$notif = array(
+							'title' => "Pesan Berhasil",
+							'message' => "Tambah Data Proyek Baru Berhasil",
+						);
+					}
+					else{
+						$notif = array(
+							'title' => "Pesan Gagal",
+							'message' => "Terjadi Kesalahan ",
+						);
+					}
+
+					// commit
+
+
+				}
+				else{
+					$notif = array(
+							'title' => "Pesan Pemberitahuan",
+							'message' => "Silahkan Cek Kembali Form Isian ",
+						);
+				}
+			}
+
+			$output = array(
+				'status' => $status,
+				'notif' => $notif,
+				'error' => $error,
+					
+			);
+			echo jscon_encode($output);
+
+		}
 	}
