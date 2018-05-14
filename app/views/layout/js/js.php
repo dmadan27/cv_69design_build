@@ -5,7 +5,7 @@
 <!-- Bootstrap 3.3.7 -->
 <script src="<?= BASE_URL."assets/bower_components/bootstrap/dist/js/bootstrap.min.js"; ?>"></script>
 <!-- sweet alert 2 -->
-<script src="<?= BASE_URL."assets/bower_components/sweetalert2/dist/sweetalert2.all.min.js"; ?>"></script>
+<script src="<?= BASE_URL."assets/bower_components/sweetalert/sweetalert.min.js"; ?>"></script>
 <!-- toastr -->
 <script src="<?= BASE_URL."assets/bower_components/toastr/build/toastr.min.js"; ?>"></script>
 <script type="text/javascript">
