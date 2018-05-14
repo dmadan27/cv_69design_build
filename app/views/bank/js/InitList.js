@@ -53,17 +53,35 @@ function getView(id){
 /**
 *
 */
-function getDelete(id){
-// 	// swal(
-//  //  		'Good job!',
-//  //  		'You clicked the button!',
-//  //  		'success'
-// 	// )
-// 	alert('You clicked the button!')
-// 	swal({
-//   type: 'error',
-//   title: 'Oops...',
-//   // text: 'Something went wrong!',
-//   footer: '<a href>Why do I have this issue?</a>',
-// })
+function getDelete(id, token){
+	if(token != ""){
+		swal({
+			title: "Pesan Konfirmasi",
+			text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
+			type: "warning",
+	        showCancelButton: true,
+	        confirmButtonColor: "#DD6B55",
+	        confirmButtonText: "Ya, Hapus!",
+	        cancelButtonText: "Batal",
+	        closeOnConfirm: false,
+		}, function(){
+			$.ajax({
+				url: BASE_URL+'bank/delete/'+id,
+				type: 'post',
+				dataType: 'json',
+				data: {"token_bank_hapus": token},
+				beforeSend: function(){
+
+				},
+				success: function(output){
+					console.log(output);
+					swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
+					$("#bankTable").DataTable().ajax.reload();
+				},
+				error: function (jqXHR, textStatus, errorThrown){ // error handling
+		            console.log(jqXHR, textStatus, errorThrown);
+		        }
+			})
+		});
+	}
 }

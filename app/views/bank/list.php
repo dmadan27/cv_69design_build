@@ -14,8 +14,8 @@
 	    	<li class="active">Bank</li>
 	  	</ol>
 	  	<!-- end breadcrumb -->
-
 	</section>
+
 	<!-- Main content -->
 	<section class="content container-fluid">
 		<div class="row">
@@ -37,22 +37,27 @@
 								</div>
 							</div>
 						</div>
+					</div>
 					<!-- box body -->
 					<div class="box-body">
-						<input type="hidden" id="token_bank_list" value="<?= $this->data['token_bank_list']; ?>">
-						<table id="bankTable" class="table table-bordered table-hover">
-							<thead>
-								<tr>
-									<th class="text-center">No</th>
-									<th class="text-center">Nama</th>
-									<th class="text-center">Saldo</th>
-									<th class="text-center">Status</th>
-									<th class="text-center">Aksi</th>
-								</tr>
-							</thead>
-							<tbody>
-							</tbody>
-						</table>
+						<div class="row">
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<input type="hidden" id="token_bank_list" value="<?= $this->data['token_bank_list']; ?>">
+								<table id="bankTable" class="table table-bordered table-hover">
+									<thead>
+										<tr>
+											<th class="text-center">No</th>
+											<th class="text-center">Nama</th>
+											<th class="text-center">Saldo</th>
+											<th class="text-center">Status</th>
+											<th class="text-center">Aksi</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>	
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -39,7 +39,7 @@
 			$config = array(
 				'title' => array(
 					'main' => 'Data Bank',
-					'sub' => '',
+					'sub' => 'List Semua Data Bank',
 				),
 				'css' => $css,
 				'js' => $js,
@@ -266,13 +266,55 @@
 		*
 		*/
 		public function detail($id){
-			echo "Halaman View";
+			$css = array(
+				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+			);
+			$js = array(
+				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
+				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'app/views/bank/js/initView.js',
+			);
+
+			$config = array(
+				'title' => array(
+					'main' => 'Data Bank',
+					'sub' => 'Detail Data Bank',
+				),
+				'css' => $css,
+				'js' => $js,
+			);
+
+			$data_detail = $this->BankModel->getById($id);
+
+			$status = ($data_detail['status'] == "AKTIF") ? '<span class="label label-success">'.$data_detail['status'].'</span>' : '<span class="label label-danger">'.$data_detail['status'].'</span>';
+			
+			$token_view = md5($this->auth->getToken()); // md5
+			$_SESSION['token_bank_view'] = $token_view; // md5 di hash
+			$token_view = password_hash($token_view, PASSWORD_BCRYPT);
+
+			$data = array(
+				'id_bank' => $data_detail['id'],
+				'nama' => $data_detail['nama'],
+				'saldo' => $this->helper->cetakRupiah($data_detail['saldo']),
+				'status' => $status,
+				'token_bank_view' => $token_view,
+			);
+
+			$this->layout('bank/view', $config, $data);
 		}
 
 		/**
 		*
 		*/
-		public function detele($id){
+		public function delete($id){
+			$token = isset($_POST['token_bank_hapus']) ? $_POST['token_bank_hapus'] : false;
+			if(!password_verify($_SESSION['token_bank_hapus'], $token)) $this->redirect(BASE_URL.'bank/');
+			else{
+				if($this->BankModel->delete($id)) $status = true;
+				else $status = false;
+
+				echo json_encode($status);
+			}
 			
 		}
 
