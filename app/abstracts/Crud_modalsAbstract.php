@@ -39,7 +39,7 @@
 		/**
 		* public function delete()
 		*/
-		abstract protected function detele($id);
+		abstract protected function delete($id);
 
 		/**
 		* public function export()
