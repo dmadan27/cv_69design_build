@@ -90,6 +90,8 @@
 					$cetak = $getTahun.'-'.$getBulan.'-'.$getTgl;
 					break;
 			}
+
+			return $cetak;
 		}
 
 		/**
