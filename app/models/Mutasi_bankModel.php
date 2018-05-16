@@ -4,7 +4,7 @@
 	/**
 	* 
 	*/
-	class Mutasi_BankModel extends Database{
+	class Mutasi_bankModel extends Database implements ModelInterface{
 
 		protected $koneksi;
 		protected $dataTable;
@@ -14,46 +14,70 @@
 		*/
 		public function __construct(){
 			$this->koneksi = $this->openConnection();
+			$this->dataTable = new Datatable();
+		}
+
+		/**
+		* 
+		*/
+		public function getAllDataTable($config){
+			$this->dataTable->set_config($config);
+			$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
+			$statement->execute();
+			$result = $statement->fetchAll();
+
+			return $result;
+		}
+
+		/**
+		* 
+		*/
+		public function recordFilter(){
+			return $this->dataTable->recordFilter();
+
+		}
+
+		/**
+		* 
+		*/
+		public function recordTotal(){
+			return $this->dataTable->recordTotal();
 		}
 
 		/**
 		* 
 		*/
 		public function getAll(){
-			$data = array(
-				array(
-					'ID Bank' =>  'BRI-001',
-					'Tanggal' => '1-5-2018',
-					'Uang Masuk' => '10000000',
-					'Uang Keluar' => '0',
-					'saldo' => '10000000',					
-				),
-
-				array(
-					'ID Bank' =>  'BRI-002',
-					'Tanggal' => '3-5-2018',
-					'Uang Masuk' => '10000000',
-					'Uang Keluar' => '0',
-					'saldo' => '20000000',					
-				),				
-			);
-
-			return $data;
+			
 		}
 
 		/**
 		* 
 		*/
-		// public function getUser($username){
-		// 	$query = "SELECT * FROM sub_kas_kecil WHERE BINARY email = :username";
+		public function getById($id){
+			
+		}
 
-		// 	$statement = $this->koneksi->prepare($query);
-		// 	$statement->bindParam(':username', $username);
-		// 	$statement->execute();
-		// 	$result = $statement->fetch(PDO::FETCH_ASSOC);
+		/**
+		* 
+		*/
+		public function insert($data){
 
-		// 	return $result;
-		// }
+		}
+
+		/**
+		* 
+		*/
+		public function update($data){
+
+		}
+
+		/**
+		* 
+		*/
+		public function delete($id){
+
+		}
 
 		/**
 		* 

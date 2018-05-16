@@ -12,7 +12,7 @@
 			</div>
 			<form id="form_bank" role="form">
 				<input type="hidden" id="id">
-				<input type="hidden" id="token_bank_edit">
+				<input type="hidden" id="token_form">
 				<!-- body modal -->
 				<div class="modal-body">
 					<!-- field nama -->
@@ -32,6 +32,13 @@
 						</div>
 						<span class="help-block small pesan pesan-saldo"></span>
 					</div>
+
+					<!-- status -->
+					<div class="form-group field-status has-feedback">
+						<label for="status">Status</label>
+						<select id="status" class="form-control field"></select>
+						<span class="help-block small pesan pesan-status"></span>
+					</div>					
 				</div>
 				<!-- modal footer -->
 				<div class="modal-footer">

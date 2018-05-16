@@ -139,12 +139,12 @@
 				case 'nilai':
 					// cek required
 					if($data['required']){
-						if(empty($data['field']) || $data['field'] == "") // jika data kosong
+						if($data['field'] == "") // jika data kosong
 							$output = array('cek' => false, 'error' => $data['label']." Harus Diisi");
 						else $output = $this->valid_nilai($data);
 					}
 					else{ // jika opsional
-						if(!empty($data['field']) || $data['field'] != "") // jika disii
+						if($data['field'] != "") // jika disii
 							$output = $this->valid_nilai($data);
 						else 
 							$output = array('cek' => true, 'error' => ""); // jika dikosongkan

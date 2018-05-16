@@ -4,7 +4,7 @@
 	/**
 	* 
 	*/
-	class ExampleModel extends Database{
+	class ExampleModel extends Database implements ModelInterface{
 		
 		protected $koneksi;
 		protected $dataTable;
@@ -32,31 +32,51 @@
 		/**
 		* 
 		*/
-		public function getAll(){
-			$data = array(
-				array(
-					'nama' => 'Ujang Jeprut',
-					'umur' => 20,
-				),
-				array(
-					'nama' => 'Ujang Jeprut',
-					'umur' => 20,
-				),
-				array(
-					'nama' => 'Ujang Jeprut',
-					'umur' => 20,
-				),
-				array(
-					'nama' => 'Ujang Jeprut',
-					'umur' => 20,
-				),
-				array(
-					'nama' => 'Ujang Jeprut',
-					'umur' => 20,
-				),
-			);
+		public function recordFilter(){
+			return $this->dataTable->recordFilter();
 
-			return $data;
+		}
+
+		/**
+		* 
+		*/
+		public function recordTotal(){
+			return $this->dataTable->recordTotal();
+		}
+
+		/**
+		* 
+		*/
+		public function getAll(){
+			
+		}
+
+		/**
+		* 
+		*/
+		public function getById($id){
+			
+		}
+
+		/**
+		* 
+		*/
+		public function insert($data){
+
+		}
+
+		/**
+		* 
+		*/
+		public function update($data){
+
+		}
+
+		/**
+		* 
+		*/
+		public function delete($id){
+
 		}
 
 		/**

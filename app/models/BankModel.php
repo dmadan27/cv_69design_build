@@ -69,13 +69,12 @@
 		* 
 		*/
 		public function insert($data){
-			$status = "AKTIF";
 			$query = "INSERT INTO bank (nama, saldo, status) VALUES (:nama, :saldo, :status);";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':nama', $data['nama']);
 			$statement->bindParam(':saldo', $data['saldo']);
-			$statement->bindParam(':status', $status);
+			$statement->bindParam(':status', $data['status']);
 			$result = $statement->execute();
 
 			return $result;
@@ -85,10 +84,11 @@
 		* 
 		*/
 		public function update($data){
-			$query = "UPDATE bank SET nama = :nama WHERE id = :id;";
+			$query = "UPDATE bank SET nama = :nama, status = :status WHERE id = :id;";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':nama', $data['nama']);
+			$statement->bindParam(':status', $data['status']);
 			$statement->bindParam(':id', $data['id']);
 			$result = $statement->execute();
 

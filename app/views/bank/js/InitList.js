@@ -24,7 +24,7 @@ $(document).ready(function(){
             url: BASE_URL+"bank/get-list/",
             type: 'POST',
             data: {
-                "token_bank_list" : $('#token_bank_list').val().trim(),
+                "token_list" : $('#token_list').val().trim(),
             }
         },
         "columnDefs": [
@@ -34,6 +34,7 @@ $(document).ready(function(){
             }
         ],
         createdRow: function(row, data, dataIndex){
+        	if($(data[3]).text().toLowerCase() == "nonaktif") $(row).addClass('danger');
         	for(var i = 0; i < 5; i++){
         		if(i != 1 && i != 2) $('td:eq('+i+')', row).addClass('text-center'); 
          		if(i == 2) $('td:eq('+i+')', row).addClass('text-right'); // rata kanan untuk data saldo
@@ -54,7 +55,7 @@ function getView(id){
 *
 */
 function getDelete(id, token){
-	if(token != ""){
+	if(token.trim() != ""){
 		swal({
 			title: "Pesan Konfirmasi",
 			text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
@@ -69,17 +70,20 @@ function getDelete(id, token){
 				url: BASE_URL+'bank/delete/'+id,
 				type: 'post',
 				dataType: 'json',
-				data: {"token_bank_hapus": token},
+				data: {"token_delete": token},
 				beforeSend: function(){
 
 				},
 				success: function(output){
 					console.log(output);
-					swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
-					$("#bankTable").DataTable().ajax.reload();
+					if(output){
+						swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
+						$("#bankTable").DataTable().ajax.reload();
+					}
 				},
 				error: function (jqXHR, textStatus, errorThrown){ // error handling
 		            console.log(jqXHR, textStatus, errorThrown);
+                    swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
 		        }
 			})
 		});

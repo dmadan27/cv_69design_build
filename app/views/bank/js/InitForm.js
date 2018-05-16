@@ -1,14 +1,16 @@
 $(document).ready(function(){
+	setStatus();
 	$('#submit_bank').prop('disabled', true);
 
 	// button tambah
 	$('#tambah').on('click', function(){
-		if($('#token_bank_list').val().trim().toLowerCase() != ""){
+		if(this.value.trim() != ""){
 			resetForm();
 			$('.field-saldo').css('display', 'block');
 			$('#submit_bank').prop('value', 'action-add');
 			$('#submit_bank').prop('disabled', false);
 			$('#submit_bank').html('Simpan Data');
+			$('#token_form').val(this.value);
 			$('#modalBank').modal();
 		}
 	});
@@ -40,16 +42,14 @@ $(document).ready(function(){
 */
 function getDataForm(){
 	var data = new FormData();
-	var saldo = parseFloat($('#saldo').val().trim()) ? parseFloat($('#saldo').val().trim()) : "";
+	var saldo = parseFloat($('#saldo').val().trim()) ? parseFloat($('#saldo').val().trim()) : $('#saldo').val().trim();
 
-	if($('#submit_bank').val().trim().toLowerCase() == "action-edit"){
-		data.append('token', $('#token_bank_edit').val().trim());
-		data.append('id', $('#id').val().trim());
-	}
-	else data.append('token', $('#token_bank_list').val().trim());
+	if($('#submit_bank').val().trim().toLowerCase() == "action-edit") data.append('id', $('#id').val().trim());
 
+	data.append('token', $('#token_form').val().trim());
 	data.append('nama', $('#nama').val().trim()); // nama bank
 	data.append('saldo', saldo); // saldo awal
+	data.append('status', $('#status').val().trim()); // status bank
 	data.append('action', $('#submit_bank').val().trim()); // action
 
 	return data;
@@ -71,7 +71,7 @@ function submit(){
 		processData: false,
 		beforeSend: function(){
 			$('#submit_bank').prop('disabled', true);
-			$('#submit_bank').prepend('<i class="fa fa-spin fa-refresh"></i>&nbsp; ');
+			$('#submit_bank').prepend('<i class="fa fa-spin fa-refresh"></i> ');
 		},
 		success: function(output){
 			console.log(output);
@@ -109,14 +109,14 @@ function getEdit(id, token){
 			url: BASE_URL+'bank/edit/'+id,
 			type: 'post',
 			dataType: 'json',
-			data: {"token_bank_edit": token},
+			data: {"token_edit": token},
 			beforeSend: function(){
 
 			},
 			success: function(output){
 				if(output){
 					$('#modalBank').modal();
-					$('#token_bank_edit').val(token);
+					$('#token_form').val(token);
 					setValue(output);
 				}	
 			},
@@ -155,6 +155,21 @@ function setValue(value){
 	$.each(value, function(index, item){
 		item = (parseFloat(item)) ? (parseFloat(item)) : item;
 		$('#'+index).val(item);
+	});
+}
+
+/**
+*
+*/
+function setStatus(){
+	var status = [
+		{value: "AKTIF", text: "AKTIF"},
+		{value: "NONAKTIF", text: "NONAKTIF"},
+	];
+
+	$.each(status, function(index, item){
+		var option = new Option(item.text, item.value);
+		$("#status").append(option);
 	});
 }
 
