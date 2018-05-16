@@ -14,11 +14,11 @@
     </section>
   
               <section class="content">
-                <div class="row box box-primary">
-                      <div class="box">
+                <div class="box box-info">
+                      
                         <div class="box-header">
                             <label>Tambah Data Proyek</label>
-                        </div>
+                       
                           <form action="" method="" enctype="" id="form_proyek" role="form">
                           
                                         <div class="col-md-6">
@@ -122,86 +122,72 @@
 
 
               <section class="content">
-                <div class="row box box-primary">
+
+                <div class="box box-info">
+                  <div class="col-md-6">
                       <div class="box">
                         <div class="box-header">
                             <label>Detail Proyek</label>
-                        </div>
-                          <form action="" method="" enctype="">
-                          
-                                        <div class="col-md-6">
-                                           <div class="form-group field-id-proyek">
-                                                <label for="pemilik">ID Proyek</label>
-                                                <select name="" class="form-control field" id="id_proyek">
-                                                  
-                                                  <option value="">A</option>
-                                                  <option value="">A</option>
-                                                  <option value="">A</option>
-                                                  
-                                                </select>
-                                                <span class="help-block small pesan pesan-id-proyek"></span>
+                              <div class="box">
+                                    <div class="box-header">
+                                      <h3 class="box-title">Responsive Hover Table</h3>
 
-                                            </div>
+                                      <div class="box-tools">
+                                        <div class="input-group input-group-sm" style="width: 150px;">
+                                          <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
 
-                                            <div class="form-group field-angsuran">
-                                                <label for="angsuran">Angsuran</label>
-                                                <input type="text" class="form-control field" id="angsuran" placeholder="Jumlah Angsuran">
-                                                <span class="help-block small pesan pesan-angsuran"></span>
-
-                                            </div>
-
-                                            <!-- Input Pembangunan -->
-                                            <div class="form-group field-persentase">
-                                              <label for="persentase">Persentase</label>
-                                              <input type="text" class="form-control field" id="persentase" name="persentase" placeholder="Persentase Pembangunan">
-                                              <span class="help-block small pesan pesan-persentase"></span>
-                                            </div>
-
-
-                                            <!-- Input Luas Area -->
-                                            <div class="form-group" field-total">
-                                              <label for="total">Total</label>
-                                              <input type="text" class="form-control field" id="total" name="total" placeholder="Total">
-                                              <span class="help-block small pesan pesan-total"></span>
-                                            </div>
-
-                                             <div class="form-group">
-                                              <button type="submit" name="" id="" class="btn btn-default pull-left">Reset</button>
-                                             <button type="submit" name="" id="" class="btn btn-primary">Tambah</button>
-                                            </div>
-  
-
-
-                                         
-
+                                          <div class="input-group-btn">
+                                            <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                                          </div>
                                         </div>
-
-                                        <div class="col-md-6">
-                                            <div class="form-group"><label>Pemilihan Sub Kas Kecil</label></div>
-                                            <!-- Input Kota -->
-                                            <div class="form-group field-id_sub_kas_kecil">
-                                              <label for="id_sub_kas_kecil">Sub Kas Kecil</label>
-                                                 <select name="id_sub_kas_kecil" class="form-control field" id="id_sub_kas_kecil">
-                                                    <option>SKK-001 Jaka</option>
-                                                    <option>SKK-002 Fajar</option>
-                                                   
-                                                 </select>
-                                              <span class="help-block small pesan pesan-kota"></span>
-                                            </div>  
-
-                                             <div class="form-group">
-                                              <button type="submit" name="" id="" class="btn btn-default pull-left">Reset</button>
-                                             <button type="submit" name="" id="" class="btn btn-primary">Tambah</button>
-                                            </div>
-  
-
-                                            
-                                        </div>
-
-
-
-                          </form>                
+                                      </div>
+                                    </div>
+                                    <!-- /.box-header -->
+                                    <div class="box-body table-responsive no-padding">
+                                      <table class="table table-hover">
+                                        <tr>
+                                          <th>ID</th>
+                                          <th>User</th>
+                                          <th>Date</th>
+                                          <th>Status</th>
+                                          <th>Reason</th>
+                                        </tr>
+                                        <tr>
+                                          <td>183</td>
+                                          <td>John Doe</td>
+                                          <td>11-7-2014</td>
+                                          <td><span class="label label-success">Approved</span></td>
+                                          <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+                                        </tr>
+                                        <tr>
+                                          <td>219</td>
+                                          <td>Alexander Pierce</td>
+                                          <td>11-7-2014</td>
+                                          <td><span class="label label-warning">Pending</span></td>
+                                          <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+                                        </tr>
+                                        <tr>
+                                          <td>657</td>
+                                          <td>Bob Doe</td>
+                                          <td>11-7-2014</td>
+                                          <td><span class="label label-primary">Approved</span></td>
+                                          <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+                                        </tr>
+                                        <tr>
+                                          <td>175</td>
+                                          <td>Mike Doe</td>
+                                          <td>11-7-2014</td>
+                                          <td><span class="label label-danger">Denied</span></td>
+                                          <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+                                        </tr>
+                                      </table>
+                                    </div>
+                                    <!-- /.box-body -->
+                                  </div>
+                                  <!-- /.box -->
+                                       
                       </div>
+                    </div>
                 </div>
               </section>
 
