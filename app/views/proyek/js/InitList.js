@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	var tabelProyek = $("#tabelProyek").DataTable({
+	var proyekTable = $("#proyekTable").DataTable({
         "language" : {
             "lengthMenu": "Tampilkan _MENU_ data/page",
             "zeroRecords": "Data Tidak Ada",
@@ -15,23 +15,37 @@ $(document).ready(function(){
                 "previous": "Sebelumnya"
             }
         },
-        "lengthMenu": [ 10, 25, 50, 100 ],
+        "lengthMenu": [ 10, 25, 75, 100 ],
         "pageLength": 10,
-        // order: [],
-        // processing: true,
-        // serverSide: true,
-        // ajax: {
-        //     url: BASE_URL+"proyek/get-list/",
-        //     type: 'POST',
-        //     data: {
-        //         "token" : $("#tokenCrsf"),
-        //     }
-        // },
+        order: [],
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: BASE_URL+"proyek/get-list/",
+            type: 'POST',
+            data: {
+                "token_list" : $('#token_list').val().trim(),
+            }
+        },
         "columnDefs": [
             {
-                "targets":[0, 6], // disable order di kolom 1 dan 3
+                "targets":[0, 8],
                 "orderable":false,
             }
         ],
+        // createdRow: function(row, data, dataIndex){
+        //     if($(data[3]).text().toLowerCase() == "nonaktif") $(row).addClass('danger');
+        //     for(var i = 0; i < 5; i++){
+        //         if(i != 1 && i != 2) $('td:eq('+i+')', row).addClass('text-center'); 
+        //         if(i == 2) $('td:eq('+i+')', row).addClass('text-right'); // rata kanan untuk data saldo
+        //     }
+        // }
     });
+
+    $('#tambah').on('click', function(){
+        if(this.value.trim() != ""){
+            window.location.href = BASE_URL+'proyek/form/';
+        }
+    });
+
 });
