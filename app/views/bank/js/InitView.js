@@ -17,28 +17,29 @@ $(document).ready(function(){
         },
         "lengthMenu": [ 10, 25, 75, 100 ],
         "pageLength": 10,
-        // order: [],
-        // processing: true,
-        // serverSide: true,
-        // ajax: {
-        //     url: BASE_URL+"bank/get-list/",
-        //     type: 'POST',
-        //     data: {
-        //         "token_bank_list" : $('#token_bank_list').val().trim(),
-        //     }
-        // },
-        // "columnDefs": [
-        //     {
-        //         "targets":[0, 4], // disable order di kolom 1 dan 3
-        //         "orderable":false,
-        //     }
-        // ],
-        // createdRow: function(row, data, dataIndex){
-        // 	for(var i = 0; i < 5; i++){
-        // 		if(i != 1 && i != 2) $('td:eq('+i+')', row).addClass('text-center'); 
-        //  		if(i == 2) $('td:eq('+i+')', row).addClass('text-right'); // rata kanan untuk data saldo
-        // 	}
-        // }
+        order: [],
+        processing: true,
+        serverSide: true,
+        ajax: {
+            url: BASE_URL+"bank/get-mutasi/",
+            type: 'POST',
+            data: {
+                "token_view" : $('#token_view').val().trim(),
+                "id" : $('#id').val().trim(),
+            }
+        },
+        "columnDefs": [
+            {
+                "targets":[0, 4], // disable order di kolom 1 dan 3
+                "orderable":false,
+            }
+        ],
+        createdRow: function(row, data, dataIndex){
+        	for(var i = 0; i < 5; i++){
+        		if(i != 1 && i != 2) $('td:eq('+i+')', row).addClass('text-center'); 
+         		if(i == 2) $('td:eq('+i+')', row).addClass('text-right'); // rata kanan untuk data saldo
+        	}
+        }
     });
 
 });
@@ -46,8 +47,15 @@ $(document).ready(function(){
 /**
 *
 */
+function getEdit(id, token){
+
+}
+
+/**
+*
+*/
 function getDelete(id, token){
-    if(token != ""){
+    if(token.trim() != ""){
         swal({
             title: "Pesan Konfirmasi",
             text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
@@ -62,19 +70,29 @@ function getDelete(id, token){
                 url: BASE_URL+'bank/delete/'+id,
                 type: 'post',
                 dataType: 'json',
-                data: {"token_bank_hapus": token},
+                data: {"token_delete": token},
                 beforeSend: function(){
 
                 },
                 success: function(output){
                     console.log(output);
-                    swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
-                    $("#bankTable").DataTable().ajax.reload();
+                    if(output){
+                        swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
+                        window.location.href = BASE_URL+'bank/';
+                    }
                 },
                 error: function (jqXHR, textStatus, errorThrown){ // error handling
                     console.log(jqXHR, textStatus, errorThrown);
+                    swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
                 }
             })
         });
     }
+}
+
+/**
+*
+*/
+function back(){
+    window.location.href = BASE_URL+'bank/';
 }
