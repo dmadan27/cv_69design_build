@@ -139,11 +139,14 @@
 
   			$css = array(
   				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
+				'assets/bower_components/select2/dist/css/select2.min.css',
   				
   			);
 			$js = array(
 				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
+				'assets/bower_components/select2/dist/js/select2.full.min.js',
 				'app/views/proyek/js/initForm.js',
+				
 			);
 
 
@@ -169,74 +172,75 @@
 		/**
 		* 
 		*/
-		protected function action_add(){
+		public function action_add(){
 			$data = isset($_POST) ? $_POST : false;
 
-			if(!$data){
-				$notif = array(
-					'title' => "Pesan Berhasil",
-					'message' => "Tambah Data Proyek Berhasil",
-				);
-			}
-			else{
-				// validasi data
-				$validasi = $this->set_validation($data);
-				$cek = $validasi['cek'];
-				$error = $validasi['error'];
+			// if(!$data){
+			// 	$notif = array(
+			// 		'title' => "Pesan Berhasil",
+			// 		'message' => "Tambah Data Proyek Berhasil",
+			// 	);
+			// }
+			// else{
+			// 	// validasi data
+			// 	$validasi = $this->set_validation($data);
+			// 	$cek = $validasi['cek'];
+			// 	$error = $validasi['error'];
 
-				if($cek){
-					// validasi input
-					$data = array(
-						'pemilik' => $this->validation->validInput($data['pemilik']),
-						'tgl' => $this->validation->validInput($data['tgl']),
-						'pembangunan' => $this->validation->validInput($data['pembangunan']),
-						'luas_area' => $this->validation->validInput($data['luas_area']),
-						'alamat' => $this->validation->validInput($data['alamat']),
-						'kota' => $this->validation->validInput($data['kota']),
-						'estimasi' => $this->validation->validInput($data['estimasi']),
-						'total' => $this->validation->validInput($data['total']),
-						'dp' => $this->validation->validInput($data['dp']),
-						'cco' => $this->validation->validInput($data['cco']),
+			// 	if($cek){
+			// 		// validasi input
+			// 		$data = array(
+			// 			'pemilik' => $this->validation->validInput($data['pemilik']),
+			// 			'tgl' => $this->validation->validInput($data['tgl']),
+			// 			'pembangunan' => $this->validation->validInput($data['pembangunan']),
+			// 			'luas_area' => $this->validation->validInput($data['luas_area']),
+			// 			'alamat' => $this->validation->validInput($data['alamat']),
+			// 			'kota' => $this->validation->validInput($data['kota']),
+			// 			'estimasi' => $this->validation->validInput($data['estimasi']),
+			// 			'total' => $this->validation->validInput($data['total']),
+			// 			'dp' => $this->validation->validInput($data['dp']),
+			// 			'cco' => $this->validation->validInput($data['cco']),
 						
 							
-					);
+			// 		);
 
-					// insert db
-					// transact
+			// 		// insert db
+			// 		// transact
 
-					if($this->ProyekModel->insert($data)){
-						$status = true;
-						$notif = array(
-							'title' => "Pesan Berhasil",
-							'message' => "Tambah Data Proyek Baru Berhasil",
-						);
-					}
-					else{
-						$notif = array(
-							'title' => "Pesan Gagal",
-							'message' => "Terjadi Kesalahan ",
-						);
-					}
+			// 		if($this->ProyekModel->insert($data)){
+			// 			$status = true;
+			// 			$notif = array(
+			// 				'title' => "Pesan Berhasil",
+			// 				'message' => "Tambah Data Proyek Baru Berhasil",
+			// 			);
+			// 		}
+			// 		else{
+			// 			$notif = array(
+			// 				'title' => "Pesan Gagal",
+			// 				'message' => "Terjadi Kesalahan ",
+			// 			);
+			// 		}
 
-					// commit
+			// 		// commit
 
 
-				}
-				else{
-					$notif = array(
-							'title' => "Pesan Pemberitahuan",
-							'message' => "Silahkan Cek Kembali Form Isian ",
-						);
-				}
-			}
+			// 	}
+			// 	else{
+			// 		$notif = array(
+			// 				'title' => "Pesan Pemberitahuan",
+			// 				'message' => "Silahkan Cek Kembali Form Isian ",
+			// 			);
+			// 	}
+			// }
 
 			$output = array(
-				'status' => $status,
-				'notif' => $notif,
-				'error' => $error,
+				// 'status' => $status,
+				// 'notif' => $notif,
+				// 'error' => $error,
+				'data' => $data,
 					
 			);
-			echo jscon_encode($output);
+			echo json_encode($output);
 
 		}
 
