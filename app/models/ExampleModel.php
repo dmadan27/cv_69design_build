@@ -14,15 +14,15 @@
 		*/
 		public function __construct(){
 			$this->koneksi = $this->openConnection();
+			$this->dataTable = new Datatable();
 		}
 
 		/**
 		* 
 		*/
 		public function getAllDataTable($config){
-			$dataTable = new Datatable($config);
-
-			$statement = $this->koneksi->prepare($dataTable->getDataTable());
+			$this->dataTable->set_config($config);
+			$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
 			$statement->execute();
 			$result = $statement->fetchAll();
 
