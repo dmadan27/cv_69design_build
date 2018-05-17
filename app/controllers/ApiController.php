@@ -157,7 +157,26 @@
 		* 
 		*/
 		public function mutasi(){
+			$page = (isset($_POST['page']) && !empty($_POST['page'])) ? $_POST['page'] : 1;	
 
+			$this->model('ProyekModel');
+		
+			$dataProyek = $this->ProyekModel->getAll_mobile($page);
+			$totalData = $this->ProyekModel->get_recordTotal_mobile();
+			$totalPage = ceil($totalData/10);
+
+			$next = ($page < $totalPage) ? ($page + 1) : null;
+
+			$output = array(
+				'list_pengajuan' => $dataProyek,
+				'next' => $next,
+				'status' => $this->status,
+				// 'page' => $page,
+				// 'totalData' => $totalData,
+				// 'totalPage' => $totalPage,
+			);
+
+			echo json_encode($output);
 		}
 
 		/**
