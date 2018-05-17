@@ -1,15 +1,15 @@
 $(document).ready(function(){
 	setStatus();
  	var foto = $('#foto').dropify();
-	// $('#submit_skc').prop('disabled', true);
+	$('#submit_skc').prop('disabled', true);
 
 	// btn tambah
 	$('#tambah').on('click', function(){
 		if(this.value.trim() != ""){
-			// resetForm();
+			resetForm();
 			$('.field-saldo').css('display', 'block');
 			$('#submit_skc').prop('value', 'action-add');
-			// $('#submit_skc').prop('disabled', false);
+			$('#submit_skc').prop('disabled', false);
 			$('#submit_skc').html('Simpan Data');
 			$('#token_form').val(this.value);
 			$('#modalSkc').modal();
@@ -201,4 +201,10 @@ function resetForm(){
 
 	// hapus semua feedback
 	$('.form-group').removeClass('has-success').removeClass('has-error');
+
+	// reset field foto
+	var foto = $('#foto').dropify();
+	foto = foto.data('dropify');
+	foto.resetPreview();
+	foto.clearElement();
 }

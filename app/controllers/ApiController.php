@@ -51,10 +51,44 @@
 		}
 
 		/**
-		* 
+		*
 		*/
 		public function add_pengajuan(){
+			$this->model('Pengajuan_sub_kas_kecilModel');
+
+			// generate id pengajuan
+			
+			
+			// get data saldo
+		}
+
+		/**
+		* 
+		*/
+		public function action_add_pengajuan(){
 			$data = isset($_POST) ? $_POST : false;
+
+			$this->model('Pengajuan_sub_kas_kecilModel');
+
+			$data = array(
+				'pengajuan' => array(),
+				'detail' => array(
+					array(),
+					array(),
+					array(),
+				),
+			);
+
+			// insert pengajuan
+			// if($this->Pengajuan_sub_kas_kecilModel->insert($dataPengajuan)){
+			// 	foreach($dataDetail as $index => $array){
+			// 		foreach($value as $row){
+
+			// 		}
+			// 	}
+			// }
+
+			// insert detail
 
 			echo json_encode($data);
 		}

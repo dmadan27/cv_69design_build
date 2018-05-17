@@ -76,6 +76,19 @@
 		}
 
 		/**
+		*
+		*/
+		public function getID(){
+			$query = "SELECT MAX(id) as id FROM pengajuan_sub_kas_kecil";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+
+		/**
 		* 
 		*/
 		public function setQuery_mobile($page){
