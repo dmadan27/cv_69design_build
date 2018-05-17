@@ -220,7 +220,7 @@
 					&& (strlen($data['field']) <= $data['max']) ) $error = "";
 				else{
 					$cek = false;
-					$error = "Panjang $label Min. ".$data['min']." dan Maks. ".$data['max']." Karakter";
+					$error = "Panjang ".$data['label']." Min. ".$data['min']." dan Maks. ".$data['max']." Karakter";
 				} 
 					
 			}
@@ -248,7 +248,7 @@
 					&& (strlen($data['field']) <= $data['max']) ) $error = "";
 				else{
 					$cek = false;
-					$error = "Panjang $label Min. ".$data['min']." dan Maks. ".$data['max'];
+					$error = "Panjang ".$data['label']." Min. ".$data['min']." dan Maks. ".$data['max'];
 				} 
 					
 			}
@@ -276,7 +276,7 @@
 					&& ($data['field'] <= $data['max']) ) $error = "";
 				else{
 					$cek = false;
-					$error = "Nilai $label Min. ".$data['min']." dan Maks. ".$data['max'];
+					$error = "Nilai ".$data['label']." Min. ".$data['min']." dan Maks. ".$data['max'];
 				} 
 					
 			}
@@ -301,7 +301,7 @@
 					&& (strlen($data['field']) <= $data['max']) ) $error = "";
 				else{
 					$cek = false;
-					$error = "Panjang $label Min. ".$data['min']." dan Maks. ".$data['max']." Karakter";
+					$error = "Panjang ".$data['label']." Min. ".$data['min']." dan Maks. ".$data['max']." Karakter";
 				} 
 					
 			}
