@@ -8,6 +8,8 @@
 		
 		protected $koneksi;
 		protected $dataTable;
+		protected $kolomCari_mobile = array('id', 'id_proyek', 'tgl', 'total', 'dana_disetujui', 'status');
+		public $queryMobile;
 
 		/**
 		* 
@@ -127,6 +129,66 @@
 		*/
 		public function delete($id){
 			
+		}
+
+		/**
+		* 
+		*/
+		public function setQuery_mobile($page){
+			$id = isset($_POST['id']) ? $_POST['id'] : false;
+			$cari = isset($_POST['cari']) ? $_POST['cari'] : null;
+			$mulai = ($page > 1) ? ($page * 10) - 10 : 0;
+			
+			$this->queryMobile = 'SELECT * FROM v_proyek_logistik ';
+
+			$qWhere = 'WHERE id_sub_kas_kecil = "'.$id.'"';
+			$i = 0;
+			foreach($this->kolomCari_mobile as $value){
+				if(!is_null($cari)){
+					if($i === 0) $qWhere .= ' AND ('.$value.' LIKE "%'.$cari.'%" ';
+					else $qWhere .= 'OR '.$value.' LIKE "%'.$cari.'%"';
+				}
+				$i++;
+			}
+			if(!is_null($cari)) $qWhere .= " )";
+
+			$this->queryMobile .= "$qWhere LIMIT $mulai, 10";
+		}
+
+		/**
+		*
+		*/
+		public function getAll_mobile($page){
+			$this->setQuery_mobile($page);
+
+			$statement = $this->koneksi->prepare($this->queryMobile);
+			$statement->execute();
+			$result = $statement->fetchAll();
+
+			return $result;
+		}
+
+		/**
+		* 
+		*/
+		public function get_recordTotal_mobile(){
+			$koneksi = $this->openConnection();
+
+			$statement = $koneksi->query("SELECT COUNT(*) FROM v_proyek_logistik")->fetchColumn();
+
+			return $statement;
+		}
+
+		/**
+		* 
+		*/
+		public function get_recordFilter_mobile(){
+			$koneksi = $this->openConnection();
+
+			$statement = $koneksi->prepare($this->queryMobile);
+			$statement->execute();
+
+			return $statement->rowCount();
 		}
 
 		/**
