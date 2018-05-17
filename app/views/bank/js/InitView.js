@@ -47,13 +47,6 @@ $(document).ready(function(){
 /**
 *
 */
-function getEdit(id, token){
-
-}
-
-/**
-*
-*/
 function getDelete(id, token){
     if(token.trim() != ""){
         swal({
@@ -78,7 +71,9 @@ function getDelete(id, token){
                     console.log(output);
                     if(output){
                         swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
-                        window.location.href = BASE_URL+'bank/';
+                        setTimeout(function(){ 
+                             window.location.href = BASE_URL+'bank/'; 
+                        }, 1500);
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown){ // error handling
@@ -88,6 +83,7 @@ function getDelete(id, token){
             })
         });
     }
+    else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
 }
 
 /**

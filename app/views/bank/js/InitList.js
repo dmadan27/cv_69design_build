@@ -88,4 +88,5 @@ function getDelete(id, token){
 			})
 		});
 	}
+    else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
 }

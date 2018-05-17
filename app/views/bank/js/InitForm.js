@@ -13,12 +13,13 @@ $(document).ready(function(){
 			$('#token_form').val(this.value);
 			$('#modalBank').modal();
 		}
+		else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
 	});
 
 	// submit bank
 	$('#form_bank').submit(function(e){
 		e.preventDefault();
-		submit();
+		submit(edit_view);
 
 		return false;
 	});
@@ -38,7 +39,9 @@ $(document).ready(function(){
 });
 
 /**
-*
+* Fungsi getDataForm()
+* untuk mendapatkan semua value di field
+* return berupa object data
 */
 function getDataForm(){
 	var data = new FormData();
@@ -58,7 +61,7 @@ function getDataForm(){
 /**
 *
 */
-function submit(){
+function submit(edit_view){
 	var data = getDataForm();
 
 	$.ajax({
@@ -85,11 +88,17 @@ function submit(){
 				toastr.success(output.notif.message, output.notif.title);
 				resetForm();
 				$("#modalBank").modal('hide');
-				$("#bankTable").DataTable().ajax.reload();
+				if(!edit_view) $("#bankTable").DataTable().ajax.reload();
+				else {
+					setTimeout(function(){ 
+						location.reload(); 
+					}, 1000);
+				}
 			}
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling
             console.log(jqXHR, textStatus, errorThrown);
+            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
         }
 	})
 }
@@ -125,9 +134,7 @@ function getEdit(id, token){
 	        }
 		})
 	}
-	else{ // error handling
-
-	}
+	else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
 }
 
 /**

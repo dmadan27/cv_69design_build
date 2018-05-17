@@ -1,12 +1,17 @@
 <?php 
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 
+	/**
+	*
+	*/
 	class Bank extends Crud_modalsAbstract{
 
 		protected $token;
 
 		/**
-		*
+		* load auth, cekAuth
+		* load default model, BankModel
+		* load helper dan validation
 		*/
 		public function __construct(){
 			$this->auth();
@@ -17,14 +22,17 @@
 		}	
 
 		/**
-		*
+		* Function index
+		* menjalankan method list
 		*/
 		public function index(){
 			$this->list();
 		}
 
 		/**
-		*
+		* Function list
+		* setting layouting list utama
+		* generate token list dan add
 		*/
 		protected function list(){
 			// set config untuk layouting
@@ -67,7 +75,10 @@
 		}	
 
 		/**
-		*
+		* Function get_list
+		* method khusus untuk datatable
+		* generate token edit dan delete
+		* return json
 		*/
 		public function get_list(){
 			$token = isset($_POST['token_list']) ? $_POST['token_list'] : false;
@@ -130,7 +141,12 @@
 		}
 
 		/**
-		*
+		* Function action_add
+		* method untuk aksi tambah data
+		* return berupa json
+		* status => status berhasil atau gagal proses tambah
+		* notif => pesan yang akan ditampilkan disistem
+		* error => error apa saja yang ada dari hasil validasi
 		*/
 		public function action_add(){
 			$data = isset($_POST) ? $_POST : false;
@@ -141,8 +157,8 @@
 
 			if(!$data){
 				$notif = array(
-					'title' => "Pesan Berhasil",
-					'message' => "Tambah Data Bank Baru Berhasil",
+					'title' => "Pesan Gagal",
+					'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
 				);
 			}
 			else{
@@ -191,14 +207,17 @@
 				'status' => $status,
 				'notif' => $notif,
 				'error' => $error,
-				'data' => $data
+				// 'data' => $data
 			);
 
 			echo json_encode($output);		
 		}
 
 		/**
-		*
+		* Function edit
+		* method untuk get data edit
+		* param $id didapat dari url
+		* return berupa json
 		*/
 		public function edit($id){
 			$token = isset($_POST['token_edit']) ? $_POST['token_edit'] : false;
@@ -209,7 +228,12 @@
 		}
 
 		/**
-		*
+		* Function action_edit
+		* method untuk aksi edit data
+		* return berupa json
+		* status => status berhasil atau gagal proses edit
+		* notif => pesan yang akan ditampilkan disistem
+		* error => error apa saja yang ada dari hasil validasi
 		*/
 		public function action_edit(){
 			$data = isset($_POST) ? $_POST : false;
@@ -269,7 +293,9 @@
 		}
 
 		/**
-		*
+		* Function detail
+		* method untuk get data detail dan setting layouting detail
+		* param $id didapat dari url
 		*/
 		public function detail($id){
 			if(empty($id) || $id == "") $this->redirect(BASE_URL."bank/");
@@ -285,6 +311,7 @@
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 				'app/views/bank/js/initView.js',
+				'app/views/bank/js/initForm.js',
 			);
 
 			$config = array(
@@ -323,7 +350,10 @@
 		}
 
 		/**
-		*
+		* Function delete
+		* method yang berfungsi untuk menghapus data
+		* param $id didapat dari url
+		* return json
 		*/
 		public function delete($id){
 			$token = isset($_POST['token_delete']) ? $_POST['token_delete'] : false;
@@ -336,7 +366,9 @@
 		}
 
 		/**
-		*
+		* Function get_mutasi
+		* method yang berfungsi untuk get data mutasi bank sesuai dengan id
+		* dipakai di detail data
 		*/
 		public function get_mutasi(){
 			$data = isset($_POST) ? $_POST : false;
@@ -390,7 +422,10 @@
 		}
 
 		/**
-		*
+		* Fungsi set_validation
+		* method yang berfungsi untuk validasi inputan secara server side
+		* param $data didapat dari post yang dilakukan oleh user
+		* return berupa array, status hasil pengecekan dan error tiap validasi inputan
 		*/
 		private function set_validation($data){
 			$required = ($data['action'] == "action-edit") ? 'not_required' : 'required';
