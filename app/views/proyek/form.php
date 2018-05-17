@@ -14,7 +14,7 @@
     </section>
     <section class="content container-fluid">
   		<form id="form_proyek" role="form">
-  			<input type="hidden" id="token_form">
+  			<input type="hidden" id="token_form" value="<?= $this->data['token_add']?>">
   			
   			<!-- panel tambah data proyek -->
   			<div class="row">
@@ -230,7 +230,7 @@
                         		<div class="col-md-6 col-xs-6 ">
                         			<div class="btn-group pull-right">
 	                        			<button class="btn btn-default btn-flat btn-lg">Reset</button>
-	                        			<button class="btn btn-primary btn-flat btn-lg" id="submit_proyek" type="submit" value="tambah">Submit</button>
+	                        			<button class="btn btn-primary btn-flat btn-lg" id="submit_proyek" type="submit" value="<?= $this->data['action'];?>">Submit</button>
                         			</div>
                         			
                         		</div>

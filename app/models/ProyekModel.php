@@ -50,8 +50,9 @@
 		*/
 		public function insert($data){
 			$status = "BERJALAN";
-			$query_proyek = "INSERT INTO proyek 
-							(
+			$query = "INSERT INTO proyek 
+							(	
+								id,
 								pemilik,
 								tgl,
 								pembangunan,
@@ -64,7 +65,8 @@
 								cco,
 								status
 							) VALUES
-							(
+							(	
+								:id,
 								:pemilik,
 								:tgl,
 								:pembangunan,
@@ -74,11 +76,13 @@
 								:estimasi,
 								:total,
 								:dp,
-								:cco
+								:cco,
+								:status
 							);
 							";
 
-				$statment = $this->koneksi->prepare($query_proyek);
+				$statment = $this->koneksi->prepare($query);
+				$statment->bindParam(':id', $data['id']);
 				$statment->bindParam(':pemilik', $data['pemilik']);
 				$statment->bindParam(':tgl', $data['tgl']);
 				$statment->bindParam(':pembangunan', $data['pembangunan']);
@@ -89,6 +93,9 @@
 				$statment->bindParam(':total', $data['total']);
 				$statment->bindParam(':dp', $data['dp']);
 				$statment->bindParam(':cco', $data['cco']);
+				$statment->bindParam(':status', $data['status']);
+				$result = $statment->execute();
+
 				return $result;
 				
 

@@ -135,9 +135,19 @@
 		/**
 		* 
 		*/
-		public function form(){
+		public function form($id){
+			if($id)	$this->edit($id);
+			else $this->add();
 
-  			$css = array(
+			
+		}
+
+		/**
+		* 
+		*/
+		protected function add(){
+			
+			$css = array(
   				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
 				'assets/bower_components/select2/dist/css/select2.min.css',
   				
@@ -159,14 +169,18 @@
 				'js' => $js,
 			);
 
-			$this->layout('proyek/form', $config);
-		}
+			$_SESSION['token_proyek'] = array(
+				'add' => md5($this->auth->getToken()),
+			);
+			$this->token = array(
+				'add' => password_hash($_SESSION['token_proyek']['add'], PASSWORD_BCRYPT),	
+			);
+			$data = array(
+				'token_add' => $this->token['add'],
+				'action' => "action-add",
+			);
 
-		/**
-		* 
-		*/
-		protected function add(){
-
+			$this->layout('proyek/form', $config, $data);
 		}
 
 		/**
@@ -174,69 +188,73 @@
 		*/
 		public function action_add(){
 			$data = isset($_POST) ? $_POST : false;
+			// $this->auth>cekToken($_SESSION['token_proyek']['add'],$data['token'], 'proyek');
+			$status = false;
+			$error = "";
 
-			// if(!$data){
-			// 	$notif = array(
-			// 		'title' => "Pesan Berhasil",
-			// 		'message' => "Tambah Data Proyek Berhasil",
-			// 	);
-			// }
-			// else{
-			// 	// validasi data
-			// 	$validasi = $this->set_validation($data);
-			// 	$cek = $validasi['cek'];
-			// 	$error = $validasi['error'];
+			if(!$data){
+				$notif = array(
+					'title' => "Pesan Gagal",
+					'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
+				);
+			}
+			else{
+				// validasi data
+				$validasi = $this->set_validation($data);
+				$cek = $validasi['cek'];
+				$error = $validasi['error'];
 
-			// 	if($cek){
-			// 		// validasi input
-			// 		$data = array(
-			// 			'pemilik' => $this->validation->validInput($data['pemilik']),
-			// 			'tgl' => $this->validation->validInput($data['tgl']),
-			// 			'pembangunan' => $this->validation->validInput($data['pembangunan']),
-			// 			'luas_area' => $this->validation->validInput($data['luas_area']),
-			// 			'alamat' => $this->validation->validInput($data['alamat']),
-			// 			'kota' => $this->validation->validInput($data['kota']),
-			// 			'estimasi' => $this->validation->validInput($data['estimasi']),
-			// 			'total' => $this->validation->validInput($data['total']),
-			// 			'dp' => $this->validation->validInput($data['dp']),
-			// 			'cco' => $this->validation->validInput($data['cco']),
+				if($cek){
+					// validasi input
+					$data = array(
+						'id' => $this->validation->validInput($data['id']),
+						'pemilik' => $this->validation->validInput($data['pemilik']),
+						'tgl' => $this->validation->validInput($data['tgl']),
+						'pembangunan' => $this->validation->validInput($data['pembangunan']),
+						'luas_area' => $this->validation->validInput($data['luas_area']),
+						'alamat' => $this->validation->validInput($data['alamat']),
+						'kota' => $this->validation->validInput($data['kota']),
+						'estimasi' => $this->validation->validInput($data['estimasi']),
+						'total' => $this->validation->validInput($data['total']),
+						'dp' => $this->validation->validInput($data['dp']),
+						'cco' => $this->validation->validInput($data['cco']),
 						
 							
-			// 		);
+					);
 
-			// 		// insert db
-			// 		// transact
+					// insert db
+					// transact
 
-			// 		if($this->ProyekModel->insert($data)){
-			// 			$status = true;
-			// 			$notif = array(
-			// 				'title' => "Pesan Berhasil",
-			// 				'message' => "Tambah Data Proyek Baru Berhasil",
-			// 			);
-			// 		}
-			// 		else{
-			// 			$notif = array(
-			// 				'title' => "Pesan Gagal",
-			// 				'message' => "Terjadi Kesalahan ",
-			// 			);
-			// 		}
+					if($this->ProyekModel->insert($data)){
+						$status = true;
+						$notif = array(
+							'title' => "Pesan Berhasil",
+							'message' => "Tambah Data Proyek Baru Berhasil",
+						);
+					}
+					else{
+						$notif = array(
+							'title' => "Pesan Gagal",
+							'message' => "Terjadi Kesalahan ",
+						);
+					}
 
-			// 		// commit
+					// commit
 
 
-			// 	}
-			// 	else{
-			// 		$notif = array(
-			// 				'title' => "Pesan Pemberitahuan",
-			// 				'message' => "Silahkan Cek Kembali Form Isian ",
-			// 			);
-			// 	}
-			// }
+				}
+				else{
+					$notif = array(
+							'title' => "Pesan Pemberitahuan",
+							'message' => "Silahkan Cek Kembali Form Isian ",
+						);
+				}
+			}
 
 			$output = array(
-				// 'status' => $status,
+				'status' => $status,
 				// 'notif' => $notif,
-				// 'error' => $error,
+				'error' => $error,
 				'data' => $data,
 					
 			);
@@ -248,7 +266,7 @@
 		* 
 		*/
 		protected function edit($id){
-
+		
 		}
 
 		/**
@@ -277,6 +295,37 @@
 		*/
 		protected function export(){
 
+		}
+
+		private function set_validation($data){
+			$required = ($data['action'] =="action-add") ? 'not_required' : 'required';
+
+			// id
+			$this->validation->set_rules($data['id'], 'ID Proyek', 'id', 'string | 1 | 255 | required');
+			// pemilik
+			$this->validation->set_rules($data['pemilik'], 'Nama Pemilik', 'pemilik', 'string | 1 | 255 | required');
+			// tgl
+			$this->validation->set_rules($data['tgl'], 'Tanggal Proyek', 'tgl', 'string | 1 | 255 | required');
+			// pembangunan
+			$this->validation->set_rules($data['pembangunan'], 'Nama Pembangunan', 'pembangunan', 'string | 1 | 255 | required');
+			// luas_area
+			$this->validation->set_rules($data['luas_area'], 'Luas Area', 'luas_area', 'nilai | 1 | 99999 | required');
+			// alamat
+			$this->validation->set_rules($data['alamat'], 'Alamat Pembangunan', 'alamat', 'string | 1 | 500 | required');
+			// kota
+			$this->validation->set_rules($data['kota'], 'Kota', 'kota', 'string | 1 | 255 | required');
+			// estimasi
+			$this->validation->set_rules($data['estimasi'], 'Estimasi Pengerjaan', 'estimasi', 'nilai | 1 | 255 | required');
+			// total
+			$this->validation->set_rules($data['total'], 'Total Dana', 'total', 'nilai | 1 | 99999999999 | required');
+			// dp
+			$this->validation->set_rules($data['dp'], 'DP Proyek', 'dp', 'nilai | 1 | 99999999999 | required');
+			// cco
+			$this->validation->set_rules($data['cco'], 'CCO', 'cco', 'nilai | 1 | 99999999999 | required');
+			// status
+			$this->validation->set_rules($data['status'], 'Status Proyek', 'status', 'string | 1 | 255 | required');
+
+			return $this->validation->run();
 		}
 
 	}
