@@ -8,7 +8,7 @@
 		
 		protected $koneksi;
 		protected $dataTable;
-		protected $kolomCari_mobile = array('id', 'id_proyek', 'tgl', 'total', 'dana_disetujui', 'status');
+		protected $kolomCari_mobile = array('id_proyek', 'tgl', 'kota', 'status');
 		public $queryMobile;
 
 		/**
