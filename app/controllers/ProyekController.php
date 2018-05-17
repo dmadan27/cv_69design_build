@@ -69,10 +69,10 @@
 		* 
 		*/
 		public function get_list(){
-			$token = isset($_POST['token_list']) ? $_POST['token_list'] : false;
+			// $token = isset($_POST['token_list']) ? $_POST['token_list'] : false;
 			
 			// cek token
-			$this->auth->cekToken($_SESSION['token_proyek']['list'], $token, 'proyek');
+			// $this->auth->cekToken($_SESSION['token_proyek']['list'], $token, 'proyek');
 			
 			// config datatable
 			$config_dataTable = array(
@@ -86,13 +86,13 @@
 			$dataProyek = $this->ProyekModel->getAllDataTable($config_dataTable);
 
 			// set token
-			$_SESSION['token_proyek']['edit'] = md5($this->auth->getToken());
-			$_SESSION['token_proyek']['delete'] = md5($this->auth->getToken());
+			// $_SESSION['token_proyek']['edit'] = md5($this->auth->getToken());
+			// $_SESSION['token_proyek']['delete'] = md5($this->auth->getToken());
 			
-			$this->token = array(
-				'edit' => password_hash($_SESSION['token_proyek']['edit'], PASSWORD_BCRYPT),
-				'delete' => password_hash($_SESSION['token_proyek']['delete'], PASSWORD_BCRYPT),	
-			);
+			// $this->token = array(
+			// 	'edit' => password_hash($_SESSION['token_proyek']['edit'], PASSWORD_BCRYPT),
+			// 	'delete' => password_hash($_SESSION['token_proyek']['delete'], PASSWORD_BCRYPT),	
+			// );
 
 			$data = array();
 			$no_urut = $_POST['start'];
@@ -103,10 +103,10 @@
 
 				// button aksi
 				$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-				$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".', '."'".$this->token["edit"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-				$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+				// $aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".', '."'".$this->token["edit"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+				// $aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 				
-				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
+				$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
 				
 				$dataRow = array();
 				$dataRow[] = $no_urut;
@@ -279,7 +279,50 @@
 		/**
 		*
 		*/
-		protected function detail($id){
+		public function detail($id){
+			// // if(empty($id) || $id == "") $this->redirect(BASE_URL."proyek/");
+			// $data_detail != empty($this->ProyekModel->getById($id)) ? $this->ProyekModel->getById($id) : false;
+			// if(!$data_detail) $this->redirect(BASE_URL."proyek/");
+
+			$css = array(
+				
+			);
+			$js = array(
+			
+				
+			);
+
+			$config = array(
+				'title' => array(
+					'main' => 'Data Proyek',
+					'sub' => 'Detail Data Proyek',
+				),
+				'css' => $css,
+				'js' => $js,
+			);
+
+			// $status = ($data_detail['status'] == "AKTIF") ? '<span class="label label-success">'.$data_detail['status'].'</span>' : '<span class="label label-danger">'.$data_detail['status'].'</span>';
+			
+			// $_SESSION['token_bank']['view'] = md5($this->auth->getToken());
+			// $_SESSION['token_bank']['edit'] = md5($this->auth->getToken());
+			// $_SESSION['token_bank']['delete'] = md5($this->auth->getToken());
+			
+			// $this->token = array(
+			// 	'view' => password_hash($_SESSION['token_bank']['view'], PASSWORD_BCRYPT),
+			// 	'edit' => password_hash($_SESSION['token_bank']['edit'], PASSWORD_BCRYPT),
+			// 	'delete' => password_hash($_SESSION['token_bank']['delete'], PASSWORD_BCRYPT)
+			// );
+
+			// $data = array(
+			// 'id_bank' => $data_detail['id'],
+			// 'nama' => $data_detail['nama'],
+			// 'saldo' => $this->helper->cetakRupiah($data_detail['saldo']),
+			// 'status' => $status,
+			// 'token' => $this->token,
+			// );
+
+			$this->layout('proyek/view', $config);
+
 
 		}
 

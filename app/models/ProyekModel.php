@@ -113,8 +113,8 @@
 		/**
 		* 
 		*/
-		public function getBYId($id){
-			$query_proyek = "SELECT * FROM proyek WHERE id = :id;";
+		public function getById($id){
+			$query = "SELECT * FROM proyek WHERE id = :id;";
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id', $id);
 			$statement->execute();

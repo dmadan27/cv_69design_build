@@ -49,3 +49,7 @@ $(document).ready(function(){
     });
 
 });
+
+function getView(id){
+    window.location.href = BASE_URL+'proyek/detail/'+id;
+}
