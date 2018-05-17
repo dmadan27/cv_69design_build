@@ -19,7 +19,7 @@
 		/**
 		* public function form()
 		*/
-		abstract protected function form();
+		abstract protected function form($id);
 
 		/**
 		* protected function add()

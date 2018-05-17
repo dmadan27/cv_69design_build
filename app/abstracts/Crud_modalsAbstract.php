@@ -22,7 +22,7 @@
 		abstract protected function action_add();
 
 		/**
-		* protected function edit()
+		* public function edit()
 		*/
 		abstract protected function edit($id);
 
