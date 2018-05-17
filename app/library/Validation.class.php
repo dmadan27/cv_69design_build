@@ -407,7 +407,7 @@
 
 			// cek mime type file
 			$fInfo = new finfo(FILEINFO_MIME_TYPE);
-			if(false === $ext = array_search($finfo->file($tmp_nameFile), $arrayFile, true)){
+			if(false === $ext = array_search($fInfo->file($tmp_nameFile), $arrayFile, true)){
 				$output = array(
 					'cek' => false,
 					'error' => "Upload Gagal, Format File Tidak Sesuai",
