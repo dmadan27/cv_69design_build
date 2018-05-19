@@ -2,11 +2,6 @@ $(document).ready(function(){
 	// init awal
 	$('.form-lupa-password').fadeOut();
 
-	// paceOtions = {
-	// 	elements: false,
-	// 	restartOnRequestAfter: false
-	// }
-
 	$('#lupaPassword').on('click', function(){
 		resetForm();
 		$('.form-login').slideUp();
@@ -61,16 +56,13 @@ function submit_login(){
 			'username': $('#username').val().trim(),
 			'password': $('#password').val().trim(),
 		},
-		// beforeSend: function(){
-		// 	Pace.restart();
-		// },
+		beforeSend: function(){
+			
+		},
 		success: function(output){
 			console.log(output);
 			if(output.status) document.location=BASE_URL;
-			else{
-				// set error
-				setError(output.error);
-			}
+			else setError(output.error);
 		},
 		error: function (jqXHR, textStatus, errorThrown) { // error handling
             console.log(jqXHR, textStatus, errorThrown);
@@ -109,7 +101,7 @@ function setError(error){
 	$.each(error, function(index, item){
 		console.log(index);
 
-		if(!jQuery.isEmptyObject(index)){
+		if(item != ""){
 			$('.field-'+index).removeClass('has-success').addClass('has-error');
 			$('.pesan-'+index).text(item);
 		}

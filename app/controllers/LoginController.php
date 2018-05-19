@@ -77,6 +77,7 @@
 					$_SESSION['sess_email'] = $dataProfil['email'];
 					$_SESSION['sess_foto'] = $dataProfil['foto'];
 					$_SESSION['sess_status'] = $dataProfil['status'];
+					$_SESSION['sess_welcome'] = true;
 				}
 				else{
 					$status = false;
@@ -124,8 +125,8 @@
 				$status = false;
 			}
 			else{
-				// if(password_verify($pass, $dataUser['password'])) {
-				if($pass == $dataUser['password']) {
+				if(password_verify($pass, $dataUser['password'])) {
+				// if($pass == $dataUser['password']) {
 					$status = true;
 					
 					// generate token

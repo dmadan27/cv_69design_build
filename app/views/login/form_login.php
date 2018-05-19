@@ -1,3 +1,5 @@
+<?php Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung"); ?>
+
 <div class="form-login">
 	<p class="login-box-msg">Silahkan Login untuk Masuk Ke Sistem</p>
 	<form id="form_login">
