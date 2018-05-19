@@ -2,6 +2,7 @@ $(document).ready(function(){
 	setStatus();
  	var foto = $('#foto').dropify();
 	$('#submit_skc').prop('disabled', true);
+	$('#id').prop('disabled', true);
 
 	// btn tambah
 	$('#tambah').on('click', function(){
@@ -12,6 +13,7 @@ $(document).ready(function(){
 			$('#submit_skc').prop('disabled', false);
 			$('#submit_skc').html('Simpan Data');
 			$('#token_form').val(this.value);
+			generateID();
 			$('#modalSkc').modal();
 		}
 		else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
@@ -187,6 +189,32 @@ function setStatus(){
 		var option = new Option(item.text, item.value);
 		$("#status").append(option);
 	});
+}
+
+/**
+*
+*/
+function generateID(){
+	$.ajax({
+		url: BASE_URL+'sub-kas-kecil/get-last-id/',
+		// type: 'post',
+		// dataType: 'json',
+		// data: {"token_edit": token},
+		beforeSend: function(){
+
+		},
+		success: function(output){
+			// if(output){
+			// 	$('#modalSkc').modal();
+			// 	$('#token_form').val(token);
+			// 	setValue(output);
+			// }
+			$('#id').val(output);	
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+            console.log(jqXHR, textStatus, errorThrown);
+        }
+	})
 }
 
 /**

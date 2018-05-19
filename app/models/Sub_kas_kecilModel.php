@@ -95,6 +95,19 @@
 		}
 
 		/**
+		*
+		*/
+		public function getLastID(){
+			$query = "SELECT MAX(id) id FROM sub_kas_kecil;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+
+		/**
 		* 
 		*/
 		public function getUser($username){

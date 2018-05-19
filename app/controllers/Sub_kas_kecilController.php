@@ -188,7 +188,7 @@
 						'no_telp' =>  $this->validation->validInput($data['no_telp']),
 						'foto' =>  $this->validation->validInput($valueFoto, false),
 						'email' =>  $this->validation->validInput($data['email'], false),
-						'password' =>  $this->validation->validInput($data['password'], false),
+						'password' =>  password_hash($this->validation->validInput($data['password'], false), PASSWORD_BCRYPT),
 						'saldo' =>  $this->validation->validInput($data['saldo']),
 						'status' =>  $this->validation->validInput($data['status']),
 					);
@@ -268,6 +268,25 @@
 		*/
 		public function delete($id){
 
+		}
+
+		/**
+		*
+		*/
+		public function get_last_id(){
+			$data = !empty($this->Sub_kas_kecilModel->getLastID()['id']) ? $this->Sub_kas_kecilModel->getLastID()['id'] : false;
+
+			if(!$data) $id = 'LOG001';
+			else{
+				// $data = implode('', $data);
+				$kode = 'LOG';
+				$noUrut = (int)substr($data, 3, 3);
+				$noUrut++;
+
+				$id = $kode.sprintf("%03s", $noUrut);
+			}
+
+			echo $id;
 		}
 
 		/**

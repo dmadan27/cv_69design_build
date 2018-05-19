@@ -46,7 +46,7 @@
 								<table id="skcTable" class="table table-bordered table-hover">
 									<thead>
 										<tr>
-											<th class="text-center">No</th>
+											<th class="text-center" style="width: 35px">No</th>
 											<th class="text-center">ID</th>
 											<th class="text-center">Nama</th>
 											<th class="text-center">No. Telepon</th>
