@@ -1,4 +1,8 @@
-<?php Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung"); ?>
+<?php 
+	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	$sess_welcome = isset($_SESSION['sess_welcome']) ? $_SESSION['sess_welcome'] : false;
+	unset($_SESSION['sess_welcome']); 
+?>
 
 <!DOCTYPE html>
 <html>
@@ -27,6 +31,17 @@
 		    var BASE_URL = "<?php print BASE_URL; ?>";
 		    var urlParams = <?php echo json_encode($_GET, JSON_HEX_TAG);?>;
 		</script>
-		<?php require_once "layout/js/js.php"; ?>
+		<?php 
+			require_once "layout/js/js.php";
+			if($sess_welcome){
+		        ?>
+		        <script type="text/javascript">
+			    	$(document).ready(function(){
+			    		toastr.success('Selamat Datang di Sistem Informasi 69 Design & Build');
+			    	});
+			    </script>
+		        <?php
+		    } 
+		?>
 	</body>
 </html>
