@@ -49,8 +49,8 @@
                                           		<i class="fa fa-calendar"></i>
                                         	</div>
                                           	<input type="text" name="tgl" class="form-control datepicker field" id="tgl" placeholder="yyyy-mm-dd">
-                                    	  	<span class="help-block small pesan pesan-tgl"></span>
                                       	</div>
+                                      	<span class="help-block small pesan pesan-tgl"></span>
                                 	</div>
 
                                 	<!-- Input Pembangunan -->
@@ -135,8 +135,8 @@
 
                                     <!-- Status -->
                         			<div class="form-group field-status has-feedback">
-                                        <label for="status">Status Proyek</label>                                     
-                                        <input type="text" class="form-control field" id="status" placeholder="">
+                                        <label for="status">Status Proyek</label>                     
+                                        <select class="form-control field" id="status"></select>
                                         <span class="help-block small pesan pesan-status"></span>
                                     </div>
                         		</div>
@@ -177,7 +177,6 @@
 	                        				</thead>
 	                        			</table>
 			                        </fieldset>
-	                        			
                         		</div>
 
                         		<!-- panel 2 -->
@@ -194,7 +193,7 @@
 		                        					<option>Jaka P</option>
 	                        					</select>
 								                    <span class="input-group-btn">
-								                      <button type="button" class="btn btn-info btn-flat"><i class="fa fa-plus"></i> </button>
+								                      	<button type="button" class="btn btn-info btn-flat"><i class="fa fa-plus"></i> </button>
 								                    </span>
 								             </div>
                         				</div>
@@ -209,8 +208,8 @@
 	                        				</thead>
 	                        			</table>
 			                        </fieldset>
-                        			
                         		</div>
+
                         	</div>
                         </div>
                         <div class="clearfix"></div>
@@ -221,18 +220,16 @@
       		 <div class="row">
       			<div class="col-lg-12 col-md-12 col-xs-12">    				
       				<div class="box box-info"> 
-                        
                         <div class="box-body">
                         	<div class="row">
                         		<div class="col-md-6 col-xs-6">
-                        			<button class="btn btn-default btn-flat btn-lg">Kembali</button>
+                        			<button class="btn btn-default btn-flat btn-lg" type="button">Kembali</button>
                            		</div>
                         		<div class="col-md-6 col-xs-6 ">
                         			<div class="btn-group pull-right">
-	                        			<button class="btn btn-default btn-flat btn-lg">Reset</button>
+	                        			<button class="btn btn-default btn-flat btn-lg" type="button">Reset</button>
 	                        			<button class="btn btn-primary btn-flat btn-lg" id="submit_proyek" type="submit" value="<?= $this->data['action'];?>">Submit</button>
-                        			</div>
-                        			
+                        			</div>	
                         		</div>
                         	</div>
                         </div>
@@ -242,14 +239,6 @@
       		</div>
       	</form>
 	</section>
-
-
-
-             
-
-             
-
-              
-
-
 </div>
+
+<?php include_once('modal.php'); ?>

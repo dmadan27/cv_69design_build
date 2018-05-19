@@ -44,7 +44,7 @@
 						<table id="proyekTable" class="table table-bordered table-hover">
 							<thead>
 								<tr>
-									<th>No</th>
+									<th style="width: 35px">No</th>
 									<th>ID</th>
 									<th>Pemilik</th>
 									<th>Tanggal</th>

@@ -33,13 +33,14 @@ $(document).ready(function(){
                 "orderable":false,
             }
         ],
-        // createdRow: function(row, data, dataIndex){
-        //     if($(data[3]).text().toLowerCase() == "nonaktif") $(row).addClass('danger');
-        //     for(var i = 0; i < 5; i++){
-        //         if(i != 1 && i != 2) $('td:eq('+i+')', row).addClass('text-center'); 
-        //         if(i == 2) $('td:eq('+i+')', row).addClass('text-right'); // rata kanan untuk data saldo
-        //     }
-        // }
+        createdRow: function(row, data, dataIndex){
+            // if($(data[3]).text().toLowerCase() == "nonaktif") $(row).addClass('danger');
+            // for(var i = 0; i < 5; i++){
+            //     if(i != 1 && i != 2) $('td:eq('+i+')', row).addClass('text-center'); 
+            //     if(i == 2) $('td:eq('+i+')', row).addClass('text-right'); // rata kanan untuk data saldo
+            // }
+            console.log(data);
+        }
     });
 
     $('#tambah').on('click', function(){

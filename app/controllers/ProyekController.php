@@ -99,7 +99,7 @@
 			foreach($dataProyek as $row){
 				$no_urut++;
 
-				$status = ($row['status'] == "SELESAI") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-primary">'.$row['status'].'</span>';
+				$status = (strtolower($row['status']) == "selesai") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-primary">'.$row['status'].'</span>';
 
 				// button aksi
 				$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
@@ -218,7 +218,7 @@
 						'total' => $this->validation->validInput($data['total']),
 						'dp' => $this->validation->validInput($data['dp']),
 						'cco' => $this->validation->validInput($data['cco']),
-						
+						'status' => $this->validation->validInput($data['status']),
 							
 					);
 
@@ -245,15 +245,15 @@
 				}
 				else{
 					$notif = array(
-							'title' => "Pesan Pemberitahuan",
-							'message' => "Silahkan Cek Kembali Form Isian ",
-						);
+						'title' => "Pesan Pemberitahuan",
+						'message' => "Silahkan Cek Kembali Form Isian ",
+					);
 				}
 			}
 
 			$output = array(
 				'status' => $status,
-				// 'notif' => $notif,
+				'notif' => $notif,
 				'error' => $error,
 				'data' => $data,
 					
@@ -329,14 +329,33 @@
 		/**
 		*
 		*/
-		protected function delete($id){
+		public function delete($id){
 
 		}
 
 		/**
 		*
 		*/
-		protected function export(){
+		public function get_last_id(){
+			$data = !empty($this->ProyekModel->getLastID()['id']) ? $this->ProyekModel->getLastID()['id'] : false;
+
+			if(!$data) $id = 'PRY001';
+			else{
+				// $data = implode('', $data);
+				$kode = 'PRY';
+				$noUrut = (int)substr($data, 3, 3);
+				$noUrut++;
+
+				$id = $kode.sprintf("%03s", $noUrut);
+			}
+
+			echo $id;
+		}
+
+		/**
+		*
+		*/
+		public function export(){
 
 		}
 
@@ -360,11 +379,11 @@
 			// estimasi
 			$this->validation->set_rules($data['estimasi'], 'Estimasi Pengerjaan', 'estimasi', 'nilai | 1 | 255 | required');
 			// total
-			$this->validation->set_rules($data['total'], 'Total Dana', 'total', 'nilai | 1 | 99999999999 | required');
+			$this->validation->set_rules($data['total'], 'Total Dana', 'total', 'nilai | 0 | 99999999999 | required');
 			// dp
-			$this->validation->set_rules($data['dp'], 'DP Proyek', 'dp', 'nilai | 1 | 99999999999 | required');
+			$this->validation->set_rules($data['dp'], 'DP Proyek', 'dp', 'nilai | 0 | 99999999999 | required');
 			// cco
-			$this->validation->set_rules($data['cco'], 'CCO', 'cco', 'nilai | 1 | 99999999999 | required');
+			$this->validation->set_rules($data['cco'], 'CCO', 'cco', 'nilai | 0 | 99999999999 | not_required');
 			// status
 			$this->validation->set_rules($data['status'], 'Status Proyek', 'status', 'string | 1 | 255 | required');
 

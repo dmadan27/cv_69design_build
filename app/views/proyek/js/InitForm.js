@@ -1,9 +1,10 @@
 $(document).ready(function () {
+	generateID();
+	setStatus();
 	$('#submit_proyek').prop('value', 'action-add');
+	$('#id').prop('disabled', true);
     //Initialize Select2 Elements
     $('.select2').select2(); 
-
-
 
  	//Date picker
     $('.datepicker').datepicker({
@@ -13,7 +14,12 @@ $(document).ready(function () {
       orientation:"bottom auto",
       todayBtn: true,
     });
- 
+ 	
+    // tambah detail
+    $('#tambah_detail').on('click', function(){
+    	$('#modalDetail').modal();
+    });
+
     // Submit Proyek
     $('#form_proyek').submit(function(e){
     	e.preventDefault();
@@ -85,10 +91,18 @@ function submit(){
 		cache :false,
 		processData: false,
 		beforeSend: function(){
-			// $('#submit_proyek').prop('disabled', true)
+			$('#submit_proyek').prop('disabled', true);
+			$('#submit_proyek').prepend('<i class="fa fa-spin fa-refresh"></i> ');
 		},
 		success: function(output){
 			console.log(output);
+			if(!output.status){
+				$('#submit_proyek').prop('disabled', false);
+				$('#submit_proyek').html($('#submit_proyek').text());
+				setError(output.error);
+				toastr.warning(output.notif.message, output.notif.title);
+			}
+			else window.location.href = BASE_URL+'proyek/';
 		},
 		error: function(jqXHR, textStatus, errorThrown){
 			console.log(jqXHR, textStatus, errorThrown);
@@ -96,5 +110,90 @@ function submit(){
 
 	})
 
+
+}
+
+/**
+*
+*/
+function setError(error){
+	$.each(error, function(index, item){
+		console.log(index);
+
+		if(item != ""){
+			$('.field-'+index).removeClass('has-success').addClass('has-error');
+			$('.pesan-'+index).text(item);
+		}
+		else{
+			$('.field-'+index).removeClass('has-error').addClass('has-success');
+			$('.pesan-'+index).text('');	
+		}
+	});
+}
+
+/**
+*
+*/
+function setStatus(){
+	var status = [
+		{value: "BERJALAN", text: "BERJALAN"},
+		{value: "SELESAI", text: "SELESAI"},
+	];
+
+	$.each(status, function(index, item){
+		var option = new Option(item.text, item.value);
+		$("#status").append(option);
+	});
+}
+
+/**
+*
+*/
+function generateID(){
+	$.ajax({
+		url: BASE_URL+'proyek/get-last-id/',
+		// type: 'post',
+		// dataType: 'json',
+		// data: {"token_edit": token},
+		beforeSend: function(){
+
+		},
+		success: function(output){
+			// if(output){
+			// 	$('#modalSkc').modal();
+			// 	$('#token_form').val(token);
+			// 	setValue(output);
+			// }
+			$('#id').val(output);	
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+            console.log(jqXHR, textStatus, errorThrown);
+        }
+	})
+}
+
+/**
+*
+*/
+function resetForm(){
+
+}
+
+/**
+*
+*/
+function submit_modal(){
+
+}
+
+/**
+*
+*/
+function
+
+/**
+*
+*/
+function resetModal(){
 
 }

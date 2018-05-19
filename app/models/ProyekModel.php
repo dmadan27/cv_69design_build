@@ -139,6 +139,19 @@
 		}
 
 		/**
+		*
+		*/
+		public function getLastID(){
+			$query = "SELECT MAX(id) id FROM proyek;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+
+		/**
 		* 
 		*/
 		public function setQuery_mobile($page){
