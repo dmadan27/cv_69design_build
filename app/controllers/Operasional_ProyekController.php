@@ -24,7 +24,7 @@ class Operasional_Proyek extends Crud_modalsAbstract{
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 				'app/views/operasional_proyek/js/initList.js',
-				'app/views/operasional_proyek/js/initForm.js',
+				// 'app/views/operasional_proyek/js/initForm.js',
 			);
 
 			$config = array(
@@ -69,12 +69,12 @@ class Operasional_Proyek extends Crud_modalsAbstract{
 			$config_dataTable = array(
 				'tabel' => 'operasional_proyek',
 				'kolomOrder' => array(null, 'id', 'id_proyek', 'tgl', 'nama', 'total', null),
-				'kolomCari' => array('nama', 'tgl',),
+				'kolomCari' => array('id', 'id_proyek','nama', 'tgl'),
 				'orderBy' => array('id' => 'asc'),
 				'kondisi' => false,
 			);
 
-			$dataOperasionalProyek = $this->Opersional_ProyekModel->getAllDataTable($config_dataTable);
+			$dataOperasionalProyek = $this->Operasional_ProyekModel->getAllDataTable($config_dataTable);
 
 			// // set token
 			// $_SESSION['token_bank']['edit'] = md5($this->auth->getToken());
@@ -93,15 +93,16 @@ class Operasional_Proyek extends Crud_modalsAbstract{
 				// $status = ($row['status'] == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-danger">'.$row['status'].'</span>';
 
 				// button aksi
-				$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-				$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".', '."'".$this->token["edit"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-				$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+				// $aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+				// $aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".', '."'".$this->token["edit"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+				// $aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 				
-				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
+				// $aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
 				
 				$dataRow = array();
 				$dataRow[] = $no_urut;
 				$dataRow[] = $row['id'];
+				$dataRow[] = $row['id_proyek'];
 				$dataRow[] = $row['tgl'];
 				$dataRow[] = $row['nama'];
 				$dataRow[] = $row['total'];
@@ -112,8 +113,8 @@ class Operasional_Proyek extends Crud_modalsAbstract{
 
 			$output = array(
 				'draw' => $_POST['draw'],
-				'recordsTotal' => $this->Opersional_ProyekModel->recordTotal(),
-				'recordsFiltered' => $this->Opersional_ProyekModel->recordFilter(),
+				// 'recordsTotal' => $this->Operasional_ProyekModel->recordTotal(),
+				// 'recordsFiltered' => $this->Operasional_ProyekModel->recordFilter(),
 				'data' => $data,
 			);
 

@@ -12,3 +12,4 @@ function resetForm(){
 	// hapus semua feedback
 	$('.form-group').removeClass('has-success').removeClass('has-error');
 }
+});
