@@ -43,22 +43,25 @@
 						<div class="row">
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 								<input type="hidden" id="token_list" value="<?= $this->data['token_list']; ?>">
-								<table id="skcTable" class="table table-bordered table-hover">
-									<thead>
-										<tr>
-											<th class="text-center" style="width: 35px">No</th>
-											<th class="text-center">ID</th>
-											<th class="text-center">Nama</th>
-											<th class="text-center">No. Telepon</th>
-											<th class="text-center">Email</th>
-											<th class="text-center">Saldo</th>
-											<th class="text-center">Status</th>
-											<th class="text-center">Aksi</th>
-										</tr>
-									</thead>
-									<tbody>
-									</tbody>
-								</table>	
+								<div class="table-responsive">
+									<table id="skcTable" class="table table-bordered table-hover">
+										<thead>
+											<tr>
+												<th class="text-center" style="width: 35px">No</th>
+												<th class="text-center">ID</th>
+												<th class="text-center">Nama</th>
+												<th class="text-center">No. Telepon</th>
+												<th class="text-center">Email</th>
+												<th class="text-center">Saldo</th>
+												<th class="text-center">Status</th>
+												<th class="text-center">Aksi</th>
+											</tr>
+										</thead>
+										<tbody>
+										</tbody>
+									</table>
+								</div>
+										
 							</div>
 						</div>
 					</div>

@@ -55,7 +55,14 @@
 		* 
 		*/
 		public function getById($id){
-			
+			$query = "SELECT * FROM sub_kas_kecil WHERE id = :id;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
 		}
 
 		/**
@@ -84,6 +91,30 @@
 		* 
 		*/
 		public function update($data){
+			$query = "UPDATE sub_kas_kecil SET nama = :nama, alamat = :alamat, no_telp = :no_telp, email = :email, status = :status WHERE id = :id;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':nama', $data['nama']);
+			$statement->bindParam(':alamat', $data['alamat']);
+			$statement->bindParam(':no_telp', $data['no_telp']);
+			$statement->bindParam(':status', $data['status']);
+			$statement->bindParam(':id', $data['id']);
+			$result = $statement->execute();
+
+			return $result;
+		}
+
+		/**
+		*
+		*/
+		public function updateFoto($id){
+
+		}
+
+		/**
+		*
+		*/
+		public function updatePassword($id){
 
 		}
 

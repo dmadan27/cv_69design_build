@@ -53,16 +53,19 @@ function getDataForm(){
 	var data = new FormData();
 	var saldo = parseFloat($('#saldo').val().trim()) ? parseFloat($('#saldo').val().trim()) : $('#saldo').val().trim();
 
+	if($('#submit_skc').val().trim().toLowerCase() == 'action-add'){
+		data.append('foto', $("#foto")[0].files[0]); // foto
+		data.append('password', $('#password').val().trim()); // password
+		data.append('konf_password', $('#konf_password').val().trim()); // konf_password
+		data.append('saldo', saldo); // saldo awal	
+	}
+
 	data.append('token', $('#token_form').val().trim());
 	data.append('id', $('#id').val().trim()); // id
 	data.append('nama', $('#nama').val().trim()); // nama
 	data.append('alamat', $('#alamat').val().trim()); // alamat
 	data.append('no_telp', $('#no_telp').val().trim()); // no_telp
-	data.append('foto', $("#foto")[0].files[0]); // foto
 	data.append('email', $('#email').val().trim()); // email
-	data.append('password', $('#password').val().trim()); // password
-	data.append('konf_password', $('#konf_password').val().trim()); // konf_password
-	data.append('saldo', saldo); // saldo awal
 	data.append('status', $('#status').val().trim()); // status
 	data.append('action', $('#submit_skc').val().trim()); // action
 
@@ -120,13 +123,15 @@ function getEdit(id, token){
 	if(token != ""){
 		resetForm();
 		$('.field-saldo').css('display', 'none');
+		$('.field-password').css('display', 'none');
+		$('.field-konf_password').css('display', 'none');
 		$('.field-foto').css('display', 'none');
 		$('#submit_skc').prop('value', 'action-edit');
 		$('#submit_skc').prop('disabled', false);
 		$('#submit_skc').html('Edit Data');
 
 		$.ajax({
-			url: BASE_URL+'sub-kas-kecil/edit/'+id,
+			url: BASE_URL+'sub-kas-kecil/edit/'+id.toLowerCase(),
 			type: 'post',
 			dataType: 'json',
 			data: {"token_edit": token},

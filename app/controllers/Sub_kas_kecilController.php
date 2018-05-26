@@ -161,6 +161,12 @@
 				$cek = $validasi['cek'];
 				$error = $validasi['error'];
 
+				// cek password dan konf password
+				if($data['password'] != $data['konf_password']){
+					$cek = false;
+					$error['password'] = $error['konf_password'] = 'Password dan Konfirmasi Password Berbeda';
+				}
+
 				if($foto){
 					$configFoto = array(
 						'jenis' => 'gambar',
@@ -245,29 +251,99 @@
 		/**
 		*
 		*/
-		protected function edit($id){
+		public function edit($id){
+			$id = strtoupper($id);
+			$token = isset($_POST['token_edit']) ? $_POST['token_edit'] : false;
+			$this->auth->cekToken($_SESSION['token_skc']['edit'], $token, 'bank');
 
+			$data = !empty($this->Sub_kas_kecilModel->getById(strtoupper($id))) ? $this->Sub_kas_kecilModel->getById(strtoupper($id)) : false;
+			echo json_encode($data);
 		}
 
 		/**
 		*
 		*/
 		public function action_edit(){
+			$data = isset($_POST) ? $_POST : false;
+			$this->auth->cekToken($_SESSION['token_skc']['edit'], $data['token'], 'sub-kas-kecil');
+			
+			$status = false;
+			$error = "";
 
+			if(!$data){
+				$notif = array(
+					'title' => "Pesan Gagal",
+					'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
+				);
+			}
+			else{
+				$validasi = $this->set_validation($data);
+				$cek = $validasi['cek'];
+				$error = $validasi['error'];
+
+				if($cek){
+					// validasi inputan
+					$data = array(
+						'id' =>  $this->validation->validInput($data['id']),
+						'nama' =>  $this->validation->validInput($data['nama']),
+						'alamat' =>  $this->validation->validInput($data['alamat']),
+						'no_telp' =>  $this->validation->validInput($data['no_telp']),
+						'email' =>  $this->validation->validInput($data['email'], false),
+						'status' =>  $this->validation->validInput($data['status']),
+					);
+
+					
+					// update db
+
+					// transact
+
+					if($this->Sub_kas_kecilModel->update($data)) {
+						$status = true;
+						$notif = array(
+							'title' => "Pesan Berhasil",
+							'message' => "Edit Data Sub Kas Kecil Berhasil",
+						);
+					}
+					else {
+						$notif = array(
+							'title' => "Pesan Gagal",
+							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+						);
+					}
+
+					// commit
+					
+				}
+				else{
+					$notif = array(
+						'title' => "Pesan Pemberitahuan",
+						'message' => "Silahkan Cek Kembali Form Isian",
+					);
+				}
+			}
+
+			$output = array(
+				'status' => $status,
+				'notif' => $notif,
+				'error' => $error,
+				'data' => $data,
+			);
+
+			echo json_encode($output);
 		}
 
 		/**
 		*
 		*/
 		public function detail($id){
-
+			$id = strtoupper($id);
 		}
 
 		/**
 		*
 		*/
 		public function delete($id){
-
+			$id = strtoupper($id);
 		}
 
 		/**
@@ -319,6 +395,10 @@
 			$this->validation->set_rules($data['saldo'], 'Saldo Awal', 'saldo', 'nilai | 0 | 99999999999 | '.$required);
 			// status
 			$this->validation->set_rules($data['status'], 'Status Sub Kas Kecil', 'status', 'string | 1 | 255 | required');
+			// password
+			$this->validation->set_rules($data['password'], 'Password', 'password', 'string | 5 | 255 | '.$required);
+			// konf password
+			$this->validation->set_rules($data['konf_password'], 'Konfirmasi Password', 'konf_password', 'string | 5 | 255 | '.$required);
 
 			return $this->validation->run();
 		}

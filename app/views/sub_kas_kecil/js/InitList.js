@@ -48,7 +48,7 @@ $(document).ready(function(){
 *
 */
 function getView(id){
-	window.location.href = BASE_URL+'sub-kas-kecil/detail/'+id;
+	window.location.href = BASE_URL+'sub-kas-kecil/detail/'+id.toLowerCase();
 }
 
 /**
@@ -67,7 +67,7 @@ function getDelete(id, token){
 	        closeOnConfirm: false,
 		}, function(){
 			$.ajax({
-				url: BASE_URL+'sub-kas-kecil/delete/'+id,
+				url: BASE_URL+'sub-kas-kecil/delete/'+id.toLowerCase(),
 				type: 'post',
 				dataType: 'json',
 				data: {"token_delete": token},
