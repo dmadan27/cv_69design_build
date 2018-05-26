@@ -48,7 +48,7 @@ $(document).ready(function(){
 *
 */
 function getView(id){
-	window.location.href = BASE_URL+'bank/detail/'+id;
+	window.location.href = BASE_URL+'bank/detail/'+id.toLowerCase();
 }
 
 /**
@@ -67,7 +67,7 @@ function getDelete(id, token){
 	        closeOnConfirm: false,
 		}, function(){
 			$.ajax({
-				url: BASE_URL+'bank/delete/'+id,
+				url: BASE_URL+'bank/delete/'+id.toLowerCase(),
 				type: 'post',
 				dataType: 'json',
 				data: {"token_delete": token},

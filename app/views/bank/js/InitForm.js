@@ -115,7 +115,7 @@ function getEdit(id, token){
 		$('#submit_bank').html('Edit Data');
 
 		$.ajax({
-			url: BASE_URL+'bank/edit/'+id,
+			url: BASE_URL+'bank/edit/'+toLowerCase().id,
 			type: 'post',
 			dataType: 'json',
 			data: {"token_edit": token},

@@ -220,6 +220,7 @@
 		* return berupa json
 		*/
 		public function edit($id){
+			$id = strtoupper($id);
 			$token = isset($_POST['token_edit']) ? $_POST['token_edit'] : false;
 			$this->auth->cekToken($_SESSION['token_bank']['edit'], $token, 'bank');
 
@@ -240,47 +241,55 @@
 			$this->auth->cekToken($_SESSION['token_bank']['edit'], $data['token'], 'bank');
 			
 			$status = false;
+			$error = "";
 
-			// validasi data
-			$validasi = $this->set_validation($data);
-			$cek = $validasi['cek'];
-			$error = $validasi['error'];
-
-			if($cek){
-				// validasi inputan
-				$data = array(
-					'id' => $this->validation->validInput($data['id']),
-					'nama' => $this->validation->validInput($data['nama']),
-					'status' => $this->validation->validInput($data['status'])
+			if(!$data){
+				$notif = array(
+					'title' => "Pesan Gagal",
+					'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
 				);
+			}
+			else{
+				// validasi data
+				$validasi = $this->set_validation($data);
+				$cek = $validasi['cek'];
+				$error = $validasi['error'];
 
-				// update db
-
-				// transact
-
-				if($this->BankModel->update($data)) {
-					$status = true;
-					$notif = array(
-						'title' => "Pesan Berhasil",
-						'message' => "Edit Data Bank Berhasil",
+				if($cek){
+					// validasi inputan
+					$data = array(
+						'id' => $this->validation->validInput($data['id']),
+						'nama' => $this->validation->validInput($data['nama']),
+						'status' => $this->validation->validInput($data['status'])
 					);
+
+					// update db
+
+					// transact
+
+					if($this->BankModel->update($data)) {
+						$status = true;
+						$notif = array(
+							'title' => "Pesan Berhasil",
+							'message' => "Edit Data Bank Berhasil",
+						);
+					}
+					else {
+						$notif = array(
+							'title' => "Pesan Gagal",
+							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+						);
+					}
+
+					// commit
 				}
 				else {
 					$notif = array(
-						'title' => "Pesan Gagal",
-						'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+						'title' => "Pesan Pemberitahuan",
+						'message' => "Silahkan Cek Kembali Form Isian",
 					);
 				}
-
-				// commit
 			}
-			else {
-				$notif = array(
-					'title' => "Pesan Pemberitahuan",
-					'message' => "Silahkan Cek Kembali Form Isian",
-				);
-			}
-			
 
 			$output = array(
 				'status' => $status,
@@ -298,6 +307,7 @@
 		* param $id didapat dari url
 		*/
 		public function detail($id){
+			$id = strtoupper($id);
 			if(empty($id) || $id == "") $this->redirect(BASE_URL."bank/");
 
 			$data_detail = !empty($this->BankModel->getById($id)) ? $this->BankModel->getById($id) : false;
@@ -356,6 +366,7 @@
 		* return json
 		*/
 		public function delete($id){
+			$id = strtoupper($id);
 			$token = isset($_POST['token_delete']) ? $_POST['token_delete'] : false;
 			$this->auth->cekToken($_SESSION['token_bank']['delete'], $token, 'bank');
 			
