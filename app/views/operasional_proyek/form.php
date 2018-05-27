@@ -1,4 +1,4 @@
-<?php Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung"); ?>
+<?php  ?>
 
 <div class="modal fade" id="modalBank">
 	<div class="modal-dialog">
