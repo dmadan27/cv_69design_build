@@ -1,3 +1,5 @@
+<?php Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung"); ?>
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
@@ -8,9 +10,8 @@
 	  	</h1>
 	  	<!-- breadcrumb -->
 	  	<ol class="breadcrumb">
-	    	<li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-	    	<li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-	    	<li class="active">Here</li>
+	    	<li><a href="javascript:void(0)"><i class="fa fa-dashboard"></i> Home</a></li>
+	    	<li class="active">Data Kas Kecil</li>
 	  	</ol>
 	  	<!-- end breadcrumb -->
 
@@ -39,28 +40,23 @@
 					</div>
 					<!-- box body -->
 					<div class="box-body">
-						<table id="kas_kecilTable" class="table table-bordered table-hover">
+						<!-- <input type="hidden" id="token_list" value="<?= $this->data['token_list']; ?>"> -->
+						<table id="kasKecilTable" class="table table-bordered table-hover">
 							<thead>
 								<tr>
+									<th style="width: 35px">No</th>
 									<th>ID</th>
 									<th>Nama</th>
 									<th>Alamat</th>
-									<th>No Telp</th>
-									<th>Email</th>
+									<th>No Telepon</th>
+									<!-- <th>Email</th>
+									<th>Foto</th> -->
 									<th>Saldo</th>
-									
+									<!-- <th>Status</th> -->
+									<th>Aksi</th>
 								</tr>
 							</thead>
 							<tbody>
-								<?php
-									foreach ($this->data as $key => $value) {
-										echo "<tr>";
-										foreach($value as $row){
-											echo "<td>".$row."</td>";
-										}
-										echo "</tr>";
-									}
-								?>
 							</tbody>
 						</table>
 					</div>

@@ -19,7 +19,6 @@ class Kas_kecil extends CrudAbstract{
 
 
 	protected function list(){
-			// $this->auth->cekAuth();
 			$css = array('assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css');
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
@@ -30,15 +29,29 @@ class Kas_kecil extends CrudAbstract{
 			$config = array(
 				'title' => array(
 					'main' => 'Data Kas Kecil',
-					'sub' => 'Ini adalah halaman Kas Kecil, yang mengandung data Kas Kecil',
+					'sub' => 'List Semua Data Kas Kecil',
 				),
 				'css' => $css,
 				'js' => $js,
 			);
 
-			$data = $this->Kas_kecilModel->getAll();
-			
-			$this->layout('kas_kecil/list', $config, $data);
+			// // set token
+			// $_SESSION['token_kas_kecil'] = array(
+			// 	'list' => md5($this->auth->getToken()),
+			// 	'add' => md5($this->auth->getToken()),
+			// );
+
+			// $this->token = array(
+			// 	'list' => password_hash($_SESSION['token_kas_kecil']['list'], PASSWORD_BCRYPT),
+			// 	'add' => password_hash($_SESSION['token_kas_kecil']['add'], PASSWORD_BCRYPT),	
+			// );
+
+			// $data = array(
+			// 	'token_list' => $this->token['list'],
+			// 	'token_add' => $this->token['add'],
+			// );
+
+			$this->layout('kas_kecil/list', $config);
 		}	
 
 
@@ -50,7 +63,63 @@ class Kas_kecil extends CrudAbstract{
 			else $this->edit($id);
 		}
 		public function get_list(){
+			// config datatable
+			$config_dataTable = array(
+				'tabel' => 'kas_kecil',
+				'kolomOrder' => array(null, 'id', 'nama', 'alamat', 'no_telp',  'saldo', null),
+				'kolomCari' => array('id','nama'),
+				'orderBy' => array('id' => 'asc'),
+				'kondisi' => false,
+			);
 
+			$datakaskecil = $this->Kas_kecilModel->getAllDataTable($config_dataTable);
+
+			// set token
+			// $_SESSION['token_proyek']['edit'] = md5($this->auth->getToken());
+			// $_SESSION['token_proyek']['delete'] = md5($this->auth->getToken());
+			
+			// $this->token = array(
+			// 	'edit' => password_hash($_SESSION['token_proyek']['edit'], PASSWORD_BCRYPT),
+			// 	'delete' => password_hash($_SESSION['token_proyek']['delete'], PASSWORD_BCRYPT),	
+			// );
+
+			$data = array();
+			$no_urut = $_POST['start'];
+			foreach($datakaskecil as $row){
+				$no_urut++;
+
+				$status = (strtolower($row['status']) == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-primary">'.$row['status'].'</span>';
+
+				//button aksi
+				$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+				// $aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".', '."'".$this->token["edit"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+				// $aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+				
+				$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
+				
+				$dataRow = array();
+				$dataRow[] = $no_urut;
+				$dataRow[] = $row['id'];
+				$dataRow[] = $row['nama'];
+				$dataRow[] = $row['alamat'];
+				$dataRow[] = $row['no_telp'];
+				// $dataRow[] = $row['email'];
+				// $dataRow[] = $row['foto'];
+				$dataRow[] = $row['saldo'];
+				// $dataRow[] = $row['status'];
+				
+				$dataRow[] = $aksi;
+				$data[] = $dataRow;
+			}
+
+			$output = array(
+				'draw' => $_POST['draw'],
+				'recordsTotal' => $this->Kas_kecilModel->recordTotal(),
+				'recordsFiltered' => $this->Kas_kecilModel->recordFilter(),
+				'data' => $data,
+			);
+
+			echo json_encode($output);
 		}
 
 		protected function add(){
