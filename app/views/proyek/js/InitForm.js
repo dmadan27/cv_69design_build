@@ -17,7 +17,14 @@ $(document).ready(function () {
  	
     // tambah detail
     $('#tambah_detail').on('click', function(){
+    	console.log(listDetail);
+    	setStatusDetail();
     	$('#modalDetail').modal();
+    });
+
+    // submit detail proyek
+ 	$('#submit_detail').on('click', function(){
+    	addDetail();
     });
 
     // Submit Proyek
@@ -40,6 +47,73 @@ $(document).ready(function () {
     	}
     });
  });
+
+/**
+*
+*/
+function addDetail(){
+	var index = indexDetail++;
+
+	var persentase = parseFloat($('#persentase').val().trim()) ? parseFloat($('#persentase').val().trim()) : $('#persentase').val().trim();
+	var total_detail = parseFloat($('#total_detail').val().trim()) ? parseFloat($('#total_detail').val().trim()) : $('#total_detail').val().trim();
+
+	var data = {
+		index: index,
+		angsuran: $('#angsuran').val().trim(),
+		persentase: persentase,
+		total_detail: total_detail,
+		status_detail: $('#status_detail').val().trim(),
+	};
+
+	validDetail(data);
+
+	console.log('Index : '+index);
+	console.log('Index Utama: '+indexDetail);
+
+
+}
+
+/**
+*
+*/
+function validDetail(data){
+	$.ajax({
+		url: BASE_URL+'proyek/action-add-detail/',
+		type: 'post',
+		dataType: 'json',
+		data: data,
+		beforeSend: function(){
+
+		},
+		success: function(output){
+			console.log(output);
+			if(output.status){
+				// tambah data ke tabel
+				listDetail.push(data);
+
+				$('#detail_proyekTable > tbody:last-child').append(
+					'<tr>'+
+						'<td></td>'+ // no
+						'<td>'+data.angsuran+'</td>'+ // angsuran
+						'<td>'+data.persentase+'</td>'+ // persentase
+						'<td>'+data.total_detail+'</td>'+ // total
+						'<td>'+data.status_detail+'</td>'+ // status
+						'<td></td>'+ // aksi
+					'</tr>'
+				);
+
+				console.log(listDetail);
+			}
+			else{
+				// decrement index utama
+				indexDetail -= 1;
+			}	
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+            console.log(jqXHR, textStatus, errorThrown);
+        }
+	})
+}
 
 /**
 *
@@ -149,6 +223,21 @@ function setStatus(){
 /**
 *
 */
+function setStatusDetail(){
+	var status = [
+		{value: "BELUM DIBAYAR", text: "BELUM DIBAYAR"},
+		{value: "LUNAS", text: "LUNAS"},
+	];
+
+	$.each(status, function(index, item){
+		var option = new Option(item.text, item.value);
+		$("#status_detail").append(option);
+	});
+}
+
+/**
+*
+*/
 function generateID(){
 	$.ajax({
 		url: BASE_URL+'proyek/get-last-id/',
@@ -189,7 +278,7 @@ function submit_modal(){
 /**
 *
 */
-function
+
 
 /**
 *
