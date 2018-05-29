@@ -166,7 +166,7 @@
 		* Fungsi lockscreen
 		* set ulang session login dan session lockscreen saja
 		*/
-		private function lockscreen(){
+		public function lockscreen(){
 
 		}
 
