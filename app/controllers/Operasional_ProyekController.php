@@ -1,7 +1,7 @@
 <?php
 Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 
-class Operasional_Proyek extends Crud_modalsAbstract{
+class Operasional_Proyek extends CrudAbstract{
 
 	public function __construct(){
 			$this->auth();
@@ -58,6 +58,15 @@ class Operasional_Proyek extends Crud_modalsAbstract{
 	public function action_add(){
 
 	}
+	public function form($id){
+
+	}
+
+	public function add(){
+
+	}
+
+
 
 	public function get_list(){
 		// $token = isset($_POST['token_list']) ? $_POST['token_list'] : false;
@@ -69,7 +78,7 @@ class Operasional_Proyek extends Crud_modalsAbstract{
 			$config_dataTable = array(
 				'tabel' => 'operasional_proyek',
 				'kolomOrder' => array(null, 'id', 'id_proyek', 'tgl', 'nama', 'total', null),
-				'kolomCari' => array('id', 'id_proyek','nama', 'tgl'),
+				'kolomCari' => array('id'),
 				'orderBy' => array('id' => 'asc'),
 				'kondisi' => false,
 			);
@@ -92,12 +101,12 @@ class Operasional_Proyek extends Crud_modalsAbstract{
 
 				// $status = ($row['status'] == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-danger">'.$row['status'].'</span>';
 
-				// button aksi
-				// $aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+				//button aksi
+				$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
 				// $aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".', '."'".$this->token["edit"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
 				// $aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 				
-				// $aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
+				$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
 				
 				$dataRow = array();
 				$dataRow[] = $no_urut;
@@ -113,8 +122,8 @@ class Operasional_Proyek extends Crud_modalsAbstract{
 
 			$output = array(
 				'draw' => $_POST['draw'],
-				// 'recordsTotal' => $this->Operasional_ProyekModel->recordTotal(),
-				// 'recordsFiltered' => $this->Operasional_ProyekModel->recordFilter(),
+				'recordsTotal' => $this->Operasional_ProyekModel->recordTotal(),
+				'recordsFiltered' => $this->Operasional_ProyekModel->recordFilter(),
 				'data' => $data,
 			);
 
