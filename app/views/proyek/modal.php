@@ -44,7 +44,7 @@
 			                <input type="number" min="0" step="any" name="total_detail" id="total_detail" class="form-control field" placeholder="Masukkan Total">
 			                <span class="input-group-addon">.00</span>
 						</div>
-						<span class="help-block small pesan pesan-total"></span>
+						<span class="help-block small pesan pesan-total_detail"></span>
 					</div>
 
 					<!-- status -->
@@ -57,7 +57,7 @@
 				<!-- modal footer -->
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Kembali</button>
-	                <button type="button" id="submit_detail" class="btn btn-primary" value="tambah">Tambah Detail</button>
+	                <button type="submit" id="submit_detail" class="btn btn-primary" value="tambah">Tambah Detail</button>
 				</div>
 			</form>
 		</div>

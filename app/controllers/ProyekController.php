@@ -138,15 +138,12 @@
 		public function form($id){
 			if($id)	$this->edit($id);
 			else $this->add();
-
-			
 		}
 
 		/**
 		* 
 		*/
 		protected function add(){
-			
 			$css = array(
   				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
 				'assets/bower_components/select2/dist/css/select2.min.css',
@@ -218,8 +215,7 @@
 						'total' => $this->validation->validInput($data['total']),
 						'dp' => $this->validation->validInput($data['dp']),
 						'cco' => $this->validation->validInput($data['cco']),
-						'status' => $this->validation->validInput($data['status']),
-							
+						'status' => $this->validation->validInput($data['status']),	
 					);
 
 					// insert db
@@ -240,8 +236,6 @@
 					}
 
 					// commit
-
-
 				}
 				else{
 					$notif = array(
@@ -259,7 +253,6 @@
 					
 			);
 			echo json_encode($output);
-
 		}
 
 		/**
@@ -355,6 +348,34 @@
 		/**
 		*
 		*/
+		public function get_skc(){
+			$this->model('Sub_kas_kecilModel');
+
+			$data_skc = $this->Sub_kas_kecilModel->getAll();
+			$data = array(
+				// 'result' => array(
+					array(
+						'id' => '',
+						'text' => '-- Pilih Sub Kas Kecil --',
+					),
+				// ),
+					
+			);
+
+			foreach($data_skc as $row){
+				$dataRow = array();
+				$dataRow['id'] = $row['id'];
+				$dataRow['text'] = $row['id'].' - '.$row['nama'];
+
+				$data[] = $dataRow;
+			}
+
+			echo json_encode($data);
+		}
+
+		/**
+		*
+		*/
 		public function export(){
 
 		}
@@ -425,7 +446,7 @@
 			// angsuran
 			$this->validation->set_rules($data['angsuran'], 'Angsuran Proyek', 'angsuran', 'string | 1 | 255 | required');
 			// persentase
-			$this->validation->set_rules($data['persentase'], 'Persentase Angsuran', 'persentase', 'nilai | 0 | 100 | required');
+			$this->validation->set_rules($data['persentase'], 'Persentase Angsuran', 'persentase', 'nilai | 1 | 100 | required');
 			// total
 			$this->validation->set_rules($data['total_detail'], 'Total Angsuran', 'total_detail', 'nilai | 1 | 9999999999 | required');
 			// status

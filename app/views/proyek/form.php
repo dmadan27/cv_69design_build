@@ -157,47 +157,59 @@
                         <div class="box-body">
                         	<div class="row">
                         		<!-- panel 1 -->
-                        		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        		<div class="col-md-12">
                         			<fieldset>
 			                        	<legend style="font-size: 18px;">Detail Proyek</legend>
-			                        	<div class="form-group pull-right">
+			                        	<div class="form-group">
 	                                        <button type="button" class="btn btn-success btn-flat " id="tambah_detail"><i class="fa fa-plus"></i> Tambah Detail</button>
 	                                    </div>
-	                        			
-	                        			<table id="detail_proyekTable" class="table table-bordered table-hover small">
-	                        				<thead>
-	                        					<tr>
-	                        						<th style="width: 15px">No</th>
-	                        						<th>Angsuran</th>
-	                        						<th>%</th>
-	                        						<th>Total</th>
-	                        						<th>Status</th>
-	                        						<th>Aksi</th>
-	                        					</tr>
-	                        				</thead>
-	                        				<tbody></tbody>
-	                        			</table>
+	                                    <div class="row">
+	                                    	<div class="col-md-12">
+	                                    		<div class="table-responsive">
+			                        				<table id="detail_proyekTable" class="table table-bordered table-hover small">
+				                        				<thead>
+				                        					<tr>
+				                        						<th style="width: 15px">No</th>
+				                        						<th>Angsuran</th>
+				                        						<th>%</th>
+				                        						<th>Total</th>
+				                        						<th>Status</th>
+				                        						<th>Aksi</th>
+				                        					</tr>
+				                        				</thead>
+				                        				<tbody></tbody>
+				                        			</table>
+			                        			</div>
+	                                    	</div>	
+	                                    </div>
+			                        			
 			                        </fieldset>
                         		</div>
 
+                        	</div>
+                        	<div class="row">
                         		<!-- panel 2 -->
-                        		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                        		<div class="col-md-12">
                         			<!-- <div class="box-header">
 			                            <div class="box-title">Tambah Data</div>
 			                        </div> -->
 			                        <fieldset>
 			                        	<legend style="font-size: 18px;">Pemilihan Sub Kas Kecil</legend>
-			                        	<div class="form-group">
-	                        				 <div class="input-group">
-								                <select class="form-control select2" name="">
-		                        					<option>Jaka P</option>
-		                        					<option>Jaka P</option>
-	                        					</select>
-								                    <span class="input-group-btn">
-								                      	<button type="button" class="btn btn-info btn-flat"><i class="fa fa-plus"></i> </button>
-								                    </span>
-								             </div>
-                        				</div>
+			                        	<div class="row">
+			                        		<div class="col-md-6">
+			                        			<div class="form-group field-skc has-feedback">
+			                        				<div class="input-group">
+										                <select class="form-control select2" style="width: 100%;" id="skc">
+			                        					</select>
+									                    <span class="input-group-btn">
+									                      	<button type="button" class="btn btn-info btn-flat" id="tambah_skc"><i class="fa fa-plus"></i> </button>
+									                    </span>
+										             </div>
+					                        	
+		                        				</div>
+			                        		</div>
+			                        	</div>
+					                        	
                         				<table id="sub_kas_kecilTable" class="table table-bordered table-hover small">
 	                        				<thead>
 	                        					<tr>
@@ -211,7 +223,6 @@
 	                        			</table>
 			                        </fieldset>
                         		</div>
-
                         	</div>
                         </div>
                         <div class="clearfix"></div>
