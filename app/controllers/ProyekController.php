@@ -359,6 +359,10 @@
 
 		}
 
+		
+		/**
+		* Function validasi form utama
+		*/
 		private function set_validation($data){
 			$required = ($data['action'] =="action-add") ? 'not_required' : 'required';
 
@@ -386,6 +390,46 @@
 			$this->validation->set_rules($data['cco'], 'CCO', 'cco', 'nilai | 0 | 99999999999 | not_required');
 			// status
 			$this->validation->set_rules($data['status'], 'Status Proyek', 'status', 'string | 1 | 255 | required');
+
+			return $this->validation->run();
+		}
+
+		/**
+		*
+		*/
+		public function action_add_detail(){
+			$data = isset($_POST) ? $_POST : false;
+			
+			$status = false;
+			$error = "";
+
+			$validasi = $this->set_validation_detail($data);
+			$cek = $validasi['cek'];
+			$error = $validasi['error'];
+
+			if($cek) $status = true;
+
+			$output = array(
+				'status' => $status,
+				// 'notif' => $notif,
+				'error' => $error,
+				'data' => $data,
+			);
+			echo json_encode($output);
+		}
+
+		/**
+		* Function validasi form detail
+		*/
+		private function set_validation_detail($data){
+			// angsuran
+			$this->validation->set_rules($data['angsuran'], 'Angsuran Proyek', 'angsuran', 'string | 1 | 255 | required');
+			// persentase
+			$this->validation->set_rules($data['persentase'], 'Persentase Angsuran', 'persentase', 'nilai | 0 | 100 | required');
+			// total
+			$this->validation->set_rules($data['total_detail'], 'Total Angsuran', 'total_detail', 'nilai | 1 | 9999999999 | required');
+			// status
+			$this->validation->set_rules($data['status_detail'], 'Status Detail', 'status_detail', 'string | 1 | 255 | required');
 
 			return $this->validation->run();
 		}

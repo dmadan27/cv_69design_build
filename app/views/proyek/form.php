@@ -164,17 +164,18 @@
 	                                        <button type="button" class="btn btn-success btn-flat " id="tambah_detail"><i class="fa fa-plus"></i> Tambah Detail</button>
 	                                    </div>
 	                        			
-	                        			<table class="table table-bordered table-hover small">
+	                        			<table id="detail_proyekTable" class="table table-bordered table-hover small">
 	                        				<thead>
 	                        					<tr>
-	                        						<th>No</th>
+	                        						<th style="width: 15px">No</th>
 	                        						<th>Angsuran</th>
-	                        						<th>Persentase</th>
+	                        						<th>%</th>
 	                        						<th>Total</th>
 	                        						<th>Status</th>
 	                        						<th>Aksi</th>
 	                        					</tr>
 	                        				</thead>
+	                        				<tbody></tbody>
 	                        			</table>
 			                        </fieldset>
                         		</div>
@@ -197,7 +198,7 @@
 								                    </span>
 								             </div>
                         				</div>
-                        				<table class="table table-bordered table-hover small">
+                        				<table id="sub_kas_kecilTable" class="table table-bordered table-hover small">
 	                        				<thead>
 	                        					<tr>
 	                        						<th>No</th>
@@ -206,6 +207,7 @@
 	                        						<th>Aksi</th>
 	                        					</tr>
 	                        				</thead>
+	                        				<tbody></tbody>
 	                        			</table>
 			                        </fieldset>
                         		</div>
@@ -242,3 +244,10 @@
 </div>
 
 <?php include_once('modal.php'); ?>
+<script type="text/javascript">
+	var listDetail = [];
+	var indexDetail = 0;
+
+	var listSkc = [];
+	var indexSkc = 0;
+</script>

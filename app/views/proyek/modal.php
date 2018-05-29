@@ -11,7 +11,7 @@
                 <h4 class="modal-title">Form Data Detail Proyek</h4>
 			</div>
 			<form id="form_detail" role="form">
-				<input type="hidden" id="id">
+				<input type="hidden" id="id_detail">
 				<!-- body modal -->
 				<div class="modal-body">
 					<div class="row">
@@ -57,7 +57,7 @@
 				<!-- modal footer -->
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Kembali</button>
-	                <button type="submit" id="submit_detail" class="btn btn-primary" value="tambah">Tambah Detail</button>
+	                <button type="button" id="submit_detail" class="btn btn-primary" value="tambah">Tambah Detail</button>
 				</div>
 			</form>
 		</div>
