@@ -354,7 +354,6 @@
 
 			if(!$data) $id = 'LOG001';
 			else{
-				// $data = implode('', $data);
 				$kode = 'LOG';
 				$noUrut = (int)substr($data, 3, 3);
 				$noUrut++;
