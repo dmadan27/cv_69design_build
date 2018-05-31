@@ -53,6 +53,42 @@
 		/**
 		*
 		*/
+		public function get_id_pengajuan() {
+			// $id = $_POST['id'];
+			$id = 'PGSKC-PRY002-LOG001-';
+
+			$this->model('Pengajuan_sub_kas_kecilModel');
+			$id_proyek = $this->Pengajuan_sub_kas_kecilModel->getLastID(strtoupper($id_pengajuan));
+
+			echo json_encode($id_proyek);
+		}
+
+		/**
+		*
+		*/
+		public function generate_id_pengajuan() {
+			$this->model('Pengajuan_sub_kas_kecilModel');
+			$id_pengajuan = $_POST['id_pengajuan'];
+			$data = !empty($this->Pengajuan_sub_kas_kecilModel->getLastID($id_pengajuan)['id']) ? $this->Pengajuan_sub_kas_kecilModel->getLastID($id_pengajuan)['id'] : false;
+
+			if(!$data) $id = $id_pengajuan.'0001';
+			else{
+				// $data = implode('', $data);
+				$kode = $id_pengajuan;
+				$noUrut = (int)substr($data, 20, 4);
+				$noUrut++;
+
+				$id = $kode.sprintf("%04s", $noUrut);
+			}
+
+			echo json_encode(array(
+				'id_pengajuan' => $id,	
+			));
+		}
+
+		/**
+		*
+		*/
 		public function add_pengajuan(){
 			$this->model('Pengajuan_sub_kas_kecilModel');
 
