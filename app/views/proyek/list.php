@@ -44,13 +44,13 @@
 						<table id="proyekTable" class="table table-bordered table-hover">
 							<thead>
 								<tr>
-									<th style="width: 35px">No</th>
+									<th class="text-right" style="width: 35px">No</th>
 									<th>ID</th>
 									<th>Pemilik</th>
 									<th>Tanggal</th>
 									<th>Pembangunan</th>
 									<th>Kota</th>
-									<th>Total</th>
+									<th class="text-right">Total</th>
 									<th>Status</th>
 									<th>Aksi</th>
 								</tr>

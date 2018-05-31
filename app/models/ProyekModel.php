@@ -19,89 +19,36 @@
 			$this->dataTable = new Datatable();
 		}
 
-		/**
-		* 
-		*/
-		public function getAllDataTable($config){
-			$this->dataTable->set_config($config);
-			$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
-			$statement->execute();
-			$result = $statement->fetchAll();
+		// ======================= dataTable ======================= //
 
-			return $result;
-		}
-
-		/**
-		* 
-		*/
-		public function recordFilter(){
-			return $this->dataTable->recordFilter();
-		}
-
-		/**
-		* 
-		*/
-		public function recordTotal(){
-			return $this->dataTable->recordTotal();
-		}
-
-		/**
-		* 
-		*/
-		public function insert($data){
-			$status = "BERJALAN";
-			$query = "INSERT INTO proyek 
-							(	
-								id,
-								pemilik,
-								tgl,
-								pembangunan,
-								luas_area,
-								alamat,
-								kota,
-								estimasi,
-								total,
-								dp,
-								cco,
-								status
-							) VALUES
-							(	
-								:id,
-								:pemilik,
-								:tgl,
-								:pembangunan,
-								:luas_area,
-								:alamat,
-								:kota,
-								:estimasi,
-								:total,
-								:dp,
-								:cco,
-								:status
-							);
-							";
-
-				$statment = $this->koneksi->prepare($query);
-				$statment->bindParam(':id', $data['id']);
-				$statment->bindParam(':pemilik', $data['pemilik']);
-				$statment->bindParam(':tgl', $data['tgl']);
-				$statment->bindParam(':pembangunan', $data['pembangunan']);
-				$statment->bindParam(':luas_area', $data['luas_area']);
-				$statment->bindParam(':alamat', $data['alamat']);
-				$statment->bindParam(':kota', $data['kota']);
-				$statment->bindParam(':estimasi', $data['estimasi']);
-				$statment->bindParam(':total', $data['total']);
-				$statment->bindParam(':dp', $data['dp']);
-				$statment->bindParam(':cco', $data['cco']);
-				$statment->bindParam(':status', $data['status']);
-				$result = $statment->execute();
+			/**
+			* 
+			*/
+			public function getAllDataTable($config){
+				$this->dataTable->set_config($config);
+				$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
+				$statement->execute();
+				$result = $statement->fetchAll();
 
 				return $result;
-				
+			}
 
+			/**
+			* 
+			*/
+			public function recordFilter(){
+				return $this->dataTable->recordFilter();
+			}
 
+			/**
+			* 
+			*/
+			public function recordTotal(){
+				return $this->dataTable->recordTotal();
+			}
 
-		}
+		// ========================================================= //
+			
 
 		/**
 		* 
@@ -125,17 +72,152 @@
 		}
 
 		/**
+		*
+		*/
+		public function getDetailById($id){
+			$query = "SELECT id, id_proyek, angsuran, persentase, total total_detail, status status_detail ";
+			$query .= "FROM detail_proyek WHERE id_proyek = :id;";
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$statement->execute();
+			$result = $statement->fetchAll();
+
+			return $result;
+		}
+
+		/**
+		*
+		*/
+		public function getSkcById($id){
+			$query = "SELECT lp.id, lp.id_proyek, skc.id id_skc, skc.nama FROM logistik_proyek lp ";
+			$query .= "JOIN sub_kas_kecil skc ON skc.id = lp.id_sub_kas_kecil ";
+			$query .= "WHERE lp.id_proyek = :id;";
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$statement->execute();
+			$result = $statement->fetchAll();
+
+			return $result;
+		}
+
+		/**
+		* 
+		*/
+		public function insert($data){
+			$dataProyek = $data['dataProyek'];
+			$dataDetail = $data['dataDetail'];
+			$dataSkc = $data['dataSkc'];
+
+			try{
+				$this->koneksi->beginTransaction();
+
+				// insert proyek
+				$queryProyek = "INSERT INTO proyek (id, pemilik, tgl, pembangunan, luas_area, alamat, kota, estimasi, total, dp, cco, status) ";
+				$queryProyek .= "VALUES (:id, :pemilik, :tgl, :pembangunan, :luas_area, :alamat, :kota, :estimasi, :total, :dp, :cco, :status);";
+				$statment = $this->koneksi->prepare($queryProyek);
+				$statment->execute(
+					array(
+						':id' => $dataProyek['id'],
+						':pemilik' => $dataProyek['pemilik'],
+						':tgl' => $dataProyek['tgl'],
+						':pembangunan' => $dataProyek['pembangunan'],
+						':luas_area' => $dataProyek['luas_area'],
+						':alamat' => $dataProyek['alamat'],
+						':kota' => $dataProyek['kota'],
+						':estimasi' => $dataProyek['estimasi'],
+						':total' => $dataProyek['total'],
+						':dp' => $dataProyek['dp'],
+						':cco' => $dataProyek['cco'],
+						':status' => $dataProyek['status'],
+					)
+				);
+				$statment->closeCursor();
+
+				// insert detail_proyek
+				$queryDetail = 'INSERT INTO detail_proyek (id_proyek, angsuran, persentase, total, status) ';
+				$queryDetail .= 'VALUES (:id_proyek, :angsuran, :persentase, :total, :status);';
+				$statment = $this->koneksi->prepare($queryDetail);
+
+				foreach($dataDetail as $index => $row){
+					if(!$dataDetail[$index]['delete']){
+						array_map('strtoupper', $row);
+						$statment->execute(
+							array(
+								':id_proyek' => $row['id_proyek'],
+								':angsuran' => $row['angsuran'],
+								':persentase' => $row['persentase'],
+								':total' => $row['total_detail'],
+								':status' => $row['status_detail'],
+							)
+						);
+					}
+				}
+				$statment->closeCursor();
+
+				// insert logistik_proyek
+				$querySkc = 'INSERT INTO logistik_proyek (id_proyek, id_sub_kas_kecil) VALUES (:id_proyek, :id_sub_kas_kecil);';
+				$statment = $this->koneksi->prepare($querySkc);
+
+				foreach($dataSkc as $index => $row){
+					if(!$dataSkc[$index]['delete']){
+						array_map('strtoupper', $row);
+						$statment->execute(
+							array(
+								':id_proyek' => $row['id_proyek'],
+								':id_sub_kas_kecil' => $row['id_skc'],
+							)
+						);
+					}
+				}
+				$statment->closeCursor();
+
+				$this->koneksi->commit();
+
+				return true;
+			}
+			catch(PDOException $e){
+				$this->koneksi->rollback();
+				die($e->getMessage());
+				// return false;
+			}
+
+
+
+			
+
+			
+			
+			$result = $statment->execute();
+
+			return $result;
+		}
+
+		/**
 		* 
 		*/
 		public function update($data){
 			
-		}
+		}		
 
 		/**
 		* 
 		*/
 		public function delete($id){
 			
+		}
+
+		/**
+		*
+		*/
+		public function deleteDetail($data){
+
+		}
+
+		/**
+		*
+		*/
+		public function deleteSkc($data){
+
 		}
 
 		/**

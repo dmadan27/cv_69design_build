@@ -34,23 +34,73 @@ $(document).ready(function(){
             }
         ],
         createdRow: function(row, data, dataIndex){
-            // if($(data[3]).text().toLowerCase() == "nonaktif") $(row).addClass('danger');
-            // for(var i = 0; i < 5; i++){
-            //     if(i != 1 && i != 2) $('td:eq('+i+')', row).addClass('text-center'); 
-            //     if(i == 2) $('td:eq('+i+')', row).addClass('text-right'); // rata kanan untuk data saldo
-            // }
-            console.log(data);
+            if($(data[7]).text().toLowerCase() == "selesai") $(row).addClass('danger');
+            for(var i = 0; i < 9; i++){
+                if(i == 0 || i == 6) $('td:eq('+i+')', row).addClass('text-right');
+            }
         }
     });
 
+    // btn tambah
     $('#tambah').on('click', function(){
-        if(this.value.trim() != ""){
-            window.location.href = BASE_URL+'proyek/form/';
-        }
+        if(this.value.trim() != "") window.location.href = BASE_URL+'proyek/form/';
+        else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
     });
 
 });
 
-function getView(id){
-    window.location.href = BASE_URL+'proyek/detail/'+id;
+/**
+*
+*/
+function getView(id, token){
+    if(token != "") window.location.href = BASE_URL+'proyek/detail/'+id;
+    else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+}
+
+/**
+*
+*/
+function getEdit(id, token){
+    if(token != "") window.location.href = BASE_URL+'proyek/form/'+id;
+    else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+}
+
+/**
+*
+*/
+function getDelete(id, token){
+    if(token.trim() != ""){
+        swal({
+            title: "Pesan Konfirmasi",
+            text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Ya, Hapus!",
+            cancelButtonText: "Batal",
+            closeOnConfirm: false,
+        }, function(){
+            $.ajax({
+                url: BASE_URL+'proyek/delete/'+id,
+                type: 'post',
+                dataType: 'json',
+                data: {"token_delete": token},
+                beforeSend: function(){
+
+                },
+                success: function(output){
+                    console.log(output);
+                    if(output){
+                        swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
+                        $("#proyekTable").DataTable().ajax.reload();
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown){ // error handling
+                    console.log(jqXHR, textStatus, errorThrown);
+                    swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+                }
+            })
+        });
+    }
+    else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
 }

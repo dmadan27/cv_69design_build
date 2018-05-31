@@ -1,12 +1,16 @@
 $(document).ready(function () {
-	generateID();
-	setStatus();
 	setStatusDetail();
 	
-	$('#submit_proyek').prop('value', 'action-add');
+	if($('#submit_proyek').val() == 'action-add') generateID();
+	else if($('#submit_proyek').val() == 'action-edit') getEdit($('#id').val().trim());
+		
 	$('#id').prop('disabled', true);
     //Initialize Select2 Elements
-    $('#skc').select2(); 
+    $('#skc').select2({
+    	placeholder: "Pilih Sub Kas Kecil",
+		allowClear: true
+    });
+
     setSkc();
 
  	//Date picker
@@ -17,6 +21,9 @@ $(document).ready(function () {
       orientation:"bottom auto",
       todayBtn: true,
     });
+
+    // input mask
+
  	
     // tambah detail
     $('#tambah_detail').on('click', function(){
@@ -72,10 +79,14 @@ $(document).ready(function () {
 
 		var data = {
 			index: index,
+			id: '',
+			id_proyek: $('#id').val().trim(),
 			angsuran: $('#angsuran').val().trim(),
 			persentase: persentase,
 			total_detail: total_detail,
 			status_detail: $('#status_detail').val().trim(),
+			aksi: 'tambah',
+			delete: false,
 		};
 
 		validDetail(data);
@@ -116,7 +127,7 @@ $(document).ready(function () {
 							'<td>' // angsuran
 								+'<input type="text" class="form-control input-sm" value="'+data.angsuran+'" '+
 								'onchange="onChange_angsuran('+data.index+', this)"></td>'+
-							'<td style="width: 150px;">'+
+							'<td>'+
 								'<div class="input-group">'+
 									'<input type="number" min="0" max="100" step="any" onchange="onChange_persentase('+data.index+',this)" '+
 									'class="form-control input-sm" value="'+data.persentase+'">'+
@@ -232,6 +243,18 @@ $(document).ready(function () {
 		console.log(listDetail);
 	}
 
+	/**
+	*
+	*/
+	function delete_detail(index, val){
+		$(val).parent().parent().remove();
+		$.each(listDetail, function(i, item){
+			if(item.index == index) item.delete = true;
+		});
+		numbering_listDetail();
+		console.log(listDetail);
+	}
+
 // =========================================================== //
 
 // ===================== Function skc ======================== //
@@ -244,34 +267,55 @@ $(document).ready(function () {
 
 		var data = {
 			index: index,
+			id: '',
+			id_proyek: $('#id').val().trim(), 
 			id_skc: $('#skc').val().trim(),
 			nama: $('#skc option:selected').text().split(' - ')[1],
+			aksi: 'tambah',
+			delete: false, 
 		};
 
 		// validDetail(data);
 		console.log(data);
 
-		// insert tabel
-		$('#detail_proyekTable > tbody:last-child').append(
-			'<tr>'+
-				'<td></td>'+ // no
-				'<td>' // id
-					+'<input type="text" class="form-control input-sm" value="'+data.angsuran+'" '+
-					'onchange="onChange_angsuran('+data.index+', this)"></td>'+
-				'<td>'+ // nama
-					'<div class="input-group">'+
-						'<input type="number" min="0" max="100" step="any" onchange="onChange_persentase('+data.index+',this)" '+
-						'class="form-control input-sm" value="'+data.persentase+'">'+
-						'<span class="input-group-addon">%</span>'+
-					'</div></td>'+
-				'<td>'+btnAksi_skc(data.index)+'</td>'+ // aksi
-			'</tr>'
-		);
+		if(validSkc(data.id_skc)){
+			indexSkc -= 1;
+			console.log(validSkc(data.id_skc));
+		}
+		else{
+			console.log(validSkc(data.id_skc));
+			listSkc.push(data);
+			// insert tabel
+			$('#sub_kas_kecilTable > tbody:last-child').append(
+				'<tr>'+
+					'<td></td>'+ // no
+					'<td>'+data.id_skc+'</td>'+
+					'<td>'+data.nama+'</td>'+
+					'<td>'+btnAksi_skc(data.index)+'</td>'+ // aksi
+				'</tr>'
+			);
 
+			$('#skc').val(null).trigger('change');
+			numbering_listSkc();
+		}
+		
 		console.log('Index : '+index);
 		console.log('Index Utama: '+indexSkc);
 	}
 	
+	/**
+	*
+	*/
+	function validSkc(skc){
+		var ada = false;
+
+		$.each(listSkc, function(index, item){
+			if(skc == item.id_skc && !item.delete) ada = true;
+		});
+
+		return ada;
+	}
+
 	/**
 	*
 	*/
@@ -292,6 +336,18 @@ $(document).ready(function () {
 		return btn;
 	}
 
+	/**
+	*
+	*/
+	function delete_skc(index, val){
+		$(val).parent().parent().remove();
+		$.each(listSkc, function(i, item){
+			if(item.index == index) item.status = true;
+		});
+		numbering_listDetail();
+		console.log(listSkc);
+	}
+
 // =========================================================== //
 
 /**
@@ -306,30 +362,33 @@ function getDataForm(){
 	var dp= parseFloat($('#dp').val().trim()) ? parseFloat($('#dp').val().trim()) : $('#dp').val().trim();
 	var cco = parseFloat($('#cco').val().trim()) ? parseFloat($('#cco').val().trim()) : $('#cco').val().trim();
 
+	var dataProyek = {
+		id: $('#id').val().trim(),
+		pemilik: $('#pemilik').val().trim(),
+		tgl: $('#tgl').val().trim(),
+		pembangunan: $('#pembangunan').val().trim(),
+		luas_area: $('#luas_area').val().trim(),
+		alamat: $('#alamat').val().trim(),
+		kota: $('#kota').val().trim(),
+		estimasi: $('#estimasi').val().trim(),
+		total: $('#total').val().trim(),
+		dp: $('#dp').val().trim(),
+		cco: $('#cco').val().trim(),
+		status: $('#status').val().trim(),
+	}
+
 	data.append('token', $('#token_form').val().trim());
 	data.append('id', $('#id').val().trim());
-	data.append('pemilik', $('#pemilik').val().trim());
-	data.append('tgl', $('#tgl').val().trim());
-	data.append('pembangunan', $('#pembangunan').val().trim());
-	data.append('luas_area', $('#luas_area').val().trim());
-	data.append('alamat', $('#alamat').val().trim());
-	data.append('kota', $('#kota').val().trim());
-	data.append('estimasi', $('#estimasi').val().trim());
-	data.append('total', $('#total').val().trim());
-	data.append('dp', $('#dp').val().trim());
-	data.append('cco', $('#cco').val().trim());
-	data.append('status', $('#status').val().trim());
-	
-	
-	// data.append('')
-	// data.append('')
+	data.append('dataProyek', JSON.stringify(dataProyek));
+	data.append('dataDetail', JSON.stringify(listDetail));
+	data.append('dataSkc', JSON.stringify(listSkc));
 	data.append('action', $('#submit_proyek').val().trim());
 
 	return data;
 }
 
 /**
-* function proses
+*
 */
 function submit(){
 	var data = getDataForm();
@@ -358,8 +417,110 @@ function submit(){
 		},
 		error: function(jqXHR, textStatus, errorThrown){
 			console.log(jqXHR, textStatus, errorThrown);
+			swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+			$('#submit_proyek').prop('disabled', false);
+			$('#submit_proyek').html($('#submit_proyek').text());
 		}
 
+	})
+}
+
+/**
+*
+*/
+function getEdit(id){
+	$.ajax({
+		url: BASE_URL+'proyek/get-edit/'+id.toLowerCase(),
+		type: 'post',
+		dataType: 'json',
+		data: {'token_edit': $('#token_form').val().trim()},
+		beforeSend: function(){},
+		success: function(output){
+			console.log(output);
+
+			// each dataDetail
+			$.each(output.dataDetail, function(i, data){
+				var index = indexDetail++;
+				var dataDetail = {
+					index: index,
+					id: data.id,
+					id_proyek: data.id_proyek,
+					angsuran: data.angsuran,
+					persentase: data.persentase,
+					total_detail: data.total_detail,
+					status_detail: data.status_detail,
+					aksi: 'edit',
+					delete: false,
+				}
+
+				listDetail.push(dataDetail);
+
+				var status = function(value){
+					return (data.status_detail.toLowerCase() == value.toLowerCase()) ? 'selected' : ''
+				};
+				$('#detail_proyekTable > tbody:last-child').append(
+					'<tr>'+
+						'<td></td>'+ // no
+						'<td>' // angsuran
+							+'<input type="text" class="form-control input-sm" value="'+data.angsuran+'" '+
+							'onchange="onChange_angsuran('+dataDetail.index+', this)"></td>'+
+						'<td>'+
+							'<div class="input-group">'+
+								'<input type="number" min="0" max="100" step="any" onchange="onChange_persentase('+dataDetail.index+',this)" '+
+								'class="form-control input-sm" value="'+data.persentase+'">'+
+								'<span class="input-group-addon">%</span>'+
+							'</div></td>'+ // persentase
+						'<td>'+
+							'<div class="input-group">'+
+								'<span class="input-group-addon">Rp</span>'+
+								'<input type="number" min="0" step="any" onchange="onChange_total('+dataDetail.index+',this)" '+
+								'class="form-control input-sm" value="'+data.total_detail+'">'+
+							'</div></td>'+ // total
+						'<td>'+
+							'<select onchange="onChange_status('+dataDetail.index+', this)" class="form-control input-sm">'+
+								'<option '+status('BELUM DIBAYAR')+'>BELUM DIBAYAR</option>'+
+								'<option '+status('LUNAS')+'>LUNAS</option>'+
+							'</select>'+
+						'</td>'+ // status
+						'<td>'+btnAksi_detail(dataDetail.index)+'</td>'+ // aksi
+					'</tr>'
+				);
+				numbering_listDetail();
+			});	
+
+			// each dataSkc
+			$.each(output.dataSkc, function(i, data){
+				var index = indexSkc++;
+				var dataSkc = {
+					index: index,
+					id: data.id,
+					id_proyek: data.id_proyek, 
+					id_skc: data.id_skc,
+					nama: data.nama,
+					aksi: 'edit',
+					delete: false, 
+				}
+
+				listSkc.push(dataSkc);
+
+				var status = function(value){
+					return (data.status_detail.toLowerCase() == value.toLowerCase()) ? 'selected' : ''
+				};
+				$('#sub_kas_kecilTable > tbody:last-child').append(
+					'<tr>'+
+						'<td></td>'+ // no
+						'<td>'+data.id_skc+'</td>'+
+						'<td>'+data.nama+'</td>'+
+						'<td>'+btnAksi_skc(dataSkc.index)+'</td>'+ // aksi
+					'</tr>'
+				);
+				numbering_listSkc();
+			});
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+            console.log(jqXHR, textStatus, errorThrown);
+            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+        }
 	})
 }
 
@@ -378,21 +539,6 @@ function setError(error){
 			$('.field-'+index).removeClass('has-error').addClass('has-success');
 			$('.pesan-'+index).text('');	
 		}
-	});
-}
-
-/**
-*
-*/
-function setStatus(){
-	var status = [
-		{value: "BERJALAN", text: "BERJALAN"},
-		{value: "SELESAI", text: "SELESAI"},
-	];
-
-	$.each(status, function(index, item){
-		var option = new Option(item.text, item.value);
-		$("#status").append(option);
 	});
 }
 
@@ -418,18 +564,18 @@ function setSkc(){
 	$.ajax({
 		url: BASE_URL+'proyek/get-skc',
 		dataType: 'json',
-		beforeSend: function(){
-
-		},
+		beforeSend: function(){},
 		success: function(data){
 			console.log(data);
-			$('#skc').select2({
-				data: data
+			$.each(data, function(index, item){
+				var newOption = new Option(item.text, item.id);
+				$('#skc').append(newOption).trigger('change');
 			});
-
+			$('#skc').val(null).trigger('change');
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling
             console.log(jqXHR, textStatus, errorThrown);
+            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
         }
 	})
 }
@@ -440,14 +586,15 @@ function setSkc(){
 function generateID(){
 	$.ajax({
 		url: BASE_URL+'proyek/get-last-id/',
-		beforeSend: function(){
-
-		},
+		type: 'post',
+		data: {token: $('#token_form').val().trim()},
+		beforeSend: function(){},
 		success: function(output){
 			$('#id').val(output);	
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling
             console.log(jqXHR, textStatus, errorThrown);
+            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
         }
 	})
 }
@@ -456,7 +603,14 @@ function generateID(){
 *
 */
 function resetForm(){
+	// trigger reset form
+	$('#form_proyek').trigger('reset');
 
+	// hapus semua pesan
+	$('.pesan').text('');
+
+	// hapus semua feedback
+	$('.form-group').removeClass('has-success').removeClass('has-error');
 }
 
 /**

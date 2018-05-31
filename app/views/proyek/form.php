@@ -3,18 +3,18 @@
 <div class="content-wrapper">
   	<section class="content-header">
       	<h1>
-        	General Form Elements
-        	<small>Preview</small>
+        	<?= $this->title['main']; ?>
+	    	<small><?= $this->title['sub']; ?></small>
       	</h1>
       	<ol class="breadcrumb">
-        	<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-	        <li><a href="#">Forms</a></li>
-	        <li class="active">General Elements</li>
+        	<li><a href="<?= BASE_URL; ?>"><i class="fa fa-dashboard"></i> Home</a></li>
+	        <li><a href="<?= BASE_URL.'proyek/'; ?>">Proyek</a></li>
+	        <li class="active">Form Data Proyek</li>
       	</ol>
     </section>
     <section class="content container-fluid">
   		<form id="form_proyek" role="form">
-  			<input type="hidden" id="token_form" value="<?= $this->data['token_add']?>">
+  			<input type="hidden" id="token_form" value="<?= $this->data['token_form']?>">
   			
   			<!-- panel tambah data proyek -->
   			<div class="row">
@@ -30,14 +30,14 @@
                         			<!-- ID -->
                         			<div class="form-group field-id has-feedback">
                                         <label for="id">ID Proyek</label>
-                                        <input type="text" class="form-control field" id="id" placeholder="">
+                                        <input type="text" class="form-control field" id="id" placeholder="" value="<?= $this->data['id']; ?>">
                                         <span class="help-block small pesan pesan-id"></span>
                                     </div>
 
                         			<!-- Pemilik -->
                                    	<div class="form-group field-pemilik has-feedback">
                                         <label for="pemilik">Pemilik</label>
-                                        <input type="text" class="form-control field" id="pemilik" placeholder="Masukan Pemilik Proyek">
+                                        <input type="text" class="form-control field" id="pemilik" placeholder="Masukan Pemilik Proyek" value="<?= $this->data['pemilik']; ?>">
                                         <span class="help-block small pesan pesan-pemilik"></span>
                                     </div>
 
@@ -48,7 +48,7 @@
                                         	<div class="input-group-addon">
                                           		<i class="fa fa-calendar"></i>
                                         	</div>
-                                          	<input type="text" name="tgl" class="form-control datepicker field" id="tgl" placeholder="yyyy-mm-dd">
+                                          	<input type="text" name="tgl" class="form-control datepicker field" id="tgl" placeholder="yyyy-mm-dd" value="<?= $this->data['tgl']; ?>">
                                       	</div>
                                       	<span class="help-block small pesan pesan-tgl"></span>
                                 	</div>
@@ -56,7 +56,7 @@
                                 	<!-- Input Pembangunan -->
                                     <div class="form-group field-pembangunan has-feedback">
                                       	<label for="pembangunan">Pembangunan</label>
-                                      	<input type="text" class="form-control field" id="pembangunan" name="pembangunan" placeholder="Masukan Nama Pembangunan">
+                                      	<input type="text" class="form-control field" id="pembangunan" name="pembangunan" placeholder="Masukan Nama Pembangunan" value="<?= $this->data['pembangunan']; ?>">
                                       	<span class="help-block small pesan pesan-pembangunan"></span>
                                     </div>
 
@@ -65,18 +65,17 @@
                                     <div class="form-group field-luas_area has-feedback">
                                       	<label for="luas_area">Luas Area</label>
                                       	<div class="input-group">
-                                      		<input type="number" class="form-control field" id="luas_area" name="luas_area" placeholder="Masukan Luas Area" min="0" step="any">
+                                      		<input type="number" class="form-control field" id="luas_area" name="luas_area" placeholder="Masukan Luas Area" min="0" step="any" value="<?= $this->data['luas_area']; ?>">
                                       		<span class="input-group-addon">M<sup>2</sup></span>
                                       	</div>
                                       	
                                       	<span class="help-block small pesan pesan-luas_area"></span>
                                     </div>  
 
-
                                     <!-- Input Alamat -->
                                     <div class="form-group field-alamat has-feedback">
                                       	<label for="alamat">Alamat</label>
-                                      	<textarea class="form-control field" id="alamat" name="alamat" placeholder="Masukan Alamat"></textarea>
+                                      	<textarea class="form-control field" id="alamat" name="alamat" placeholder="Masukan Alamat"><?= $this->data['alamat']; ?></textarea>
                                       	<span class="help-block small pesan pesan-alamat"></span>
                                     </div>
                         		</div>
@@ -86,57 +85,60 @@
                         			<!-- Input Kota -->
                                     <div class="form-group field-kota has-feedback">
                                       	<label for="kota">Kota</label>
-                                     	<input type="text" class="form-control field" id="kota" name="kota" placeholder="Masukan Kota">
+                                     	<input type="text" class="form-control field" id="kota" name="kota" placeholder="Masukan Kota" value="<?= $this->data['kota']; ?>">
                                       	<span class="help-block small pesan pesan-kota"></span>
                                     </div>  
 
-                                     <!-- Input Estimasi (Bulan) -->
-                                    <div class="form-group field-kota has-feedback">
-                                      <label for="estimasi">Estimasi (Bulan)</label>
-                                         <input type="number" min="0" step="1" class="form-control field" id="estimasi" name="estimasi" placeholder="Masukan Estimasi Pengerjaan (Bulan)">
-                                      <span class="help-block small pesan pesan-estimasi"></span>
+                                 	<!-- Input Estimasi (Bulan) -->
+                                    <div class="form-group field-estimasi has-feedback">
+                                      	<label for="estimasi">Estimasi (Bulan)</label>
+                                     	<input type="number" min="0" step="1" class="form-control field" id="estimasi" name="estimasi" placeholder="Masukan Estimasi Pengerjaan (Bulan)" value="<?= $this->data['estimasi']; ?>">
+                                      	<span class="help-block small pesan pesan-estimasi"></span>
                                     </div>
 
-                                      <!-- Nilai RAB -->
+                                  	<!-- Nilai RAB -->
                                     <div class="form-group field-total has-feedback">
-                                      <label for="total">Total RAB</label>
-                                      <div class="input-group">
+                                      	<label for="total">Total RAB</label>
+                                      	<div class="input-group">
                                       		<span class="input-group-addon">Rp.</span>
-                                      		<input type="number" min="0" step="any" class="form-control field" id="total" name="total" placeholder="Masukan Total RAB">
+                                      		<input type="text" class="form-control field" id="total" name="total" placeholder="Masukan Total RAB" value="<?= $this->data['total']; ?>">
                                       		<span class="input-group-addon">,00-</span>
                                       	</div>
                                          
-                                      <span class="help-block small pesan pesan-total"></span>
+                                      	<span class="help-block small pesan pesan-total"></span>
                                     </div>
 
-                                      <!-- Input DP-->
+                                  	<!-- Input DP-->
                                     <div class="form-group field-dp has-feedback">
-                                      <label for="dp">DP</label>
-                                       <div class="input-group">
+                                      	<label for="dp">DP</label>
+                                       	<div class="input-group">
                                       		<span class="input-group-addon">Rp.</span>
-                                      		<input type="number" min="0" step="any" class="form-control field" id="dp" name="dp" placeholder="Masukkan DP">
+                                      		<input type="text" class="form-control field" id="dp" name="dp" placeholder="Masukkan DP" value="<?= $this->data['dp']; ?>">
                                       		<span class="input-group-addon">,00-</span>
                                       	</div>
                                          
-                                      <span class="help-block small pesan pesan-dp"></span>
+                                 	 	<span class="help-block small pesan pesan-dp"></span>
                                     </div>
 
-                                      <!-- Input CCO-->
+                                  	<!-- Input CCO-->
                                     <div class="form-group field-cco has-feedback">
-                                      <label for="cco">CCO</label>
-                                      <div class="input-group">
+                                      	<label for="cco">CCO</label>
+                                      	<div class="input-group">
                                       		<span class="input-group-addon">Rp.</span>
-                                      		<input type="number" min="0" step="any" class="form-control field" id="cco" name="cco" placeholder="Masukan Change Contract Order">
+                                      		<input type="text" class="form-control field" id="cco" name="cco" placeholder="Masukan Change Contract Order" value="<?= $this->data['cco']; ?>">
                                       		<span class="input-group-addon">,00-</span>
                                       	</div>
                                          
-                                      <span class="help-block small pesan pesan-cco"></span>
+                                      	<span class="help-block small pesan pesan-cco"></span>
                                     </div>
 
                                     <!-- Status -->
                         			<div class="form-group field-status has-feedback">
-                                        <label for="status">Status Proyek</label>                     
-                                        <select class="form-control field" id="status"></select>
+                                        <label for="status">Status Proyek</label>           
+                                        <select class="form-control field" id="status">
+                                        	<option value="BERJALAN" <?= $selected = ($this->data['status'] == "BERJALAN") ? "selected" : ""; ?> >BERJALAN</option>
+                                        	<option value="SELESAI" <?= $selected = ($this->data['status'] == "SELESAI") ? "selected" : ""; ?> >SELESAI</option>
+                                        </select>
                                         <span class="help-block small pesan pesan-status"></span>
                                     </div>
                         		</div>
@@ -169,10 +171,10 @@
 			                        				<table id="detail_proyekTable" class="table table-bordered table-hover small">
 				                        				<thead>
 				                        					<tr>
-				                        						<th style="width: 15px">No</th>
+				                        						<th class="text-right" style="width: 15px">No</th>
 				                        						<th>Angsuran</th>
-				                        						<th>%</th>
-				                        						<th>Total</th>
+				                        						<th class="text-center" style="width: 150px;">%</th>
+				                        						<th class="text-right">Total</th>
 				                        						<th>Status</th>
 				                        						<th>Aksi</th>
 				                        					</tr>
@@ -190,10 +192,7 @@
                         	<div class="row">
                         		<!-- panel 2 -->
                         		<div class="col-md-12">
-                        			<!-- <div class="box-header">
-			                            <div class="box-title">Tambah Data</div>
-			                        </div> -->
-			                        <fieldset>
+		                        	<fieldset>
 			                        	<legend style="font-size: 18px;">Pemilihan Sub Kas Kecil</legend>
 			                        	<div class="row">
 			                        		<div class="col-md-6">
@@ -213,7 +212,7 @@
                         				<table id="sub_kas_kecilTable" class="table table-bordered table-hover small">
 	                        				<thead>
 	                        					<tr>
-	                        						<th>No</th>
+	                        						<th class="text-right" style="width: 15px">No</th>
 	                        						<th>ID</th>
 	                        						<th>Nama</th>
 	                        						<th>Aksi</th>
@@ -230,7 +229,7 @@
       			</div>
       		</div>
 
-      		 <div class="row">
+  		 	<div class="row">
       			<div class="col-lg-12 col-md-12 col-xs-12">    				
       				<div class="box box-info"> 
                         <div class="box-body">
@@ -241,7 +240,8 @@
                         		<div class="col-md-6 col-xs-6 ">
                         			<div class="btn-group pull-right">
 	                        			<button class="btn btn-default btn-flat btn-lg" type="button">Reset</button>
-	                        			<button class="btn btn-primary btn-flat btn-lg" id="submit_proyek" type="submit" value="<?= $this->data['action'];?>">Submit</button>
+	                        			<button class="btn btn-primary btn-flat btn-lg" id="submit_proyek" 
+	                        			type="submit" value="<?= $this->data['action'];?>">Submit</button>
                         			</div>	
                         		</div>
                         	</div>
@@ -261,4 +261,6 @@
 
 	var listSkc = [];
 	var indexSkc = 0;
+
+	var valStatus = "<?php print $this->data['status']; ?>";
 </script>
