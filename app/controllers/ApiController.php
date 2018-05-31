@@ -66,9 +66,9 @@
 		/**
 		*
 		*/
-		public function generate_id_pengajuan() {
+		public function generate_id_pengajuan($id_pengajuan) {
 			$this->model('Pengajuan_sub_kas_kecilModel');
-			$id_pengajuan = $_POST['id_pengajuan'];
+			
 			$data = !empty($this->Pengajuan_sub_kas_kecilModel->getLastID($id_pengajuan)['id']) ? $this->Pengajuan_sub_kas_kecilModel->getLastID($id_pengajuan)['id'] : false;
 
 			if(!$data) $id = $id_pengajuan.'0001';
@@ -80,10 +80,7 @@
 
 				$id = $kode.sprintf("%04s", $noUrut);
 			}
-
-			echo json_encode(array(
-				'id_pengajuan' => $id,	
-			));
+			return $id;
 		}
 
 		/**
@@ -91,29 +88,35 @@
 		*/
 		public function add_pengajuan(){
 			$this->model('Pengajuan_sub_kas_kecilModel');
+			$id_pengajuan = $_POST['id_pengajuan'];
 
-			// generate id pengajuan
+			echo json_encode(array(
+				// generate id pengajuan
+				'list_pengajuan' => $this->generate_id_pengajuan($id_pengajuan),
+
+				// get saldo 
 
 
-			// get data saldo
+				'status' => true
+			));
 		}
 
 		/**
 		*
 		*/
 		public function action_add_pengajuan(){
-			$data = isset($_POST) ? $_POST : false;
+			// $data = isset($_POST) ? $_POST : false;
 
-			$this->model('Pengajuan_sub_kas_kecilModel');
+			// $this->model('Pengajuan_sub_kas_kecilModel');
 
-			$data = array(
-				'pengajuan' => array(),
-				'detail' => array(
-					array(),
-					array(),
-					array(),
-				),
-			);
+			// $data = array(
+			// 	'pengajuan' => array(),
+			// 	'detail' => array(
+			// 		array(),
+			// 		array(),
+			// 		array(),
+			// 	),
+			// );
 
 			// insert pengajuan
 			// if($this->Pengajuan_sub_kas_kecilModel->insert($dataPengajuan)){
@@ -126,7 +129,16 @@
 
 			// insert detail
 
-			echo json_encode($data);
+			// echo json_encode($data);
+
+			$detail_pengajuan = json_decode($_POST['detail_pengajuan']);
+			$pengajuan = json_decode($_POST['pengajuan']);
+
+			// echo json_encode(array(
+			// 	'detail_pengajuan' => $detail_pengajuan,
+			// 	'pengajuan' => $pengajuan,
+			// 	'status' => true
+			// ));
 		}
 
 		/**
