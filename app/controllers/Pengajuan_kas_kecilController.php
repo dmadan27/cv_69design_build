@@ -115,10 +115,10 @@
 
 				// // button aksi
 				$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-				// $aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".', '."'".$this->token["edit"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+				$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".', '."'".$this->token["edit"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
 				// $aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 				
-				$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
+				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.'</div>';
 				
 				$dataRow = array();
 				$dataRow[] = $no_urut;
@@ -222,11 +222,11 @@
 		* return berupa json
 		*/
 		public function edit($id){
-			// $token = isset($_POST['token_edit']) ? $_POST['token_edit'] : false;
-			// $this->auth->cekToken($_SESSION['token_bank']['edit'], $token, 'bank');
+			$token = isset($_POST['token_edit']) ? $_POST['token_edit'] : false;
+			$this->auth->cekToken($_SESSION['token_pengajuan_kas_kecil']['edit'], $token, 'pengajuan_kas_kecil');
 
-			// $data = !empty($this->BankModel->getById($id)) ? $this->BankModel->getById($id) : false;
-			// echo json_encode($data);
+			$data = !empty($this->Pengajuan_kasKecilModel->getById($id)) ? $this->Pengajuan_kasKecilModel->getById($id) : false;
+			echo json_encode($data);
 		}
 
 		/**
@@ -238,60 +238,63 @@
 		* error => error apa saja yang ada dari hasil validasi
 		*/
 		public function action_edit(){
-			// $data = isset($_POST) ? $_POST : false;
-			// $this->auth->cekToken($_SESSION['token_bank']['edit'], $data['token'], 'bank');
+			$data = isset($_POST) ? $_POST : false;
+			$this->auth->cekToken($_SESSION['token_pengajuan_kas_kecil']['edit'], $data['token'], 'pengajuan_kas_kecil');
 			
-			// $status = false;
+			$status = false;
 
-			// // validasi data
-			// $validasi = $this->set_validation($data);
-			// $cek = $validasi['cek'];
-			// $error = $validasi['error'];
+			// validasi data
+			$validasi = $this->set_validation($data);
+			$cek = $validasi['cek'];
+			$error = $validasi['error'];
 
-			// if($cek){
-			// 	// validasi inputan
-			// 	$data = array(
-			// 		'id' => $this->validation->validInput($data['id']),
-			// 		'nama' => $this->validation->validInput($data['nama']),
-			// 		'status' => $this->validation->validInput($data['status'])
-			// 	);
+			if($cek){
+				// validasi inputan
+				$data = array(
+					'id' => $this->validation->validInput($data['id']),
+					'tgl' => $this->validation->validInput($data['tgl']),
+					'nama' => $this->validation->validInput($data['nama']),
+					'total' => $this->validation->validInput($data['total']),
+					'status' => $this->validation->validInput($data['status'])
+						
+				);
 
-			// 	// update db
+				// update db
 
-			// 	// transact
+				// transact
 
-			// 	if($this->BankModel->update($data)) {
-			// 		$status = true;
-			// 		$notif = array(
-			// 			'title' => "Pesan Berhasil",
-			// 			'message' => "Edit Data Bank Berhasil",
-			// 		);
-			// 	}
-			// 	else {
-			// 		$notif = array(
-			// 			'title' => "Pesan Gagal",
-			// 			'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
-			// 		);
-			// 	}
+				if($this->Pengajuan_kasKecilModel->update($data)) {
+					$status = true;
+					$notif = array(
+						'title' => "Pesan Berhasil",
+						'message' => "Edit Data Pengajuan Kas Kecil Berhasil",
+					);
+				}
+				else {
+					$notif = array(
+						'title' => "Pesan Gagal",
+						'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+					);
+				}
 
-			// 	// commit
-			// }
-			// else {
-			// 	$notif = array(
-			// 		'title' => "Pesan Pemberitahuan",
-			// 		'message' => "Silahkan Cek Kembali Form Isian",
-			// 	);
-			// }
+				// commit
+			}
+			else {
+				$notif = array(
+					'title' => "Pesan Pemberitahuan",
+					'message' => "Silahkan Cek Kembali Form Isian",
+				);
+			}
 			
 
-			// $output = array(
-			// 	'status' => $status,
-			// 	'notif' => $notif,
-			// 	'error' => $error,
-			// 	// 'data' => $data
-			// );
+			$output = array(
+				'status' => $status,
+				'notif' => $notif,
+				'error' => $error,
+				'data' => $data
+			);
 
-			// echo json_encode($output);
+			echo json_encode($output);
 		}
 
 		/**

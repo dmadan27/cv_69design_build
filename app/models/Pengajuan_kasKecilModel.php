@@ -85,15 +85,15 @@
 		* 
 		*/
 		public function update($data){
-			// $query = "UPDATE bank SET nama = :nama, status = :status WHERE id = :id;";
+			$query = "UPDATE bank SET nama = :nama, status = :status WHERE id = :id;";
 
-			// $statement = $this->koneksi->prepare($query);
-			// $statement->bindParam(':nama', $data['nama']);
-			// $statement->bindParam(':status', $data['status']);
-			// $statement->bindParam(':id', $data['id']);
-			// $result = $statement->execute();
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':nama', $data['nama']);
+			$statement->bindParam(':status', $data['status']);
+			$statement->bindParam(':id', $data['id']);
+			$result = $statement->execute();
 
-			// return $result;
+			return $result;
 		}
 
 		/**
