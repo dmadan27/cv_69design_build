@@ -236,15 +236,13 @@
 						'status' => $this->validation->validInput($dataProyek['status']),	
 					);
 
-					// insert db
-					// transact
-
-					// insert data proyek
 					$dataInsert = array(
 						'dataProyek' => $dataProyek,
 						'dataDetail' => $dataDetail,
 						'dataSkc' => $dataSkc,
 					);
+
+					// insert data proyek
 					if($this->ProyekModel->insert($dataInsert)){
 						$status = true;
 						$_SESSION['notif'] = array(
@@ -259,8 +257,6 @@
 							'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
 						);
 					}
-
-					// commit
 				}
 				else{
 					$notif = array(
@@ -462,16 +458,20 @@
 		*
 		*/
 		public function detail($id){
-			// // if(empty($id) || $id == "") $this->redirect(BASE_URL."proyek/");
-			// $data_detail != empty($this->ProyekModel->getById($id)) ? $this->ProyekModel->getById($id) : false;
-			// if(!$data_detail) $this->redirect(BASE_URL."proyek/");
+			$id = strtoupper($id);
+			if(empty($id) || $id == "") $this->redirect(BASE_URL."proyek/");
+
+			$dataProyek = !empty($this->ProyekModel->getById($id)) ? $this->ProyekModel->getById($id) : false;
+			
+			if(!$dataProyek) $this->redirect(BASE_URL."proyek/");
 
 			$css = array(
-				
+				// 'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css'
 			);
 			$js = array(
-			
-				
+				// 'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
+				// 'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				// 'app/views/proyek/js/initView.js',
 			);
 
 			$config = array(
@@ -483,29 +483,44 @@
 				'js' => $js,
 			);
 
-			// $status = ($data_detail['status'] == "AKTIF") ? '<span class="label label-success">'.$data_detail['status'].'</span>' : '<span class="label label-danger">'.$data_detail['status'].'</span>';
-			
-			// $_SESSION['token_bank']['view'] = md5($this->auth->getToken());
-			// $_SESSION['token_bank']['edit'] = md5($this->auth->getToken());
-			// $_SESSION['token_bank']['delete'] = md5($this->auth->getToken());
-			
-			// $this->token = array(
-			// 	'view' => password_hash($_SESSION['token_bank']['view'], PASSWORD_BCRYPT),
-			// 	'edit' => password_hash($_SESSION['token_bank']['edit'], PASSWORD_BCRYPT),
-			// 	'delete' => password_hash($_SESSION['token_bank']['delete'], PASSWORD_BCRYPT)
-			// );
+			// set token
+			$_SESSION['token_proyek'] = array(
+				'view' => md5($this->auth->getToken()),
+			);
 
-			// $data = array(
-			// 'id_bank' => $data_detail['id'],
-			// 'nama' => $data_detail['nama'],
-			// 'saldo' => $this->helper->cetakRupiah($data_detail['saldo']),
-			// 'status' => $status,
-			// 'token' => $this->token,
-			// );
+			$this->token = array(
+				'view' => password_hash($_SESSION['token_proyek']['view'], PASSWORD_BCRYPT),
+			);
 
-			$this->layout('proyek/view', $config);
+			$dataProyek = array(
+				'id' => $dataProyek['id'],
+				'pemilik' => $dataProyek['pemilik'],
+				'tgl' => $this->helper->cetakTgl($dataProyek['tgl'], 'full'),
+				'pembangunan' => $dataProyek['pembangunan'],
+				'luas_area' => $dataProyek['luas_area'],
+				'alamat' => $dataProyek['alamat'],
+				'kota' => $dataProyek['kota'],
+				'estimasi' => $dataProyek['estimasi'].' Bulan',
+				'total' => $this->helper->cetakRupiah($dataProyek['total']),
+				'dp' => $this->helper->cetakRupiah($dataProyek['dp']),
+				'cco' => $this->helper->cetakRupiah($dataProyek['cco']),
+				'status' => (strtolower($dataProyek['status']) == "selesai") ? '<span class="label label-success">'.$dataProyek['status'].'</span>' : '<span class="label label-primary">'.$dataProyek['status'].'</span>',
+				'progress' => array(
+					'style' => 'style="width: 40%"',
+					'value' => '40',
+					'text' => '40% Success',
+				),
+			);
 
+			$dataArus = array();
 
+			$data = array(
+				'token_view' => $this->token['view'],
+				'data_proyek' => $dataProyek,
+				'data_arus' => $dataArus,
+			);
+
+			$this->layout('proyek/view', $config, $data);
 		}
 
 		/**

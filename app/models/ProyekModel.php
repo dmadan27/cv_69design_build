@@ -133,44 +133,20 @@
 				);
 				$statment->closeCursor();
 
-				// insert detail_proyek
-				$queryDetail = 'INSERT INTO detail_proyek (id_proyek, angsuran, persentase, total, status) ';
-				$queryDetail .= 'VALUES (:id_proyek, :angsuran, :persentase, :total, :status);';
-				$statment = $this->koneksi->prepare($queryDetail);
-
 				foreach($dataDetail as $index => $row){
 					if(!$dataDetail[$index]['delete']){
 						array_map('strtoupper', $row);
-						$statment->execute(
-							array(
-								':id_proyek' => $row['id_proyek'],
-								':angsuran' => $row['angsuran'],
-								':persentase' => $row['persentase'],
-								':total' => $row['total_detail'],
-								':status' => $row['status_detail'],
-							)
-						);
+						$this->insertDetail($row);
 					}
 				}
-				$statment->closeCursor();
-
-				// insert logistik_proyek
-				$querySkc = 'INSERT INTO logistik_proyek (id_proyek, id_sub_kas_kecil) VALUES (:id_proyek, :id_sub_kas_kecil);';
-				$statment = $this->koneksi->prepare($querySkc);
 
 				foreach($dataSkc as $index => $row){
 					if(!$dataSkc[$index]['delete']){
 						array_map('strtoupper', $row);
-						$statment->execute(
-							array(
-								':id_proyek' => $row['id_proyek'],
-								':id_sub_kas_kecil' => $row['id_skc'],
-							)
-						);
+						$this->insertSkc($row);
 					}
 				}
-				$statment->closeCursor();
-
+				
 				$this->koneksi->commit();
 
 				return true;
@@ -180,16 +156,45 @@
 				die($e->getMessage());
 				// return false;
 			}
-
-
-
-			
-
-			
 			
 			$result = $statment->execute();
 
 			return $result;
+		}
+
+		/**
+		*
+		*/
+		public function insertDetail($data){
+			// insert detail_proyek
+			$query = 'INSERT INTO detail_proyek (id_proyek, angsuran, persentase, total, status) ';
+			$query .= 'VALUES (:id_proyek, :angsuran, :persentase, :total, :status);';
+			$statment = $this->koneksi->prepare($query);
+			$statment->execute(
+				array(
+					':id_proyek' => $data['id_proyek'],
+					':angsuran' => $data['angsuran'],
+					':persentase' => $data['persentase'],
+					':total' => $data['total_detail'],
+					':status' => $data['status_detail'],
+				)
+			);
+			$statment->closeCursor();
+		}
+
+		/**
+		*
+		*/
+		public function insertSkc($data){
+			$query = 'INSERT INTO logistik_proyek (id_proyek, id_sub_kas_kecil) VALUES (:id_proyek, :id_sub_kas_kecil);';
+			$statment = $this->koneksi->prepare($query);
+			$statment->execute(
+				array(
+					':id_proyek' => $data['id_proyek'],
+					':id_sub_kas_kecil' => $data['id_skc'],
+				)
+			);
+			$statment->closeCursor();
 		}
 
 		/**
@@ -198,6 +203,20 @@
 		public function update($data){
 			
 		}		
+
+		/**
+		*
+		*/
+		public function updateDetail($data){
+
+		}
+
+		/**
+		*
+		*/
+		public function updateSkc($data){
+			
+		}
 
 		/**
 		* 

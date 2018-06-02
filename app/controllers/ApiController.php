@@ -87,15 +87,16 @@
 		*
 		*/
 		public function add_pengajuan(){
+			$this->model('Sub_kas_kecilModel');
 			$this->model('Pengajuan_sub_kas_kecilModel');
 			$id_pengajuan = $_POST['id_pengajuan'];
+			$id_skc = $_POST['id'];
 
 			echo json_encode(array(
 				// generate id pengajuan
-				'list_pengajuan' => $this->generate_id_pengajuan($id_pengajuan),
-
+				'id_pengajuan' => $this->generate_id_pengajuan($id_pengajuan),
 				// get saldo 
-
+				'saldo' => $this->Sub_kas_kecilModel->getSaldoById($id_skc)['saldo'],
 
 				'status' => true
 			));
@@ -105,40 +106,27 @@
 		*
 		*/
 		public function action_add_pengajuan(){
-			// $data = isset($_POST) ? $_POST : false;
-
-			// $this->model('Pengajuan_sub_kas_kecilModel');
-
-			// $data = array(
-			// 	'pengajuan' => array(),
-			// 	'detail' => array(
-			// 		array(),
-			// 		array(),
-			// 		array(),
-			// 	),
-			// );
-
-			// insert pengajuan
-			// if($this->Pengajuan_sub_kas_kecilModel->insert($dataPengajuan)){
-			// 	foreach($dataDetail as $index => $array){
-			// 		foreach($value as $row){
-
-			// 		}
-			// 	}
-			// }
-
-			// insert detail
-
-			// echo json_encode($data);
+			$this->model('Pengajuan_sub_kas_kecilModel');
 
 			$detail_pengajuan = json_decode($_POST['detail_pengajuan']);
 			$pengajuan = json_decode($_POST['pengajuan']);
 
-			// echo json_encode(array(
-			// 	'detail_pengajuan' => $detail_pengajuan,
-			// 	'pengajuan' => $pengajuan,
-			// 	'status' => true
-			// ));
+			$data = array(
+				'pengajuan' => $pengajuan,
+				'detail_pengajuan' => $detail_pengajuan
+			);
+
+			$query_sukses = $this->Pengajuan_sub_kas_kecilModel->insert($data);
+
+			if ($query_sukses === true) {
+				echo json_encode(array(
+					'status' => true, 
+				));
+			} else {
+				echo json_encode(array(
+					'status' => false,
+				));
+			}
 		}
 
 		/**
@@ -207,10 +195,10 @@
 		public function mutasi(){
 			$page = (isset($_POST['page']) && !empty($_POST['page'])) ? $_POST['page'] : 1;
 
-			$this->model('ProyekModel');
+			$this->model('Mutasi_saldo_sub_kas_kecilModel');
 
-			$dataProyek = $this->ProyekModel->getAll_mobile($page);
-			$totalData = $this->ProyekModel->get_recordTotal_mobile();
+			$dataMutasi = $this->Mutasi_saldo_sub_kas_kecilModel->getAll_mobile($page);
+			$totalData = $this->Mutasi_saldo_sub_kas_kecilModel->get_recordTotal_mobile();
 			$totalPage = ceil($totalData/10);
 
 			$next = ($page < $totalPage) ? ($page + 1) : null;
@@ -230,6 +218,39 @@
 		/**
 		*
 		*/
+		private function set_validation_pengajuan($data){
+			// id
+			$this->validation->set_rules($data['id'], 'ID Pengajuan', 'id', 'string | 1 | 255 | required');
+			// id_sub_kas_kecil
+			$this->validation->set_rules($data['id_sub_kas_kecil'], 'ID Sub Kas Kecil', 'id_sub_kas_kecil', 'string | 1 | 255 | required');
+			// id_proyek
+			$this->validation->set_rules($data['id_proyek'], 'ID Proyek', 'id', 'string | 1 | 255 | required');
+			// total
+			$this->validation->set_rules($data['total'], 'Total', 'total', 'nilai | 1 | 99999999 | required');
 
+			return $this->validation->run();
+		}
+
+		/**
+		*
+		*/
+		private function set_validation_pengajuan_detail($data){
+			// id_pengajuan
+			$this->validation->set_rules($data['id_pengajuan'], 'ID Pengajuan', 'id', 'string | 1 | 255 | required');
+			// nama
+			$this->validation->set_rules($data['nama'], 'Nama', 'nama', 'string | 1 | 255 | required');
+			// jenis
+			$this->validation->set_rules($data['jenis'], 'Jenis', 'jenis', 'string | 1 | 255 | required');
+			// satuan
+			$this->validation->set_rules($data['satuan'], 'Satuan', 'satuan', 'string | 1 | 255 | required');
+			// qty
+			$this->validation->set_rules($data['qty'], 'Qty', 'qty', 'angka | 1 | 5 | required');
+			// harga
+			$this->validation->set_rules($data['harga'], 'Total', 'total', 'nilai | 1 | 99999999 | required');
+			// subtotal
+			$this->validation->set_rules($data['subtotal'], 'Total', 'total', 'nilai | 1 | 99999999 | required');
+
+			return $this->validation->run();
+		}
 
 	}

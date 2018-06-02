@@ -1,4 +1,8 @@
-<?php Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung"); ?>
+<?php 
+	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung"); 
+	$proyek = $this->data['data_proyek'];
+	$arus = $this->data['data_arus'];
+?>
 
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
@@ -17,75 +21,227 @@
 	</section>
 	<!-- Main content -->
 	<section class="content container-fluid">
-		<!-- START CUSTOM TABS -->
-      <h2 class="page-header">AdminLTE Custom Tabs</h2>
+		<div class="row">
+			<div class="col-lg-12 col-md-12 col-xs-12">
+				<div class="box">
+					<div class="box-body">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="nav-tabs-custom">
+									<ul class="nav nav-tabs">
+										<li class="active"><a href="#tab_1" data-toggle="tab">Profil Proyek</a></li>
+				              			<li><a href="#tab_2" data-toggle="tab">Arus Terment dan Kas Pelaksanaan Project</a></li>
+				              			<li><a href="#tab_3" data-toggle="tab">Alokasi Dana Project</a></li>
+									</ul>
+									<!-- tab content -->
+									<div class="tab-content">
+										<!-- Tab 1: profil proyek -->
+										<div class="tab-pane active" id="tab_1">
+											<div class="row">
+												<!-- data profil -->
+												<div class="col-md-6 col-xs-12">
+													<table class="table table-hover">
+														<tr>
+															<td><strong>Id Proyek</strong></td>
+															<td><?= $proyek['id'] ?></td>
+														</tr>
+														<tr>
+															<td><strong>Pemilik</strong></td>
+															<td><?= $proyek['pemilik'] ?></td>
+														</tr>
+														<tr>
+															<td><strong>Tanggal</strong></td>
+															<td><?= $proyek['tgl'] ?></td>
+														</tr>
+														<tr>
+															<td><strong>Pembangunan</strong></td>
+															<td><?= $proyek['pembangunan'] ?></td>
+														</tr>
+														<tr>
+															<td><strong>Luas Area</strong></td>
+															<td class="text-right"><?= $proyek['luas_area'] ?> M<sup>2</sup></td>
+														</tr>
+														<tr>
+															<td><strong>Alamat</strong></td>
+															<td><?= $proyek['alamat'] ?></td>
+														</tr>
+														<tr>
+															<td><strong>Kota</strong></td>
+															<td><?= $proyek['kota'] ?></td>
+														</tr>
+														<tr>
+															<td><strong>Estimasi Pembangunan</strong></td>
+															<td><?= $proyek['estimasi'] ?></td>
+														</tr>
+													</table>
+												</div>
+												<!-- data keuangan -->
+												<div class="col-md-6 col-xs-12">
+													<table class="table table-hover">
+														<tr>
+															<td><strong>Nilai RAB</strong></td>
+															<td class="text-right"><?= $proyek['total'] ?></td>
+														</tr>
+														<tr>
+															<td><strong>DP</strong></td>
+															<td class="text-right"><?= $proyek['dp'] ?></td>
+														</tr>
+														<tr>
+															<td><strong>CCO</strong></td>
+															<td class="text-right"><?= $proyek['cco'] ?></td>
+														</tr>
+														<tr>
+															<td><strong>Status</strong></td>
+															<td><?= $proyek['status'] ?></td>
+														</tr>
+														<tr>
+															<td colspan="2"><strong>Progress</strong>
+																<div class="progress">
+											                		<div class="progress-bar progress-bar-primary progress-bar-striped active" role="progressbar" aria-valuenow="<?= $proyek['progress']['value'] ?>" aria-valuemin="0" aria-valuemax="100" <?= $proyek['progress']['style'] ?> >
+											                  			<span class="sr-only"><?= $proyek['progress']['text'] ?></span>
+											                		</div>
+											              		</div>
+											              	</td>
+														</tr>
+													</table>
+												</div>
+											</div>		
+										</div>
 
-      <div class="row">
-        <div class="col-md-12">
-          <!-- Custom Tabs (Pulled to the right) -->
-          <div class="nav-tabs-custom">
-            <ul class="nav nav-tabs pull-right">
-              <li class="active"><a href="#tab_1-1" data-toggle="tab">Tab 1</a></li>
-              <li><a href="#tab_2-2" data-toggle="tab">Tab 2</a></li>
-              <li><a href="#tab_3-2" data-toggle="tab">Tab 3</a></li>
-              <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                  Dropdown <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu">
-                  <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li>
-                  <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li>
-                  <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li>
-                  <li role="presentation" class="divider"></li>
-                  <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
-                </ul>
-              </li>
-              <li class="pull-left header"><i class="fa fa-th"></i> Custom Tabs</li>
-            </ul>
-            <div class="tab-content">
-              <div class="tab-pane active" id="tab_1-1">
-                <b>How to use:</b>
+										<!-- Tab 2 -->
+										<div class="tab-pane" id="tab_2">
+											<div class="box-group" id="accordion">
+												<!-- Arus Terment Project -->
+												<div class="panel box box-default">
+													<div class="box-header with-border">
+														<div class="box-title">
+															<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+				                        						Arus Terment Project
+				                      						</a>
+														</div>
+													</div>
+													<div id="collapseOne" class="panel-collapse collapse in">
+														<div class="box-body">
+															<div class="row">
+																<div class="col-md-12">
+																	<table class="table table-hover">
+																		<tr>
+																			<td><strong>Total Pelaksanaan Utama</strong></td>
+																			<td></td>
+																		</tr>
+																		<tr>
+																			<td>Nilai RAB Kontrak</td>
+																			<td></td>
+																		</tr>
+																		<tr>
+																			<td>CCO</td>
+																			<td></td>
+																		</tr>
+																		<tr>
+																			<td><strong>Nilai Terment diterima</strong></td>
+																			<td></td>
+																		</tr>
+																		<tr>
+																			<td><strong>Sisa Terment Project</strong></td>
+																			<td></td>
+																		</tr>
+																	</table>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											<!-- Arus Kas Pelaksanaan Project -->
+											<div class="box-group" id="accordion_2">
+												<div class="panel box box-default">
+													<div class="box-header with-border">
+														<h4 class="box-title">
+															<a data-toggle="collapse" data-parent="#accordion_2" href="#collapseTwo">
+				                        						Arus Kas Pelaksanaan Project
+				                      						</a>
+														</h4>
+													</div>
+													<div id="collapseTwo" class="panel-collapse collapse">
+														<div class="box-body">
+															<div class="row">
+																<div class="col-md-12">
+																	<table class="table table-hover">
+																		<tr>
+																			<td><strong>Nilai Terment Masuk</strong></td>
+																			<td></td>
+																		</tr>
+																		<tr>
+																			<td><strong>Total Pelaksanaan Project</strong></td>
+																			<td></td>
+																		</tr>
+																		<tr>
+																			<td>Keluaran Tunai</td>
+																			<td></td>
+																		</tr>
+																		<tr>
+																			<td>Keluaran Kredit</td>
+																			<td></td>
+																		</tr>
+																		<tr>
+																			<td><strong>Saldo Kas Pelaksanaan</strong></td>
+																			<td></td>
+																		</tr>
+																		<tr>
+																			<td><strong>Selisih Terment Masuk - Keluran Tunai</strong></td>
+																			<td></td>
+																		</tr>
+																	</table>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>	
+											</div>
+											
+													
+										</div>
 
-                <p>Exactly like the original bootstrap tabs except you should use
-                  the custom wrapper <code>.nav-tabs-custom</code> to achieve this style.</p>
-                A wonderful serenity has taken possession of my entire soul,
-                like these sweet mornings of spring which I enjoy with my whole heart.
-                I am alone, and feel the charm of existence in this spot,
-                which was created for the bliss of souls like mine. I am so happy,
-                my dear friend, so absorbed in the exquisite sense of mere tranquil existence,
-                that I neglect my talents. I should be incapable of drawing a single stroke
-                at the present moment; and yet I feel that I never was a greater artist than now.
-              </div>
-              <!-- /.tab-pane -->
-              <div class="tab-pane" id="tab_2-2">
-                The European languages are members of the same family. Their separate existence is a myth.
-                For science, music, sport, etc, Europe uses the same vocabulary. The languages only differ
-                in their grammar, their pronunciation and their most common words. Everyone realizes why a
-                new common language would be desirable: one could refuse to pay expensive translators. To
-                achieve this, it would be necessary to have uniform grammar, pronunciation and more common
-                words. If several languages coalesce, the grammar of the resulting language is more simple
-                and regular than that of the individual languages.
-              </div>
-              <!-- /.tab-pane -->
-              <div class="tab-pane" id="tab_3-2">
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
-                when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-                It has survived not only five centuries, but also the leap into electronic typesetting,
-                remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset
-                sheets containing Lorem Ipsum passages, and more recently with desktop publishing software
-                like Aldus PageMaker including versions of Lorem Ipsum.
-              </div>
-              <!-- /.tab-pane -->
-            </div>
-            <!-- /.tab-content -->
-          </div>
-          <!-- nav-tabs-custom -->
-        </div>
-        <!-- /.col -->
-      </div>
-      <!-- /.row -->
-      <!-- END CUSTOM TABS -->
+										<!-- Tab 3 -->
+										<div class="tab-pane" id="tab_3">
+											<div class="row">
+												<div class="col-md-12">
+													<div class="form-group">
+														<!-- export -->
+														<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>	
+													</div>	
+												</div>
+											</div>
+											<div class="row">
+												<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+													<input type="hidden" id="token_view" value="<?= $this->data['token_view']; ?>">
+													<table id="alokasi_dana_proyekTable" class="table table-bordered table-hover">
+														<thead>
+															<tr>
+																<th class="text-right">No</th>
+																<th>ID Pengajuan / Operasional</th>
+																<th>ID Sub Kas Kecil</th>
+																<th>Nama</th>
+																<th>Tanggal</th>
+																<th class="text-right">Total</th>
+															</tr>
+														</thead>
+														<tbody>
+														</tbody>
+													</table>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+						
 	</section>
 	<!-- /.content -->
 
