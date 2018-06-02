@@ -40,7 +40,7 @@
 					</div>
 					<!-- box body -->
 					<div class="box-body">
-						<!-- <input type="hidden" id="token_list" value="<?= $this->data['token_list']; ?>"> -->
+						<input type="hidden" id="token_list" value="<?= $this->data['token_list']; ?>">
 						<table id="kasKecilTable" class="table table-bordered table-hover">
 							<thead>
 								<tr>
@@ -65,4 +65,10 @@
 		</div>			
 	</section>
 	<!-- /.content -->
+
+	<!-- load form -->
+	<?php include_once('form.php'); ?>
+	<script type="text/javascript">
+		var edit_view = false;
+	</script>
 </div>

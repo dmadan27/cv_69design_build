@@ -1,130 +1,94 @@
-<?php  ?>
+<?php Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung"); ?>
 
-<div class="content-wrapper">
-  	<section class="content-header">
-      	<h1>
-        	General Form Elements
-        	<small>Preview</small>
-      	</h1>
-      	<ol class="breadcrumb">
-        	<li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-	        <li><a href="#">Forms</a></li>
-	        <li class="active">Kas Kecil</li>
-      	</ol>
-    </section>
-    <section class="content container-fluid">
-  		<form id="form_kas_kecil" role="form">
-  			<input type="hidden" id="token_form" value="<?= $this->data['token_add']?>">
-  			
-  			<!-- panel tambah data proyek -->
-  			<div class="row">
-      			<div class="col-lg-12 col-md-12 col-xs-12">    				
-      				<div class="box box-info"> 
-                        <div class="box-header">
-                            <div class="box-title">Tambah Data</div>
-                        </div>
-                        <div class="box-body">
-                        	<div class="row">
-                        		<!-- panel 1 -->
-                        		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                        			<!-- ID -->
-                        			<div class="form-group field-id has-feedback">
-                                        <label for="id">ID Kas Kecil</label>
-                                        <input type="text" class="form-control field" id="id" placeholder="">
-                                        <span class="help-block small pesan pesan-id"></span>
-                                    </div>
+<div class="modal fade" id="modalKasKecil">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <!-- header modal -->
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+                <h4 class="modal-title">Form Data Kas Kecil</h4>
+      </div>
+      <form id="form_kas_kecil" role="form">
+        <input type="hidden" id="id">
+        <input type="hidden" id="token_form">
+        <!-- body modal -->
+        <div class="modal-body">
+          <div class="row">
+            <!-- panel kiri -->
+            <div class="col-md-6">
+                <!-- field id -->
+                <div class="form-group field-id has-feedback">
+                  <label for="id">ID Kas Kecil</label>
+                  <input type="text" name="id" id="id" class="form-control field" placeholder="">
+                  <span class="help-block small pesan pesan-id"></span>
+                </div>
 
-                        			<!-- Nama -->
-                                   	<div class="form-group field-nama has-feedback">
-                                        <label for="nama">Nama</label>
-                                        <input type="text" class="form-control field" id="nama" placeholder="Masukan Nama Kas Kecil">
-                                        <span class="help-block small pesan pesan-nama"></span>
-                                    </div>
+                <!-- field nama -->
+                <div class="form-group field-nama has-feedback">
+                  <label for="nama">Nama</label>
+                  <input type="text" name="nama" id="nama" class="form-control field" placeholder="Masukan Nama">
+                  <span class="help-block small pesan pesan-nama"></span>
+                </div>
+                
+                <!-- field alamat -->
+                <div class="form-group field-alamat has-feedback">
+                  <label for="alamat">Alamat</label>
+                  <textarea class="form-control field" id="alamat" name="alamat" placeholder="Masukan Alamat"></textarea>
+                  <span class="help-block small pesan pesan-alamat"></span>
+                </div>
 
-                                    <!-- Alamat -->
-                                    <div class="form-group field-alamat has-feedback">
-                                      	<label for="alamat">Alamat</label>
-                                      	 <textarea name="alamat" class="form-control" placeholder="Masukan Alamat"></textarea>
-                                      	<span class="help-block small pesan pesan-alamat"></span>
-                                	</div>
+                  <!-- field no_telp -->
+                <div class="form-group field-no_telp has-feedback">
+                  <label for="no_telp">No. Telepon</label>
+                  <input type="text" name="no_telp" id="no_telp" class="form-control field" placeholder="Masukan Nomor Telepon">
+                  <span class="help-block small pesan pesan-no_telp"></span>
+                </div>
+            </div>
 
-                                	<!-- No Telp -->
-                                    <div class="form-group field-no_telp has-feedback">
-                                      	<label for="no_telp">Nomor Telepon</label>
-                                      	<input type="text" class="form-control field" id="no_telp" name="no_telp" placeholder="Masukan Nomor Telepon">
-                                      	<span class="help-block small pesan pesan-no_telp"></span>
-                                    </div>
+            <!-- panel kanan -->
+            <div class="col-md-6">
+               <!-- email -->
+                <div class="form-group field-email has-feedback">
+                  <label for="email">Email</label>
+                  <input type="text" name="email" id="email" class="form-control field" placeholder="Masukan Email">
+                  <span class="help-block small pesan pesan-email"></span>
+                </div>
 
+                <!-- foto -->
+                <div class="form-group field-foto has-feedback">
+                  <label for="foto">Foto</label>
+                  <input type="text" name="foto" id="foto" class="form-control field">
+                  <span class="help-block small pesan pesan-foto"></span>
+                </div>
 
-                                    
+                 <!-- saldo -->
+                <div class="form-group field-saldo has-feedback">
+                  <label for="saldo">Saldo</label>
+                  <input type="text" name="saldo" id="saldo" class="form-control field" placeholder="Masukan Saldo">
+                  <span class="help-block small pesan pesan-saldo"></span>
+                </div>
 
-
-                                   
-                        		</div>
-
-                        		<!-- panel 2 -->
-                        		<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                              <!-- Input Email -->
-                                    <div class="form-group field-email has-feedback">
-                                        <label for="email">Email</label>
-                                        
-                                          <input type="text" class="form-control field" id="email" name="email" placeholder="Masukan Email">
-                                        <span class="help-block small pesan pesan-email"></span>
-                                    </div>  
-
-                               <!-- Input Foto -->
-                                    <div class="form-group field-foto has-feedback">
-                                        <label for="foto">Foto</label>
-                                        <input type="file" name="foto" class="form-control field">
-                                        <span class="help-block small pesan pesan-foto"></span>
-                                    </div>
-
-                        			<!-- Input Saldo -->
-                                    <div class="form-group field-saldo has-feedback">
-                                      	<label for="saldo">Saldo</label>
-                                     	<input type="text" class="form-control field" id="saldo" name="saldo" placeholder="Masukan Saldo">
-                                      	<span class="help-block small pesan pesan-saldo"></span>
-                                    </div>  
-
-                                     <!-- Input Status Kas Kecil -->
-                                    <div class="form-group field-status has-feedback">
-                                      <label for="status">Status</label>
-                                         <select name="status" class="form-control field" id="status">
-                                           <option value="AKTIF">AKTIF</option>
-                                           <option value="NONAKTIF">NONAKTIF</option>
-                                         </select>
-                                      <span class="help-block small pesan pesan-status"></span>
-                                    </div>
-                        		</div>
-                        	</div>
-                        </div>
-                        <div class="clearfix"></div>
-                    </div>
-      			</div>
-      		</div>
-            
-           
-      		 <div class="row">
-      			<div class="col-lg-12 col-md-12 col-xs-12">    				
-      				<div class="box box-info"> 
-                        <div class="box-body">
-                        	<div class="row">
-                        		<div class="col-md-6 col-xs-6">
-                        			<button class="btn btn-default btn-flat btn-lg" type="button">Kembali</button>
-                           		</div>
-                        		<div class="col-md-6 col-xs-6 ">
-                        			<div class="btn-group pull-right">
-	                        			<button class="btn btn-default btn-flat btn-lg" type="button">Reset</button>
-	                        			<button class="btn btn-primary btn-flat btn-lg" id="submit_kas_kecil" type="submit" value="<?= $this->data['action'];?>">Submit</button>
-                        			</div>	
-                        		</div>
-                        	</div>
-                        </div>
-                        <div class="clearfix"></div>
-                    </div>
-      			</div>
-      		</div>
-      	</form>
-	</section>
+                 <!-- status -->
+                <div class="form-group field-status has-feedback">
+                  <label for="status">Status</label>
+                  <select name="status" class="form-control field" id="status">
+                    <option value="AKTIF">AKTIF</option>
+                    <option value="NONAKTIF">NONAKTIF</option>
+                    
+                  </select>
+                  <span class="help-block small pesan pesan-status"></span>
+                </div>
+            </div>
+          </div>
+        </div>
+        <!-- modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Kembali</button>
+                  <button type="submit" id="submit_kas_kecil" class="btn btn-primary" value="tambah">Simpan Data</button>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
-
