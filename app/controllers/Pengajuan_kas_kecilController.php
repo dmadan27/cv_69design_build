@@ -55,23 +55,23 @@
 				'js' => $js,
 			);
 			
-			// set token
-			// $_SESSION['token_bank'] = array(
-			// 	'list' => md5($this->auth->getToken()),
-			// 	'add' => md5($this->auth->getToken()),
-			// );
+			//set token
+			$_SESSION['token_pengajuan_kas_kecil'] = array(
+				'list' => md5($this->auth->getToken())
+				// 'add' => md5($this->auth->getToken()),
+			);
 
-			// $this->token = array(
-			// 	'list' => password_hash($_SESSION['token_bank']['list'], PASSWORD_BCRYPT),
+			$this->token = array(
+				'list' => password_hash($_SESSION['token_pengajuan_kas_kecil']['list'], PASSWORD_BCRYPT)
 			// 	'add' => password_hash($_SESSION['token_bank']['add'], PASSWORD_BCRYPT),	
-			// );
+			);
 
-			// $data = array(
-			// 	'token_list' => $this->token['list'],
+			$data = array(
+				'token_list' => $this->token['list']
 			// 	'token_add' => $this->token['add'],
-			// );
+			);
 
-			$this->layout('pengajuan_kas_kecil/list', $config);
+			$this->layout('pengajuan_kas_kecil/list', $config, $data);
 		}	
 
 		/**
@@ -81,10 +81,10 @@
 		* return json
 		*/
 		public function get_list(){
-			// $token = isset($_POST['token_list']) ? $_POST['token_list'] : false;
+			$token = isset($_POST['token_list']) ? $_POST['token_list'] : false;
 			
-			// // cek token
-			// $this->auth->cekToken($_SESSION['token_bank']['list'], $token, 'bank');
+			// cek token
+			$this->auth->cekToken($_SESSION['token_pengajuan_kas_kecil']['list'], $token, 'pengajuan_kas_kecil');
 			
 			// config datatable
 			$config_dataTable = array(
@@ -97,14 +97,14 @@
 
 			$dataPengajuanKasKecil = $this->Pengajuan_kasKecilModel->getAllDataTable($config_dataTable);
 
-			// // set token
-			// $_SESSION['token_bank']['edit'] = md5($this->auth->getToken());
-			// $_SESSION['token_bank']['delete'] = md5($this->auth->getToken());
+			// set token
+			$_SESSION['token_pengajuan_kas_kecil']['edit'] = md5($this->auth->getToken());
+			$_SESSION['token_pengajuan_kas_kecil']['delete'] = md5($this->auth->getToken());
 			
-			// $this->token = array(
-			// 	'edit' => password_hash($_SESSION['token_bank']['edit'], PASSWORD_BCRYPT),
-			// 	'delete' => password_hash($_SESSION['token_bank']['delete'], PASSWORD_BCRYPT),	
-			// );
+			$this->token = array(
+				'edit' => password_hash($_SESSION['token_pengajuan_kas_kecil']['edit'], PASSWORD_BCRYPT),
+				'delete' => password_hash($_SESSION['token_pengajuan_kas_kecil']['delete'], PASSWORD_BCRYPT),	
+			);
 
 			$data = array();
 			$no_urut = $_POST['start'];
@@ -116,9 +116,9 @@
 				// // button aksi
 				$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
 				$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".', '."'".$this->token["edit"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-				// $aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+				$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 				
-				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.'</div>';
+				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
 				
 				$dataRow = array();
 				$dataRow[] = $no_urut;
@@ -242,8 +242,15 @@
 			$this->auth->cekToken($_SESSION['token_pengajuan_kas_kecil']['edit'], $data['token'], 'pengajuan_kas_kecil');
 			
 			$status = false;
-
-			// validasi data
+			$error = "";
+			if(!$data){
+				$notif = array(
+					'title' => "Pesan Pemberitahuan",
+					'message' => "Silahkan Cek Kembali Form Isian",
+				);
+			}
+			else{
+				// validasi data
 			$validasi = $this->set_validation($data);
 			$cek = $validasi['cek'];
 			$error = $validasi['error'];
@@ -252,9 +259,9 @@
 				// validasi inputan
 				$data = array(
 					'id' => $this->validation->validInput($data['id']),
-					'tgl' => $this->validation->validInput($data['tgl']),
-					'nama' => $this->validation->validInput($data['nama']),
-					'total' => $this->validation->validInput($data['total']),
+					// 'tgl' => $this->validation->validInput($data['tgl']),
+					// 'nama' => $this->validation->validInput($data['nama']),
+					// 'total' => $this->validation->validInput($data['total']),
 					'status' => $this->validation->validInput($data['status'])
 						
 				);
@@ -284,14 +291,18 @@
 					'title' => "Pesan Pemberitahuan",
 					'message' => "Silahkan Cek Kembali Form Isian",
 				);
+				
 			}
+		}
+
+			
 			
 
 			$output = array(
 				'status' => $status,
 				'notif' => $notif,
 				'error' => $error,
-				'data' => $data
+				// 'data' => $data
 			);
 
 			echo json_encode($output);
@@ -361,13 +372,13 @@
 		* return json
 		*/
 		public function delete($id){
-			// $token = isset($_POST['token_delete']) ? $_POST['token_delete'] : false;
-			// $this->auth->cekToken($_SESSION['token_bank']['delete'], $token, 'bank');
+			$token = isset($_POST['token_pengajuan_kas_kecil']) ? $_POST['token_delete'] : false;
+			$this->auth->cekToken($_SESSION['token_pengajuan_kas_kecil']['delete'], $token, 'pengajuan_kas_kecil');
 			
-			// if($this->BankModel->delete($id)) $status = true;
-			// else $status = false;
+			if($this->Pengajuan_kasKecilModel->delete($id)) $status = '';
+			else $status = 'gagal';
 
-			// echo json_encode($status);
+			echo json_encode($status);
 		}
 
 		/**
