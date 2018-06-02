@@ -105,40 +105,27 @@
 		*
 		*/
 		public function action_add_pengajuan(){
-			// $data = isset($_POST) ? $_POST : false;
-
-			// $this->model('Pengajuan_sub_kas_kecilModel');
-
-			// $data = array(
-			// 	'pengajuan' => array(),
-			// 	'detail' => array(
-			// 		array(),
-			// 		array(),
-			// 		array(),
-			// 	),
-			// );
-
-			// insert pengajuan
-			// if($this->Pengajuan_sub_kas_kecilModel->insert($dataPengajuan)){
-			// 	foreach($dataDetail as $index => $array){
-			// 		foreach($value as $row){
-
-			// 		}
-			// 	}
-			// }
-
-			// insert detail
-
-			// echo json_encode($data);
+			$this->model('Pengajuan_sub_kas_kecilModel');
 
 			$detail_pengajuan = json_decode($_POST['detail_pengajuan']);
 			$pengajuan = json_decode($_POST['pengajuan']);
 
-			// echo json_encode(array(
-			// 	'detail_pengajuan' => $detail_pengajuan,
-			// 	'pengajuan' => $pengajuan,
-			// 	'status' => true
-			// ));
+			$data = array(
+				'pengajuan' => $pengajuan,
+				'detail_pengajuan' => $detail_pengajuan
+			);
+
+			$query_sukses = $this->Pengajuan_sub_kas_kecilModel->insert($data);
+
+			if ($query_sukses === true) {
+				echo json_encode(array(
+					'status' => true, 
+				));
+			} else {
+				echo json_encode(array(
+					'status' => false,
+				));
+			}
 		}
 
 		/**
