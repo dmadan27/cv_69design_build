@@ -342,7 +342,10 @@ $(document).ready(function () {
 	function delete_skc(index, val){
 		$(val).parent().parent().remove();
 		$.each(listSkc, function(i, item){
-			if(item.index == index) item.status = true;
+			if(item.index == index && item.aksi == 'edit') item.status = true;
+			// else (item.index == index && item.aksi == 'tambah'){
+				
+			// }
 		});
 		numbering_listDetail();
 		console.log(listSkc);
