@@ -55,23 +55,23 @@
 				'js' => $js,
 			);
 			
-			// // set token
-			// $_SESSION['token_bank'] = array(
-			// 	'list' => md5($this->auth->getToken()),
-			// 	'add' => md5($this->auth->getToken()),
-			// );
+			// set token
+			$_SESSION['token_operasional'] = array(
+				'list' => md5($this->auth->getToken()),
+				'add' => md5($this->auth->getToken()),
+			);
 
-			// $this->token = array(
-			// 	'list' => password_hash($_SESSION['token_bank']['list'], PASSWORD_BCRYPT),
-			// 	'add' => password_hash($_SESSION['token_bank']['add'], PASSWORD_BCRYPT),	
-			// );
+			$this->token = array(
+				'list' => password_hash($_SESSION['token_operasional']['list'], PASSWORD_BCRYPT),
+				'add' => password_hash($_SESSION['token_operasional']['add'], PASSWORD_BCRYPT),	
+			);
 
-			// $data = array(
-			// 	'token_list' => $this->token['list'],
-			// 	'token_add' => $this->token['add'],
-			// );
+			$data = array(
+				'token_list' => $this->token['list'],
+				'token_add' => $this->token['add'],
+			);
 
-			$this->layout('operasional/list', $config);
+			$this->layout('operasional/list', $config, $data);
 		}	
 
 		/**
@@ -81,63 +81,63 @@
 		* return json
 		*/
 		public function get_list(){
-			// $token = isset($_POST['token_list']) ? $_POST['token_list'] : false;
+			$token = isset($_POST['token_list']) ? $_POST['token_list'] : false;
 			
 			// // cek token
-			// $this->auth->cekToken($_SESSION['token_bank']['list'], $token, 'bank');
+			$this->auth->cekToken($_SESSION['token_operasional']['list'], $token, 'operasional');
 			
 			// // config datatable
-			// $config_dataTable = array(
-			// 	'tabel' => 'bank',
-			// 	'kolomOrder' => array(null, 'nama', 'saldo', 'status', null),
-			// 	'kolomCari' => array('nama', 'saldo', 'status'),
-			// 	'orderBy' => array('id' => 'asc'),
-			// 	'kondisi' => false,
-			// );
+			$config_dataTable = array(
+				'tabel' => 'operasional',
+				'kolomOrder' => array(null, 'id', 'id_bank', 'tgl', 'nama', 'nominal', 'ket', null),
+				'kolomCari' => array('nama', 'nominal'),
+				'orderBy' => array('id' => 'asc'),
+				'kondisi' => false,
+			);
 
-			// $dataBank = $this->BankModel->getAllDataTable($config_dataTable);
+			$dataOperasional = $this->OperasionalModel->getAllDataTable($config_dataTable);
 
 			// // set token
-			// $_SESSION['token_bank']['edit'] = md5($this->auth->getToken());
-			// $_SESSION['token_bank']['delete'] = md5($this->auth->getToken());
+			$_SESSION['token_operasional']['edit'] = md5($this->auth->getToken());
+			$_SESSION['token_operasional']['delete'] = md5($this->auth->getToken());
 			
-			// $this->token = array(
-			// 	'edit' => password_hash($_SESSION['token_bank']['edit'], PASSWORD_BCRYPT),
-			// 	'delete' => password_hash($_SESSION['token_bank']['delete'], PASSWORD_BCRYPT),	
-			// );
+			$this->token = array(
+				'edit' => password_hash($_SESSION['token_operasional']['edit'], PASSWORD_BCRYPT),
+				'delete' => password_hash($_SESSION['token_operasional']['delete'], PASSWORD_BCRYPT),	
+			);
 
-			// $data = array();
-			// $no_urut = $_POST['start'];
-			// foreach($dataBank as $row){
-			// 	$no_urut++;
+			$data = array();
+			$no_urut = $_POST['start'];
+			foreach($dataOperasional as $row){
+				$no_urut++;
 
 			// 	$status = ($row['status'] == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-danger">'.$row['status'].'</span>';
 
 			// 	// button aksi
-			// 	$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-			// 	$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".', '."'".$this->token["edit"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-			// 	$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+				$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+				$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".', '."'".$this->token["edit"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+				$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 				
-			// 	$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
+				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
 				
-			// 	$dataRow = array();
-			// 	$dataRow[] = $no_urut;
-			// 	$dataRow[] = $row['nama'];
-			// 	$dataRow[] = $this->helper->cetakRupiah($row['saldo']);
-			// 	$dataRow[] = $status;
-			// 	$dataRow[] = $aksi;
+				$dataRow = array();
+				$dataRow[] = $no_urut;
+				$dataRow[] = $row['id'];
+				$dataRow[] = $row['id_bank'];
+				$dataRow[] = $row['nama'];
+				$dataRow[] = $row['nominal'];
+				$dataRow[] = $row['ket'];
+				$data[] = $dataRow;
+			}
 
-			// 	$data[] = $dataRow;
-			// }
+			$output = array(
+				'draw' => $_POST['draw'],
+				'recordsTotal' => $this->OperasionalModel->recordTotal(),
+				'recordsFiltered' => $this->OperasionalModel->recordFilter(),
+				'data' => $data,
+			);
 
-			// $output = array(
-			// 	'draw' => $_POST['draw'],
-			// 	'recordsTotal' => $this->BankModel->recordTotal(),
-			// 	'recordsFiltered' => $this->BankModel->recordFilter(),
-			// 	'data' => $data,
-			// );
-
-			// echo json_encode($output);		
+			echo json_encode($output);		
 		}
 
 		/**
