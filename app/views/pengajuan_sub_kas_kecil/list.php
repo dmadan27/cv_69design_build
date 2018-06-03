@@ -39,16 +39,20 @@
 					</div>
 					<!-- box body -->
 					<div class="box-body">
+						<input type="hidden" id="token_list" value="<?= $this->data['token_list']; ?>">
 						<table id="pengajuan_sub_kas_kecilTable" class="table table-bordered table-hover">
 							<thead>
 								<tr>
+									<th class="text-right" style="width: 15px">No</th>
+									<th>ID</th>
 									<th>ID Sub Kas Kecil</th>
 									<th>ID Proyek</th>
-									<th>Nama Proyek</th>
+									<!-- <th>Nama Proyek</th> -->
 									<th>Tanggal</th>
-									<th>Total</th>
+									<th class="text-right">Total</th>
+									<th class="text-right">Dana Disetujui</th>
 									<th>Status Pengajuan</th>
-									<th>Status Laporan</th>
+									<th>Aksi</th>
 								</tr>
 							</thead>
 							<tbody>
