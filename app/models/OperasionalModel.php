@@ -55,57 +55,60 @@
 		* 
 		*/
 		public function getById($id){
-			// $query = "SELECT * FROM bank WHERE id = :id;";
+			$query = "SELECT * FROM operasional WHERE id = :id;";
 
-			// $statement = $this->koneksi->prepare($query);
-			// $statement->bindParam(':id', $id);
-			// $statement->execute();
-			// $result = $statement->fetch(PDO::FETCH_ASSOC);
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
 
-			// return $result;
+			return $result;
 		}
 
 		/**
 		* 
 		*/
 		public function insert($data){
-			// $query = "INSERT INTO bank (nama, saldo, status) VALUES (:nama, :saldo, :status);";
+			$query = "INSERT INTO bank (id, tgl,  nama,  nominal, ket) VALUES (:id, :tgl, :nama, :nominal, :ket);";
 
-			// $statement = $this->koneksi->prepare($query);
-			// $statement->bindParam(':nama', $data['nama']);
-			// $statement->bindParam(':saldo', $data['saldo']);
-			// $statement->bindParam(':status', $data['status']);
-			// $result = $statement->execute();
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $data['id']);
+			$statement->bindParam(':tgl', $data['tgl']);
+			$statement->bindParam(':nama', $data['nama']);
+			$statement->bindParam(':nominal', $data['nominal']);
+			$statement->bindParam(':ket', $data['ket']);
+			$result = $statement->execute();
 
-			// return $result;
+			return $result;
 		}
 
 		/**
 		* 
 		*/
 		public function update($data){
-			// $query = "UPDATE bank SET nama = :nama, status = :status WHERE id = :id;";
+			$query = "UPDATE operasional SET nama = :nama, nominal = :nominal, ket =:ket WHERE id = :id;";
 
-			// $statement = $this->koneksi->prepare($query);
-			// $statement->bindParam(':nama', $data['nama']);
-			// $statement->bindParam(':status', $data['status']);
-			// $statement->bindParam(':id', $data['id']);
-			// $result = $statement->execute();
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':nama', $data['nama']);
+			$statement->bindParam(':nominal', $data['nominal']);
+			$statement->bindParam(':ket', $data['ket']);
+			$statement->bindParam(':id', $data['id']);
+			$result = $statement->execute();
 
-			// return $result;
+			return $result;
 		}
 
 		/**
 		* 
 		*/
 		public function delete($id){
-			// $query = "DELETE FROM bank WHERE id = :id";
+			$query = "DELETE FROM operasional WHERE id = :id";
 			
-			// $statement = $this->koneksi->prepare($query);
-			// $statement->bindParam(':id', $id);
-			// $result = $statement->execute();
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$result = $statement->execute();
 
-			// return $result;
+			return $result;
 		}
 
 		/**

@@ -38,10 +38,13 @@
 			// set config untuk layouting
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
+
 			);
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
 				'app/views/operasional/js/initList.js',
 				'app/views/operasional/js/initForm.js',
 			);
@@ -89,7 +92,7 @@
 			// // config datatable
 			$config_dataTable = array(
 				'tabel' => 'operasional',
-				'kolomOrder' => array(null, 'id', 'id_bank', 'tgl', 'nama', 'nominal', 'ket', null),
+				'kolomOrder' => array(null, 'id',  'tgl', 'nama', 'nominal', null),
 				'kolomCari' => array('nama', 'nominal'),
 				'orderBy' => array('id' => 'asc'),
 				'kondisi' => false,
@@ -123,10 +126,12 @@
 				$dataRow = array();
 				$dataRow[] = $no_urut;
 				$dataRow[] = $row['id'];
-				$dataRow[] = $row['id_bank'];
+				$dataRow[] = $row['tgl'];
 				$dataRow[] = $row['nama'];
 				$dataRow[] = $row['nominal'];
-				$dataRow[] = $row['ket'];
+				$dataRow[] = $aksi;
+				
+				// $dataRow[] = $row['ket'];
 				$data[] = $dataRow;
 			}
 
@@ -149,110 +154,77 @@
 		* error => error apa saja yang ada dari hasil validasi
 		*/
 		public function action_add(){
-			// $data = isset($_POST) ? $_POST : false;
-			// $this->auth->cekToken($_SESSION['token_bank']['add'], $data['token'], 'bank');
+			$data = isset($_POST) ? $_POST : false;
+			$this->auth->cekToken($_SESSION['token_operasional']['add'], $data['token'], 'operasional');
 			
-			// $status = false;
-			// $error = "";
+			$status = false;
+			$error = "";
 
-			// if(!$data){
-			// 	$notif = array(
-			// 		'title' => "Pesan Gagal",
-			// 		'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
-			// 	);
-			// }
-			// else{
-			// 	// validasi data
-			// 	$validasi = $this->set_validation($data);
-			// 	$cek = $validasi['cek'];
-			// 	$error = $validasi['error'];
+			if(!$data){
+				$notif = array(
+					'title' => "Pesan Gagal",
+					'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
+				);
+			}
+			else{
+				// validasi data
+				$validasi = $this->set_validation($data);
+				$cek = $validasi['cek'];
+				$error = $validasi['error'];
 
-			// 	if($cek){
-			// 		// validasi inputan
-			// 		$data = array(
-			// 			'nama' => $this->validation->validInput($data['nama']),
-			// 			'saldo' => $this->validation->validInput($data['saldo']),
-			// 			'status' => $this->validation->validInput($data['status']),
-			// 		);
+				if($cek){
+					// validasi inputan
+					$data = array(
+						'id' => $this->validation->validInput($data['id']),
+						'tgl' => $this->validation->validInput($data['tgl']),
+						'nama' => $this->validation->validInput($data['nama']),
+						'nominal' => $this->validation->validInput($data['nominal']),
+						'ket' => $this->validation->validInput($data['ket'])
+					);
 
-			// 		// insert db
+					// insert db
 
-			// 		// transact
+					// transact
 
-			// 		if($this->BankModel->insert($data)) {
-			// 			$status = true;
-			// 			$notif = array(
-			// 				'title' => "Pesan Berhasil",
-			// 				'message' => "Tambah Data Bank Baru Berhasil",
-			// 			);
-			// 		}
-			// 		else {
-			// 			$notif = array(
-			// 				'title' => "Pesan Gagal",
-			// 				'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
-			// 			);
-			// 		}
+					if($this->OperasionalModel->insert($data)) {
+						$status = true;
+						$notif = array(
+							'title' => "Pesan Berhasil",
+							'message' => "Tambah Data Operasional Baru Berhasil",
+						);
+					}
+					else {
+						$notif = array(
+							'title' => "Pesan Gagal",
+							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+						);
+					}
 
-			// 		// commit
-			// 	}
-			// 	else {
-			// 		$notif = array(
-			// 			'title' => "Pesan Pemberitahuan",
-			// 			'message' => "Silahkan Cek Kembali Form Isian",
-			// 		);
-			// 	}
-			// }
+					// commit
+				}
+				else {
+					$notif = array(
+						'title' => "Pesan Pemberitahuan",
+						'message' => "Silahkan Cek Kembali Form Isian",
+					);
+				}
+			}
 
-			// $output = array(
-			// 	'status' => $status,
-			// 	'notif' => $notif,
-			// 	'error' => $error,
-			// 	// 'data' => $data
-			// );
+			$output = array(
+				'status' => $status,
+				'notif' => $notif,
+				'error' => $error,
+				// 'data' => $data
+			);
 
-			// echo json_encode($output);		
+			echo json_encode($output);		
 		}
 		public function form($id){
-			if($id)	$this->edit($id);
-			else $this->add();
+
 
 		}
 
 		protected function add(){
-			$css = array(
-  				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
-				'assets/bower_components/select2/dist/css/select2.min.css',
-  				
-  			);
-			$js = array(
-				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
-				'assets/bower_components/select2/dist/js/select2.full.min.js',
-				
-				
-			);
-
-
-			$config = array(
-				'title' => array(
-					'main' => 'Data Operasional',
-					'sub' => '',
-				),
-				'css' => $css,
-				'js' => $js,
-			);
-
-			// $_SESSION['token_kas_kecil'] = array(
-			// 	'add' => md5($this->auth->getToken()),
-			// );
-			// $this->token = array(
-			// 	'add' => password_hash($_SESSION['token_kas_kecil']['add'], PASSWORD_BCRYPT),	
-			// );
-			$data = array(
-				'token_add' => $this->token['add'],
-				'action' => "action-add",
-			);
-
-			$this->layout('operasional/form', $config);
 		}
 
 
@@ -263,12 +235,12 @@
 		* return berupa json
 		*/
 		public function edit($id){
-		// 	$id = strtoupper($id);
-		// 	$token = isset($_POST['token_edit']) ? $_POST['token_edit'] : false;
-		// 	$this->auth->cekToken($_SESSION['token_bank']['edit'], $token, 'bank');
+			$id = strtoupper($id);
+			$token = isset($_POST['token_edit']) ? $_POST['token_edit'] : false;
+			$this->auth->cekToken($_SESSION['token_operasional']['edit'], $token, 'operasional');
 
-		// 	$data = !empty($this->BankModel->getById($id)) ? $this->BankModel->getById($id) : false;
-		// 	echo json_encode($data);
+			$data = !empty($this->OperasionalModel->getById($id)) ? $this->OperasionalModel->getById($id) : false;
+			echo json_encode($data);
 		}
 
 		// /**
@@ -280,68 +252,70 @@
 		// * error => error apa saja yang ada dari hasil validasi
 		// */
 		public function action_edit(){
-		// 	$data = isset($_POST) ? $_POST : false;
-		// 	$this->auth->cekToken($_SESSION['token_bank']['edit'], $data['token'], 'bank');
+			$data = isset($_POST) ? $_POST : false;
+			$this->auth->cekToken($_SESSION['token_operasional']['edit'], $data['token'], 'operasional');
 			
-		// 	$status = false;
-		// 	$error = "";
+			$status = false;
+			$error = "";
 
-		// 	if(!$data){
-		// 		$notif = array(
-		// 			'title' => "Pesan Gagal",
-		// 			'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
-		// 		);
-		// 	}
-		// 	else{
-		// 		// validasi data
-		// 		$validasi = $this->set_validation($data);
-		// 		$cek = $validasi['cek'];
-		// 		$error = $validasi['error'];
+			if(!$data){
+				$notif = array(
+					'title' => "Pesan Gagal",
+					'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
+				);
+			}
+			else{
+				// validasi data
+				$validasi = $this->set_validation($data);
+				$cek = $validasi['cek'];
+				$error = $validasi['error'];
 
-		// 		if($cek){
-		// 			// validasi inputan
-		// 			$data = array(
-		// 				'id' => $this->validation->validInput($data['id']),
-		// 				'nama' => $this->validation->validInput($data['nama']),
-		// 				'status' => $this->validation->validInput($data['status'])
-		// 			);
+				if($cek){
+					// validasi inputan
+					$data = array(
+						'id' => $this->validation->validInput($data['id']),
+						'tgl' => $this->validation->validInput($data['tgl']),
+						'nama' => $this->validation->validInput($data['nama']),
+						'nominal' => $this->validation->validInput($data['nominal']),
+						'ket' => $this->validation->validInput($data['ket'])
+					);
 
-		// 			// update db
+					// update db
 
-		// 			// transact
+					// transact
 
-		// 			if($this->BankModel->update($data)) {
-		// 				$status = true;
-		// 				$notif = array(
-		// 					'title' => "Pesan Berhasil",
-		// 					'message' => "Edit Data Bank Berhasil",
-		// 				);
-		// 			}
-		// 			else {
-		// 				$notif = array(
-		// 					'title' => "Pesan Gagal",
-		// 					'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
-		// 				);
-		// 			}
+					if($this->OperasionalModel->update($data)) {
+						$status = true;
+						$notif = array(
+							'title' => "Pesan Berhasil",
+							'message' => "Edit Data Operasional Berhasil",
+						);
+					}
+					else {
+						$notif = array(
+							'title' => "Pesan Gagal",
+							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+						);
+					}
 
-		// 			// commit
-		// 		}
-		// 		else {
-		// 			$notif = array(
-		// 				'title' => "Pesan Pemberitahuan",
-		// 				'message' => "Silahkan Cek Kembali Form Isian",
-		// 			);
-		// 		}
-		// 	}
+					// commit
+				}
+				else {
+					$notif = array(
+						'title' => "Pesan Pemberitahuan",
+						'message' => "Silahkan Cek Kembali Form Isian",
+					);
+				}
+			}
 
-		// 	$output = array(
-		// 		'status' => $status,
-		// 		'notif' => $notif,
-		// 		'error' => $error,
-		// 		// 'data' => $data
-		// 	);
+			$output = array(
+				'status' => $status,
+				'notif' => $notif,
+				'error' => $error,
+				// 'data' => $data
+			);
 
-		// 	echo json_encode($output);
+			echo json_encode($output);
 		}
 
 		/**
@@ -409,14 +383,14 @@
 		* return json
 		*/
 		public function delete($id){
-			// $id = strtoupper($id);
-			// $token = isset($_POST['token_delete']) ? $_POST['token_delete'] : false;
-			// $this->auth->cekToken($_SESSION['token_bank']['delete'], $token, 'bank');
+			$id = strtoupper($id);
+			$token = isset($_POST['token_delete']) ? $_POST['token_delete'] : false;
+			$this->auth->cekToken($_SESSION['token_operasional']['delete'], $token, 'bank');
 			
-			// if($this->BankModel->delete($id)) $status = true;
-			// else $status = false;
+			if($this->OperasionalModel->delete($id)) $status = true;
+			else $status = false;
 
-			// echo json_encode($status);
+			echo json_encode($status);
 		}
 
 		/**
