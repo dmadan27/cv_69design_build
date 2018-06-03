@@ -78,7 +78,7 @@
 				'tabel' => 'proyek',
 				'kolomOrder' => array(null, 'id', 'pemilik', 'tgl', 'pembangunan', 'kota', 'total', 'status', null),
 				'kolomCari' => array('id', 'pemilik', 'tgl', 'pembangunan', 'luas_area', 'status'),
-				'orderBy' => array('status' => 'asc', 'id' => 'asc'),
+				'orderBy' => array('id' => 'desc', 'status' => 'asc'),
 				'kondisi' => false,
 			);
 
@@ -579,7 +579,6 @@
 
 		}
 
-		
 		/**
 		* Function validasi form utama
 		*/
