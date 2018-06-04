@@ -2,17 +2,17 @@
 	// Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 
 	/**
-	* 
+	*
 	*/
 	class Pengajuan_sub_kas_kecilModel extends Database{
-		
+
 		protected $koneksi;
 		protected $dataTable;
 		protected $kolomCari_mobile = array('id', 'id_proyek', 'tgl', 'total', 'dana_disetujui', 'status');
 		public $queryMobile;
 
 		/**
-		* 
+		*
 		*/
 		public function __construct(){
 			$this->koneksi = $this->openConnection();
@@ -22,7 +22,7 @@
 		// ======================= dataTable ======================= //
 
 			/**
-			* 
+			*
 			*/
 			public function getAllDataTable($config){
 				$this->dataTable->set_config($config);
@@ -34,7 +34,7 @@
 			}
 
 			/**
-			* 
+			*
 			*/
 			public function recordFilter(){
 				return $this->dataTable->recordFilter();
@@ -42,7 +42,7 @@
 			}
 
 			/**
-			* 
+			*
 			*/
 			public function recordTotal(){
 				return $this->dataTable->recordTotal();
@@ -51,7 +51,7 @@
 		// ========================================================= //
 
 		/**
-		* 
+		*
 		*/
 		public function getAll(){
 			$query = "SELECT * FROM pengajuan_sub_kas_kecil";
@@ -64,7 +64,7 @@
 		}
 
 		/**
-		* 
+		*
 		*/
 		public function getAll_pending(){
 			$status = "PENDING";
@@ -93,11 +93,11 @@
 			$result = $statement->fetch(PDO::FETCH_ASSOC);
 
 			return $result;
-		}	
+		}
 
 
 		/**
-		* 
+		*
 		*/
 		public function insert($data) {
 
@@ -110,22 +110,21 @@
 				$this->insert_pengajuan($data_pengajuan);
 
 				foreach ($data_detail_pengajuan as $key => $value) {
-					$this->insert_detail_pengajuan($value);
+					$this->insert_detail_pengajuan($value, $data_pengajuan->id);
 				}
 
 				$this->koneksi->commit();
-				
+
 				return true;
 			} catch (PDOException $e) {
 				$this->koneksi->rollback();
-				// die($e->getMessage());
-				return $e;
+				return $e->getMessage();
 			}
 		}
 
 		/**
-		* 
-		*/	
+		*
+		*/
 		private function insert_pengajuan($data) {
 			$query = "INSERT INTO pengajuan_sub_kas_kecil (id, id_sub_kas_kecil, id_proyek, tgl, total, dana_disetujui, status, status_laporan) VALUES ";
 			$query .= "(:id, :id_sub_kas_kecil, :id_proyek, :tgl, :total, :dana_disetujui, :status, :status_laporan);";
@@ -146,16 +145,16 @@
 		}
 
 		/**
-		* 
+		*
 		*/
-		private function insert_detail_pengajuan($data) {
+		private function insert_detail_pengajuan($data, $id_pengajuan) {
 			$query	= "INSERT INTO detail_pengajuan_sub_kas_kecil (id, id_pengajuan, nama, jenis, satuan, qty, harga, subtotal, status, harga_asli, sisa, status_lunas) VALUES";
 			$query .= "(null, :id_pengajuan, :nama, :jenis, :satuan, :qty, :harga, :subtotal, :status, :harga_asli, :sisa, :status_lunas)";
 
 			$statment = $this->koneksi->prepare($query);
 			$statment->execute(
 				array(
-					':id_pengajuan' => $data->id_pengajuan,
+					':id_pengajuan' => $id_pengajuan,
 					':nama' => $data->nama,
 					':jenis' => $data->jenis,
 					':satuan' => $data->satuan,
@@ -174,13 +173,13 @@
 		// ======================== mobile = ======================= //
 
 			/**
-			* 
+			*
 			*/
 			public function setQuery_mobile($page){
 				$id = isset($_POST['id']) ? $_POST['id'] : false;
 				$cari = isset($_POST['cari']) ? $_POST['cari'] : null;
 				$mulai = ($page > 1) ? ($page * 10) - 10 : 0;
-				
+
 				$this->queryMobile = 'SELECT * FROM pengajuan_sub_kas_kecil ';
 
 				$qWhere = 'WHERE id_sub_kas_kecil = "'.$id.'"';
@@ -233,7 +232,7 @@
 			}
 
 			/**
-			* 
+			*
 			*/
 			public function get_recordTotal_mobile(){
 				$koneksi = $this->openConnection();
@@ -244,7 +243,7 @@
 			}
 
 			/**
-			* 
+			*
 			*/
 			public function get_recordFilter_mobile(){
 				$koneksi = $this->openConnection();
@@ -255,10 +254,10 @@
 				return $statement->rowCount();
 			}
 
-		// ========================================================= //			
+		// ========================================================= //
 
 		/**
-		* 
+		*
 		*/
 		public function __destruct(){
 			$this->closeConnection($this->koneksi);
