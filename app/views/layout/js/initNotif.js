@@ -10,16 +10,23 @@ $(document).ready(function(){
 *
 */
 function load_notif(){
+	var url = ((level.toLowerCase() == 'kas kecil')) 
+		? 'pengajuan-sub-kas-kecil/get-notif/' : 'pengajuan-kas-kecil/get-notif/';
+
 	$.ajax({
-		url: BASE_URL+'pengajuan-sub-kas-kecil/get-notif/',
+		url: BASE_URL+url,
 		dataType: 'json',
 		berofeSend: function(){},
 		success: function(data){
+			$('#view-all').attr('href', data.view_all);
 			// console.log(data);
 			if(data.jumlah > 1){
 				$('.label-jumlah').html(data.jumlah);
 				$('.label-notif').html(data.text);
 				$('#data-notif').html(data.data);
+			}
+			else{
+				$('.label-notif').html(data.text);
 			}
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling

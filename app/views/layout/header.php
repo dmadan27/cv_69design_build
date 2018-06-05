@@ -35,7 +35,7 @@
 		                  		
 		                	</ul>
 		              	</li>
-		              	<li class="footer"><a href="javascript:void(0)">View all</a></li>
+		              	<li class="footer"><a id="view-all" href="javascript:void(0)">View all</a></li>
             		</ul>
 	          	</li>
 	          	<!-- end notifikasi -->

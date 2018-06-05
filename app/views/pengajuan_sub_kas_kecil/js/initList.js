@@ -45,3 +45,79 @@ $(document).ready(function(){
     	pengajuan_sub_kas_kecilTable.ajax.reload(null, false);
     }, 10000);
 });
+
+/**
+*
+*/
+function getView(id){
+    window.location.href = BASE_URL+'pengajuan-sub-kas-kecil/detail/'+id.toLowerCase();
+}
+
+/**
+*
+*/
+function getEditStatus(id, token){
+    if(token.trim() != ""){
+        $.ajax({
+            url: BASE_URL+'pengajuan-sub-kas-kecil/edit-status/'+id.toLowerCase(),
+            type: 'post',
+            dataType: 'json',
+            data: {"token_edit_status": token},
+            beforeSend: function(){
+
+            },
+            success: function(output){
+                console.log(output);
+                // if(output){
+                //     swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
+                //     $("#pengajuan_sub_kas_kecilTable").DataTable().ajax.reload();
+                // }
+            },
+            error: function (jqXHR, textStatus, errorThrown){ // error handling
+                console.log(jqXHR, textStatus, errorThrown);
+                swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+            }
+        })
+    }
+    else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+}
+
+/**
+*
+*/
+function getDelete(id, token){
+    if(token.trim() != ""){
+        swal({
+            title: "Pesan Konfirmasi",
+            text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Ya, Hapus!",
+            cancelButtonText: "Batal",
+            closeOnConfirm: false,
+        }, function(){
+            $.ajax({
+                url: BASE_URL+'pengajuan-sub-kas-kecil/delete/'+id.toLowerCase(),
+                type: 'post',
+                dataType: 'json',
+                data: {"token_delete": token},
+                beforeSend: function(){
+
+                },
+                success: function(output){
+                    console.log(output);
+                    if(output){
+                        swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
+                        $("#pengajuan_sub_kas_kecilTable").DataTable().ajax.reload();
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown){ // error handling
+                    console.log(jqXHR, textStatus, errorThrown);
+                    swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+                }
+            })
+        });
+    }
+    else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+}
