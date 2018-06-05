@@ -91,7 +91,7 @@
 			$statement->execute();
 			$result = $statement->fetchColumn();
 
-			return $result;	
+			return $result;
 		}
 
 		/**
@@ -153,7 +153,7 @@
 					':tgl' => date('Y-m-d'),
 					':total' => $data->total,
 					':dana_disetujui' => null,
-					':status' => null,
+					':status' => $data->status,
 					':status_laporan' => null
 				)
 			);
