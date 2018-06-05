@@ -39,12 +39,14 @@
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
 				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
+				'assets/bower_components/select2/dist/css/select2.min.css',
 
 			);
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
+				'assets/bower_components/select2/dist/js/select2.full.min.js',
 				'app/views/operasional/js/initList.js',
 				'app/views/operasional/js/initForm.js',
 			);
@@ -174,7 +176,6 @@
 				if($cek){
 					// validasi inputan
 					$data = array(
-						'id' => $this->validation->validInput($data['id']),
 						'id_bank' => $this->validation->validInput($data['id_bank']),
 						'tgl' => $this->validation->validInput($data['tgl']),
 						'nama' => $this->validation->validInput($data['nama']),
@@ -442,16 +443,39 @@
 		* return berupa array, status hasil pengecekan dan error tiap validasi inputan
 		*/
 		private function set_validation($data){
-			// $required = ($data['action'] == "action-edit") ? 'not_required' : 'required';
+		
+			// id_bank
+			$this->validation->set_rules($data['id_bank'], 'id bank', 'id_bank', 'string | 1 | 255 | required');
+			// tgl
+			$this->validation->set_rules($data['tgl'], 'Tanggal', 'tgl', 'string | 1 | 255 | required ');
+			// nama 
+			$this->validation->set_rules($data['nama'], 'Nama Kebutuhan', 'nama', 'string | 1 | 255 | required');
+			// nominal 
+			$this->validation->set_rules($data['nominal'], 'Nominal Uang', 'nominal', 'nilai | 0 | 99999999999 | required');
+			// ket 
+			$this->validation->set_rules($data['ket'], 'Keterangan', 'ket', 'string | 1 | 255 | required');
 
-			// // nama bank
-			// $this->validation->set_rules($data['nama'], 'Nama Bank', 'nama', 'string | 1 | 255 | required');
-			// // saldo awal
-			// $this->validation->set_rules($data['saldo'], 'Saldo Awal Bank', 'saldo', 'nilai | 0 | 99999999999 | '.$required);
-			// // status
-			// $this->validation->set_rules($data['status'], 'Status Bank', 'status', 'string | 1 | 255 | required');
+			return $this->validation->run();
+		}
 
-			// return $this->validation->run();
+		/**
+		*
+		*/
+		public function get_bank(){
+			$this->model('BankModel');
+
+			$data_bank = $this->BankModel->getAll();
+			$data = array();
+
+			foreach($data_bank as $row){
+				$dataRow = array();
+				$dataRow['id'] = $row['id'];
+				$dataRow['text'] = $row['nama'].' - '.$this->helper->cetakRupiah($row['saldo']);
+
+				$data[] = $dataRow;
+			}
+
+			echo json_encode($data);
 		}
 
 	}

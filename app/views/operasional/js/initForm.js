@@ -1,9 +1,18 @@
 $(document).ready(function(){
 	// setStatus();
+
+	$('#id_bank').select2({
+		placeholder: "Pilih Bank",
+		allowClear : true,
+	});
+
+	
+
 	$('#submit_operasional').prop('disabled', true);
 
 	// button tambah
 	$('#tambah').on('click', function(){
+		setIdBank();
 		if(this.value.trim() != ""){
 			resetForm();
 			$('#submit_operasional').prop('value', 'action-add');
@@ -59,6 +68,7 @@ function getDataForm(){
 	if($('#submit_operasional').val().trim().toLowerCase() == "action-edit") data.append('id', $('#id').val().trim());
 
 	data.append('token', $('#token_form').val().trim());
+	data.append('id_bank', $('#id_bank').val().trim()); // id_bank
 	data.append('tgl', $('#tgl').val().trim()); // tgl operasional
 	data.append('nama', $('#nama').val().trim()); // nama operasional
 	data.append('nominal', nominal); // nominal operasional
@@ -197,4 +207,28 @@ function resetForm(){
 
 	// hapus semua feedback
 	$('.form-group').removeClass('has-success').removeClass('has-error');
+}
+
+/**
+*
+*/
+function setIdBank(){
+	$('#id_bank').html('');
+	$.ajax({
+		url: BASE_URL+'operasional/get-bank',
+		dataType: 'json',
+		beforeSend: function(){},
+		success: function(data){
+			console.log(data);
+			$.each(data, function(index, item){
+				var newOption = new Option(item.text, item.id);
+				$('#id_bank').append(newOption).trigger('change');
+			});
+			$('#id_bank').val(null).trigger('change');
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+            console.log(jqXHR, textStatus, errorThrown);
+            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+        }
+	})
 }

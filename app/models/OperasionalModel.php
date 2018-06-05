@@ -79,16 +79,16 @@
 				$query = "CALL tambah_data_operasional (:id_bank, :tgl, :nama, :nominal, :ket)";
 
 				$statement = $this->koneksi->prepare($query);
-				$statment->execute(
+				$statement->execute(
 					array(
-						':id_bank' => $data['id'],
+						':id_bank' => $data['id_bank'],
 						':tgl' => $data['tgl'],
 						':nama' => $data['nama'],
 						':nominal' => $data['nominal'],
 						':ket' => $data['ket'],
 					)
 				);
-				$statment->closeCursor();
+				$statement->closeCursor();
 
 				$this->koneksi->commit();
 
