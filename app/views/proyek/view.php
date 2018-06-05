@@ -95,13 +95,18 @@
 															<td><?= $proyek['status'] ?></td>
 														</tr>
 														<tr>
-															<td colspan="2"><strong>Progress</strong>
+															<td><strong>Progress</strong>
+															</td>
+															<td class="text-right"><?= $proyek['progress']['text'] ?></td>
+														</tr>
+														<tr>
+															<td colspan="2">
 																<div class="progress">
 											                		<div class="progress-bar progress-bar-primary progress-bar-striped active" role="progressbar" aria-valuenow="<?= $proyek['progress']['value'] ?>" aria-valuemin="0" aria-valuemax="100" <?= $proyek['progress']['style'] ?> >
 											                  			<span class="sr-only"><?= $proyek['progress']['text'] ?></span>
 											                		</div>
 											              		</div>
-											              	</td>
+															</td>
 														</tr>
 													</table>
 												</div>
@@ -131,11 +136,11 @@
 																		</tr>
 																		<tr>
 																			<td>Nilai RAB Kontrak</td>
-																			<td></td>
+																			<td class="text-right"><?= $proyek['total'] ?></td>
 																		</tr>
 																		<tr>
 																			<td>CCO</td>
-																			<td></td>
+																			<td class="text-right"><?= $proyek['cco'] ?></td>
 																		</tr>
 																		<tr>
 																			<td><strong>Nilai Terment diterima</strong></td>

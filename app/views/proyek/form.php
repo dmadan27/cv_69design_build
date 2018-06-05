@@ -1,4 +1,7 @@
-<?php Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung"); ?>
+<?php 
+	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	$form = ($this->data['action'] == 'action-add') ? 'Tambah Data' : 'Edit Data'; 
+?>
 
 <div class="content-wrapper">
   	<section class="content-header">
@@ -21,7 +24,12 @@
       			<div class="col-lg-12 col-md-12 col-xs-12">    				
       				<div class="box box-info"> 
                         <div class="box-header">
-                            <div class="box-title">Tambah Data</div>
+                            <div class="box-title"><?= $form; ?></div>
+                         	<div class="box-tools pull-right">
+                				<button type="button" class="btn btn-box-tool" data-widget="collapse">
+                					<i class="fa fa-minus"></i>
+                				</button>
+          					</div>
                         </div>
                         <div class="box-body">
                         	<div class="row">
@@ -154,14 +162,18 @@
       			<div class="col-lg-12 col-md-12 col-xs-12">    				
       				<div class="box box-info"> 
                         <div class="box-header">
-                            <!-- <div class="box-title">Tambah Data</div> -->
+                        	<div class="box-title">Detail Proyek</div>
+                            <div class="box-tools pull-right">
+                				<button type="button" class="btn btn-box-tool" data-widget="collapse">
+                					<i class="fa fa-minus"></i>
+                				</button>
+          					</div>
                         </div>
                         <div class="box-body">
                         	<div class="row">
                         		<!-- panel 1 -->
                         		<div class="col-md-12">
                         			<fieldset>
-			                        	<legend style="font-size: 18px;">Detail Proyek</legend>
 			                        	<div class="form-group">
 	                                        <button type="button" class="btn btn-success btn-flat " id="tambah_detail"><i class="fa fa-plus"></i> Tambah Detail</button>
 	                                    </div>
@@ -234,10 +246,10 @@
       				<div class="box box-info"> 
                         <div class="box-body">
                         	<div class="row">
-                        		<div class="col-md-6 col-xs-6">
+                        		<div class="col-md-6 col-xs-12">
                         			<button class="btn btn-default btn-flat btn-lg" type="button">Kembali</button>
                            		</div>
-                        		<div class="col-md-6 col-xs-6 ">
+                        		<div class="col-md-6 col-xs-12">
                         			<div class="btn-group pull-right">
 	                        			<button class="btn btn-default btn-flat btn-lg" type="button">Reset</button>
 	                        			<button class="btn btn-primary btn-flat btn-lg" id="submit_proyek" 

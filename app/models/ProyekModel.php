@@ -111,27 +111,7 @@
 			try{
 				$this->koneksi->beginTransaction();
 
-				// insert proyek
-				$queryProyek = "INSERT INTO proyek (id, pemilik, tgl, pembangunan, luas_area, alamat, kota, estimasi, total, dp, cco, status) ";
-				$queryProyek .= "VALUES (:id, :pemilik, :tgl, :pembangunan, :luas_area, :alamat, :kota, :estimasi, :total, :dp, :cco, :status);";
-				$statment = $this->koneksi->prepare($queryProyek);
-				$statment->execute(
-					array(
-						':id' => $dataProyek['id'],
-						':pemilik' => $dataProyek['pemilik'],
-						':tgl' => $dataProyek['tgl'],
-						':pembangunan' => $dataProyek['pembangunan'],
-						':luas_area' => $dataProyek['luas_area'],
-						':alamat' => $dataProyek['alamat'],
-						':kota' => $dataProyek['kota'],
-						':estimasi' => $dataProyek['estimasi'],
-						':total' => $dataProyek['total'],
-						':dp' => $dataProyek['dp'],
-						':cco' => $dataProyek['cco'],
-						':status' => $dataProyek['status'],
-					)
-				);
-				$statment->closeCursor();
+				$this->insertPengajuan($dataProyek);
 
 				foreach($dataDetail as $index => $row){
 					if(!$dataDetail[$index]['delete']){
@@ -160,6 +140,33 @@
 			$result = $statment->execute();
 
 			return $result;
+		}
+
+		/**
+		*
+		*/
+		public function insertPengajuan($data){
+			// insert proyek
+			$query = "INSERT INTO proyek (id, pemilik, tgl, pembangunan, luas_area, alamat, kota, estimasi, total, dp, cco, status) ";
+			$query .= "VALUES (:id, :pemilik, :tgl, :pembangunan, :luas_area, :alamat, :kota, :estimasi, :total, :dp, :cco, :status);";
+			$statment = $this->koneksi->prepare($query);
+			$statment->execute(
+				array(
+					':id' => $data['id'],
+					':pemilik' => $data['pemilik'],
+					':tgl' => $data['tgl'],
+					':pembangunan' => $data['pembangunan'],
+					':luas_area' => $data['luas_area'],
+					':alamat' => $data['alamat'],
+					':kota' => $data['kota'],
+					':estimasi' => $data['estimasi'],
+					':total' => $data['total'],
+					':dp' => $data['dp'],
+					':cco' => $data['cco'],
+					':status' => $data['status'],
+				)
+			);
+			$statment->closeCursor();
 		}
 
 		/**

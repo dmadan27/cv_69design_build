@@ -34,8 +34,8 @@ $(document).ready(function () {
 
     // tambah skc
 	$('#tambah_skc').on('click', function(){
+		if($('#skc').val() != null) addSkc();
     	console.log(listSkc);
-    	addSkc();
     });    
 
     $('#form_detail').submit(function(e){
