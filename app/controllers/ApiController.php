@@ -68,7 +68,7 @@
 		*/
 		public function generate_id_pengajuan($id_pengajuan) {
 			$this->model('Pengajuan_sub_kas_kecilModel');
-			
+
 			$data = !empty($this->Pengajuan_sub_kas_kecilModel->getLastID($id_pengajuan)['id']) ? $this->Pengajuan_sub_kas_kecilModel->getLastID($id_pengajuan)['id'] : false;
 
 			if(!$data) $id = $id_pengajuan.'0001';
@@ -95,7 +95,7 @@
 			echo json_encode(array(
 				// generate id pengajuan
 				'id_pengajuan' => $this->generate_id_pengajuan($id_pengajuan),
-				// get saldo 
+				// get saldo
 				'saldo' => $this->Sub_kas_kecilModel->getSaldoById($id_skc)['saldo'],
 
 				'status' => true
@@ -106,33 +106,43 @@
 		*
 		*/
 		public function action_add_pengajuan(){
-			$this->model('Pengajuan_sub_kas_kecilModel');
+			$output = array(
+		    'status' => false,
+    		'error' => ''
+		  );
 
-			$detail_pengajuan = json_decode($_POST['detail_pengajuan']);
-			$pengajuan = json_decode($_POST['pengajuan']);
+	    if ($this->status) {
+	      $this->model('Pengajuan_sub_kas_kecilModel');
 
-			$data = array(
-				'pengajuan' => $pengajuan,
-				'detail_pengajuan' => $detail_pengajuan
-			);
+        $pengajuan = json_decode($_POST["pengajuan"]);
+  			$detail_pengajuan = json_decode($_POST["detail_pengajuan"]);
 
-			$query_sukses = $this->Pengajuan_sub_kas_kecilModel->insert($data);
+  			$data = array(
+  				'pengajuan' => $pengajuan,
+  				'detail_pengajuan' => $detail_pengajuan
+  			);
 
-			if ($query_sukses === true) {
-				echo json_encode(array(
-					'status' => true, 
-				));
-			} else {
-				echo json_encode(array(
-					'status' => false,
-				));
-			}
+  			$query_sukses = $this->Pengajuan_sub_kas_kecilModel->insert($data);
+
+  			if ($query_sukses === true) {
+  				$output['status'] = true;
+  			} else {
+			    $output = array(
+  		      'status' => false,
+      			'error' => $query_sukses,
+  		    );
+  			}
+	    }
+
+			echo json_encode($output);
 		}
 
 		/**
 		*
 		*/
-		public function detail_pengajuan($id_pengajuan){
+		public function detail_pengajuan(){
+			$id_pengajuan = $_POST["id_pengajuan"];
+
 			$this->model('Pengajuan_sub_kas_kecilModel');
 			$dataDetail = $this->Pengajuan_sub_kas_kecilModel->getById_mobile(strtoupper($id_pengajuan));
 
