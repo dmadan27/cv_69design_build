@@ -19,10 +19,15 @@ class Kas_kecil extends Crud_modalsAbstract{
 
 
 	protected function list(){
-			$css = array('assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css');
+			$css = array(
+				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+				'assets/bower_components/dropify/dist/css/dropify.min.css'
+
+		);
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/bower_components/dropify/dist/js/dropify.min.js',
 				'app/views/kas_kecil/js/initList.js',
 				'app/views/kas_kecil/js/initForm.js',
 					
@@ -106,10 +111,7 @@ class Kas_kecil extends Crud_modalsAbstract{
 				$dataRow[] = $row['nama'];
 				$dataRow[] = $row['alamat'];
 				$dataRow[] = $row['no_telp'];
-				// $dataRow[] = $row['email'];
-				// $dataRow[] = $row['foto'];
 				$dataRow[] = $row['saldo'];
-				// $dataRow[] = $row['status'];
 				
 				$dataRow[] = $aksi;
 				$data[] = $dataRow;
@@ -132,61 +134,97 @@ class Kas_kecil extends Crud_modalsAbstract{
 		*/
 		public function action_add(){
 			$data = isset($_POST) ? $_POST : false;
-			$this->auth>cekToken($_SESSION['token_kas_kecil']['add'],$data['token'], 'kas_kecil');
+			$foto = isset($_FILES['foto']) ? $_FILES['foto'] : false;
+
+			$this->auth->cekToken($_SESSION['token_kas_kecil']['add'], $data['token'], 'kas-kecil');
+
+			$cekFoto = true;
 			$status = false;
 			$error = "";
-
 
 			if(!$data){
 				$notif = array(
 					'title' => "Pesan Gagal",
-					'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
+					'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
 				);
 			}
 			else{
-				// validasi data
 				$validasi = $this->set_validation($data);
 				$cek = $validasi['cek'];
 				$error = $validasi['error'];
 
+
+				if($foto){
+					$configFoto = array(
+						'jenis' => 'gambar',
+						'error' => $foto['error'],
+						'size' => $foto['size'],
+						'name' => $foto['name'],
+						'tmp_name' => $foto['tmp_name'],
+						'max' => 2*1048576,
+					);
+					$validasiFoto = $this->validation->validFile($configFoto);
+					if(!$validasiFoto['cek']){
+						$cek = false;
+						$error['foto'] = $validasiFoto['error'];
+					}
+					else $valueFoto = $validasiFoto['namaFile'];
+				}
+				else $valueFoto = NULL;
+
 				if($cek){
-					// validasi input
+					// validasi inputan
 					$data = array(
 						'id' => $this->validation->validInput($data['id']),
 						'nama' => $this->validation->validInput($data['nama']),
 						'alamat' => $this->validation->validInput($data['alamat']),
 						'no_telp' => $this->validation->validInput($data['no_telp']),
-						'email' => $this->validation->validInput($data['email']),
-						'foto' => $this->validation->validInput($data['foto']),
+						'email' => $this->validation->validInput($data['email'], false),
+						'foto' => $this->validation->validInput($valueFoto, false),
 						'saldo' => $this->validation->validInput($data['saldo']),
-						'status' => $this->validation->validInput($data['status'])
+						'status' => $this->validation->validInput($data['status']),
+						'password' =>  password_hash($this->validation->validInput($data['password'], false), PASSWORD_BCRYPT),
+							
 					);
 
-					// insert db
-					// transact
-
-					if($this->Kas_kecilModel->insert($data)){
-						$status = true;
-						$notif = array(
-							'title' => "Pesan Berhasil",
-							'message' => "Tambah Data Proyek Baru Berhasil",
-						);
-					}
-					else{
-						$notif = array(
-							'title' => "Pesan Gagal",
-							'message' => "Terjadi Kesalahan ",
-						);
+					if($foto){
+						$path = ROOT.DS.'assets'.DS.'images'.DS.$valueFoto;
+						if(!move_uploaded_file($foto['tmp_name'], $path)){
+							$error['foto'] = "Upload Foto Gagal";
+							$status = $cekFoto = false;
+						}
 					}
 
-					// commit
+					if($cekFoto){
 
-
+						if($this->Kas_kecilModel->checkExistEmail($data['email'])){
+							if($this->Kas_kecilModel->insert($data)) {
+								$status = true;
+								$notif = array(
+									'title' => "Pesan Berhasil",
+									'message' => "Tambah Data Sub Kas Kecil Baru Berhasil",
+								);
+							}
+							else {
+								$notif = array(
+									'title' => "Pesan Gagal",
+									'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+								);
+							}
+						}
+						else {
+							$notif = array(
+								'title' => "Pesan Pemberitahuan",
+								'message' => "Silahkan Cek Kembali Form Isian",
+							);
+							$error['email'] = "Email telah digunakan sebelumnya";
+						}
+					}
 				}
 				else{
 					$notif = array(
 						'title' => "Pesan Pemberitahuan",
-						'message' => "Silahkan Cek Kembali Form Isian ",
+						'message' => "Silahkan Cek Kembali Form Isian",
 					);
 				}
 			}
@@ -195,9 +233,10 @@ class Kas_kecil extends Crud_modalsAbstract{
 				'status' => $status,
 				'notif' => $notif,
 				'error' => $error,
-				// 'data' => $data,
-					
+				'data' => $data,
+				'foto' => $foto
 			);
+
 			echo json_encode($output);
 	
 		}
@@ -312,13 +351,16 @@ class Kas_kecil extends Crud_modalsAbstract{
 		*
 		*/
 		public function get_last_id(){
-			$data = !empty($this->ProyekModel->getLastID()['id']) ? $this->ProyekModel->getLastID()['id'] : false;
+			$token = isset($_POST['token']) ? $_POST['token'] : false;
+			$this->auth->cekToken($_SESSION['token_kas_kecil']['add'], $token, 'kas-kecil');
 
-			if(!$data) $id = 'PRY001';
+			$data = !empty($this->Kas_kecilModel->getLastID()['id']) ? $this->Kas_kecilModel->getLastID()['id'] : false;
+
+			if(!$data) $id = 'KK001';
 			else{
 				// $data = implode('', $data);
-				$kode = 'PRY';
-				$noUrut = (int)substr($data, 3, 3);
+				$kode = 'KK';
+				$noUrut = (int)substr($data, 2, 3);
 				$noUrut++;
 
 				$id = $kode.sprintf("%03s", $noUrut);
@@ -337,30 +379,20 @@ class Kas_kecil extends Crud_modalsAbstract{
 		private function set_validation($data){
 			$required = ($data['action'] =="action-add") ? 'not_required' : 'required';
 
-			// id
-			$this->validation->set_rules($data['id'], 'ID Proyek', 'id', 'string | 1 | 255 | required');
-			// pemilik
-			$this->validation->set_rules($data['pemilik'], 'Nama Pemilik', 'pemilik', 'string | 1 | 255 | required');
-			// tgl
-			$this->validation->set_rules($data['tgl'], 'Tanggal Proyek', 'tgl', 'string | 1 | 255 | required');
-			// pembangunan
-			$this->validation->set_rules($data['pembangunan'], 'Nama Pembangunan', 'pembangunan', 'string | 1 | 255 | required');
-			// luas_area
-			$this->validation->set_rules($data['luas_area'], 'Luas Area', 'luas_area', 'nilai | 1 | 99999 | required');
+			// ID
+			$this->validation->set_rules($data['id'], 'ID Kas Kecil', 'id', 'string | 1 | 255 | required');
+			// nama
+			$this->validation->set_rules($data['nama'], 'Nama', 'nama', 'string | 1 | 255 | required');
 			// alamat
-			$this->validation->set_rules($data['alamat'], 'Alamat Pembangunan', 'alamat', 'string | 1 | 500 | required');
-			// kota
-			$this->validation->set_rules($data['kota'], 'Kota', 'kota', 'string | 1 | 255 | required');
-			// estimasi
-			$this->validation->set_rules($data['estimasi'], 'Estimasi Pengerjaan', 'estimasi', 'nilai | 1 | 255 | required');
-			// total
-			$this->validation->set_rules($data['total'], 'Total Dana', 'total', 'nilai | 0 | 99999999999 | required');
-			// dp
-			$this->validation->set_rules($data['dp'], 'DP Proyek', 'dp', 'nilai | 0 | 99999999999 | required');
-			// cco
-			$this->validation->set_rules($data['cco'], 'CCO', 'cco', 'nilai | 0 | 99999999999 | not_required');
+			$this->validation->set_rules($data['alamat'], 'Alamat Proyek', 'alamat', 'string | 1 | 255 | not_required');
+			// no_telp
+			$this->validation->set_rules($data['no_telp'], 'Nomor Telepon', 'no_telp', 'angka | 1 | 255 | required');
+			// email
+			$this->validation->set_rules($data['email'], 'Alamat Email', 'email', 'email | 1 | 255 | required');
+			// saldo
+			$this->validation->set_rules($data['saldo'], 'Saldo Awal', 'saldo', 'nilai | 0 | 99999999999 | required');
 			// status
-			$this->validation->set_rules($data['status'], 'Status Proyek', 'status', 'string | 1 | 255 | required');
+			$this->validation->set_rules($data['status'], 'Status', 'status', 'string | 1 | 255 | required');
 
 			return $this->validation->run();
 		}

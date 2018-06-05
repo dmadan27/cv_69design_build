@@ -51,21 +51,46 @@
 		* 
 		*/
 		public function insert($data){
-			$query = "INSERT INTO kas_kecil (id,nama, alamat, no_telp, email, foto,  saldo, status) VALUES (:id, :nama, :alamat, no_telp, :email, :foto, :saldo, :status);";
+			try{
+				$this->koneksi->beginTransaction();
 
-			$statement = $this->koneksi->prepare($query);
-			$statement->bindParam(':id', $data['id']);
-			$statement->bindParam(':nama', $data['nama']);
-			$statement->bindParam(':alamat', $data['alamat']);
-			$statement->bindParam(':no_telp', $data['no_telp']);
-			$statement->bindParam(':email', $data['email']);
-			$statement->bindParam(':foto', $data['foto']);
-			$statement->bindParam(':saldo', $data['saldo']);
-			$statement->bindParam(':status', $data['status']);
-			$result = $statement->execute();
-			return $result;
+				$this->insertKasKecil($data);
+
+				$this->koneksi->commit();
+
+				return true;
+			}
+			catch(PDOException $e){
+				$this->koneksi->rollback();
+				die($e->getMessage());
+				// return false;
+			}	
 		}
 
+		/**
+		* 
+		*/
+		public function insertKasKecil($data){
+			$level = "KAS KECIL";
+			$query = "CALL tambah_kas_kecil (:id, :nama, :alamat, :no_telp, :email, :foto, :saldo, :status, :password,:level);";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id' => $data['id'],
+					':nama' => $data['nama'],
+					':alamat' => $data['alamat'],
+					':no_telp' => $data['no_telp'],
+					':email' => $data['email'],
+					':foto' => $data['foto'],
+					':saldo' => $data['saldo'],
+					':status' => $data['status'],
+					':password' => $data['password'],
+					':level' => $level,
+				)
+			);
+			$statement->closeCursor();
+		}
 		
 		/**
 		* 
@@ -107,7 +132,7 @@
 		*
 		*/
 		public function getLastID(){
-			$query = "SELECT MAX(id) id FROM proyek;";
+			$query = "SELECT MAX(id) id FROM kas_kecil;";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute();
@@ -116,64 +141,20 @@
 			return $result;
 		}
 
-		/**
-		* 
-		*/
-		public function setQuery_mobile($page){
-			// $id = isset($_POST['id']) ? $_POST['id'] : false;
-			// $cari = isset($_POST['cari']) ? $_POST['cari'] : null;
-			// $mulai = ($page > 1) ? ($page * 10) - 10 : 0;
-			
-			// $this->queryMobile = 'SELECT * FROM v_proyek_logistik ';
-
-			// $qWhere = 'WHERE id_sub_kas_kecil = "'.$id.'"';
-			// $i = 0;
-			// foreach($this->kolomCari_mobile as $value){
-			// 	if(!is_null($cari)){
-			// 		if($i === 0) $qWhere .= ' AND ('.$value.' LIKE "%'.$cari.'%" ';
-			// 		else $qWhere .= 'OR '.$value.' LIKE "%'.$cari.'%"';
-			// 	}
-			// 	$i++;
-			// }
-			// if(!is_null($cari)) $qWhere .= " )";
-
-			// $this->queryMobile .= "$qWhere LIMIT $mulai, 10";
-		}
-
+		
 		/**
 		*
 		*/
-		public function getAll_mobile($page){
-			// $this->setQuery_mobile($page);
+		public function checkExistEmail($email){
+			$query = "SELECT COUNT(*) total FROM kas_kecil WHERE email =:email";
 
-			// $statement = $this->koneksi->prepare($this->queryMobile);
-			// $statement->execute();
-			// $result = $statement->fetchAll();
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':email', $email);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
 
-			// return $result;
-		}
-
-		/**
-		* 
-		*/
-		public function get_recordTotal_mobile(){
-			// $koneksi = $this->openConnection();
-
-			// $statement = $koneksi->query("SELECT COUNT(*) FROM v_proyek_logistik")->fetchColumn();
-
-			// return $statement;
-		}
-
-		/**
-		* 
-		*/
-		public function get_recordFilter_mobile(){
-			// $koneksi = $this->openConnection();
-
-			// $statement = $koneksi->prepare($this->queryMobile);
-			// $statement->execute();
-
-			// return $statement->rowCount();
+			if($result['total'] > 0) return false;
+			else return true;
 		}
 
 			
