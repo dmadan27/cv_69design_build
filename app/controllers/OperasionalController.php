@@ -173,6 +173,14 @@
 				$cek = $validasi['cek'];
 				$error = $validasi['error'];
 
+				$this->model('BankModel');
+				$getSaldo = $this->BankModel->getSaldoById($data['id_bank'])['saldo'];
+
+				if($data['nominal'] > $getSaldo){
+					$cek = false;
+					$error['nominal'] = "Nominal terlalu besar dan melebihi saldo bank";
+				}
+
 				if($cek){
 					// validasi inputan
 					$data = array(
@@ -257,6 +265,31 @@
 				$cek = $validasi['cek'];
 				$error = $validasi['error'];
 
+				$getData = $this->OperasionalModel->getById($id);
+
+				$this->model('BankModel');
+
+				// jika bank ada perubahan
+				if($data['id_bank'] != $getData['id_bank']){
+					$getSaldo = $this->BankModel->getSaldoById($data['id_bank'])['saldo'];
+
+					if($data['nominal'] > $getSaldo){
+						$cek = false;
+						$error['nominal'] = "Nominal terlalu besar dan melebihi saldo bank";
+					}
+				}
+				else{
+					// jika bank sama tapi ada perubahan nominal
+					if($getData['nominal'] != $data['nominal']){
+						$getSaldo = $this->BankModel->getSaldoById($data['id_bank'])['saldo'];
+
+						if($data['nominal'] > ($getSaldo + $getData['nominal'])){
+							$cek = false;
+							$error['nominal'] = "Nominal terlalu besar dan melebihi saldo bank";
+						}
+					}
+				}
+
 				if($cek){
 					// validasi inputan
 					$data = array(
@@ -266,10 +299,6 @@
 						'nominal' => $this->validation->validInput($data['nominal']),
 						'ket' => $this->validation->validInput($data['ket'])
 					);
-
-					// update db
-
-					// transact
 
 					if($this->OperasionalModel->update($data)) {
 						$status = true;
@@ -285,7 +314,6 @@
 						);
 					}
 
-					// commit
 				}
 				else {
 					$notif = array(
