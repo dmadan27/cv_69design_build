@@ -460,8 +460,8 @@
 		*
 		*/
 		public function get_notif(){
-			$notif = $this->Pengajuan_kas_kecilModel->getAll_pending();
-			$jumlah = $this->Pengajuan_kas_kecilModel->getTotal_pending();
+			$notif = $this->Pengajuan_kasKecilModel->getAll_pending();
+			$jumlah = $this->Pengajuan_kasKecilModel->getTotal_pending();
 
 			$data_notif = '';
 			foreach($notif as $value){
