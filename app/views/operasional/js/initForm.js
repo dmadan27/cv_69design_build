@@ -156,18 +156,18 @@ function getEdit(id, token){
 *
 */
 function setError(error){
-	// $.each(error, function(index, item){
-	// 	console.log(index);
+	$.each(error, function(index, item){
+		console.log(index);
 
-	// 	if(item != ""){
-	// 		$('.field-'+index).removeClass('has-success').addClass('has-error');
-	// 		$('.pesan-'+index).text(item);
-	// 	}
-	// 	else{
-	// 		$('.field-'+index).removeClass('has-error').addClass('has-success');
-	// 		$('.pesan-'+index).text('');	
-	// 	}
-	// });
+		if(item != ""){
+			$('.field-'+index).removeClass('has-success').addClass('has-error');
+			$('.pesan-'+index).text(item);
+		}
+		else{
+			$('.field-'+index).removeClass('has-error').addClass('has-success');
+			$('.pesan-'+index).text('');	
+		}
+	});
 }
 
 /**
