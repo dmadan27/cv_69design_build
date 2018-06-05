@@ -140,7 +140,9 @@
 		/**
 		*
 		*/
-		public function detail_pengajuan($id_pengajuan){
+		public function detail_pengajuan(){
+			$id_pengajuan = $_POST["id_pengajuan"];
+
 			$this->model('Pengajuan_sub_kas_kecilModel');
 			$dataDetail = $this->Pengajuan_sub_kas_kecilModel->getById_mobile(strtoupper($id_pengajuan));
 
