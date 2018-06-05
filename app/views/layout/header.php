@@ -25,48 +25,14 @@
 		            <!-- Menu toggle button -->
 		            <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
 		              	<i class="fa fa-bell-o"></i>
-		              	<span class="label label-warning">10</span>
+		              	<span class="label label-warning label-jumlah"></span>
 		            </a>
 		            <ul class="dropdown-menu">
-		              	<li class="header">You have 10 notifications</li>
+		              	<li class="header label-notif"></li>
 		              	<li>
 		                	<!-- Inner Menu: contains the notifications -->
-		                	<ul class="menu">
-		                  		<li><!-- start notification -->
-		                    		<a href="javascript:void(0)">
-		                      			<i class="fa fa-users text-aqua"></i> 5 new members joined today
-		                    		</a>
-		                  		</li><!-- end notification -->
-		                  		<li><!-- start notification -->
-		                    		<a href="javascript:void(0)">
-		                      			<i class="fa fa-users text-aqua"></i> 5 new members joined today
-		                    		</a>
-		                  		</li><!-- end notification -->
-		                  		<li><!-- start notification -->
-		                    		<a href="javascript:void(0)">
-		                      			<i class="fa fa-users text-aqua"></i> 5 new members joined today
-		                    		</a>
-		                  		</li><!-- end notification -->
-		                  		<li><!-- start notification -->
-		                    		<a href="javascript:void(0)">
-		                      			<i class="fa fa-users text-aqua"></i> 5 new members joined today
-		                    		</a>
-		                  		</li><!-- end notification -->
-		                  		<li><!-- start notification -->
-		                    		<a href="javascript:void(0)">
-		                      			<i class="fa fa-users text-aqua"></i> 5 new members joined today
-		                    		</a>
-		                  		</li><!-- end notification -->
-		                  		<li><!-- start notification -->
-		                    		<a href="javascript:void(0)">
-		                      			<i class="fa fa-users text-aqua"></i> 5 new members joined today
-		                    		</a>
-		                  		</li><!-- end notification -->
-		                  		<li><!-- start notification -->
-		                    		<a href="javascript:void(0)">
-		                      			<i class="fa fa-users text-aqua"></i> 5 new members joined today
-		                    		</a>
-		                  		</li><!-- end notification -->
+		                	<ul class="menu" id="data-notif">
+		                  		
 		                	</ul>
 		              	</li>
 		              	<li class="footer"><a href="javascript:void(0)">View all</a></li>

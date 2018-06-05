@@ -253,4 +253,26 @@
 			return $this->validation->run();
 		}
 
+		public function action_insert(){
+			$this->model('Pengajuan_sub_kas_kecilModel');
+
+			$data = array();
+			for($i=0; $i<100000; $i++){
+				$row = array();
+				$row['id'] = 'PGSKC-PRY001-LOG008'.'-'.sprintf("%05s", $i+1);
+				$row['id_sub_kas_kecil'] = 'LOG008';
+				$row['id_proyek'] = 'PRY001';
+				$row['tgl'] = date('Y-m-d');
+				$row['total'] = 10000;
+				$row['status'] = 'PENDING';
+
+				$data[] = $row;
+			}
+
+			foreach($data as $value){
+				$this->Pengajuan_sub_kas_kecilModel->insert_dummy($value);
+			}
+			
+		}
+
 	}

@@ -39,3 +39,4 @@
 <?php $this->getJS(); ?>
 <!-- AdminLTE App -->
 <script src="<?= BASE_URL."assets/dist/js/adminlte.min.js"; ?>"></script>
+<script type="text/javascript" src="<?= BASE_URL."app/views/layout/js/initNotif.js"; ?>"></script>

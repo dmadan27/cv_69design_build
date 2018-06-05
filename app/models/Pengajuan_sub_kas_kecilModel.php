@@ -68,7 +68,8 @@
 		*/
 		public function getAll_pending(){
 			$status = "PENDING";
-			$query = "SELECT * FROM pengajuan_sub_kas_kecil LIMIT  WHERE status = :status ";
+			$query = "SELECT pskc.id, skc.id id_skc, skc.nama nama_skc, pskc.total FROM pengajuan_sub_kas_kecil pskc ";
+			$query .= "JOIN sub_kas_kecil skc ON skc.id = pskc.id_sub_kas_kecil WHERE pskc.status = :status ORDER BY id DESC LIMIT 5";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':status', $status);
@@ -76,6 +77,21 @@
 			$result = $statement->fetchAll();
 
 			return $result;
+		}
+
+		/**
+		*
+		*/
+		public function getTotal_pending(){
+			$status = "PENDING";
+			$query = "SELECT COUNT(*) FROM pengajuan_sub_kas_kecil WHERE status = :status";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':status', $status);
+			$statement->execute();
+			$result = $statement->fetchColumn();
+
+			return $result;	
 		}
 
 		/**
@@ -256,6 +272,24 @@
 			}
 
 		// ========================================================= //			
+
+		public function insert_dummy($data){
+			$query = "INSERT INTO pengajuan_sub_kas_kecil (id, id_sub_kas_kecil, id_proyek, tgl, total, status) VALUES ";
+			$query .= "(:id, :id_sub_kas_kecil, :id_proyek, :tgl, :total, :status);";
+
+			$statment = $this->koneksi->prepare($query);
+			$statment->execute(
+				array(
+					':id' => $data['id'],
+					':id_sub_kas_kecil' => $data['id_sub_kas_kecil'],
+					':id_proyek' => $data['id_proyek'],
+					':tgl' => $data['tgl'],
+					':total' => $data['total'],
+					':status' => $data['status'],
+				)
+			);
+			$statment->closeCursor();
+		}
 
 		/**
 		* 

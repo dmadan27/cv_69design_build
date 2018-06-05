@@ -43,7 +43,8 @@
 			$search = isset($_POST['search']['value']) ? $_POST['search']['value'] : false;
 			$order = isset($_POST['order']) ? $_POST['order'] : false;
 
-			$this->query = "SELECT * FROM $this->tabel ";
+			// $this->query = "SELECT * FROM $this->tabel ";
+			$query = "SELECT * FROM $this->tabel ";
 
 			if($this->kondisi === false){
 				// jika ada request pencarian
@@ -79,14 +80,17 @@
 				else $qOrder = 'ORDER BY '.key($this->orderBy).' '.$this->orderBy[key($this->orderBy)]; // order default
 			}
 
-			$this->query .= "$qWhere $qOrder ";
+			return $query .= "$qWhere $qOrder "; 
+			// $this->query .= "$qWhere $qOrder ";
 		}
 
 		/**
 		* fungsi untuk get query datatable komplit
 		*/
 		final public function getDataTable(){
-			$this->setDataTable();
+			// $this->setDataTable();
+			$this->query = $this->setDataTable();
+
 			$qLimit = "";
 			if($_POST['length'] != -1) $qLimit .= 'LIMIT '.$_POST['start'].', '.$_POST['length'];
 			
@@ -102,7 +106,8 @@
 		final public function recordFilter(){
 			$koneksi = $this->openConnection();
 
-			$statement = $koneksi->prepare($this->query);
+			// $statement = $koneksi->prepare($this->query);
+			$statement = $koneksi->prepare($this->setDataTable());
 			$statement->execute();
 
 			return $statement->rowCount();

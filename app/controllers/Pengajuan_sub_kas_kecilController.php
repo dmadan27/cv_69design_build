@@ -202,4 +202,31 @@
 		public function export(){
 
 		}
+
+		/**
+		*
+		*/
+		public function get_notif(){
+			$notif = $this->Pengajuan_sub_kas_kecilModel->getAll_pending();
+			$jumlah = $this->Pengajuan_sub_kas_kecilModel->getTotal_pending();
+
+			$data_notif = '';
+			foreach($notif as $value){
+		        $data_notif .= '<li><a href="'.BASE_URL.'pengajuan-sub-kas-kecil/detail/'.strtolower($value['id']).'">';
+		        $data_notif .= '<strong>'.$value['id'].' - '.$value['nama_skc'].'</strong>';
+		        $data_notif .= '</br>Total: '.$this->helper->cetakRupiah($value['total']); 
+		        $data_notif .= '</a></li>';
+			}
+
+			$output = array(
+				'notif' => $notif,
+				'jumlah' => $jumlah,
+				'text' => 'Anda memiliki '.$jumlah.' pengajuan yang masih Pending',
+				'data' => $data_notif,
+			);
+
+			// echo "<pre>";
+			// echo json_encode(print_r($output));
+			echo json_encode($output);
+		}
 	}
