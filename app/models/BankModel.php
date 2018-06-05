@@ -17,12 +17,44 @@
 			$this->dataTable = new Datatable();
 		}
 
+		// ======================= dataTable ======================= //
+		
+			/**
+			* 
+			*/
+			public function getAllDataTable($config){
+				$this->dataTable->set_config($config);
+				$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
+				$statement->execute();
+				$result = $statement->fetchAll();
+
+				return $result;
+			}
+
+			/**
+			* 
+			*/
+			public function recordFilter(){
+				return $this->dataTable->recordFilter();
+
+			}
+
+			/**
+			* 
+			*/
+			public function recordTotal(){
+				return $this->dataTable->recordTotal();
+			}
+
+		// ========================================================= //
+
 		/**
 		* 
 		*/
-		public function getAllDataTable($config){
-			$this->dataTable->set_config($config);
-			$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
+		public function getAll(){
+			$query = "SELECT * FROM bank";
+
+			$statement = $this->koneksi->prepare($query);
 			$statement->execute();
 			$result = $statement->fetchAll();
 
@@ -32,30 +64,22 @@
 		/**
 		* 
 		*/
-		public function recordFilter(){
-			return $this->dataTable->recordFilter();
-
-		}
-
-		/**
-		* 
-		*/
-		public function recordTotal(){
-			return $this->dataTable->recordTotal();
-		}
-
-		/**
-		* 
-		*/
-		public function getAll(){
-			
-		}
-
-		/**
-		* 
-		*/
 		public function getById($id){
 			$query = "SELECT * FROM bank WHERE id = :id;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+
+		/**
+		*
+		*/
+		public function getSaldoById($id){
+			$query = "SELECT saldo FROM bank WHERE id = :id;";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id', $id);
