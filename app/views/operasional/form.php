@@ -25,6 +25,17 @@
                   <span class="help-block small pesan pesan-id"></span>
                 </div>
 
+                <!-- field ID Bank -->
+                <div class="form-group field-id_bank has-feedback">
+                  <label for="id">ID Bank</label>
+                    <select class="form-control field" name="id_bank" id="id_bank">
+                      
+                    </select>
+                  
+                  <span class="help-block small pesan pesan-id_bank"></span>
+                </div>
+                
+
                 <!-- field Tanggal -->
                 <div class="form-group field-tgl has-feedback">
                   <label for="tgl">Tanggal</label>
@@ -32,17 +43,20 @@
                   <span class="help-block small pesan pesan-tgl"></span>
                 </div>
                 
-                <!-- field Nama -->
-                <div class="form-group field-nama has-feedback">
-                  <label for="nama">Nama</label>
-                  <input type="text" name="nama" id="nama" placeholder="Masukan Nama" class="form-control field">
-                  <span class="help-block small pesan pesan-nama"></span>
-                </div>
+                
 
             </div>
 
             <!-- panel kanan -->
             <div class="col-md-6">
+
+              <!-- field Nama -->
+                <div class="form-group field-nama has-feedback">
+                  <label for="nama">Nama</label>
+                  <input type="text" name="nama" id="nama" placeholder="Masukan Nama Kebutuhan" class="form-control field">
+                  <span class="help-block small pesan pesan-nama"></span>
+                </div>
+                
                   <!-- field  Nominal -->
                 <div class="form-group field-nominal has-feedback">
                   <label for="nominal">Nominal</label>

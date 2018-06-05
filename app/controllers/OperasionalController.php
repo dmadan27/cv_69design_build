@@ -176,6 +176,7 @@
 					// validasi inputan
 					$data = array(
 						'id' => $this->validation->validInput($data['id']),
+						'id_bank' => $this->validation->validInput($data['id_bank']),
 						'tgl' => $this->validation->validInput($data['tgl']),
 						'nama' => $this->validation->validInput($data['nama']),
 						'nominal' => $this->validation->validInput($data['nominal']),
@@ -219,10 +220,7 @@
 
 			echo json_encode($output);		
 		}
-		public function form($id){
-
-
-		}
+		
 
 		protected function add(){
 		}

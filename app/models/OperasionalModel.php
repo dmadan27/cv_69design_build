@@ -69,10 +69,11 @@
 		* 
 		*/
 		public function insert($data){
-			$query = "INSERT INTO bank (id, tgl,  nama,  nominal, ket) VALUES (:id, :tgl, :nama, :nominal, :ket);";
+			$query = "INSERT INTO operasional (id, id_bank, tgl,  nama,  nominal, ket) VALUES (:id, :id_bank, :tgl, :nama, :nominal, :ket);";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id', $data['id']);
+			$statement->bindParam(':id_bank', $data['id_bank']);
 			$statement->bindParam(':tgl', $data['tgl']);
 			$statement->bindParam(':nama', $data['nama']);
 			$statement->bindParam(':nominal', $data['nominal']);
