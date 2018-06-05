@@ -91,10 +91,10 @@
 			
 			// // config datatable
 			$config_dataTable = array(
-				'tabel' => 'operasional',
-				'kolomOrder' => array(null, 'id',  'tgl', 'nama', 'nominal', null),
-				'kolomCari' => array('nama', 'nominal'),
-				'orderBy' => array('id' => 'asc'),
+				'tabel' => 'v_operasional',
+				'kolomOrder' => array(null, 'id', 'nama_bank', 'tgl', 'nama', 'nominal', null),
+				'kolomCari' => array('nama', 'tgl', 'nama', 'nama_bank', 'nominal', 'ket'),
+				'orderBy' => array('tgl' => 'desc'),
 				'kondisi' => false,
 			);
 
@@ -114,9 +114,7 @@
 			foreach($dataOperasional as $row){
 				$no_urut++;
 
-			// 	$status = ($row['status'] == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-danger">'.$row['status'].'</span>';
-
-			// 	// button aksi
+				// button aksi
 				$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
 				$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".', '."'".$this->token["edit"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
 				$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
@@ -126,6 +124,7 @@
 				$dataRow = array();
 				$dataRow[] = $no_urut;
 				$dataRow[] = $row['id'];
+				$dataRow[] = $row['nama_bank'];
 				$dataRow[] = $row['tgl'];
 				$dataRow[] = $row['nama'];
 				$dataRow[] = $row['nominal'];
@@ -183,10 +182,6 @@
 						'ket' => $this->validation->validInput($data['ket'])
 					);
 
-					// insert db
-
-					// transact
-
 					if($this->OperasionalModel->insert($data)) {
 						$status = true;
 						$notif = array(
@@ -200,8 +195,6 @@
 							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 						);
 					}
-
-					// commit
 				}
 				else {
 					$notif = array(
@@ -215,16 +208,11 @@
 				'status' => $status,
 				'notif' => $notif,
 				'error' => $error,
-				// 'data' => $data
+				'data' => $data
 			);
 
 			echo json_encode($output);		
 		}
-		
-
-		protected function add(){
-		}
-
 
 		/**
 		* Function edit

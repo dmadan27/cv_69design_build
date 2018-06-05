@@ -4,9 +4,8 @@ $(document).ready(function(){
 
 	// button tambah
 	$('#tambah').on('click', function(){
-		if(this.value.trim() != "initList.js"){
+		if(this.value.trim() != ""){
 			resetForm();
-			// $('.field-saldo').css('display', 'block');
 			$('#submit_operasional').prop('value', 'action-add');
 			$('#submit_operasional').prop('disabled', false);
 			$('#submit_operasional').html('Simpan Data');
@@ -19,7 +18,7 @@ $(document).ready(function(){
 	// submit operasional
 	$('#form_operasional').submit(function(e){
 		e.preventDefault();
-		// submit(edit_view);
+		submit();
 
 		return false;
 	});
@@ -55,15 +54,14 @@ $(document).ready(function(){
 */
 function getDataForm(){
 	var data = new FormData();
-	// var saldo = parseFloat($('#saldo').val().trim()) ? parseFloat($('#saldo').val().trim()) : $('#saldo').val().trim();
+	var nominal = parseFloat($('#nominal').val().trim()) ? parseFloat($('#nominal').val().trim()) : $('#nominal').val().trim();
 
 	if($('#submit_operasional').val().trim().toLowerCase() == "action-edit") data.append('id', $('#id').val().trim());
 
 	data.append('token', $('#token_form').val().trim());
-	data.append('id', $('#id').val().trim()); // id operasional
 	data.append('tgl', $('#tgl').val().trim()); // tgl operasional
 	data.append('nama', $('#nama').val().trim()); // nama operasional
-	data.append('nominal', $('#nominal').val().trim()); // nominal operasional
+	data.append('nominal', nominal); // nominal operasional
 	data.append('ket', $('#ket').val().trim()); // ket operasional
 	data.append('action', $('#submit_operasional').val().trim()); // action
 
@@ -73,7 +71,7 @@ function getDataForm(){
 /**
 *
 */
-function submit(edit_view){
+function submit(){
 	var data = getDataForm();
 
 	$.ajax({
@@ -100,12 +98,7 @@ function submit(edit_view){
 				toastr.success(output.notif.message, output.notif.title);
 				resetForm();
 				$("#modalOperasional").modal('hide');
-				if(!edit_view) $("#operasionalTable").DataTable().ajax.reload();
-				else {
-					setTimeout(function(){ 
-						location.reload(); 
-					}, 1000);
-				}
+				$("#operasionalTable").DataTable().ajax.reload();
 			}
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling

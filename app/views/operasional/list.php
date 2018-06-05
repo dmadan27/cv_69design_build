@@ -46,12 +46,13 @@
 								<table id="operasionalTable" class="table table-bordered table-hover">
 									<thead>
 										<tr>
-											<th class="text-center" style="width: 35px">No</th>
-											<th class="text-center">ID</th>
-											<th class="text-center">Tanggal</th>
-											<th class="text-center">Nama</th>
-											<th class="text-center">Nominal</th>
-											<th class="text-center">Aksi</th>
+											<th class="text-right" style="width: 35px">No</th>
+											<th>ID</th>
+											<th>Bank</th>
+											<th>Tanggal</th>
+											<th>Nama</th>
+											<th class="text-right">Nominal</th>
+											<th>Aksi</th>
 										</tr>
 									</thead>
 									<tbody>

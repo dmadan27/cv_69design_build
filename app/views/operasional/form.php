@@ -17,38 +17,25 @@
         <div class="modal-body">
           <div class="row">
             <!-- panel kiri -->
-            <div class="col-md-6">
-                <!-- field id -->
-                <div class="form-group field-id has-feedback">
-                  <label for="id">ID Operasional</label>
-                  <input type="text" name="id" id="id" class="form-control field" placeholder="">
-                  <span class="help-block small pesan pesan-id"></span>
-                </div>
-
+            <div class="col-md-12">
                 <!-- field ID Bank -->
                 <div class="form-group field-id_bank has-feedback">
                   <label for="id">ID Bank</label>
-                    <select class="form-control field" name="id_bank" id="id_bank">
-                      
+                    <select class="form-control field select2" name="id_bank" id="id_bank"> 
                     </select>
-                  
                   <span class="help-block small pesan pesan-id_bank"></span>
                 </div>
                 
-
                 <!-- field Tanggal -->
                 <div class="form-group field-tgl has-feedback">
                   <label for="tgl">Tanggal</label>
                   <input type="text" name="tgl" id="tgl" class="form-control datepicker field" placeholder="Masukan Tanggal">
                   <span class="help-block small pesan pesan-tgl"></span>
                 </div>
-                
-                
-
-            </div>
+            
 
             <!-- panel kanan -->
-            <div class="col-md-6">
+            <!-- <div class="col-md-6"> -->
 
               <!-- field Nama -->
                 <div class="form-group field-nama has-feedback">
@@ -60,7 +47,11 @@
                   <!-- field  Nominal -->
                 <div class="form-group field-nominal has-feedback">
                   <label for="nominal">Nominal</label>
-                  <input type="text" name="nominal" id="nominal" class="form-control field" placeholder="Masukan Nominal">
+                  <div class="input-group">
+                    <span class="input-group-addon">Rp</span>
+                      <input type="number" min="0" step="any" name="nominal" id="nominal" class="form-control field" placeholder="Masukkan Nominal">
+                      <span class="input-group-addon">.00</span>
+                    </div>
                   <span class="help-block small pesan pesan-nominal"></span>
                 </div>
 

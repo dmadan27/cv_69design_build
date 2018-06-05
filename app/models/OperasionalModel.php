@@ -17,32 +17,36 @@
 			$this->dataTable = new Datatable();
 		}
 
-		/**
-		* 
-		*/
-		public function getAllDataTable($config){
-			$this->dataTable->set_config($config);
-			$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
-			$statement->execute();
-			$result = $statement->fetchAll();
+		// ======================= dataTable ======================= //
 
-			return $result;
-		}
+			/**
+			* 
+			*/
+			public function getAllDataTable($config){
+				$this->dataTable->set_config($config);
+				$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
+				$statement->execute();
+				$result = $statement->fetchAll();
 
-		/**
-		* 
-		*/
-		public function recordFilter(){
-			return $this->dataTable->recordFilter();
+				return $result;
+			}
 
-		}
+			/**
+			* 
+			*/
+			public function recordFilter(){
+				return $this->dataTable->recordFilter();
 
-		/**
-		* 
-		*/
-		public function recordTotal(){
-			return $this->dataTable->recordTotal();
-		}
+			}
+
+			/**
+			* 
+			*/
+			public function recordTotal(){
+				return $this->dataTable->recordTotal();
+			}
+
+		// ========================================================= //
 
 		/**
 		* 
@@ -69,18 +73,33 @@
 		* 
 		*/
 		public function insert($data){
-			$query = "INSERT INTO operasional (id, id_bank, tgl,  nama,  nominal, ket) VALUES (:id, :id_bank, :tgl, :nama, :nominal, :ket);";
+			try{
+				$this->koneksi->beginTransaction();
 
-			$statement = $this->koneksi->prepare($query);
-			$statement->bindParam(':id', $data['id']);
-			$statement->bindParam(':id_bank', $data['id_bank']);
-			$statement->bindParam(':tgl', $data['tgl']);
-			$statement->bindParam(':nama', $data['nama']);
-			$statement->bindParam(':nominal', $data['nominal']);
-			$statement->bindParam(':ket', $data['ket']);
-			$result = $statement->execute();
+				$query = "CALL tambah_data_operasional (:id_bank, :tgl, :nama, :nominal, :ket)";
 
-			return $result;
+				$statement = $this->koneksi->prepare($query);
+				$statment->execute(
+					array(
+						':id_bank' => $data['id'],
+						':tgl' => $data['tgl'],
+						':nama' => $data['nama'],
+						':nominal' => $data['nominal'],
+						':ket' => $data['ket'],
+					)
+				);
+				$statment->closeCursor();
+
+				$this->koneksi->commit();
+
+				return true;
+			}
+			catch(PDOException $e){
+				$this->koneksi->rollback();
+				die($e->getMessage());
+				// return false;
+			}
+				
 		}
 
 		/**
