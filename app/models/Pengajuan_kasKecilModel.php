@@ -67,6 +67,37 @@
 		}
 
 		/**
+		*
+		*/
+		public function getAll_pending(){
+			$status = "PENDING";
+			$query = "SELECT pkc.id, kc.nama nama_kas_kecil, pkc.total FROM pengajuan_kas_kecil pkc ";
+			$query .= "JOIN kas_kecil kc ON kc.id = kc.id_sub_kas_kecil WHERE pkc.status = :status ORDER BY id DESC LIMIT 5";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':status', $status);
+			$statement->execute();
+			$result = $statement->fetchAll();
+
+			return $result;
+		}
+
+		/**
+		*
+		*/
+		public function getTotal_pending(){
+			$status = "PENDING";
+			$query = "SELECT COUNT(*) FROM pengajuan_kas_kecil WHERE status = :status";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':status', $status);
+			$statement->execute();
+			$result = $statement->fetchColumn();
+
+			return $result;	
+		}
+
+		/**
 		* 
 		*/
 		public function insert($data){

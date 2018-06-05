@@ -86,12 +86,12 @@
 
 			// set token
 			$_SESSION['token_pengajuan_skc']['view'] = md5($this->auth->getToken());
-			$_SESSION['token_pengajuan_skc']['edit'] = md5($this->auth->getToken());
+			$_SESSION['token_pengajuan_skc']['edit_status'] = md5($this->auth->getToken());
 			$_SESSION['token_pengajuan_skc']['delete'] = md5($this->auth->getToken());
 			
 			$this->token = array(
 				'view' => password_hash($_SESSION['token_pengajuan_skc']['view'], PASSWORD_BCRYPT),
-				'edit' => password_hash($_SESSION['token_pengajuan_skc']['edit'], PASSWORD_BCRYPT),
+				'edit_status' => password_hash($_SESSION['token_pengajuan_skc']['edit_status'], PASSWORD_BCRYPT),
 				'delete' => password_hash($_SESSION['token_pengajuan_skc']['delete'], PASSWORD_BCRYPT),	
 			);
 
@@ -110,7 +110,7 @@
 
 				// button aksi
 				$aksiDetail = '<button onclick="getView('."'".strtolower($row["id"])."'".', '."'".$this->token["view"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-				$aksiEdit = '<button onclick="getEdit('."'".strtolower($row["id"])."'".', '."'".$this->token["edit"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+				$aksiEdit = '<button onclick="getEditStatus('."'".strtolower($row["id"])."'".', '."'".$this->token["edit_status"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Status Pengajuan"><i class="fa fa-pencil"></i></button>';
 				$aksiHapus = '<button onclick="getDelete('."'".strtolower($row["id"])."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 				
 				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
@@ -223,6 +223,7 @@
 				'jumlah' => $jumlah,
 				'text' => 'Anda memiliki '.$jumlah.' pengajuan yang masih Pending',
 				'data' => $data_notif,
+				'view_all' => BASE_URL.'pengajuan-sub-kas-kecil/',
 			);
 
 			// echo "<pre>";
