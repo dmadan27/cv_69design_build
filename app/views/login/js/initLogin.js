@@ -56,16 +56,18 @@ function submit_login(){
 			'username': $('#username').val().trim(),
 			'password': $('#password').val().trim(),
 		},
-		beforeSend: function(){
-			
-		},
+		beforeSend: function(){},
 		success: function(output){
 			console.log(output);
 			if(output.status) document.location=BASE_URL;
-			else setError(output.error);
+			else {
+				toastr.warning(output.notif.message, output.notif.title);
+				setError(output.error);
+			}
 		},
 		error: function (jqXHR, textStatus, errorThrown) { // error handling
             console.log(jqXHR, textStatus, errorThrown);
+            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
         }
 	})
 }

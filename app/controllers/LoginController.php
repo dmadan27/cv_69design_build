@@ -48,7 +48,8 @@
 			$this->password = isset($_POST['password']) ? $_POST['password'] : false;
 
 			$errorUser = $errorPass = "";
-
+			$notif = '';
+			
 			// get username
 			$dataUser = $this->UserModel->getUser($this->username);
 
@@ -57,6 +58,10 @@
 				$status = false;
 				$errorUser = "Username atau Password Anda Salah";
 				$errorPass = $errorUser;
+				$notif = array(
+					'title' => "Pesan Pemberitahuan",
+					'message' => "Silahkan Cek Kembali Form Isian",
+				);
 			}
 			else{
 				if(password_verify($this->password, $dataUser['password'])){
@@ -78,11 +83,16 @@
 					$_SESSION['sess_foto'] = $dataProfil['foto'];
 					$_SESSION['sess_status'] = $dataProfil['status'];
 					$_SESSION['sess_welcome'] = true;
+					$_SESSION['sess_locksreen'] = false;
 				}
 				else{
 					$status = false;
 					$errorUser = "Username atau Password Anda Salah";
 					$errorPass = $errorUser;
+					$notif = array(
+						'title' => "Pesan Pemberitahuan",
+						'message' => "Silahkan Cek Kembali Form Isian",
+					);
 				}
 			}
 
@@ -97,6 +107,7 @@
 			$output = array(
 				'status' => $status,
 				'error' => $error,
+				'notif' => $notif,
 			);
 
 			echo json_encode($output);

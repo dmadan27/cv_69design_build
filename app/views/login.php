@@ -14,8 +14,10 @@
 	  	<link rel="stylesheet" href="<?= BASE_URL."assets/bower_components/font-awesome/css/font-awesome.min.css"; ?>">
 	  	<!-- Ionicons -->
 	  	<link rel="stylesheet" href="<?= BASE_URL."assets/bower_components/Ionicons/css/ionicons.min.css"; ?>">
-	  	<!-- iCheck -->
-	  	<link rel="stylesheet" href="<?= BASE_URL."assets/plugins/iCheck/square/blue.css" ?>">
+	  	<!-- sweet alert 2 -->
+		<link rel="stylesheet" href="<?= BASE_URL."assets/bower_components/sweetalert/sweetalert.css"; ?>">
+		<!-- toastr -->
+		<link rel="stylesheet" href="<?= BASE_URL."assets/bower_components/toastr/build/toastr.min.css"; ?>">
 	  	<!-- pace -->
 	  	<link rel="stylesheet" type="text/css" href="<?= BASE_URL."assets/bower_components/PACE/themes/red/pace-theme-flash.css"; ?>">
 	  	<!-- Theme style -->
@@ -55,9 +57,30 @@
 		<script src="<?= BASE_URL."assets/bower_components/jquery/dist/jquery.min.js"; ?>"></script>
 		<!-- Bootstrap 3.3.7 -->
 		<script src="<?= BASE_URL."assets/bower_components/bootstrap/dist/js/bootstrap.min.js"; ?>"></script>
-		<!-- iCheck -->
-		<script src="<?= BASE_URL."assets/plugins/iCheck/icheck.min.js"; ?>"></script>
-
+		<!-- sweet alert 2 -->
+		<script src="<?= BASE_URL."assets/bower_components/sweetalert/sweetalert.min.js"; ?>"></script>
+		<!-- toastr -->
+		<script src="<?= BASE_URL."assets/bower_components/toastr/build/toastr.min.js"; ?>"></script>
+		<script type="text/javascript">
+			// init toastr
+		    toastr.options = {
+		      	"closeButton": true,
+		      	"debug": false,
+		      	"newestOnTop": false,
+		      	"progressBar": true,
+		      	"positionClass": "toast-top-right",
+		      	"preventDuplicates": false,
+		      	"onclick": null,
+		      	"showDuration": "300",
+		      	"hideDuration": "1000",
+		      	"timeOut": "5000",
+		      	"extendedTimeOut": "1000",
+		      	"showEasing": "swing",
+		      	"hideEasing": "linear",
+		      	"showMethod": "fadeIn",
+		      	"hideMethod": "fadeOut"
+		    }
+		</script>
 		<!-- pace js -->
 		<script type="text/javascript" src="<?= BASE_URL."assets/bower_components/PACE/pace.min.js"; ?>"></script>
 		<script type="text/javascript">
