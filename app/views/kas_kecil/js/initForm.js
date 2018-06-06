@@ -7,8 +7,12 @@ $(document).ready(function(){
 	// button tambah
 	$('#tambah').on('click', function(){
 		if(this.value.trim() != ""){
-			// resetForm();
+			resetForm();
 			$('.field-saldo').css('display', 'block');
+			$('.field-password').css('display', 'block');
+			$('.field-email').css('display', 'block');
+			$('.field-password_confirm').css('display', 'block');
+			$('.field-foto').css('display', 'block');
 			$('#token_form').val(this.value);
 			generateID();
 			$('#submit_kas_kecil').prop('value', 'action-add');
@@ -64,6 +68,16 @@ function getDataForm(){
 	 	data.append('email', $('#email').val().trim()); // email kas kecil
 		data.append('password', $('#email').val().trim()); // email kas kecil
 	 	data.append('saldo',saldo); //saldo awal
+	 }
+
+	 if($('#submit_kas_kecil').val().trim().toLowerCase() == "action-edit"){
+	 	data.append('id', $('#id').val().trim()); // id kas kecil
+		data.append('nama', $('#nama').val().trim()); // nama kas kecil
+		data.append('alamat', $('#alamat').val().trim()); // alamat kas kecil
+		data.append('no_telp', $('#no_telp').val().trim()); // no_telp kas kecil
+		data.append('email', $('#email').val().trim()); // email kas kecil
+		data.append('status', $('#status').val().trim()); // status kas kecil
+		data.append('saldo',saldo); //saldo awal
 	 } 
 	 
 	data.append('token', $('#token_form').val().trim());
@@ -125,36 +139,39 @@ function submit(edit_view){
 /**
 *
 */
-function getEdit(id){
-	$('#modalKasKecil').modal();
-	// if(token != ""){
-	// 	resetForm();
-	// 	// $('.field-saldo').css('display', 'none');
-	// 	$('#submit_kas_kecil').prop('value', 'action-edit');
-	// 	$('#submit_kas_kecil').prop('disabled', false);
-	// 	$('#submit_kas_kecil').html('Edit Data');
+function getEdit(id, token){
+	if(token != ""){
+		resetForm();
+		$('.field-saldo').css('display', 'none');
+		$('.field-password').css('display', 'none');
+		$('.field-email').css('display', 'none');
+		$('.field-password_confirm').css('display', 'none');
+		$('.field-foto').css('display', 'none');
+		$('#submit_kas_kecil').prop('value', 'action-edit');
+		$('#submit_kas_kecil').prop('disabled', false);
+		$('#submit_kas_kecil').html('Edit Data');
 
-	// 	$.ajax({
-	// 		url: BASE_URL+'kas-kecil/edit/'+id.toLowerCase(),
-	// 		type: 'post',
-	// 		dataType: 'json',
-	// 		data: {"token_edit": token},
-	// 		beforeSend: function(){
+		$.ajax({
+			url: BASE_URL+'kas-kecil/edit/'+id.toLowerCase(),
+			type: 'post',
+			dataType: 'json',
+			data: {"token_edit": token},
+			beforeSend: function(){
 
-	// 		},
-	// 		success: function(output){
-	// 			if(output){
-	// 				$('#modalKasKecil').modal();
-	// 				$('#token_form').val(token);
-	// 				setValue(output);
-	// 			}	
-	// 		},
-	// 		error: function (jqXHR, textStatus, errorThrown){ // error handling
-	//             console.log(jqXHR, textStatus, errorThrown);
-	//         }
-	// 	})
-	// }
-	// else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+			},
+			success: function(output){
+				if(output){
+					$('#modalKasKecil').modal();
+					$('#token_form').val(token);
+					setValue(output);
+				}	
+			},
+			error: function (jqXHR, textStatus, errorThrown){ // error handling
+	            console.log(jqXHR, textStatus, errorThrown);
+	        }
+		})
+	}
+	else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
 }
 
 /**
