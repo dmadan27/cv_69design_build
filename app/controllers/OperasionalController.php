@@ -400,9 +400,19 @@
 		public function delete($id){
 			$id = strtoupper($id);
 			$token = isset($_POST['token_delete']) ? $_POST['token_delete'] : false;
-			$this->auth->cekToken($_SESSION['token_operasional']['delete'], $token, 'bank');
+			$this->auth->cekToken($_SESSION['token_operasional']['delete'], $token, 'operasional');
 			
-			if($this->OperasionalModel->delete($id)) $status = true;
+			$getNamaOperasional = $this->OperasionalModel->getById($id)['nama'];
+			$ket = 'Data Operasional Bank '.$getNamaOperasional. 'telah Dihapus';
+
+			$data= array(
+				'id' => $id,
+				'tgl' => date('Y-m-d'),
+				'ket' => $ket,
+					
+			);
+
+			if($this->OperasionalModel->delete($data)) $status = true;
 			else $status = false;
 
 			echo json_encode($status);

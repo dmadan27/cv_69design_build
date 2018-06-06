@@ -121,14 +121,53 @@
 		/**
 		* 
 		*/
-		public function delete($id){
-			$query = "DELETE FROM operasional WHERE id = :id";
-			
-			$statement = $this->koneksi->prepare($query);
-			$statement->bindParam(':id', $id);
-			$result = $statement->execute();
+		public function delete($data){
+			// TRANSACT
+			 try {
+			 	$this->koneksi->beginTransaction();
 
-			return $result;
+				$this->hapusOperasional($data);
+
+				$this->koneksi->commit();
+
+				return true;
+			 	
+			 }
+			  catch (PDOException $e) {
+				 	$this->koneksi->rollback();
+					die($e->getMessage());
+					// return false;
+			 	
+			 }
+
+
+			// $query = "DELETE FROM operasional WHERE id = :id";
+			
+			// $statement = $this->koneksi->prepare($query);
+			// $statement->bindParam(':id', $id);
+			// $result = $statement->execute();
+
+			// return $result;
+		}
+
+		/**
+		*
+		*/
+		public function hapusOperasional($data){
+			// $level = ""
+			$query = "CALL hapus_operasional (
+				:id,
+				:tgl,
+				:ket);";
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id' => $data['id'],
+					':tgl' => $data['tgl'],
+					':ket' => $data['ket'],
+				)
+			);
+			$statement->closeCursor();
 		}
 
 		/**
