@@ -244,7 +244,7 @@ class Kas_kecil extends Crud_modalsAbstract{
 		/**
 		* 
 		*/
-		protected function edit($id){
+		public function edit($id){
 			$id = strtoupper($id);
 			$token = isset($_POST['token_edit']) ? $_POST['token_edit'] : false;
 			$this->auth->cekToken($_SESSION['token_kas_kecil']['edit'], $token, 'kas_kecil');
@@ -256,9 +256,9 @@ class Kas_kecil extends Crud_modalsAbstract{
 		/**
 		* 
 		*/
-		protected function action_edit(){
+		public function action_edit(){
 			$data = isset($_POST) ? $_POST : false;
-			$this->auth->cekToken($_SESSION['token_kas_kecil']['edit'], $data['token'], 'kas_kecil');
+			$this->auth->cekToken($_SESSION['token_kas_kecil']['edit'], $data['token'], 'kas-kecil');
 			$status = false;
 			$error = "";
 
@@ -277,14 +277,12 @@ class Kas_kecil extends Crud_modalsAbstract{
 				if($cek){
 					// validasi inputan
 					$data = array(
-						'id' => $this->validation->validInput($data['id']),
-						'nama' => $this->validation->validInput($data['nama']),
-						'alamat' => $this->validation->validInput($data['alamat']),
-						'no_telp' => $this->validation->validInput($data['no_telp']),
-						'email' => $this->validation->validInput($data['email']),
-						'foto' => $this->validation->validInput($data['foto']),
-						'saldo' => $this->validation->validInput($data['saldo']),
-						'status' => $this->validation->validInput($data['status'])
+						'id' =>  $this->validation->validInput($data['id']),
+						'nama' =>  $this->validation->validInput($data['nama']),
+						'alamat' =>  $this->validation->validInput($data['alamat']),
+						'no_telp' =>  $this->validation->validInput($data['no_telp']),
+						'email' =>  $this->validation->validInput($data['email'], false),
+						'status' =>  $this->validation->validInput($data['status']),
 					);
 
 					// update db
@@ -319,7 +317,7 @@ class Kas_kecil extends Crud_modalsAbstract{
 				'status' => $status,
 				'notif' => $notif,
 				'error' => $error,
-				// 'data' => $data
+				'data' => $data
 			);
 
 			echo json_encode($output);
@@ -377,7 +375,7 @@ class Kas_kecil extends Crud_modalsAbstract{
 		}
 
 		private function set_validation($data){
-			$required = ($data['action'] =="action-add") ? 'not_required' : 'required';
+			$required = ($data['action'] =="action-edit") ? 'not_required' : 'required';
 
 			// ID
 			$this->validation->set_rules($data['id'], 'ID Kas Kecil', 'id', 'string | 1 | 255 | required');
@@ -388,9 +386,9 @@ class Kas_kecil extends Crud_modalsAbstract{
 			// no_telp
 			$this->validation->set_rules($data['no_telp'], 'Nomor Telepon', 'no_telp', 'angka | 1 | 255 | required');
 			// email
-			$this->validation->set_rules($data['email'], 'Alamat Email', 'email', 'email | 1 | 255 | required');
+			$this->validation->set_rules($data['email'], 'Alamat Email', 'email', 'email | 1 | 255 |', $required);
 			// saldo
-			$this->validation->set_rules($data['saldo'], 'Saldo Awal', 'saldo', 'nilai | 0 | 99999999999 | required');
+			$this->validation->set_rules($data['saldo'], 'Saldo Awal', 'saldo', 'nilai | 0 | 99999999999 | ', $required);
 			// status
 			$this->validation->set_rules($data['status'], 'Status', 'status', 'string | 1 | 255 | required');
 
