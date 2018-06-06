@@ -1,11 +1,11 @@
 <?php Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung"); ?>
 
 <!-- menu beranda -->
-<li class=""><a href="<?= BASE_URL ?>"><i class="fa fa-link"></i> <span>Beranda</span></a></li>
+<li class="menu-beranda"><a href="<?= BASE_URL ?>"><i class="fa fa-link"></i> <span>Beranda</span></a></li>
 <!-- menu data proyek -->
-<li class=""><a href="<?= BASE_URL."proyek"; ?>"><i class="fa fa-link"></i> <span>Data Proyek</span></a></li>
+<li class="menu-proyek"><a href="<?= BASE_URL."proyek"; ?>"><i class="fa fa-link"></i> <span>Data Proyek</span></a></li>
 <!-- menu data bank -->
-<li class=""><a href="<?= BASE_URL."bank"; ?>"><i class="fa fa-link"></i> <span>Data Bank</span></a></li>
+<li class="menu-bank"><a href="<?= BASE_URL."bank"; ?>"><i class="fa fa-link"></i> <span>Data Bank</span></a></li>
 <!-- menu data pengajuan kas kecil -->
 <li class=""><a href="<?= BASE_URL."pengajuan-kas-kecil"; ?>"><i class="fa fa-link"></i> <span>Data Pengajuan Kas Kecil</span></a></li>
 <!-- menu data operasional proyek -->
