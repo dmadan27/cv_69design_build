@@ -71,6 +71,7 @@
 						&& (password_verify($token, $this->token['token'])) 
 						&& (time() <= strtotime($this->token['tgl_exp'])) ) 
 						return true;
+					else return false;
 				}
 				else return false;
 			}
