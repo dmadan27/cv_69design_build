@@ -20,7 +20,7 @@ function load_notif(){
 		success: function(data){
 			$('#view-all').attr('href', data.view_all);
 			// console.log(data);
-			if(data.jumlah > 1){
+			if(data.jumlah > 0){
 				$('.label-jumlah').html(data.jumlah);
 				$('.label-notif').html(data.text);
 				$('#data-notif').html(data.data);
