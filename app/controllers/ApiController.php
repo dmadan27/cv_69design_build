@@ -62,7 +62,7 @@
 			else{
 				// $data = implode('', $data);
 				$kode = $id_pengajuan;
-				$noUrut = (int)substr($data, 20, 4);
+				$noUrut = (int)substr($data, 21, 4);
 				$noUrut++;
 
 				$id = $kode.sprintf("%04s", $noUrut);
