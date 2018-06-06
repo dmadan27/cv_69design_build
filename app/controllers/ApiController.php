@@ -53,19 +53,6 @@
 		/**
 		*
 		*/
-		public function get_id_pengajuan() {
-			// $id = $_POST['id'];
-			$id = 'PGSKC-PRY002-LOG001-';
-
-			$this->model('Pengajuan_sub_kas_kecilModel');
-			$id_proyek = $this->Pengajuan_sub_kas_kecilModel->getLastID(strtoupper($id_pengajuan));
-
-			echo json_encode($id_proyek);
-		}
-
-		/**
-		*
-		*/
 		public function generate_id_pengajuan($id_pengajuan) {
 			$this->model('Pengajuan_sub_kas_kecilModel');
 
@@ -107,32 +94,32 @@
 		*/
 		public function action_add_pengajuan(){
 			$output = array(
-		    'status' => false,
-    		'error' => ''
-		  );
+		    	'status' => false,
+    			'error' => ''
+		  	);
 
-	    if ($this->status) {
-	      $this->model('Pengajuan_sub_kas_kecilModel');
+	    	if ($this->status) {
+	      		$this->model('Pengajuan_sub_kas_kecilModel');
 
-        $pengajuan = json_decode($_POST["pengajuan"]);
-  			$detail_pengajuan = json_decode($_POST["detail_pengajuan"]);
+       	 		$pengajuan = json_decode($_POST["pengajuan"]);
+  				$detail_pengajuan = json_decode($_POST["detail_pengajuan"]);
 
-  			$data = array(
-  				'pengajuan' => $pengajuan,
-  				'detail_pengajuan' => $detail_pengajuan
-  			);
+	  			$data = array(
+	  				'pengajuan' => $pengajuan,
+	  				'detail_pengajuan' => $detail_pengajuan
+	  			);
 
-  			$query_sukses = $this->Pengajuan_sub_kas_kecilModel->insert($data);
+  				$query_sukses = $this->Pengajuan_sub_kas_kecilModel->insert($data);
 
-  			if ($query_sukses === true) {
-  				$output['status'] = true;
-  			} else {
-			    $output = array(
-  		      'status' => false,
-      			'error' => $query_sukses,
-  		    );
-  			}
-	    }
+  				if ($query_sukses) {
+  					$output['status'] = true;
+  				} else {
+		    		$output = array(
+		      			'status' => false,
+  						'error' => $query_sukses,
+		    		);
+  				}
+	    	}
 
 			echo json_encode($output);
 		}
@@ -214,7 +201,7 @@
 			$next = ($page < $totalPage) ? ($page + 1) : null;
 
 			$output = array(
-				'list_pengajuan' => $dataProyek,
+				'list_mutasi' => $dataMutasi,
 				'next' => $next,
 				'status' => $this->status,
 				// 'page' => $page,
@@ -261,28 +248,6 @@
 			$this->validation->set_rules($data['subtotal'], 'Total', 'total', 'nilai | 1 | 99999999 | required');
 
 			return $this->validation->run();
-		}
-
-		public function action_insert(){
-			$this->model('Pengajuan_sub_kas_kecilModel');
-
-			$data = array();
-			for($i=0; $i<100000; $i++){
-				$row = array();
-				$row['id'] = 'PGSKC-PRY001-LOG008'.'-'.sprintf("%05s", $i+1);
-				$row['id_sub_kas_kecil'] = 'LOG008';
-				$row['id_proyek'] = 'PRY001';
-				$row['tgl'] = date('Y-m-d');
-				$row['total'] = 10000;
-				$row['status'] = 'PENDING';
-
-				$data[] = $row;
-			}
-
-			foreach($data as $value){
-				$this->Pengajuan_sub_kas_kecilModel->insert_dummy($value);
-			}
-			
 		}
 
 	}
