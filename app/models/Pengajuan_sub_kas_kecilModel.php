@@ -38,7 +38,6 @@
 			*/
 			public function recordFilter(){
 				return $this->dataTable->recordFilter();
-
 			}
 
 			/**
@@ -59,6 +58,20 @@
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute();
 			$result = $statement->fetchAll();
+
+			return $result;
+		}
+
+		/**
+		* 
+		*/
+		public function getById($id){
+			$query = "SELECT * FROM pengajuan_sub_kas_kecil WHERE id = :id;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
 
 			return $result;
 		}
@@ -186,6 +199,68 @@
 			$statment->closeCursor();
 		}
 
+		/**
+		*
+		*/
+		public function acc_pengajuan($data){
+			try {
+				$this->koneksi->beginTransaction();
+
+				$query	= "CALL acc_pengajuan_sub_kas_kecil (:id_kas_kecil, :id_sub_kas_kecil, ";
+				$query .= ":id, :tgl, :dana_disetujui, :status, :ket_kas_kecil, :ket_sub_kas_kecil)";
+
+				$statment = $this->koneksi->prepare($query);
+				$statment->execute(
+					array(
+						':id_kas_kecil' => $data['id_kas_kecil'],
+						':id_sub_kas_kecil' => $data['id_sub_kas_kecil'],
+						':id' => $data['id'],
+						':tgl' => $data['tgl'],
+						':dana_disetujui' => $data['dana_disetujui'],
+						':status' => $data['status'],
+						':ket_kas_kecil' => $data['ket_kas_kecil'],
+						':ket_sub_kas_kecil' => $data['ket_sub_kas_kecil'],
+					)
+				);
+				$statment->closeCursor();
+
+				$this->koneksi->commit();
+
+				return true;
+			} catch (PDOException $e) {
+				$this->koneksi->rollback();
+				return $e->getMessage();
+			}
+		}
+
+		/**
+		*
+		*/
+		public function update_status($data){
+
+			try {
+				$this->koneksi->beginTransaction();
+
+				$query	= "UPDATE pengajuan_sub_kas_kecil SET status = :status WHERE id = :id";
+
+				$statment = $this->koneksi->prepare($query);
+				$statment->execute(
+					array(
+						':id' => $data['id'],
+						':status' => $data['status'],
+					)
+				);
+				$statment->closeCursor();
+
+				$this->koneksi->commit();
+
+				return true;
+			} catch (PDOException $e) {
+				$this->koneksi->rollback();
+				return $e->getMessage();
+			}
+		}
+
 		// ======================== mobile = ======================= //
 
 			/**
@@ -271,24 +346,6 @@
 			}
 
 		// ========================================================= //
-
-		public function insert_dummy($data){
-			$query = "INSERT INTO pengajuan_sub_kas_kecil (id, id_sub_kas_kecil, id_proyek, tgl, total, status) VALUES ";
-			$query .= "(:id, :id_sub_kas_kecil, :id_proyek, :tgl, :total, :status);";
-
-			$statment = $this->koneksi->prepare($query);
-			$statment->execute(
-				array(
-					':id' => $data['id'],
-					':id_sub_kas_kecil' => $data['id_sub_kas_kecil'],
-					':id_proyek' => $data['id_proyek'],
-					':tgl' => $data['tgl'],
-					':total' => $data['total'],
-					':status' => $data['status'],
-				)
-			);
-			$statment->closeCursor();
-		}
 
 		/**
 		*

@@ -30,11 +30,15 @@
 		* 
 		*/
 		protected function list(){
-			$css = array('assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css');
+			$css = array(
+				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+			);
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
 				'app/views/pengajuan_sub_kas_kecil/js/initList.js',
+				'app/views/pengajuan_sub_kas_kecil/js/initForm.js',
 			);
 
 			$config = array(
@@ -185,6 +189,133 @@
 		/**
 		*
 		*/
+		public function edit_status($id){
+			$id = strtoupper($id);
+			$token = isset($_POST['token_edit_status']) ? $_POST['token_edit_status'] : false;
+			$this->auth->cekToken($_SESSION['token_pengajuan_skc']['edit_status'], $token, 'pengajuan-sub-kas-kecil');
+
+			$this->model('Sub_kas_kecilModel');
+
+			$dataPengajuan = $this->Pengajuan_sub_kas_kecilModel->getById($id);
+			$dataSaldoSkc = $this->Sub_kas_kecilModel->getSaldoById($dataPengajuan['id_sub_kas_kecil']);
+
+			$output = array(
+				'dataPengajuan' => $dataPengajuan,
+				'total' => $this->helper->cetakRupiah($dataPengajuan['total']),
+				'saldo' =>  $this->helper->cetakRupiah($dataSaldoSkc['saldo']),
+			);
+
+			echo json_encode($output);
+		}
+
+		/**
+		*
+		*/
+		public function action_edit_status(){
+			$data = isset($_POST) ? $_POST : false;
+			$this->auth->cekToken($_SESSION['token_pengajuan_skc']['edit_status'], $data['token'], 'pengajuan-sub-kas-kecil');
+
+			$status = false;
+			$error = "";
+
+			if(!$data){
+				$notif = array(
+					'title' => "Pesan Gagal",
+					'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
+				);
+			}
+			else{
+				// validasi data
+				$validasi = $this->set_validation($data);
+				$cek = $validasi['cek'];
+				$error = $validasi['error'];
+
+				if($cek){
+					// status disetujui
+					if($data['status'] == 'DISETUJUI'){
+						$ket_kas_kecil = '';
+						$ket_sub_kas_kecil = '';
+
+						$data = array(
+							'id_kas_kecil' => $this->validation->validInput($data['id_kas_kecil']),
+							'id_sub_kas_kecil' => $this->validation->validInput($data['id_sub_kas_kecil']),
+							'id' => $this->validation->validInput($data['id']),
+							'tgl' => date('Y-m-d'),
+							'dana_disetujui' => $this->validation->validInput($data['dana_disetujui']),
+							'status' => $this->validation->validInput($data['status']),
+							'ket_kas_kecil' => $this->validation->validInput($ket_kas_kecil),
+							'ket_sub_kas_kecil' => $this->validation->validInput($ket_sub_kas_kecil),
+						);
+
+						$this->model('Kas_keciModel');
+						$getSaldo = $this->Kas_keciModel->getById($_SESSION['sess_id'])['saldo'];
+
+						if($data['dana_disetujui'] > $getSaldo){
+							$status = false;
+							$error['dana_disetujui'] = "Dana yang Disetujui terlalu besar dan melebihi saldo";
+						}
+						else{
+
+							// update status
+							if($this->Pengajuan_sub_kas_kecilModel->acc_pengajuan($data)){
+								$status = true;
+								$notif = array(
+									'title' => "Pesan Berhasil",
+									'message' => "Edit Status Pengajuan Sub Kas Kecil Berhasil",
+								);
+							}
+							else{
+								$notif = array(
+									'title' => "Pesan Gagal",
+									'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+								);
+							}
+
+						}
+					}
+					else{ // status selain disetujui
+						$data = array(
+							'id' => $this->validation->validInput($data['id']),
+							'status' => $this->validation->validInput($data['status']),
+						);
+
+						// update status
+						if($this->Pengajuan_sub_kas_kecilModel->update_status($data)){
+							$status = true;
+							$notif = array(
+								'title' => "Pesan Berhasil",
+								'message' => "Edit Status Pengajuan Sub Kas Kecil Berhasil",
+							);
+						}
+						else{
+							$notif = array(
+								'title' => "Pesan Gagal",
+								'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+							);
+						}
+					}
+				}
+				else{
+					$notif = array(
+						'title' => "Pesan Pemberitahuan",
+						'message' => "Silahkan Cek Kembali Form Isian",
+					);
+				}
+			}
+
+			$output = array(
+				'status' => $status,
+				'notif' => $notif,
+				'error' => $error,
+				'data' => $data
+			);
+
+			echo json_encode($output);
+		}
+
+		/**
+		*
+		*/
 		public function detail($id){
 
 		}
@@ -230,4 +361,22 @@
 			// echo json_encode(print_r($output));
 			echo json_encode($output);
 		}
+
+		/**
+		* Fungsi set_validation
+		* method yang berfungsi untuk validasi inputan secara server side
+		* param $data didapat dari post yang dilakukan oleh user
+		* return berupa array, status hasil pengecekan dan error tiap validasi inputan
+		*/
+		private function set_validation($data){
+			$required = ($data['status'] == "DISETUJUI") ? 'required' : 'not_required';
+
+			// status
+			$this->validation->set_rules($data['status'], 'Status Pengajuan Sub Kas Kecil', 'status', 'string | 1 | 255 | required');
+			// dana_disetujui
+			$this->validation->set_rules($data['dana_disetujui'], 'Dana yang Disetujui', 'dana_disetujui', 'nilai | 1 | 99999999999 | '.$required);
+
+			return $this->validation->run();
+		}
+
 	}

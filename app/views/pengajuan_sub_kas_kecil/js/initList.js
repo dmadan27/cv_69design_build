@@ -38,6 +38,7 @@ $(document).ready(function(){
             // for(var i = 0; i < 9; i++){
             //     if(i == 0 || i == 6) $('td:eq('+i+')', row).addClass('text-right');
             // }
+            
         }
     });
 
@@ -51,35 +52,6 @@ $(document).ready(function(){
 */
 function getView(id){
     window.location.href = BASE_URL+'pengajuan-sub-kas-kecil/detail/'+id.toLowerCase();
-}
-
-/**
-*
-*/
-function getEditStatus(id, token){
-    if(token.trim() != ""){
-        $.ajax({
-            url: BASE_URL+'pengajuan-sub-kas-kecil/edit-status/'+id.toLowerCase(),
-            type: 'post',
-            dataType: 'json',
-            data: {"token_edit_status": token},
-            beforeSend: function(){
-
-            },
-            success: function(output){
-                console.log(output);
-                // if(output){
-                //     swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
-                //     $("#pengajuan_sub_kas_kecilTable").DataTable().ajax.reload();
-                // }
-            },
-            error: function (jqXHR, textStatus, errorThrown){ // error handling
-                console.log(jqXHR, textStatus, errorThrown);
-                swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
-            }
-        })
-    }
-    else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
 }
 
 /**
