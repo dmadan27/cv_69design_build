@@ -12,6 +12,7 @@
             </div>
             <form id="form_pengajuan_skc" role="form">
                 <input type="hidden" id="id">
+                <input type="hidden" id="id_sub_kas_kecil">
                 <input type="hidden" id="token_form">
                 <!-- body modal -->
                 <div class="modal-body">

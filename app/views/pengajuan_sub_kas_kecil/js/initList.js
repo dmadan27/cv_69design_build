@@ -42,9 +42,9 @@ $(document).ready(function(){
         }
     });
 
-    setInterval(function(){
-    	pengajuan_sub_kas_kecilTable.ajax.reload(null, false);
-    }, 10000);
+    // setInterval(function(){
+    // 	pengajuan_sub_kas_kecilTable.ajax.reload(null, false);
+    // }, 10000);
 });
 
 /**

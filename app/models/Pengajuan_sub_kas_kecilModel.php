@@ -206,15 +206,14 @@
 			try {
 				$this->koneksi->beginTransaction();
 
-				$query	= "CALL acc_pengajuan_sub_kas_kecil (:id_kas_kecil, :id_sub_kas_kecil, ";
-				$query .= ":id, :tgl, :dana_disetujui, :status, :ket_kas_kecil, :ket_sub_kas_kecil)";
+				$query	= "CALL acc_pengajuan_sub_kas_kecil (:id, :id_kas_kecil, ";
+				$query .= ":tgl, :dana_disetujui, :status, :ket_kas_kecil, :ket_sub_kas_kecil)";
 
 				$statment = $this->koneksi->prepare($query);
 				$statment->execute(
 					array(
-						':id_kas_kecil' => $data['id_kas_kecil'],
-						':id_sub_kas_kecil' => $data['id_sub_kas_kecil'],
 						':id' => $data['id'],
+						':id_kas_kecil' => $data['id_kas_kecil'],
 						':tgl' => $data['tgl'],
 						':dana_disetujui' => $data['dana_disetujui'],
 						':status' => $data['status'],

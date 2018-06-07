@@ -104,20 +104,25 @@
 			foreach($dataPengajuan as $row){
 				$no_urut++;
 
-				if(strtolower($row['status']) == "disetujui") $status = '<span class="label label-success">';
-				else if(strtolower($row['status']) == "perbaiki") $status = '<span class="label label-warning">';	
+				// button aksi
+				$aksiDetail = '<button onclick="getView('."'".strtolower($row["id"])."'".', '."'".$this->token["view"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+				$aksiEdit = '<button onclick="getEditStatus('."'".strtolower($row["id"])."'".', '."'".$this->token["edit_status"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Status Pengajuan"><i class="fa fa-pencil"></i></button>';
+				$aksiHapus = '<button onclick="getDelete('."'".strtolower($row["id"])."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
+
+				if(strtolower($row['status']) == "disetujui") {
+					$status = '<span class="label label-success">';
+					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiHapus.'</div>';
+				}
+				else if(strtolower($row['status']) == "perbaiki") {
+					$status = '<span class="label label-warning">';
+					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiHapus.'</div>';
+				}	
 				else if(strtolower($row['status']) == "ditolak") $status = '<span class="label label-danger">';
 				else if(strtolower($row['status']) == "pending") $status = '<span class="label label-primary">';
 				else $status = '<span class="label label-success">';
 
 				$status .= $row['status'].'</span>';
-
-				// button aksi
-				$aksiDetail = '<button onclick="getView('."'".strtolower($row["id"])."'".', '."'".$this->token["view"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-				$aksiEdit = '<button onclick="getEditStatus('."'".strtolower($row["id"])."'".', '."'".$this->token["edit_status"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Status Pengajuan"><i class="fa fa-pencil"></i></button>';
-				$aksiHapus = '<button onclick="getDelete('."'".strtolower($row["id"])."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
-				
-				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
 				
 				$dataRow = array();
 				$dataRow[] = $no_urut;
@@ -237,9 +242,9 @@
 						$ket_sub_kas_kecil = '';
 
 						$data = array(
-							'id_kas_kecil' => $this->validation->validInput($data['id_kas_kecil']),
-							'id_sub_kas_kecil' => $this->validation->validInput($data['id_sub_kas_kecil']),
 							'id' => $this->validation->validInput($data['id']),
+							'id_kas_kecil' => $_SESSION['sess_id'],
+							// 'id_sub_kas_kecil' => $this->validation->validInput($data['id_sub_kas_kecil']),
 							'tgl' => date('Y-m-d'),
 							'dana_disetujui' => $this->validation->validInput($data['dana_disetujui']),
 							'status' => $this->validation->validInput($data['status']),
@@ -247,8 +252,8 @@
 							'ket_sub_kas_kecil' => $this->validation->validInput($ket_sub_kas_kecil),
 						);
 
-						$this->model('Kas_keciModel');
-						$getSaldo = $this->Kas_keciModel->getById($_SESSION['sess_id'])['saldo'];
+						$this->model('Kas_kecilModel');
+						$getSaldo = $this->Kas_kecilModel->getById($_SESSION['sess_id'])['saldo'];
 
 						if($data['dana_disetujui'] > $getSaldo){
 							$status = false;

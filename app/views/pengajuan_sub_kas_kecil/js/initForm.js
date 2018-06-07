@@ -74,15 +74,43 @@ function submit(edit_view){
 				toastr.warning(output.notif.message, output.notif.title);
 			}
 			else{
+				var dataNotif = {
+					title: '',
+					body: '',
+					id_pengajuan: $('#id').val().toUpperCase(),
+					status: $('#status').val(),
+				};
+
+				switch($('#status').val()){
+					case 'DISETUJUI':
+						dataNotif.title = 'Pengajuan Disetujui';
+						dataNotif.body = 'Pengajuan dengan ID: '+dataNotif.id_pengajuan+' telah disetujui.';
+						break;
+
+					case 'PERBAIKI':
+						dataNotif.title = 'Pengajuan Diperbaiki';
+						dataNotif.body = 'Pengajuan dengan ID: '+dataNotif.id_pengajuan+' harap segera diperbaiki.';
+						break;
+
+					case 'DITOLAK':
+						dataNotif.title = 'Pengajuan Ditolak !!';
+						dataNotif.body = 'Pengajuan dengan ID: '+dataNotif.id_pengajuan+' ditolak, harap membuat pengajuan yang baru';
+						break;
+				}
+
+				if($('#status').val() != 'PENDING') sendNotif(dataNotif);
+
 				toastr.success(output.notif.message, output.notif.title);
-				resetForm();
-				$("#modalPengajuanSKC").modal('hide');
+
 				if(!edit_view) $("#pengajuan_sub_kas_kecilTable").DataTable().ajax.reload();
 				else {
 					setTimeout(function(){ 
 						location.reload(); 
 					}, 1000);
 				}
+
+				resetForm();
+				$("#modalPengajuanSKC").modal('hide');
 			}
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling
@@ -91,6 +119,56 @@ function submit(edit_view){
             swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
         }
 	})
+}
+
+/**
+*
+*/
+function sendNotif(data){
+	console.log(data);
+	$.ajax({
+        headers: {
+
+            // setting token firebase
+            "Authorization": "key=AAAAlOkhnSY:APA91bEqHj4gSO-lEqIeQz4g0ABtrhnSa6w8zDWMlXno50jkyJt5VwrfiC91uXv55yM560VyV4QaL9JG7XBktaX1IeMPJeNB7wDaFtI_Z3d2Qk6tnUeV0lYVxtvbF94fw_7rQqk8foLO",
+            "Content-Type": "application/json",
+        },
+        url: 'https://fcm.googleapis.com/fcm/send',
+        type: 'POST',
+        dataType: 'json',
+        data: JSON.stringify({
+
+            // kirim notifikasi ke semua user yang men-subscribe tipe news
+            "to" : "/topics/"+$('#id_sub_kas_kecil').val(),
+
+            // setting pesan yang ingin ditampilkan
+            "notification" : {
+
+                // mengirimkan judul notifikasi
+                "title": data.title,
+
+                // mengirimkan isi dari notifikasi
+                "body" : data.body,
+
+                // menjalankan suara notifikasi pada saat notif masuk
+                "sound": "default"
+            },
+            // pengiriman data custom
+            data : {
+                "id_pengajuan": data.id_pengajuan,
+                "status": data.status
+            },
+
+            // setting prioritas pengiriman notifikasi
+            "priority": "high"
+        }),
+    })
+    .done(function(data) {
+        console.log('Pesan berhasil dikirim dengan kode: '+data.message_id);
+    })
+    .fail(function(error) {
+        console.log('Terjadi kesalahan:\n'+error.responseText);
+    });
 }
 
 /**
@@ -111,6 +189,7 @@ function getEditStatus(id, token){
                 console.log(output);
                 $('#modalPengajuanSKC').modal();
                 $('#id').val(id);
+                $('#id_sub_kas_kecil').val(output.dataPengajuan.id_sub_kas_kecil);
                 $('#total').text(output.total);
                 $('#saldo').text(output.saldo);
                 $('#status').val(output.dataPengajuan.status);
