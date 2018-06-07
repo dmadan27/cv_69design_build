@@ -5,6 +5,7 @@
 	define("BASE_PATH", true);
 	define('ROOT', dirname(__FILE__)); // root file web
 	define('DS', DIRECTORY_SEPARATOR); // pemisah direktori '\'
+	define('STATUS_DEV', 'DEVELOPMENT'); // DEVELOPMENT, LIVE, PRODUCTION 
 
 	// load config
 	require_once "app/config/config.php";
