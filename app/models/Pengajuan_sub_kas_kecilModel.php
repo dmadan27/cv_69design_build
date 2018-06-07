@@ -273,7 +273,7 @@
 
 				$this->queryMobile = 'SELECT * FROM pengajuan_sub_kas_kecil ';
 
-				$qWhere = 'WHERE id_sub_kas_kecil = "'.$id.'"';
+				$qWhere = 'WHERE id_sub_kas_kecil = "'.$id.'" AND (status = "PENDING" OR status = "PERBAIKI")';
 				$i = 0;
 				foreach($this->kolomCari_mobile as $value){
 					if(!is_null($cari)){
@@ -306,11 +306,7 @@
 			public function getById_mobile($id_pengajuan){
 				$id = isset($_POST['id']) ? $_POST['id'] : false;
 
-				$query = "SELECT pskc.id id_pengajuan, pskc.id_sub_kas_kecil, pskc.id_proyek, pskc.tgl, ";
-				$query .= "pskc.total, pskc.dana_disetujui, pskc.status, pskc.status_laporan, dp.id id_detail, ";
-				$query .= "dp.nama, dp.jenis, dp.satuan, dp.qty, dp.harga, dp.subtotal, dp.status status_detail, ";
-				$query .= "dp.harga_asli, dp.sisa, dp.status_lunas FROM pengajuan_sub_kas_kecil pskc ";
-				$query .= "JOIN detail_pengajuan_sub_kas_kecil dp ON dp.id_pengajuan = pskc.id ";
+				$query = "SELECT * FROM v_pengajuan_sub_kas_kecil_full ";
 				$query .= "WHERE pskc.id_sub_kas_kecil = :id AND dp.id_pengajuan = :id_pengajuan";
 
 				$statement = $this->koneksi->prepare($query);
