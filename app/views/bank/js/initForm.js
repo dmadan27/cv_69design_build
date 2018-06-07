@@ -97,6 +97,7 @@ function submit(edit_view){
 			}
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling
+			$("#modalBank").modal('hide');
             console.log(jqXHR, textStatus, errorThrown);
             swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
         }

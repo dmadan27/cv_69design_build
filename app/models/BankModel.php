@@ -76,20 +76,6 @@
 		}
 
 		/**
-		*
-		*/
-		public function getSaldoById($id){
-			$query = "SELECT saldo FROM bank WHERE id = :id;";
-
-			$statement = $this->koneksi->prepare($query);
-			$statement->bindParam(':id', $id);
-			$statement->execute();
-			$result = $statement->fetch(PDO::FETCH_ASSOC);
-
-			return $result;
-		}
-
-		/**
 		* 
 		*/
 		public function insert($data){
