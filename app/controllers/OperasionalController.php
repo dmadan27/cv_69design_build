@@ -174,7 +174,7 @@
 				$error = $validasi['error'];
 
 				$this->model('BankModel');
-				$getSaldo = $this->BankModel->getSaldoById($data['id_bank'])['saldo'];
+				$getSaldo = $this->BankModel->getById($data['id_bank'])['saldo'];
 
 				if($data['nominal'] > $getSaldo){
 					$cek = false;
