@@ -27,6 +27,8 @@ function load_notif(){
 			}
 			else{
 				$('.label-notif').html(data.text);
+				$('.label-jumlah').html('');
+				$('#data-notif').html('');
 			}
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling
