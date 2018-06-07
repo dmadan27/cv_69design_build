@@ -17,6 +17,37 @@
 			$this->dataTable = new Datatable();
 		}
 
+		// ======================= dataTable ======================= //
+
+			/**
+			* 
+			*/
+			public function getAllDataTable($config){
+				$this->dataTable->set_config($config);
+				$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
+				$statement->execute();
+				$result = $statement->fetchAll();
+
+				return $result;
+			}
+
+			/**
+			* 
+			*/
+			public function recordFilter(){
+				return $this->dataTable->recordFilter();
+
+			}
+
+			/**
+			* 
+			*/
+			public function recordTotal(){
+				return $this->dataTable->recordTotal();
+			}
+
+		// ========================================================= //
+
 		/**
 		* 
 		*/

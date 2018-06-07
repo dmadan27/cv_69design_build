@@ -17,33 +17,37 @@
 			$this->dataTable = new Datatable();
 		}
 
-		/**
-		* 
-		*/
-		public function getAllDataTable($config){
-			$this->dataTable->set_config($config);
-			$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
-			$statement->execute();
-			$result = $statement->fetchAll();
-
-			return $result;
+		// ======================= dataTable ======================= //
 			
-		}
+			/**
+			* 
+			*/
+			public function getAllDataTable($config){
+				$this->dataTable->set_config($config);
+				$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
+				$statement->execute();
+				$result = $statement->fetchAll();
 
-		/**
-		* 
-		*/
-		public function recordFilter(){
-			return $this->dataTable->recordFilter();
+				return $result;
+				
+			}
 
-		}
+			/**
+			* 
+			*/
+			public function recordFilter(){
+				return $this->dataTable->recordFilter();
 
-		/**
-		* 
-		*/
-		public function recordTotal(){
-			return $this->dataTable->recordTotal();
-		}
+			}
+
+			/**
+			* 
+			*/
+			public function recordTotal(){
+				return $this->dataTable->recordTotal();
+			}
+
+		// ========================================================= //
 
 		/**
 		* 
@@ -71,8 +75,7 @@
 		*/
 		public function getAll_pending(){
 			$status = "PENDING";
-			$query = "SELECT pkc.id, kc.nama nama_kas_kecil, pkc.total FROM pengajuan_kas_kecil pkc ";
-			$query .= "JOIN kas_kecil kc ON kc.id = kc.id_sub_kas_kecil WHERE pkc.status = :status ORDER BY id DESC LIMIT 5";
+			$query = "SELECT * FROM v_pengajuan_kas_kecil WHERE status = :status ORDER BY id DESC LIMIT 5";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':status', $status);

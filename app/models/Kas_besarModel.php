@@ -4,7 +4,7 @@
 	/**
 	* 
 	*/
-	class Kas_besarModel extends Database{
+	class Kas_besarModel extends Database implements ModelInterface{
 
 		protected $koneksi;
 		protected $dataTable;
@@ -14,53 +14,46 @@
 		*/
 		public function __construct(){
 			$this->koneksi = $this->openConnection();
+			$this->dataTable = new Datatable();
 		}
+
+		// ======================= dataTable ======================= //
+
+			/**
+			* 
+			*/
+			public function getAllDataTable($config){
+				$this->dataTable->set_config($config);
+				$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
+				$statement->execute();
+				$result = $statement->fetchAll();
+
+				return $result;
+			}
+
+			/**
+			* 
+			*/
+			public function recordFilter(){
+				return $this->dataTable->recordFilter();
+
+			}
+
+			/**
+			* 
+			*/
+			public function recordTotal(){
+				return $this->dataTable->recordTotal();
+			}
+
+		// ========================================================= //
 
 		/**
 		* 
 		*/
 		public function getAll(){
-			$data = array(
-				array(
-					'nama' => 'Ujang Jeprut',
-					'alamat' => 'Sukabumi',
-					'no_telp' => '081353012823',
-					'email' => 'Ujang1@gmail.com',
-						
-				),
-				array(
-					'nama' => 'Ujang Kanem',
-					'alamat' => 'Sukabumi',
-					'no_telp' => '081353012823',
-					'email' => 'Ujang2@gmail.com',
-						
-				),
-				array(
-					'nama' => 'Ujang Hiid',
-					'alamat' => 'Sukabumi',
-					'no_telp' => '081353012823',
-					'email' => 'Ujang3@gmail.com',
-						
-				),
-				
-			);
 
-			return $data;
 		}
-
-		/**
-		* 
-		*/
-		// public function getUser($username){
-		// 	$query = "SELECT * FROM sub_kas_kecil WHERE BINARY email = :username";
-
-		// 	$statement = $this->koneksi->prepare($query);
-		// 	$statement->bindParam(':username', $username);
-		// 	$statement->execute();
-		// 	$result = $statement->fetch(PDO::FETCH_ASSOC);
-
-		// 	return $result;
-		// }
 
 		/**
 		* 

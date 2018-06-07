@@ -15,8 +15,37 @@
 		public function __construct(){
 			$this->koneksi = $this->openConnection();
 			$this->dataTable = new Datatable();
-
 		}
+
+		// ======================= dataTable ======================= //
+
+			/**
+			*
+			*/
+			public function getAllDataTable($config){
+				$this->dataTable->set_config($config);
+				$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
+				$statement->execute();
+				$result = $statement->fetchAll();
+
+				return $result;
+			}
+
+			/**
+			* 
+			*/
+			public function recordFilter(){
+				return $this->dataTable->recordFilter();
+			}
+
+			/**
+			* 
+			*/
+			public function recordTotal(){
+				return $this->dataTable->recordTotal();
+			}
+
+		// ========================================================= //
 
 		/**
 		* 
@@ -24,27 +53,19 @@
 		public function getAll(){
 			
 		}
-		public function getAllDataTable($config){
-			$this->dataTable->set_config($config);
-			$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
+
+		/**
+		* 
+		*/
+		public function getById($id){
+			$query = "SELECT * FROM kas_kecil WHERE id = :id;";
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
 			$statement->execute();
-			$result = $statement->fetchAll();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
 
 			return $result;
-		}
 
-		/**
-		* 
-		*/
-		public function recordFilter(){
-			return $this->dataTable->recordFilter();
-		}
-
-		/**
-		* 
-		*/
-		public function recordTotal(){
-			return $this->dataTable->recordTotal();
 		}
 
 		/**
@@ -90,20 +111,6 @@
 				)
 			);
 			$statement->closeCursor();
-		}
-		
-		/**
-		* 
-		*/
-		public function getById($id){
-			$query = "SELECT * FROM kas_kecil WHERE id = :id;";
-			$statement = $this->koneksi->prepare($query);
-			$statement->bindParam(':id', $id);
-			$statement->execute();
-			$result = $statement->fetch(PDO::FETCH_ASSOC);
-
-			return $result;
-
 		}
 
 		/**
@@ -166,9 +173,6 @@
 			if($result['total'] > 0) return false;
 			else return true;
 		}
-
-			
-
 
 		/**
 		* 
