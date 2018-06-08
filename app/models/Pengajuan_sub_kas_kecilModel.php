@@ -306,7 +306,7 @@
 				$id = isset($_POST['id']) ? $_POST['id'] : false;
 
 				$query = "SELECT * FROM v_pengajuan_sub_kas_kecil_full ";
-				$query .= "WHERE pskc.id_sub_kas_kecil = :id AND dp.id_pengajuan = :id_pengajuan";
+				$query .= "WHERE id_sub_kas_kecil = :id AND id_pengajuan = :id_pengajuan";
 
 				$statement = $this->koneksi->prepare($query);
 				$statement->bindParam(':id', $id);
