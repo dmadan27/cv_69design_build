@@ -36,49 +36,36 @@ class Operasional_Proyek extends CrudAbstract{
 				'js' => $js,
 			);
 			
-			// // set token
-			// $_SESSION['token_bank'] = array(
-			// 	'list' => md5($this->auth->getToken()),
-			// 	'add' => md5($this->auth->getToken()),
-			// );
+			// set token
+			$_SESSION['token_operasional_proyek'] = array(
+				'list' => md5($this->auth->getToken()),
+				'add' => md5($this->auth->getToken()),
+			);
 
-			// $this->token = array(
-			// 	'list' => password_hash($_SESSION['token_bank']['list'], PASSWORD_BCRYPT),
-			// 	'add' => password_hash($_SESSION['token_bank']['add'], PASSWORD_BCRYPT),	
-			// );
+			$this->token = array(
+				'list' => password_hash($_SESSION['token_operasional_proyek']['list'], PASSWORD_BCRYPT),
+				'add' => password_hash($_SESSION['token_operasional_proyek']['add'], PASSWORD_BCRYPT),	
+			);
 
-			// $data = array(
-			// 	'token_list' => $this->token['list'],
-			// 	'token_add' => $this->token['add'],
-			// );
+			$data = array(
+				'token_list' => $this->token['list'],
+				'token_add' => $this->token['add'],
+			);
 
-			$this->layout('operasional_proyek/list', $config);
+			$this->layout('operasional_proyek/list', $config, $data);
 	}
-
-	public function action_add(){
-
-	}
-	public function form($id){
-
-	}
-
-	public function add(){
-
-	}
-
-
 
 	public function get_list(){
-		// $token = isset($_POST['token_list']) ? $_POST['token_list'] : false;
+		$token = isset($_POST['token_list']) ? $_POST['token_list'] : false;
 			
 			// cek token
-			// $this->auth->cekToken($_SESSION['token_bank']['list'], $token, 'bank');
+			$this->auth->cekToken($_SESSION['token_operasional_proyek']['list'], $token, 'operasional_proyek');
 			
 			// config datatable
 			$config_dataTable = array(
 				'tabel' => 'operasional_proyek',
 				'kolomOrder' => array(null, 'id', 'id_proyek', 'tgl', 'nama', 'total', null),
-				'kolomCari' => array('id'),
+				'kolomCari' => array('id','id_proyek', 'tgl', 'nama'),
 				'orderBy' => array('id' => 'asc'),
 				'kondisi' => false,
 			);
@@ -86,14 +73,13 @@ class Operasional_Proyek extends CrudAbstract{
 			$dataOperasionalProyek = $this->Operasional_ProyekModel->getAllDataTable($config_dataTable);
 
 			// // set token
-			// $_SESSION['token_bank']['edit'] = md5($this->auth->getToken());
-			// $_SESSION['token_bank']['delete'] = md5($this->auth->getToken());
+			$_SESSION['token_operasional_proyek']['edit'] = md5($this->auth->getToken());
+			$_SESSION['token_operasional_proyek']['delete'] = md5($this->auth->getToken());
 			
-			// $this->token = array(
-			// 	'edit' => password_hash($_SESSION['token_bank']['edit'], PASSWORD_BCRYPT),
-			// 	'delete' => password_hash($_SESSION['token_bank']['delete'], PASSWORD_BCRYPT),	
-			// );
-
+			$this->token = array(
+				'edit' => password_hash($_SESSION['token_operasional_proyek']['edit'], PASSWORD_BCRYPT),
+				'delete' => password_hash($_SESSION['token_operasional_proyek']['delete'], PASSWORD_BCRYPT),	
+			);
 			$data = array();
 			$no_urut = $_POST['start'];
 			foreach($dataOperasionalProyek as $row){
@@ -103,10 +89,10 @@ class Operasional_Proyek extends CrudAbstract{
 
 				//button aksi
 				$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-				// $aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".', '."'".$this->token["edit"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-				// $aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+				$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".', '."'".$this->token["edit"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+				$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 				
-				$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
+				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
 				
 				$dataRow = array();
 				$dataRow[] = $no_urut;
@@ -129,6 +115,85 @@ class Operasional_Proyek extends CrudAbstract{
 
 			echo json_encode($output);	
 	}
+
+	public function action_add(){
+			$data = isset($_POST) ? $_POST : false;
+			$this->auth->cekToken($_SESSION['token_operasional_proyek']['add'], $data['token'], 'operasional_proyek');
+			
+			$status = false;
+			$error = "";
+
+			if(!$data){
+				$notif = array(
+					'title' => "Pesan Gagal",
+					'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
+				);
+			}
+			else{
+				// validasi data
+				$validasi = $this->set_validation($data);
+				$cek = $validasi['cek'];
+				$error = $validasi['error'];
+
+				$this->model('Operasional_ProyekModel');
+				// $getSaldo = $this->BankModel->getById($data['id_bank'])['saldo'];
+
+				// if($data['nominal'] > $getSaldo){
+				// 	$cek = false;
+				// 	$error['nominal'] = "Nominal terlalu besar dan melebihi saldo bank";
+				// }
+
+				if($cek){
+					// validasi inputan
+					$data = array(
+						'id' => $this->validation->validInput($data['id']),
+						'id_proyek' => $this->validation->validInput($data['id_proyek']),
+						'tgl' => $this->validation->validInput($data['tgl']),
+						'nama' => $this->validation->validInput($data['nama']),
+						'total' => $this->validation->validInput($data['total']),
+					);
+
+					if($this->Operasional_ProyeklModel->insert($data)) {
+						$status = true;
+						$notif = array(
+							'title' => "Pesan Berhasil",
+							'message' => "Tambah Data Operasional Baru Berhasil",
+						);
+					}
+					else {
+						$notif = array(
+							'title' => "Pesan Gagal",
+							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+						);
+					}
+				}
+				else {
+					$notif = array(
+						'title' => "Pesan Pemberitahuan",
+						'message' => "Silahkan Cek Kembali Form Isian",
+					);
+				}
+			}
+
+			$output = array(
+				'status' => $status,
+				'notif' => $notif,
+				'error' => $error,
+				'data' => $data
+			);
+
+			echo json_encode($output);		
+		}
+
+	public function form($id){
+
+	}
+
+	public function add(){
+
+	}
+
+
 
 	public function edit($id){
 

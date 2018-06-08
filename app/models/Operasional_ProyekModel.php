@@ -69,15 +69,17 @@ class Operasional_ProyekModel extends Database implements ModelInterface{
 		* 
 		*/
 		public function insert($data){
-			// $query = "INSERT INTO bank (nama, saldo, status) VALUES (:nama, :saldo, :status);";
+			$query = "INSERT INTO operasional_proyek (id, id_proyek, tgl, nama, total) VALUES (:id, id_proyek, :tgl, :nama, :total);";
 
-			// $statement = $this->koneksi->prepare($query);
-			// $statement->bindParam(':nama', $data['nama']);
-			// $statement->bindParam(':saldo', $data['saldo']);
-			// $statement->bindParam(':status', $data['status']);
-			// $result = $statement->execute();
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $data['id']);
+			$statement->bindParam(':id_proyek', $data['id_proyek']);
+			$statement->bindParam(':tgl', $data['tgl']);
+			$statement->bindParam(':nama', $data['nama']);
+			$statement->bindParam(':total', $data['total']);
+			$result = $statement->execute();
 
-			// return $result;
+			return $result;
 		}
 
 		/**

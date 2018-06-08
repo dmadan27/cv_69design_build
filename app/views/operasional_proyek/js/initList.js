@@ -23,8 +23,21 @@ $(document).ready(function(){
         ajax: {
             url: BASE_URL+"operasional-proyek/get-list/",
             type: 'POST',
-            
+             data: {
+                "token_list" : $('#token_list').val().trim(),
+            }
         },
+        "columnDefs": [
+            {
+                "targets":[0, 6],
+                "orderable":false,
+            }
+        ],
+        createdRow: function(row, data, dataIndex){
+            for(var i = 0; i < 7; i++){
+                if(i == 0 || i == 5) $('td:eq('+i+')', row).addClass('text-right');
+            }
+        }
         
       
 });
