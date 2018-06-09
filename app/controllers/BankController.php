@@ -175,10 +175,6 @@
 						'status' => $this->validation->validInput($data['status']),
 					);
 
-					// insert db
-
-					// transact
-
 					if($this->BankModel->insert($data)) {
 						$status = true;
 						$notif = array(
@@ -192,8 +188,6 @@
 							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 						);
 					}
-
-					// commit
 				}
 				else {
 					$notif = array(

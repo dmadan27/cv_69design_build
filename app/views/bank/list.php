@@ -46,11 +46,11 @@
 								<table id="bankTable" class="table table-bordered table-hover">
 									<thead>
 										<tr>
-											<th class="text-center" style="width: 35px">No</th>
-											<th class="text-center">Nama</th>
-											<th class="text-center">Saldo</th>
-											<th class="text-center">Status</th>
-											<th class="text-center">Aksi</th>
+											<th class="text-right" style="width: 35px">No</th>
+											<th>Nama</th>
+											<th class="text-right">Saldo</th>
+											<th>Status</th>
+											<th>Aksi</th>
 										</tr>
 									</thead>
 									<tbody>
