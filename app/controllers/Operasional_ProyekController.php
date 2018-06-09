@@ -118,7 +118,53 @@ class Operasional_Proyek extends CrudAbstract{
 			echo json_encode($output);	
 	}
 
-	public function action_add(){
+	public function form($id){
+		if($id)	$this->edit(strtoupper($id));
+		else $this->add();
+
+	}
+
+	protected function add(){
+			$css = array(
+  				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
+				'assets/bower_components/select2/dist/css/select2.min.css',
+  			);
+			$js = array(
+				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
+				'assets/bower_components/select2/dist/js/select2.full.min.js',
+				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
+				'app/views/operasional_proyek/js/initForm.js',	
+			);
+
+			$config = array(
+				'title' => array(
+					'main' => 'Data Operasional Proyek',
+					'sub' => 'Form Tambah Data',
+				),
+				'css' => $css,
+				'js' => $js,
+			);
+
+			$_SESSION['token_operasional_proyek'] = array(
+				'add' => md5($this->auth->getToken()),
+			);
+			$this->token = array(
+				'add' => password_hash($_SESSION['token_operasional_proyek']['add'], PASSWORD_BCRYPT),	
+			);
+			$data = array(
+				'token_form' => $this->token['add'],
+				'action' => 'action-add',
+				'id' => '',
+				'id_proyek' => '',
+				'tgl' => '',
+				'nama' => '',
+				'total' => '',
+			);
+
+			$this->layout('operasional_proyek/form', $config, $data);
+		}
+
+		public function action_add(){
 			$data = isset($_POST) ? $_POST : false;
 			$this->auth->cekToken($_SESSION['token_operasional_proyek']['add'], $data['token'], 'operasional_proyek');
 			
@@ -180,57 +226,15 @@ class Operasional_Proyek extends CrudAbstract{
 				'status' => $status,
 				'notif' => $notif,
 				'error' => $error,
-				'data' => $data
+				// 'data' => $data,
 			);
 
 			echo json_encode($output);		
 		}
 
-	public function form($id){
-		if($id)	$this->edit(strtoupper($id));
-		else $this->add();
+	
 
-	}
-
-	protected function add(){
-			$css = array(
-  				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
-				'assets/bower_components/select2/dist/css/select2.min.css',
-  			);
-			$js = array(
-				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
-				'assets/bower_components/select2/dist/js/select2.full.min.js',
-				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
-				'app/views/operasional_proyek/js/initForm.js',	
-			);
-
-			$config = array(
-				'title' => array(
-					'main' => 'Data Operasional Proyek',
-					'sub' => 'Form Tambah Data',
-				),
-				'css' => $css,
-				'js' => $js,
-			);
-
-			$_SESSION['token_operasional_proyek'] = array(
-				'add' => md5($this->auth->getToken()),
-			);
-			$this->token = array(
-				'add' => password_hash($_SESSION['token_operasional_proyek']['add'], PASSWORD_BCRYPT),	
-			);
-			// $data = array(
-			// 	'token_form' => $this->token['add'],
-			// 	'action' => 'action-add',
-			// 	'id' => '',
-			// 	'id_proyek' => '',
-			// 	'tgl' => '',
-			// 	'nama' => '',
-			// 	'total' => '',
-			// );
-
-			$this->layout('operasional_proyek/form', $config);
-		}
+	
 
 
 
