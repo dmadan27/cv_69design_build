@@ -38,54 +38,68 @@ $(document).ready(function(){
                 if(i == 0 || i == 5) $('td:eq('+i+')', row).addClass('text-right');
             }
         }
-        
-      
-});
+    });
+
+    // btn tambah
+    $('#tambah').on('click', function(){
+        if(this.value.trim() != "") window.location.href = BASE_URL+'operasional-proyek/form/';
+        else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+    });
+
 });
 
 /**
 *
 */
-function getView(id){
-	window.location.href = BASE_URL+'operasional-proyek/detail/'+id;
+function getView(id, token){
+    if(token != "") window.location.href = BASE_URL+'operasional-/detail/'+id;
+    else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
 }
 
 /**
 *
 */
-// function getDelete(id, token){
-// 	if(token.trim() != ""){
-// 		swal({
-// 			title: "Pesan Konfirmasi",
-// 			text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
-// 			type: "warning",
-// 	        showCancelButton: true,
-// 	        confirmButtonColor: "#DD6B55",
-// 	        confirmButtonText: "Ya, Hapus!",
-// 	        cancelButtonText: "Batal",
-// 	        closeOnConfirm: false,
-// 		}, function(){
-// 			$.ajax({
-// 				url: BASE_URL+'bank/delete/'+id,
-// 				type: 'post',
-// 				dataType: 'json',
-// 				data: {"token_delete": token},
-// 				beforeSend: function(){
+function getEdit(id, token){
+    if(token != "") window.location.href = BASE_URL+'operasional-/form/'+id;
+    else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+}
 
-// 				},
-// 				success: function(output){
-// 					console.log(output);
-// 					if(output){
-// 						swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
-// 						$("#bankTable").DataTable().ajax.reload();
-// 					}
-// 				},
-// 				error: function (jqXHR, textStatus, errorThrown){ // error handling
-// 		            console.log(jqXHR, textStatus, errorThrown);
-//                     swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
-// 		        }
-// 			})
-// 		});
-// 	}
-//     else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
-// }
+/**
+*
+*/
+function getDelete(id, token){
+	if(token.trim() != ""){
+		swal({
+			title: "Pesan Konfirmasi",
+			text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
+			type: "warning",
+	        showCancelButton: true,
+	        confirmButtonColor: "#DD6B55",
+	        confirmButtonText: "Ya, Hapus!",
+	        cancelButtonText: "Batal",
+	        closeOnConfirm: false,
+		}, function(){
+			$.ajax({
+				url: BASE_URL+'operasional-proyek/delete/'+id,
+				type: 'post',
+				dataType: 'json',
+				data: {"token_delete": token},
+				beforeSend: function(){
+
+				},
+				success: function(output){
+					console.log(output);
+					if(output){
+						swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
+						$("#bankTable").DataTable().ajax.reload();
+					}
+				},
+				error: function (jqXHR, textStatus, errorThrown){ // error handling
+		            console.log(jqXHR, textStatus, errorThrown);
+                    swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+		        }
+			})
+		});
+	}
+    else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+}

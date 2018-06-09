@@ -128,10 +128,13 @@ class Operasional_Proyek extends CrudAbstract{
 			$css = array(
   				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
 				'assets/bower_components/select2/dist/css/select2.min.css',
+				 'assets/plugins/iCheck/all.css',
+
   			);
 			$js = array(
 				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
 				'assets/bower_components/select2/dist/js/select2.full.min.js',
+				'assets/plugins/iCheck/icheck.min.js',
 				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
 				'app/views/operasional_proyek/js/initForm.js',	
 			);
@@ -338,17 +341,33 @@ class Operasional_Proyek extends CrudAbstract{
 
 		$data = !empty($this->Operasional_ProyekModel->getLastID()['id']) ? $this->Operasional_ProyekModel->getLastID()['id'] : false;
 
-		if(!$data) $id = 'OPRY001';
+		if(!$data) $id = 'OPRY0001';
 		else{
 			// $data = implode('', $data);
 			$kode = 'OPRY';
-			$noUrut = (int)substr($data, 4, 3);
+			$noUrut = (int)substr($data, 4, 4);
 			$noUrut++;
 
 			$id = $kode.sprintf("%04s", $noUrut);
 		}
 
 		echo $id;
-	}	
+	}
+
+	public function get_nama_proyek(){
+		$this->model('ProyekModel');
+		$data_nama_proyek = $this->ProyekModel->getAll();
+		$data = array();
+
+		foreach($data_nama_proyek as $row){
+			$dataRow = array();
+			$dataRow['id'] = $row['id'];
+			$dataRow['text'] = $row['id'].' - '.$row['pembangunan'];
+
+			$data[] = $dataRow;
+		}
+
+		echo json_encode($data);
+}	
 
 }
