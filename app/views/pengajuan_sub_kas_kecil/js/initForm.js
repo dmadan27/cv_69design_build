@@ -255,4 +255,7 @@ function resetForm(){
 
 	$('#total').text('');
     $('#saldo').text('');
+
+    $('#status').val('PENDING');
+    $('.data-pengajuan').slideUp();
 }
