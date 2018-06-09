@@ -1,6 +1,8 @@
 <?php 
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung"); 
 	$proyek = $this->data['data_proyek'];
+	$detail = $this->data['data_detail'];
+	$skk = $this->data['data_skk'];
 	$arus = $this->data['data_arus'];
 ?>
 
@@ -40,73 +42,130 @@
 											<div class="row">
 												<!-- data profil -->
 												<div class="col-md-6 col-xs-12">
-													<table class="table table-hover">
-														<tr>
-															<td><strong>Id Proyek</strong></td>
-															<td><?= $proyek['id'] ?></td>
-														</tr>
-														<tr>
-															<td><strong>Pemilik</strong></td>
-															<td><?= $proyek['pemilik'] ?></td>
-														</tr>
-														<tr>
-															<td><strong>Tanggal</strong></td>
-															<td><?= $proyek['tgl'] ?></td>
-														</tr>
-														<tr>
-															<td><strong>Pembangunan</strong></td>
-															<td><?= $proyek['pembangunan'] ?></td>
-														</tr>
-														<tr>
-															<td><strong>Luas Area</strong></td>
-															<td class="text-right"><?= $proyek['luas_area'] ?> M<sup>2</sup></td>
-														</tr>
-														<tr>
-															<td><strong>Alamat</strong></td>
-															<td><?= $proyek['alamat'] ?></td>
-														</tr>
-														<tr>
-															<td><strong>Kota</strong></td>
-															<td><?= $proyek['kota'] ?></td>
-														</tr>
-														<tr>
-															<td><strong>Estimasi Pembangunan</strong></td>
-															<td><?= $proyek['estimasi'] ?></td>
-														</tr>
-													</table>
+													<fieldset>
+														<legend style="font-size: 18px;">Data Proyek</legend>
+														<table class="table table-hover">
+															<tr>
+																<td><strong>Id Proyek</strong></td>
+																<td><?= $proyek['id'] ?></td>
+															</tr>
+															<tr>
+																<td><strong>Pemilik</strong></td>
+																<td><?= $proyek['pemilik'] ?></td>
+															</tr>
+															<tr>
+																<td><strong>Tanggal</strong></td>
+																<td><?= $proyek['tgl'] ?></td>
+															</tr>
+															<tr>
+																<td><strong>Pembangunan</strong></td>
+																<td><?= $proyek['pembangunan'] ?></td>
+															</tr>
+															<tr>
+																<td><strong>Luas Area</strong></td>
+																<td class="text-right"><?= $proyek['luas_area'] ?> M<sup>2</sup></td>
+															</tr>
+															<tr>
+																<td><strong>Alamat</strong></td>
+																<td><?= $proyek['alamat'] ?></td>
+															</tr>
+															<tr>
+																<td><strong>Kota</strong></td>
+																<td><?= $proyek['kota'] ?></td>
+															</tr>
+															<tr>
+																<td><strong>Estimasi Pembangunan</strong></td>
+																<td><?= $proyek['estimasi'] ?></td>
+															</tr>
+															<tr>
+																<td><strong>Nilai RAB</strong></td>
+																<td class="text-right"><?= $proyek['total'] ?></td>
+															</tr>
+															<tr>
+																<td><strong>DP</strong></td>
+																<td class="text-right"><?= $proyek['dp'] ?></td>
+															</tr>
+															<tr>
+																<td><strong>CCO</strong></td>
+																<td class="text-right"><?= $proyek['cco'] ?></td>
+															</tr>
+															<tr>
+																<td><strong>Status</strong></td>
+																<td><?= $proyek['status'] ?></td>
+															</tr>
+															<tr>
+																<td><strong>Progress</strong>
+																</td>
+																<td class="text-right"><?= $proyek['progress']['text'] ?></td>
+															</tr>
+															<tr>
+																<td colspan="2">
+																	<div class="progress">
+												                		<div class="progress-bar progress-bar-primary progress-bar-striped active" role="progressbar" aria-valuenow="<?= $proyek['progress']['value'] ?>" aria-valuemin="0" aria-valuemax="100" <?= $proyek['progress']['style'] ?> >
+												                  			<span class="sr-only"><?= $proyek['progress']['text'] ?></span>
+												                		</div>
+												              		</div>
+																</td>
+															</tr>
+														</table>
+													</fieldset>	
 												</div>
-												<!-- data keuangan -->
+												<!-- data detail dan logistik -->
 												<div class="col-md-6 col-xs-12">
+													<!-- data detail -->
+													<div class="row">
+														<div class="col-md-12">
+															<fieldset>
+																<legend style="font-size: 18px;">Data Detail Proyek</legend>
+																<table class="table table-hover">
+																	<thead>
+																		<tr>
+																			<th>No</th>
+																			<th>Angsuran</th>
+																			<th>Persentase</th>
+																			<th>Total</th>
+																			<th>Status</th>
+																			<th>Aksi</th>
+																		</tr>
+																		<tbody>
+																			<?php
+																				foreach($detail as $row){
+																					echo "<tr>";
+																					echo "<td>No</td>";
+																					foreach($row as $value){
+																						echo "<td>".$value."</td>";
+																					}
+																					echo "</tr>";
+																				}
+																			?>
+																		</tbody>
+																	</thead>
+																</table>
+															</fieldset>
+																
+														</div>
+													</div>
+													<!-- data logistik -->
+													<div class="row">
+														<div class="col-md-12">
+															<fieldset>
+																<legend style="font-size: 18px;">Data Logistik Proyek</legend>
+																<table class="table table-hover">
+																
+																</table>
+															</fieldset>
+																
+														</div>
+													</div>
+														
+												</div>
+											</div>
+											<hr>
+											<div class="row">
+												<div class="col-md-12">
 													<table class="table table-hover">
 														<tr>
-															<td><strong>Nilai RAB</strong></td>
-															<td class="text-right"><?= $proyek['total'] ?></td>
-														</tr>
-														<tr>
-															<td><strong>DP</strong></td>
-															<td class="text-right"><?= $proyek['dp'] ?></td>
-														</tr>
-														<tr>
-															<td><strong>CCO</strong></td>
-															<td class="text-right"><?= $proyek['cco'] ?></td>
-														</tr>
-														<tr>
-															<td><strong>Status</strong></td>
-															<td><?= $proyek['status'] ?></td>
-														</tr>
-														<tr>
-															<td><strong>Progress</strong>
-															</td>
-															<td class="text-right"><?= $proyek['progress']['text'] ?></td>
-														</tr>
-														<tr>
-															<td colspan="2">
-																<div class="progress">
-											                		<div class="progress-bar progress-bar-primary progress-bar-striped active" role="progressbar" aria-valuenow="<?= $proyek['progress']['value'] ?>" aria-valuemin="0" aria-valuemax="100" <?= $proyek['progress']['style'] ?> >
-											                  			<span class="sr-only"><?= $proyek['progress']['text'] ?></span>
-											                		</div>
-											              		</div>
-															</td>
+															<td></td>
 														</tr>
 													</table>
 												</div>

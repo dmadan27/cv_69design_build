@@ -6,12 +6,12 @@ $(document).ready(function () {
 		
 	$('#id').prop('disabled', true);
     //Initialize Select2 Elements
-    $('#skc').select2({
+    $('#skk').select2({
     	placeholder: "Pilih Sub Kas Kecil",
 		allowClear: true
     });
 
-    setSkc();
+    setSkk();
 
  	//Date picker
     $('.datepicker').datepicker({
@@ -32,10 +32,10 @@ $(document).ready(function () {
     	$('#modalDetail').modal();
     });
 
-    // tambah skc
-	$('#tambah_skc').on('click', function(){
-		if($('#skc').val() != null) addSkc();
-    	console.log(listSkc);
+    // tambah skk
+	$('#tambah_skk').on('click', function(){
+		if($('#skk').val() != null) addSkk();
+    	console.log(listSkk);
     });    
 
     $('#form_detail').submit(function(e){
@@ -257,20 +257,20 @@ $(document).ready(function () {
 
 // =========================================================== //
 
-// ===================== Function skc ======================== //
+// ===================== Function skk ======================== //
 
 	/**
 	*
 	*/
-	function addSkc(){
-		var index = indexSkc++;
+	function addSkk(){
+		var index = indexSkk++;
 
 		var data = {
 			index: index,
 			id: '',
 			id_proyek: $('#id').val().trim(), 
-			id_skc: $('#skc').val().trim(),
-			nama: $('#skc option:selected').text().split(' - ')[1],
+			id_skk: $('#skk').val().trim(),
+			nama: $('#skk option:selected').text().split(' - ')[1],
 			aksi: 'tambah',
 			delete: false, 
 		};
@@ -278,39 +278,39 @@ $(document).ready(function () {
 		// validDetail(data);
 		console.log(data);
 
-		if(validSkc(data.id_skc)){
-			indexSkc -= 1;
-			console.log(validSkc(data.id_skc));
+		if(validSkk(data.id_skk)){
+			indexSkk -= 1;
+			console.log(validSkk(data.id_skk));
 		}
 		else{
-			console.log(validSkc(data.id_skc));
-			listSkc.push(data);
+			console.log(validSkk(data.id_skk));
+			listSkk.push(data);
 			// insert tabel
 			$('#sub_kas_kecilTable > tbody:last-child').append(
 				'<tr>'+
 					'<td></td>'+ // no
-					'<td>'+data.id_skc+'</td>'+
+					'<td>'+data.id_skk+'</td>'+
 					'<td>'+data.nama+'</td>'+
-					'<td>'+btnAksi_skc(data.index)+'</td>'+ // aksi
+					'<td>'+btnAksi_skk(data.index)+'</td>'+ // aksi
 				'</tr>'
 			);
 
-			$('#skc').val(null).trigger('change');
-			numbering_listSkc();
+			$('#skk').val(null).trigger('change');
+			numbering_listSkk();
 		}
 		
 		console.log('Index : '+index);
-		console.log('Index Utama: '+indexSkc);
+		console.log('Index Utama: '+indexSkk);
 	}
 	
 	/**
 	*
 	*/
-	function validSkc(skc){
+	function validSkk(skk){
 		var ada = false;
 
-		$.each(listSkc, function(index, item){
-			if(skc == item.id_skc && !item.delete) ada = true;
+		$.each(listSkk, function(index, item){
+			if(skk == item.id_skk && !item.delete) ada = true;
 		});
 
 		return ada;
@@ -319,7 +319,7 @@ $(document).ready(function () {
 	/**
 	*
 	*/
-	function numbering_listSkc(){
+	function numbering_listSkk(){
 		$('#sub_kas_kecilTable tbody tr').each(function(index){
 			$(this).children('td:eq(0)').html(index+1);	
 		});
@@ -328,9 +328,9 @@ $(document).ready(function () {
 	/**
 	*
 	*/
-	function btnAksi_skc(index){
+	function btnAksi_skk(index){
 		var btn = '<button type="button" class="btn btn-danger btn-flat btn-sm"'+
-					' title="Hapus data dari list" onclick="delete_skc('+index+', this)">'+
+					' title="Hapus data dari list" onclick="delete_skk('+index+', this)">'+
 					'<i class="fa fa-trash"></i></button>';
 
 		return btn;
@@ -339,16 +339,16 @@ $(document).ready(function () {
 	/**
 	*
 	*/
-	function delete_skc(index, val){
+	function delete_skk(index, val){
 		$(val).parent().parent().remove();
-		$.each(listSkc, function(i, item){
+		$.each(listSkk, function(i, item){
 			if(item.index == index && item.aksi == 'edit') item.status = true;
 			// else (item.index == index && item.aksi == 'tambah'){
 				
 			// }
 		});
 		numbering_listDetail();
-		console.log(listSkc);
+		console.log(listSkk);
 	}
 
 // =========================================================== //
@@ -384,7 +384,7 @@ function getDataForm(){
 	data.append('id', $('#id').val().trim());
 	data.append('dataProyek', JSON.stringify(dataProyek));
 	data.append('dataDetail', JSON.stringify(listDetail));
-	data.append('dataSkc', JSON.stringify(listSkc));
+	data.append('dataSkk', JSON.stringify(listSkk));
 	data.append('action', $('#submit_proyek').val().trim());
 
 	return data;
@@ -491,20 +491,20 @@ function getEdit(id){
 				numbering_listDetail();
 			});	
 
-			// each dataSkc
-			$.each(output.dataSkc, function(i, data){
-				var index = indexSkc++;
-				var dataSkc = {
+			// each dataSkk
+			$.each(output.dataSkk, function(i, data){
+				var index = indexSkk++;
+				var dataSkk = {
 					index: index,
 					id: data.id,
 					id_proyek: data.id_proyek, 
-					id_skc: data.id_skc,
+					id_skk: data.id_skk,
 					nama: data.nama,
 					aksi: 'edit',
 					delete: false, 
 				}
 
-				listSkc.push(dataSkc);
+				listSkk.push(dataSkk);
 
 				var status = function(value){
 					return (data.status_detail.toLowerCase() == value.toLowerCase()) ? 'selected' : ''
@@ -512,12 +512,12 @@ function getEdit(id){
 				$('#sub_kas_kecilTable > tbody:last-child').append(
 					'<tr>'+
 						'<td></td>'+ // no
-						'<td>'+data.id_skc+'</td>'+
+						'<td>'+data.id_skk+'</td>'+
 						'<td>'+data.nama+'</td>'+
-						'<td>'+btnAksi_skc(dataSkc.index)+'</td>'+ // aksi
+						'<td>'+btnAksi_skk(dataSkk.index)+'</td>'+ // aksi
 					'</tr>'
 				);
-				numbering_listSkc();
+				numbering_listSkk();
 			});
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling
@@ -563,18 +563,18 @@ function setStatusDetail(){
 /**
 *
 */
-function setSkc(){
+function setSkk(){
 	$.ajax({
-		url: BASE_URL+'proyek/get-skc',
+		url: BASE_URL+'proyek/get-skk',
 		dataType: 'json',
 		beforeSend: function(){},
 		success: function(data){
 			console.log(data);
 			$.each(data, function(index, item){
 				var newOption = new Option(item.text, item.id);
-				$('#skc').append(newOption).trigger('change');
+				$('#skk').append(newOption).trigger('change');
 			});
-			$('#skc').val(null).trigger('change');
+			$('#skk').val(null).trigger('change');
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling
             console.log(jqXHR, textStatus, errorThrown);

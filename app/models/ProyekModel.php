@@ -68,7 +68,6 @@
 			$result = $statement->fetch(PDO::FETCH_ASSOC);
 
 			return $result;
-
 		}
 
 		/**
@@ -88,10 +87,8 @@
 		/**
 		*
 		*/
-		public function getSkcById($id){
-			$query = "SELECT lp.id, lp.id_proyek, skc.id id_skc, skc.nama FROM logistik_proyek lp ";
-			$query .= "JOIN sub_kas_kecil skc ON skc.id = lp.id_sub_kas_kecil ";
-			$query .= "WHERE lp.id_proyek = :id;";
+		public function getSkkById($id){
+			$query = "SELECT * FROM v_get_skk_proyek WHERE id_proyek = :id;";
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id', $id);
 			$statement->execute();
@@ -106,12 +103,12 @@
 		public function insert($data){
 			$dataProyek = $data['dataProyek'];
 			$dataDetail = $data['dataDetail'];
-			$dataSkc = $data['dataSkc'];
+			$dataSkk = $data['dataSkk'];
 
 			try{
 				$this->koneksi->beginTransaction();
 
-				$this->insertPengajuan($dataProyek);
+				$this->insertProyek($dataProyek);
 
 				foreach($dataDetail as $index => $row){
 					if(!$dataDetail[$index]['delete']){
@@ -120,10 +117,10 @@
 					}
 				}
 
-				foreach($dataSkc as $index => $row){
-					if(!$dataSkc[$index]['delete']){
+				foreach($dataSkk as $index => $row){
+					if(!$dataSkk[$index]['delete']){
 						array_map('strtoupper', $row);
-						$this->insertSkc($row);
+						$this->insertSkk($row);
 					}
 				}
 				
@@ -136,16 +133,12 @@
 				die($e->getMessage());
 				// return false;
 			}
-			
-			$result = $statment->execute();
-
-			return $result;
 		}
 
 		/**
 		*
 		*/
-		public function insertPengajuan($data){
+		private function insertProyek($data){
 			// insert proyek
 			$query = "INSERT INTO proyek (id, pemilik, tgl, pembangunan, luas_area, alamat, kota, estimasi, total, dp, cco, status) ";
 			$query .= "VALUES (:id, :pemilik, :tgl, :pembangunan, :luas_area, :alamat, :kota, :estimasi, :total, :dp, :cco, :status);";
@@ -172,7 +165,7 @@
 		/**
 		*
 		*/
-		public function insertDetail($data){
+		private function insertDetail($data){
 			// insert detail_proyek
 			$query = 'INSERT INTO detail_proyek (id_proyek, angsuran, persentase, total, status) ';
 			$query .= 'VALUES (:id_proyek, :angsuran, :persentase, :total, :status);';
@@ -192,7 +185,7 @@
 		/**
 		*
 		*/
-		public function insertSkc($data){
+		private function insertSkk($data){
 			$query = 'INSERT INTO logistik_proyek (id_proyek, id_sub_kas_kecil) VALUES (:id_proyek, :id_sub_kas_kecil);';
 			$statment = $this->koneksi->prepare($query);
 			$statment->execute(
@@ -208,41 +201,134 @@
 		* 
 		*/
 		public function update($data){
-			
+			$dataProyek = $data['dataProyek'];
+			$dataDetail = $data['dataDetail'];
+			$dataSkk = $data['dataSkk'];
+
+			try{
+				$this->koneksi->beginTransaction();
+
+				$this->updateProyek($dataProyek);
+
+				foreach($dataDetail as $index => $row){
+					array_map('strtoupper', $row);
+					if(!$dataDetail[$index]['delete'] && $dataDetail[$index]['status'] == "edit") $this->updateDetail($row);
+					else if(!$dataDetail[$index]['delete'] && $dataDetail[$index]['status'] == "tambah") $this->deleteDetail($row);
+				}
+
+				foreach($dataSkk as $index => $row){
+					array_map('strtoupper', $row);
+					if(!$dataSkk[$index]['delete'] && $dataSkk[$index]['status'] == "edit") $this->updateSkk($row);
+					else if(!$dataSkk[$index]['delete'] && $dataSkk[$index]['status'] == "tambah") $this->deleteSkk($row);
+				}
+				
+				$this->koneksi->commit();
+
+				return true;
+			}
+			catch(PDOException $e){
+				$this->koneksi->rollback();
+				die($e->getMessage());
+				// return false;
+			}
 		}		
 
 		/**
 		*
 		*/
-		public function updateDetail($data){
-
+		private function updateProyek($data){
+			$query = "INSERT INTO proyek (id, pemilik, tgl, pembangunan, luas_area, alamat, kota, estimasi, total, dp, cco, status) ";
+			$query .= "VALUES (:id, :pemilik, :tgl, :pembangunan, :luas_area, :alamat, :kota, :estimasi, :total, :dp, :cco, :status);";
+			$statment = $this->koneksi->prepare($query);
+			$statment->execute(
+				array(
+					':id' => $data['id'],
+					':pemilik' => $data['pemilik'],
+					':tgl' => $data['tgl'],
+					':pembangunan' => $data['pembangunan'],
+					':luas_area' => $data['luas_area'],
+					':alamat' => $data['alamat'],
+					':kota' => $data['kota'],
+					':estimasi' => $data['estimasi'],
+					':total' => $data['total'],
+					':dp' => $data['dp'],
+					':cco' => $data['cco'],
+					':status' => $data['status'],
+				)
+			);
+			$statment->closeCursor();
 		}
 
 		/**
 		*
 		*/
-		public function updateSkc($data){
-			
+		private function updateDetail($data){
+			$query = 'INSERT INTO detail_proyek (id_proyek, angsuran, persentase, total, status) ';
+			$query .= 'VALUES (:id_proyek, :angsuran, :persentase, :total, :status);';
+			$statment = $this->koneksi->prepare($query);
+			$statment->execute(
+				array(
+					':id_proyek' => $data['id_proyek'],
+					':angsuran' => $data['angsuran'],
+					':persentase' => $data['persentase'],
+					':total' => $data['total_detail'],
+					':status' => $data['status_detail'],
+				)
+			);
+			$statment->closeCursor();
+		}
+
+		/**
+		*
+		*/
+		private function updateSkk($data){
+			$query = 'INSERT INTO logistik_proyek (id_proyek, id_sub_kas_kecil) VALUES (:id_proyek, :id_sub_kas_kecil);';
+			$statment = $this->koneksi->prepare($query);
+			$statment->execute(
+				array(
+					':id_proyek' => $data['id_proyek'],
+					':id_sub_kas_kecil' => $data['id_skc'],
+				)
+			);
+			$statment->closeCursor();
 		}
 
 		/**
 		* 
 		*/
 		public function delete($id){
-			
+			try{
+				$query = 'CALL hapus_proyek (:id)';
+				$statment = $this->koneksi->prepare($query);
+				$statment->execute(
+					array(
+						':id' => $id,
+					)
+				);
+				$statment->closeCursor();
+
+				$this->koneksi->commit();
+
+				return true;
+			}
+			catch(PDOException $e){
+				$this->koneksi->rollback();
+				die($e->getMessage());
+				// return false;
+			}
 		}
 
 		/**
 		*
 		*/
-		public function deleteDetail($data){
+		private function deleteDetail($data){
 
 		}
 
 		/**
 		*
 		*/
-		public function deleteSkc($data){
+		private function deleteSkk($data){
 
 		}
 
@@ -259,65 +345,69 @@
 			return $result;
 		}
 
-		/**
-		* 
-		*/
-		public function setQuery_mobile($page){
-			$id = isset($_POST['id']) ? $_POST['id'] : false;
-			$cari = isset($_POST['cari']) ? $_POST['cari'] : null;
-			$mulai = ($page > 1) ? ($page * 10) - 10 : 0;
-			
-			$this->queryMobile = 'SELECT * FROM v_proyek_logistik ';
+		// ======================== mobile = ======================= //
+		
+			/**
+			* 
+			*/
+			public function setQuery_mobile($page){
+				$id = isset($_POST['id']) ? $_POST['id'] : false;
+				$cari = isset($_POST['cari']) ? $_POST['cari'] : null;
+				$mulai = ($page > 1) ? ($page * 10) - 10 : 0;
+				
+				$this->queryMobile = 'SELECT * FROM v_proyek_logistik ';
 
-			$qWhere = 'WHERE id_sub_kas_kecil = "'.$id.'"';
-			$i = 0;
-			foreach($this->kolomCari_mobile as $value){
-				if(!is_null($cari)){
-					if($i === 0) $qWhere .= ' AND ('.$value.' LIKE "%'.$cari.'%" ';
-					else $qWhere .= 'OR '.$value.' LIKE "%'.$cari.'%"';
+				$qWhere = 'WHERE id_sub_kas_kecil = "'.$id.'"';
+				$i = 0;
+				foreach($this->kolomCari_mobile as $value){
+					if(!is_null($cari)){
+						if($i === 0) $qWhere .= ' AND ('.$value.' LIKE "%'.$cari.'%" ';
+						else $qWhere .= 'OR '.$value.' LIKE "%'.$cari.'%"';
+					}
+					$i++;
 				}
-				$i++;
+				if(!is_null($cari)) $qWhere .= " )";
+
+				$this->queryMobile .= "$qWhere LIMIT $mulai, 10";
 			}
-			if(!is_null($cari)) $qWhere .= " )";
 
-			$this->queryMobile .= "$qWhere LIMIT $mulai, 10";
-		}
+			/**
+			*
+			*/
+			public function getAll_mobile($page){
+				$this->setQuery_mobile($page);
 
-		/**
-		*
-		*/
-		public function getAll_mobile($page){
-			$this->setQuery_mobile($page);
+				$statement = $this->koneksi->prepare($this->queryMobile);
+				$statement->execute();
+				$result = $statement->fetchAll();
 
-			$statement = $this->koneksi->prepare($this->queryMobile);
-			$statement->execute();
-			$result = $statement->fetchAll();
+				return $result;
+			}
 
-			return $result;
-		}
+			/**
+			* 
+			*/
+			public function get_recordTotal_mobile(){
+				$koneksi = $this->openConnection();
 
-		/**
-		* 
-		*/
-		public function get_recordTotal_mobile(){
-			$koneksi = $this->openConnection();
+				$statement = $koneksi->query("SELECT COUNT(*) FROM v_proyek_logistik")->fetchColumn();
 
-			$statement = $koneksi->query("SELECT COUNT(*) FROM v_proyek_logistik")->fetchColumn();
+				return $statement;
+			}
 
-			return $statement;
-		}
+			/**
+			* 
+			*/
+			public function get_recordFilter_mobile(){
+				$koneksi = $this->openConnection();
 
-		/**
-		* 
-		*/
-		public function get_recordFilter_mobile(){
-			$koneksi = $this->openConnection();
+				$statement = $koneksi->prepare($this->queryMobile);
+				$statement->execute();
 
-			$statement = $koneksi->prepare($this->queryMobile);
-			$statement->execute();
+				return $statement->rowCount();
+			}
 
-			return $statement->rowCount();
-		}
+		// ========================================================= //
 
 		/**
 		* 
