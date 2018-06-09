@@ -3,6 +3,8 @@ Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 
 class Operasional_Proyek extends CrudAbstract{
 
+	protected $token;
+
 	public function __construct(){
 			$this->auth();
 			$this->auth->cekAuth();
@@ -24,7 +26,7 @@ class Operasional_Proyek extends CrudAbstract{
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 				'app/views/operasional_proyek/js/initList.js',
-				// 'app/views/operasional_proyek/js/initForm.js',
+
 			);
 
 			$config = array(
@@ -98,7 +100,7 @@ class Operasional_Proyek extends CrudAbstract{
 				$dataRow[] = $no_urut;
 				$dataRow[] = $row['id'];
 				$dataRow[] = $row['id_proyek'];
-				$dataRow[] = $row['tgl'];
+				$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
 				$dataRow[] = $row['nama'];
 				$dataRow[] = $row['total'];
 				$dataRow[] = $aksi;
@@ -131,11 +133,10 @@ class Operasional_Proyek extends CrudAbstract{
 			}
 			else{
 				// validasi data
-				$validasi = $this->set_validation($data);
+				$validasi = $this->set_validation($data['action']);
 				$cek = $validasi['cek'];
 				$error = $validasi['error'];
 
-				$this->model('Operasional_ProyekModel');
 				// $getSaldo = $this->BankModel->getById($data['id_bank'])['saldo'];
 
 				// if($data['nominal'] > $getSaldo){
@@ -153,7 +154,7 @@ class Operasional_Proyek extends CrudAbstract{
 						'total' => $this->validation->validInput($data['total']),
 					);
 
-					if($this->Operasional_ProyeklModel->insert($data)) {
+					if($this->Operasional_ProyekModel->insert($data)) {
 						$status = true;
 						$notif = array(
 							'title' => "Pesan Berhasil",
@@ -186,18 +187,107 @@ class Operasional_Proyek extends CrudAbstract{
 		}
 
 	public function form($id){
+		if($id)	$this->edit(strtoupper($id));
+		else $this->add();
 
 	}
 
-	public function add(){
+	protected function add(){
+			$css = array(
+  				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
+				'assets/bower_components/select2/dist/css/select2.min.css',
+  			);
+			$js = array(
+				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
+				'assets/bower_components/select2/dist/js/select2.full.min.js',
+				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
+				'app/views/operasional_proyek/js/initForm.js',	
+			);
 
-	}
+			$config = array(
+				'title' => array(
+					'main' => 'Data Operasional Proyek',
+					'sub' => 'Form Tambah Data',
+				),
+				'css' => $css,
+				'js' => $js,
+			);
+
+			$_SESSION['token_operasional_proyek'] = array(
+				'add' => md5($this->auth->getToken()),
+			);
+			$this->token = array(
+				'add' => password_hash($_SESSION['token_operasional_proyek']['add'], PASSWORD_BCRYPT),	
+			);
+			// $data = array(
+			// 	'token_form' => $this->token['add'],
+			// 	'action' => 'action-add',
+			// 	'id' => '',
+			// 	'id_proyek' => '',
+			// 	'tgl' => '',
+			// 	'nama' => '',
+			// 	'total' => '',
+			// );
+
+			$this->layout('operasional_proyek/form', $config);
+		}
 
 
 
-	public function edit($id){
+	protected function edit($id){
+			if(empty($id) || $id == "") $this->redirect(BASE_URL."operasional-proyek/");
 
-	}
+			// // // get data proyek
+			// // $dataProyek = !empty($this->ProyekModel->getById($id)) ? $this->ProyekModel->getById($id) : false;
+
+			// // if(!$dataProyek) $this->redirect(BASE_URL."proyek/");
+
+			// // $css = array(
+  	// // 			'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
+			// // 	'assets/bower_components/select2/dist/css/select2.min.css',
+  	// // 		);
+			// // $js = array(
+			// // 	'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
+			// // 	'assets/bower_components/select2/dist/js/select2.full.min.js',
+			// // 	'assets/plugins/input-mask/jquery.inputmask.bundle.js',
+			// // 	'app/views/proyek/js/initForm.js',	
+			// // );
+
+			// // $config = array(
+			// // 	'title' => array(
+			// // 		'main' => 'Data Proyek',
+			// // 		'sub' => 'Form Edit Data',
+			// // 	),
+			// // 	'css' => $css,
+			// // 	'js' => $js,
+			// // );
+
+			// // $_SESSION['token_proyek'] = array(
+			// // 	'edit' => md5($this->auth->getToken()),
+			// // );
+			// // $this->token = array(
+			// // 	'edit' => password_hash($_SESSION['token_proyek']['edit'], PASSWORD_BCRYPT),
+			// // );
+
+			// // $data = array(
+			// // 	'token_form' => $this->token['edit'],
+			// // 	'action' => 'action-edit',
+			// // 	'id' => $dataProyek['id'],
+			// // 	'pemilik' => $dataProyek['pemilik'],
+			// // 	'tgl' => $dataProyek['tgl'],
+			// // 	'pembangunan' => $dataProyek['pembangunan'],
+			// // 	'luas_area' => $dataProyek['luas_area'],
+			// // 	'alamat' => $dataProyek['alamat'],
+			// // 	'kota' => $dataProyek['kota'],
+			// // 	'estimasi' => $dataProyek['estimasi'],
+			// // 	'total' => $dataProyek['total'],
+			// // 	'dp' => $dataProyek['dp'],
+			// // 	'cco' => $dataProyek['cco'],
+			// // 	'status' => $dataProyek['status'],
+			// // );
+
+			// $this->layout('proyek/form', $config, $data);
+		}
 
 	public function action_edit(){
 
@@ -215,8 +305,46 @@ class Operasional_Proyek extends CrudAbstract{
 
 	}
 
-	private function set_validation(){
-		
+	/**
+		* Function validasi form utama
+		*/
+		private function set_validation($data, $action){
+			$required = ($action =="action-add") ? 'not_required' : 'required';
+
+			// id
+			$this->validation->set_rules($data['id'], 'ID Operasional Proyek', 'id', 'string | 1 | 255 | required');
+			// id_proyek
+			$this->validation->set_rules($data['id_proyek'], 'ID proyek', 'proyek', 'string | 1 | 255 | required');
+			// tgl
+			$this->validation->set_rules($data['tgl'], 'Tanggal Operasional Proyek', 'tgl', 'string | 1 | 255 | required');
+			// nama
+			$this->validation->set_rules($data['nama'], 'Nama Pengajuan', 'nama', 'string | 1 | 255 | required');
+			// total
+			$this->validation->set_rules($data['total'], 'Total Pengajuan', 'total', 'nilai | 1 | 99999 | required');
+			
+			return $this->validation->run();
+		}
+
+	/**
+	*
+	*/
+	public function get_last_id(){
+		$token = isset($_POST['token']) ? $_POST['token'] : false;
+		$this->auth->cekToken($_SESSION['token_operasional_proyek']['add'], $token, 'operasional_proyek');
+
+		$data = !empty($this->Operasional_ProyekModel->getLastID()['id']) ? $this->Operasional_ProyekModel->getLastID()['id'] : false;
+
+		if(!$data) $id = 'OPRY001';
+		else{
+			// $data = implode('', $data);
+			$kode = 'OPRY';
+			$noUrut = (int)substr($data, 4, 3);
+			$noUrut++;
+
+			$id = $kode.sprintf("%04s", $noUrut);
+		}
+
+		echo $id;
 	}	
 
 }

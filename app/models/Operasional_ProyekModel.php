@@ -69,15 +69,15 @@ class Operasional_ProyekModel extends Database implements ModelInterface{
 		* 
 		*/
 		public function insert($data){
-			$query = "INSERT INTO operasional_proyek (id, id_proyek, tgl, nama, total) VALUES (:id, id_proyek, :tgl, :nama, :total);";
+			$query = "INSERT INTO operasional_proyek (id, id_proyek, tgl, nama, total) VALUES (:id, :id_proyek, :tgl, :nama, :total);";
 
-			$statement = $this->koneksi->prepare($query);
-			$statement->bindParam(':id', $data['id']);
-			$statement->bindParam(':id_proyek', $data['id_proyek']);
-			$statement->bindParam(':tgl', $data['tgl']);
-			$statement->bindParam(':nama', $data['nama']);
-			$statement->bindParam(':total', $data['total']);
-			$result = $statement->execute();
+			$statment = $this->koneksi->prepare($query);
+			$statment->bindParam(':id', $data['id']);
+			$statment->bindParam(':id_proyek', $data['id_proyek']);
+			$statment->bindParam(':tgl', $data['tgl']);
+			$statment->bindParam(':nama', $data['nama']);
+			$statment->bindParam(':total', $data['total']);
+			$result = $statment->execute();
 
 			return $result;
 		}
@@ -108,6 +108,16 @@ class Operasional_ProyekModel extends Database implements ModelInterface{
 			// $result = $statement->execute();
 
 			// return $result;
+		}
+
+		public function getLastID(){
+			$query = "SELECT MAX(id) id FROM operasional_proyek;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
 		}
 
 		/**
