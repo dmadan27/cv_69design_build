@@ -76,7 +76,7 @@
 			try{
 				$this->koneksi->beginTransaction();
 
-				$query = "CALL tambah_data_operasional (:id_bank, :tgl, :nama, :nominal, :ket)";
+				$query = "CALL tambah_operasional (:id_bank, :tgl, :nama, :nominal, :ket)";
 
 				$statement = $this->koneksi->prepare($query);
 				$statement->execute(

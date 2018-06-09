@@ -79,43 +79,108 @@
 		* 
 		*/
 		public function insert($data){
+			try{
+				$this->koneksi->beginTransaction();
+
+				$this->insertBank($data);
+
+				$this->koneksi->commit();
+
+				return true;
+			}
+			catch(PDOException $e){
+				$this->koneksi->rollback();
+				die($e->getMessage());
+				// return false;
+			}
+		}
+
+		/**
+		*
+		*/
+		private function insertBank($data){
 			$query = "INSERT INTO bank (nama, saldo, status) VALUES (:nama, :saldo, :status);";
 
 			$statement = $this->koneksi->prepare($query);
-			$statement->bindParam(':nama', $data['nama']);
-			$statement->bindParam(':saldo', $data['saldo']);
-			$statement->bindParam(':status', $data['status']);
-			$result = $statement->execute();
-
-			return $result;
+			$result = $statement->execute(
+				array(
+					':nama' => $data['nama'],
+					':saldo' => $data['saldo'],
+					':status' => $data['status']
+				)
+			);
+			$statement->closeCursor();
 		}
 
 		/**
 		* 
 		*/
 		public function update($data){
+			try{
+				$this->koneksi->beginTransaction();
+
+				$this->updateBank($data);
+
+				$this->koneksi->commit();
+
+				return true;
+			}
+			catch(PDOException $e){
+				$this->koneksi->rollback();
+				die($e->getMessage());
+				// return false;
+			}
+		}
+
+		/**
+		*
+		*/
+		private function updateBank($data){
 			$query = "UPDATE bank SET nama = :nama, status = :status WHERE id = :id;";
 
 			$statement = $this->koneksi->prepare($query);
-			$statement->bindParam(':nama', $data['nama']);
-			$statement->bindParam(':status', $data['status']);
-			$statement->bindParam(':id', $data['id']);
-			$result = $statement->execute();
-
-			return $result;
+			$statement->execute(
+				array(
+					':nama' => $data['nama'],
+					':status' => $data['status'],
+					':id' => $data['id'],
+				)
+			);
+			$statement->closeCursor();
 		}
 
 		/**
 		* 
 		*/
 		public function delete($id){
-			$query = "DELETE FROM bank WHERE id = :id";
-			
-			$statement = $this->koneksi->prepare($query);
-			$statement->bindParam(':id', $id);
-			$result = $statement->execute();
+			try{
+				$this->koneksi->beginTransaction();
 
-			return $result;
+				$this->deleteBank($id);
+
+				$this->koneksi->commit();
+
+				return true;
+			}
+			catch(PDOException $e){
+				$this->koneksi->rollback();
+				die($e->getMessage());
+				// return false;
+			}
+		}
+
+		/**
+		*
+		*/
+		private function deleteBank($id){
+			$query = "CALL hapus_bank (:id);";
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id' => $id
+				)
+			);
+			$statement->closeCursor();
 		}
 
 		/**

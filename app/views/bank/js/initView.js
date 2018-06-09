@@ -36,8 +36,7 @@ $(document).ready(function(){
         ],
         createdRow: function(row, data, dataIndex){
         	for(var i = 0; i < 5; i++){
-        		if(i != 1 && i != 2) $('td:eq('+i+')', row).addClass('text-center'); 
-         		if(i == 2) $('td:eq('+i+')', row).addClass('text-right'); // rata kanan untuk data saldo
+        		if(i != 5) $('td:eq('+i+')', row).addClass('text-right');
         	}
         }
     });

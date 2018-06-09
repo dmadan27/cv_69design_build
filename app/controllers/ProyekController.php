@@ -198,7 +198,7 @@
 			$data = isset($_POST) ? $_POST : false;
 			$dataProyek = isset($_POST['dataProyek']) ? json_decode($_POST['dataProyek'], true) : false;
 			$dataDetail = isset($_POST['dataDetail']) ? json_decode($_POST['dataDetail'], true) : false;
-			$dataSkc = isset($_POST['dataSkc']) ? json_decode($_POST['dataSkc'], true) : false;
+			$dataSkk = isset($_POST['dataSkk']) ? json_decode($_POST['dataSkk'], true) : false;
 
 			$this->auth->cekToken($_SESSION['token_proyek']['add'], $data['token'], 'proyek');
 			
@@ -217,7 +217,7 @@
 				$cek = $validasi['cek'];
 				$error = $validasi['error'];
 
-				if(empty($dataDetail) || empty($dataSkc)) $cek = false;
+				if(empty($dataDetail) || empty($dataSkk)) $cek = false;
 
 				if($cek){
 					// validasi input
@@ -239,7 +239,7 @@
 					$dataInsert = array(
 						'dataProyek' => $dataProyek,
 						'dataDetail' => $dataDetail,
-						'dataSkc' => $dataSkc,
+						'dataSkk' => $dataSkk,
 					);
 
 					// insert data proyek
@@ -273,7 +273,7 @@
 				// 'data' => $data,
 				// 'dataProyek' => $dataProyek,
 				// 'dataDetail' => $dataDetail,
-				// 'dataSkc' => $dataSkc,
+				// 'dataSkk' => $dataSkk,
 			);
 			echo json_encode($output);
 		}
@@ -346,13 +346,13 @@
 			$token = isset($_POST['token_edit']) ? $_POST['token_edit'] : false;
 			$this->auth->cekToken($_SESSION['token_proyek']['edit'], $token, 'proyek');
 
-			// get data detail dan skc
+			// get data detail dan skk
 			$dataDetail = $this->ProyekModel->getDetailById($id);
-			$dataSkc = $this->ProyekModel->getSkcById($id);
+			$dataSkk = $this->ProyekModel->getSkkById($id);
 
 			$output = array(
 				'dataDetail' => $dataDetail,
-				'dataSkc' => $dataSkc,
+				'dataSkk' => $dataSkk,
 			);
 
 			echo json_encode($output);
@@ -365,7 +365,7 @@
 			$data = isset($_POST) ? $_POST : false;
 			$dataProyek = isset($_POST['dataProyek']) ? json_decode($_POST['dataProyek'], true) : false;
 			$dataDetail = isset($_POST['dataDetail']) ? json_decode($_POST['dataDetail'], true) : false;
-			$dataSkc = isset($_POST['dataSkc']) ? json_decode($_POST['dataSkc'], true) : false;
+			$dataSkk = isset($_POST['dataSkk']) ? json_decode($_POST['dataSkk'], true) : false;
 
 			$this->auth->cekToken($_SESSION['token_proyek']['edit'], $data['token'], 'proyek');
 			
@@ -384,7 +384,7 @@
 				$cek = $validasi['cek'];
 				$error = $validasi['error'];
 
-				if(empty($dataDetail) || empty($dataSkc)) $cek = false;
+				if(empty($dataDetail) || empty($dataSkk)) $cek = false;
 
 				if($cek){
 					// validasi input
@@ -403,9 +403,6 @@
 						'status' => $this->validation->validInput($dataProyek['status']),	
 					);
 
-					// update db
-					// transact
-
 					// insert data proyek
 					if($this->ProyekModel->update($dataProyek)){
 						// insert data detail
@@ -413,9 +410,9 @@
 							if(!$dataDetail[$index]['delete']) $this->ProyekModel->insertDetail(array_map('strtoupper', $row));
 						}
 
-						// insert data skc
-						foreach($dataSkc as $index => $row){
-							if(!$dataSkc[$index]['delete']) $this->ProyekModel->insertSkc(array_map('strtoupper', $row));	
+						// insert data skk
+						foreach($dataSkk as $index => $row){
+							if(!$dataSkk[$index]['delete']) $this->ProyekModel->insertSkk(array_map('strtoupper', $row));	
 						}
 
 						$status = true;
@@ -431,8 +428,6 @@
 							'message' => "Terjadi Kesalahan ",
 						);
 					}
-
-					// commit
 				}
 				else{
 					$notif = array(
@@ -449,7 +444,7 @@
 				// 'data' => $data,
 				// 'dataProyek' => $dataProyek,
 				// 'dataDetail' => $dataDetail,
-				// 'dataSkc' => $dataSkc,
+				// 'dataSkk' => $dataSkk,
 			);
 			echo json_encode($output);
 		}
@@ -466,12 +461,12 @@
 			if(!$dataProyek) $this->redirect(BASE_URL."proyek/");
 
 			$css = array(
-				// 'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css'
+				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css'
 			);
 			$js = array(
-				// 'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
-				// 'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
-				// 'app/views/proyek/js/initView.js',
+				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
+				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'app/views/proyek/js/initView.js',
 			);
 
 			$config = array(
@@ -504,7 +499,7 @@
 				'total' => $this->helper->cetakRupiah($dataProyek['total']),
 				'dp' => $this->helper->cetakRupiah($dataProyek['dp']),
 				'cco' => $this->helper->cetakRupiah($dataProyek['cco']),
-				'status' => (strtolower($dataProyek['status']) == "selesai") ? '<span class="label label-success">'.$dataProyek['status'].'</span>' : '<span class="label label-primary">'.$dataProyek['status'].'</span>',
+				'status' => (strtolower($dataProyek['status']) == "lunas") ? '<span class="label label-success">'.$dataProyek['status'].'</span>' : '<span class="label label-primary">'.$dataProyek['status'].'</span>',
 				'progress' => array(
 					'style' => 'style="width: 40%"',
 					'value' => '40',
@@ -512,11 +507,35 @@
 				),
 			);
 
+			$dataDetail = array();
+			foreach($this->ProyekModel->getDetailById($id) as $row){
+			 	$dataRow = array();
+			 	$dataRow['angsuran'] = $row['angsuran'];
+			 	$dataRow['persentase'] = $row['persentase'].' %';
+				$dataRow['total'] = $this->helper->cetakRupiah($row['total_detail']);
+				$dataRow['status'] = (strtolower($row['status_detail']) == "selesai") ? '<span class="label label-success">'.$row['status_detail'].'</span>' : '<span class="label label-primary">'.$row['status_detail'].'</span>';
+				$dataRow[] = '<button onclick="getEditDetail('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Detail Proyek"><i class="fa fa-pencil"></i></button>';
+
+				$dataDetail[] = $dataRow;
+			}
+
+			$dataSkk = array();
+			foreach($this->ProyekModel->getSkkById($id) as $row){
+				$dataRow = array();
+				$dataRow['id'] = $row['id'];
+				$dataRow['id_skk'] = $row['id_skk'];
+				$dataRow['nama'] = $row['nama'];
+
+				$dataSkk[] = $dataRow;
+			}
+
 			$dataArus = array();
 
 			$data = array(
 				'token_view' => $this->token['view'],
 				'data_proyek' => $dataProyek,
+				'data_detail' => $dataDetail,
+				'data_skk' => $dataSkk,
 				'data_arus' => $dataArus,
 			);
 
@@ -555,13 +574,13 @@
 		/**
 		*
 		*/
-		public function get_skc(){
+		public function get_skk(){
 			$this->model('Sub_kas_kecilModel');
 
-			$data_skc = $this->Sub_kas_kecilModel->getAll();
+			$data_skk = $this->Sub_kas_kecilModel->getAll();
 			$data = array();
 
-			foreach($data_skc as $row){
+			foreach($data_skk as $row){
 				$dataRow = array();
 				$dataRow['id'] = $row['id'];
 				$dataRow['text'] = $row['id'].' - '.$row['nama'];
