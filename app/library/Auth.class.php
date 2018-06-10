@@ -112,7 +112,7 @@
 		    $codeAlphabet.= "0123456789";
 		    $max = strlen($codeAlphabet); // edited
 
-		    for ($i=0; $i < 15; $i++) {
+		    for ($i=0; $i < 25; $i++) {
 		        $token .= $codeAlphabet[$this->crypto_rand_secure(0, $max-1)];
 		    }
 
