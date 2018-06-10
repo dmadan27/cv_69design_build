@@ -54,7 +54,13 @@
 		* 
 		*/
 		public function getAll(){
+			$query = "SELECT * FROM proyek";
 
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute();
+			$result = $statement->fetchAll();
+
+			return $result;
 		}
 
 		/**

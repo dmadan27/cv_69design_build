@@ -6,12 +6,12 @@ $(document).ready(function () {
 		
 	$('#id').prop('disabled', true);
     //Initialize Select2 Elements
-  //   $('#id_proyek').select2({
-  //   	placeholder: "Pilih Proyek",
-		// allowClear: true
-  //   });
+    $('#id_proyek').select2({
+    	placeholder: "Pilih Proyek",
+		allowClear: true
+    });
 
-    // setSkc();
+    setNamaProyek();
 
  	//Date picker
     $('.datepicker').datepicker({
@@ -24,13 +24,19 @@ $(document).ready(function () {
 
     // input mask
 
+    //Flat red color scheme for iCheck
+    $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+      checkboxClass: 'icheckbox_flat-green',
+      radioClass   : 'iradio_flat-green'
+    });
+
  	
-    // tambah detail
-    // $('#tambah_detail').on('click', function(){
-    // 	console.log(listDetail);
-    // 	resetModal();
-    // 	$('#modalDetail').modal();
-    // });
+	//tambah detail
+    $('#btn_tambahDetail').on('click', function(){
+    	// console.log(listDetail);
+    	// resetModal();
+    	$('#modalDetailOperasionalKaskecil').modal();
+    });
 
     // tambah skc
 	// $('#tambah_skc').on('click', function(){
@@ -164,6 +170,26 @@ $(document).ready(function () {
 	 //            console.log(jqXHR, textStatus, errorThrown);
 	 //        }
 		// })
+	}
+
+	function setNamaProyek(){
+		$.ajax({
+		url: BASE_URL+'operasional-proyek/get-nama-proyek',
+		dataType: 'json',
+		beforeSend: function(){},
+		success: function(data){
+			console.log(data);
+			$.each(data, function(index, item){
+				var newOption = new Option(item.text, item.id);
+				$('#id_proyek').append(newOption).trigger('change');
+			});
+			$('#id_proyek').val(null).trigger('change');
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+            console.log(jqXHR, textStatus, errorThrown);
+            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+        }
+	})		
 	}
 
 	/**
@@ -619,11 +645,12 @@ function resetForm(){
 *
 */
 function resetModal(){
-	// $('#form_detail').trigger('reset');
+	$('#form_detail').trigger('reset');
+	$('modalDetailOperasionalKaskecil').trigger('reset');
 
-	// // hapus semua pesan
-	// $('#form_detail .pesan').text('');
+	// hapus semua pesan
+	$('#form_detail .pesan').text('');
 
-	// // hapus semua feedback
-	// $('#form_detail .form-group').removeClass('has-success').removeClass('has-error');
+	// hapus semua feedback
+	$('#form_detail .form-group').removeClass('has-success').removeClass('has-error');
 }
