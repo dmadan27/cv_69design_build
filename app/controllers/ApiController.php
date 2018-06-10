@@ -20,54 +20,34 @@
 		/**
 		*
 		*/
-		public function index(){
-			$this->pengajuan();
-		}
-
-		/**
-		*
-		*/
-		public function pengajuan(){
-			$page = (isset($_POST['page']) && !empty($_POST['page'])) ? $_POST['page'] : 1;
-
-			$this->model('Pengajuan_sub_kas_kecilModel');
-
-			$dataPengajuan = $this->Pengajuan_sub_kas_kecilModel->getAll_mobile($page);
-			$totalData = $this->Pengajuan_sub_kas_kecilModel->get_recordTotal_mobile();
-			$totalPage = ceil($totalData/10);
-
-			$next = ($page < $totalPage) ? ($page + 1) : null;
-
-			$output = array(
-				'list_pengajuan' => $dataPengajuan,
-				'next' => $next,
+		public function index() {
+			echo json_encode(array(
 				'status' => $this->status,
-				// 'page' => $page,
-				// 'totalData' => $totalData,
-				// 'totalPage' => $totalPage,
-			);
-
-			echo json_encode($output);
+			));
 		}
 
 		/**
 		*
 		*/
-		public function generate_id_pengajuan($id_pengajuan) {
+		public function pengajuan() {
 			$this->model('Pengajuan_sub_kas_kecilModel');
 
-			$data = !empty($this->Pengajuan_sub_kas_kecilModel->getLastID($id_pengajuan)['id']) ? $this->Pengajuan_sub_kas_kecilModel->getLastID($id_pengajuan)['id'] : false;
+			$output = array();
+			$output['status'] = $this->status;
 
-			if(!$data) $id = $id_pengajuan.'0001';
-			else{
-				// $data = implode('', $data);
-				$kode = $id_pengajuan;
-				$noUrut = (int)substr($data, 21, 4);
-				$noUrut++;
+			if ($this->status) {
+				$page = (isset($_POST['page']) && !empty($_POST['page'])) ? $_POST['page'] : 1;
 
-				$id = $kode.sprintf("%04s", $noUrut);
+				$dataPengajuan = $this->Pengajuan_sub_kas_kecilModel->getAll_mobile($page);
+				$totalData = $this->Pengajuan_sub_kas_kecilModel->get_recordTotal_mobile();
+				$totalPage = ceil($totalData/10);
+
+				$next = ($page < $totalPage) ? ($page + 1) : null;
+
+				$output['list_pengajuan'] = $dataPengajuan;
+				$output['next'] = $next;
 			}
-			return $id;
+			echo json_encode($output);
 		}
 
 		/**
@@ -76,51 +56,49 @@
 		public function add_pengajuan(){
 			$this->model('Sub_kas_kecilModel');
 			$this->model('Pengajuan_sub_kas_kecilModel');
-			$id_pengajuan = $_POST['id_pengajuan'];
-			$id_skc = $_POST['id'];
 
-			echo json_encode(array(
-				// generate id pengajuan
-				'id_pengajuan' => $this->generate_id_pengajuan($id_pengajuan),
-				// get saldo
-				'saldo' => $this->Sub_kas_kecilModel->getSaldoById($id_skc)['saldo'],
+			$output = array();
+			$output['status'] = $this->status;
 
-				'status' => true
-			));
+			$id_pengajuan = ((isset($_POST['id_pengajuan'])) && !empty($_POST['id_pengajuan'])) ? $_POST['id_pengajuan'] : false;
+			$id_skk = ((isset($_POST['id'])) && !empty($_POST['id'])) ? $_POST['id'] : false;
+
+			if ($this->status && ($id_pengajuan != false) && ($id_skk != false)) {
+
+				$output['id_pengajuan'] = $this->generate_id_pengajuan($id_pengajuan);
+				$output['saldo'] = $this->Sub_kas_kecilModel->getSaldoById($id_skk)['saldo'];
+			} else {
+				$output['status'] = false;
+			}
+			echo json_encode($output);
 		}
 
 		/**
 		*
 		*/
 		public function action_add_pengajuan(){
-			$output = array(
-		    	'status' => false,
-    			'error' => ''
-		  	);
+			$this->model('Pengajuan_sub_kas_kecilModel');
 
-	    	if ($this->status) {
-	      		$this->model('Pengajuan_sub_kas_kecilModel');
+			$output = array();
+			$output['status'] = $this->status;
 
-       	 		$pengajuan = json_decode($_POST["pengajuan"]);
-  				$detail_pengajuan = json_decode($_POST["detail_pengajuan"]);
+			$pengajuan = ((isset($_POST["pengajuan"])) && !empty($_POST["pengajuan"])) ? $_POST["pengajuan"] : false;
+			$detail_pengajuan = ((isset($_POST["detail_pengajuan"])) && !empty($_POST["detail_pengajuan"])) ? $_POST["detail_pengajuan"] : false;
 
-	  			$data = array(
-	  				'pengajuan' => $pengajuan,
-	  				'detail_pengajuan' => $detail_pengajuan
-	  			);
+    	if ($this->status && ($pengajuan != false) && ($detail_pengajuan != false)) {
+				$pengajuan = json_decode($pengajuan);
+				$detail_pengajuan = json_decode($detail_pengajuan);
 
-  				$query_sukses = $this->Pengajuan_sub_kas_kecilModel->insert($data);
+				$resultQuery = $this->Pengajuan_sub_kas_kecilModel->insert($data);
 
-  				if ($query_sukses) {
-  					$output['status'] = true;
-  				} else {
-		    		$output = array(
-		      			'status' => false,
-  						'error' => $query_sukses,
-		    		);
-  				}
-	    	}
-
+				if ($resultQuery === true) {
+					$output['status'] = true;
+				} else {
+					$output['error'] = $resultQuery;
+				}
+			} else {
+				$output['status'] = false;
+			}
 			echo json_encode($output);
 		}
 
@@ -128,22 +106,26 @@
 		*
 		*/
 		public function detail_pengajuan(){
-			$id_pengajuan = $_POST["id_pengajuan"];
-
 			$this->model('Pengajuan_sub_kas_kecilModel');
-			$dataDetail = $this->Pengajuan_sub_kas_kecilModel->getById_mobile(strtoupper($id_pengajuan));
 
-			$output = array(
-				'detail_pengajuan' => $dataDetail,
-				'status' => $this->status,
-			);
+			$output = array();
+			$output['status'] = $this->status;
 
-			echo json_encode($output);
+			$id_pengajuan = ((isset($_POST['id_pengajuan'])) && !empty($_POST['id_pengajuan'])) ? $_POST['id_pengajuan'] : false;
+
+			if ($this->status && ($id_pengajuan != false)) {
+				$dataDetail = $this->Pengajuan_sub_kas_kecilModel->getById_mobile(strtoupper($id_pengajuan));
+
+				$output['detail_pengajuan'] = $dataDetail;
+			} else {
+				$output['status'] = false;
+			}
 
 			// $temp = 0;
 			// for($i=1; $i<1000000; $i++){
 			// 	$temp += $i;
 			// }
+			echo json_encode($output);
 		}
 
 		/**
@@ -157,25 +139,23 @@
 		*
 		*/
 		public function proyek(){
-			$page = (isset($_POST['page']) && !empty($_POST['page'])) ? $_POST['page'] : 1;
-
 			$this->model('ProyekModel');
 
-			$dataProyek = $this->ProyekModel->getAll_mobile($page);
-			$totalData = $this->ProyekModel->get_recordTotal_mobile();
-			$totalPage = ceil($totalData/10);
+			$output = array();
+			$output['status'] = $this->status;
 
-			$next = ($page < $totalPage) ? ($page + 1) : null;
+			if ($this->status) {
+				$page = (isset($_POST['page']) && !empty($_POST['page'])) ? $_POST['page'] : 1;
 
-			$output = array(
-				'list_proyek' => $dataProyek,
-				'next' => $next,
-				'status' => $this->status,
-				// 'page' => $page,
-				// 'totalData' => $totalData,
-				// 'totalPage' => $totalPage,
-			);
+				$dataProyek = $this->ProyekModel->getAll_mobile($page);
+				$totalData = $this->ProyekModel->get_recordTotal_mobile();
+				$totalPage = ceil($totalData/10);
 
+				$next = ($page < $totalPage) ? ($page + 1) : null;
+
+				$output['list_proyek'] = $dataProyek;
+				$output['next'] = $this->status;
+			}
 			echo json_encode($output);
 		}
 
@@ -190,27 +170,46 @@
 		*
 		*/
 		public function mutasi(){
-			$page = (isset($_POST['page']) && !empty($_POST['page'])) ? $_POST['page'] : 1;
-
 			$this->model('Mutasi_saldo_sub_kas_kecilModel');
 
-			$dataMutasi = $this->Mutasi_saldo_sub_kas_kecilModel->getAll_mobile($page);
-			$totalData = $this->Mutasi_saldo_sub_kas_kecilModel->get_recordTotal_mobile();
-			$totalPage = ceil($totalData/10);
+			$output = array();
+			$output['status'] = $this->status;
 
-			$next = ($page < $totalPage) ? ($page + 1) : null;
+			if ($this->status) {
+				$page = (isset($_POST['page']) && !empty($_POST['page'])) ? $_POST['page'] : 1;
 
-			$output = array(
-				'list_mutasi' => $dataMutasi,
-				'next' => $next,
-				'status' => $this->status,
-				// 'page' => $page,
-				// 'totalData' => $totalData,
-				// 'totalPage' => $totalPage,
-			);
+				$dataMutasi = $this->Mutasi_saldo_sub_kas_kecilModel->getAll_mobile($page);
+				$totalData = $this->Mutasi_saldo_sub_kas_kecilModel->get_recordTotal_mobile();
+				$totalPage = ceil($totalData/10);
 
+				$next = ($page < $totalPage) ? ($page + 1) : null;
+
+				$output['list_mutasi'] = $dataMutasi;
+				$output['next'] = $next;
+			}
 			echo json_encode($output);
 		}
+
+		/**
+		*
+		*/
+		private function generate_id_pengajuan($id_pengajuan) {
+			$this->model('Pengajuan_sub_kas_kecilModel');
+
+			$data = !empty($this->Pengajuan_sub_kas_kecilModel->getLastID($id_pengajuan)['id']) ? $this->Pengajuan_sub_kas_kecilModel->getLastID($id_pengajuan)['id'] : false;
+
+			if (!$data) {
+				$id = $id_pengajuan.'0001';
+			} else {
+				$kode = $id_pengajuan;
+				$noUrut = (int)substr($data, 21, 4);
+				$noUrut++;
+
+				$id = $kode.sprintf("%04s", $noUrut);
+			}
+			return $id;
+		}
+
 
 		/**
 		*
