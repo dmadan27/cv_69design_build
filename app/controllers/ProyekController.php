@@ -20,6 +20,16 @@
 		}
 
 		/**
+		*
+		*/
+		private function setToken($fitur){
+			$this->token = md5($this->auth->getToken());
+			$_SESSION['token']['proyek'][$fitur] = password_hash($this->token, PASSWORD_BCRYPT);
+
+			return $this->token;
+		}
+
+		/**
 		* 
 		*/
 		public function index(){
@@ -46,22 +56,7 @@
 				'js' => $js,
 			);
 
-			// set token
-			$_SESSION['token_proyek'] = array(
-				'list' => md5($this->auth->getToken()),
-				'add' => md5($this->auth->getToken()),
-			);
-
-			$this->token = array(
-				'list' => password_hash($_SESSION['token_proyek']['list'], PASSWORD_BCRYPT),
-				'add' => password_hash($_SESSION['token_proyek']['add'], PASSWORD_BCRYPT),	
-			);
-
-			$data = array(
-				'token_list' => $this->token['list'],
-				'token_add' => $this->token['add'],
-			);
-
+			$data = array('token' => $this->setToken('list'));
 			$this->layout('proyek/list', $config, $data);
 		}
 
@@ -70,8 +65,8 @@
 		*/
 		public function get_list(){
 			// cek token
-			$token = isset($_POST['token_list']) ? $_POST['token_list'] : false;
-			$this->auth->cekToken($_SESSION['token_proyek']['list'], $token, 'proyek');
+			$token = isset($_POST['token']) ? $_POST['token'] : false;
+			$this->auth->cekToken($token, $_SESSION['token']['proyek']['list'], 'proyek');
 			
 			// config datatable
 			$config_dataTable = array(
@@ -84,16 +79,7 @@
 
 			$dataProyek = $this->ProyekModel->getAllDataTable($config_dataTable);
 
-			// set token
-			$_SESSION['token_proyek']['view'] = md5($this->auth->getToken());
-			$_SESSION['token_proyek']['edit'] = md5($this->auth->getToken());
-			$_SESSION['token_proyek']['delete'] = md5($this->auth->getToken());
-			
-			$this->token = array(
-				'view' => password_hash($_SESSION['token_proyek']['view'], PASSWORD_BCRYPT),
-				'edit' => password_hash($_SESSION['token_proyek']['edit'], PASSWORD_BCRYPT),
-				'delete' => password_hash($_SESSION['token_proyek']['delete'], PASSWORD_BCRYPT),	
-			);
+			$sess_token = $_SESSION['token']['proyek']['list'];
 
 			$data = array();
 			$no_urut = $_POST['start'];
@@ -103,9 +89,9 @@
 				$status = (strtolower($row['status']) == "selesai") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-primary">'.$row['status'].'</span>';
 
 				// button aksi
-				$aksiDetail = '<button onclick="getView('."'".strtolower($row["id"])."'".', '."'".$this->token["view"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-				$aksiEdit = '<button onclick="getEdit('."'".strtolower($row["id"])."'".', '."'".$this->token["edit"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-				$aksiHapus = '<button onclick="getDelete('."'".strtolower($row["id"])."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+				$aksiDetail = '<button onclick="getView('."'".strtolower($row["id"])."'".', '."'".$sess_token."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+				$aksiEdit = '<button onclick="getEdit('."'".strtolower($row["id"])."'".', '."'".$sess_token."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+				$aksiHapus = '<button onclick="getDelete('."'".strtolower($row["id"])."'".', '."'".$sess_token."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 				
 				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
 				
@@ -165,14 +151,8 @@
 				'js' => $js,
 			);
 
-			$_SESSION['token_proyek'] = array(
-				'add' => md5($this->auth->getToken()),
-			);
-			$this->token = array(
-				'add' => password_hash($_SESSION['token_proyek']['add'], PASSWORD_BCRYPT),	
-			);
 			$data = array(
-				'token_form' => $this->token['add'],
+				'token' => $this->setToken('add'),
 				'action' => 'action-add',
 				'id' => '',
 				'pemilik' => '',
@@ -200,7 +180,7 @@
 			$dataDetail = isset($_POST['dataDetail']) ? json_decode($_POST['dataDetail'], true) : false;
 			$dataSkk = isset($_POST['dataSkk']) ? json_decode($_POST['dataSkk'], true) : false;
 
-			$this->auth->cekToken($_SESSION['token_proyek']['add'], $data['token'], 'proyek');
+			$this->auth->cekToken($data['token'], $_SESSION['token']['proyek']['add'], 'proyek');
 			
 			$status = false;
 			$error = "";
@@ -309,15 +289,8 @@
 				'js' => $js,
 			);
 
-			$_SESSION['token_proyek'] = array(
-				'edit' => md5($this->auth->getToken()),
-			);
-			$this->token = array(
-				'edit' => password_hash($_SESSION['token_proyek']['edit'], PASSWORD_BCRYPT),
-			);
-
 			$data = array(
-				'token_form' => $this->token['edit'],
+				'token' => $this->setToken('edit'),
 				'action' => 'action-edit',
 				'id' => $dataProyek['id'],
 				'pemilik' => $dataProyek['pemilik'],
@@ -343,8 +316,8 @@
 			$id = strtoupper($id);
 			if(empty($id) || $id == "") $this->redirect(BASE_URL."proyek/");
 
-			$token = isset($_POST['token_edit']) ? $_POST['token_edit'] : false;
-			$this->auth->cekToken($_SESSION['token_proyek']['edit'], $token, 'proyek');
+			$token = isset($_POST['token']) ? $_POST['token'] : false;
+			$this->auth->cekToken($token, $_SESSION['token']['proyek']['edit'], 'proyek');
 
 			// get data detail dan skk
 			$dataDetail = $this->ProyekModel->getDetailById($id);
@@ -367,7 +340,7 @@
 			$dataDetail = isset($_POST['dataDetail']) ? json_decode($_POST['dataDetail'], true) : false;
 			$dataSkk = isset($_POST['dataSkk']) ? json_decode($_POST['dataSkk'], true) : false;
 
-			$this->auth->cekToken($_SESSION['token_proyek']['edit'], $data['token'], 'proyek');
+			$this->auth->cekToken($data['token'], $_SESSION['token']['proyek']['edit'], 'proyek');
 			
 			$status = false;
 			$error = "";
@@ -522,7 +495,7 @@
 			$dataSkk = array();
 			foreach($this->ProyekModel->getSkkById($id) as $row){
 				$dataRow = array();
-				$dataRow['id'] = $row['id'];
+				// $dataRow['id'] = $row['id'];
 				$dataRow['id_skk'] = $row['id_skk'];
 				$dataRow['nama'] = $row['nama'];
 
@@ -554,18 +527,18 @@
 		*/
 		public function get_last_id(){
 			$token = isset($_POST['token']) ? $_POST['token'] : false;
-			$this->auth->cekToken($_SESSION['token_proyek']['add'], $token, 'proyek');
+			$this->auth->cekToken($token, $_SESSION['token']['proyek']['add'], 'proyek');
 
 			$data = !empty($this->ProyekModel->getLastID()['id']) ? $this->ProyekModel->getLastID()['id'] : false;
 
-			if(!$data) $id = 'PRY001';
+			if(!$data) $id = 'PRY0001';
 			else{
 				// $data = implode('', $data);
 				$kode = 'PRY';
-				$noUrut = (int)substr($data, 3, 3);
+				$noUrut = (int)substr($data, 3, 4);
 				$noUrut++;
 
-				$id = $kode.sprintf("%03s", $noUrut);
+				$id = $kode.sprintf("%04s", $noUrut);
 			}
 
 			echo $id;

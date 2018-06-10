@@ -120,29 +120,33 @@
 																<table class="table table-hover">
 																	<thead>
 																		<tr>
-																			<th>No</th>
+																			<th class="text-right">No</th>
 																			<th>Angsuran</th>
-																			<th>Persentase</th>
-																			<th>Total</th>
+																			<th class="text-right">Persentase</th>
+																			<th class="text-right">Total</th>
 																			<th>Status</th>
 																			<th>Aksi</th>
 																		</tr>
-																		<tbody>
-																			<?php
-																				foreach($detail as $row){
-																					echo "<tr>";
-																					echo "<td>No</td>";
-																					foreach($row as $value){
-																						echo "<td>".$value."</td>";
-																					}
-																					echo "</tr>";
-																				}
-																			?>
-																		</tbody>
 																	</thead>
+																	<tbody>
+																		<?php
+																			$no = 1;
+																			foreach($detail as $row){
+																				echo "<tr>";
+																				echo "<td class='text-right'>".$no++."</td>";
+																				$tempNo = 0;
+																				foreach($row as $value){
+																					if($tempNo == 1 || $tempNo == 2 ) echo "<td class='text-right'>".$value."</td>";
+																					else echo "<td>".$value."</td>";
+
+																					$tempNo++;
+																				}
+																				echo "</tr>";
+																			}
+																		?>
+																	</tbody>
 																</table>
-															</fieldset>
-																
+															</fieldset>	
 														</div>
 													</div>
 													<!-- data logistik -->
@@ -151,119 +155,100 @@
 															<fieldset>
 																<legend style="font-size: 18px;">Data Logistik Proyek</legend>
 																<table class="table table-hover">
-																
+																	<thead>
+																		<tr>
+																			<th>No</th>
+																			<th>ID Sub Kas Kecil</th>
+																			<th>Nama</th>
+																		</tr>
+																	</thead>
+																	<tbody>
+																		<?php
+																			$no = 1;
+																			foreach($skk as $row){
+																				echo "<tr>";
+																				echo "<td>".$no++."</td>";
+																				foreach($row as $value){
+																					echo "<td>".$value."</td>";
+																				}
+																				echo "</tr>";
+																			}
+																		?>
+																	</tbody>
 																</table>
 															</fieldset>
 																
 														</div>
-													</div>
-														
+													</div>	
 												</div>
 											</div>
-											<hr>
-											<div class="row">
-												<div class="col-md-12">
-													<table class="table table-hover">
-														<tr>
-															<td></td>
-														</tr>
-													</table>
-												</div>
-											</div>		
 										</div>
 
 										<!-- Tab 2 -->
 										<div class="tab-pane" id="tab_2">
-											<div class="box-group" id="accordion">
-												<!-- Arus Terment Project -->
-												<div class="panel box box-default">
-													<div class="box-header with-border">
-														<div class="box-title">
-															<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-				                        						Arus Terment Project
-				                      						</a>
-														</div>
-													</div>
-													<div id="collapseOne" class="panel-collapse collapse in">
-														<div class="box-body">
-															<div class="row">
-																<div class="col-md-12">
-																	<table class="table table-hover">
-																		<tr>
-																			<td><strong>Total Pelaksanaan Utama</strong></td>
-																			<td></td>
-																		</tr>
-																		<tr>
-																			<td>Nilai RAB Kontrak</td>
-																			<td class="text-right"><?= $proyek['total'] ?></td>
-																		</tr>
-																		<tr>
-																			<td>CCO</td>
-																			<td class="text-right"><?= $proyek['cco'] ?></td>
-																		</tr>
-																		<tr>
-																			<td><strong>Nilai Terment diterima</strong></td>
-																			<td></td>
-																		</tr>
-																		<tr>
-																			<td><strong>Sisa Terment Project</strong></td>
-																			<td></td>
-																		</tr>
-																	</table>
-																</div>
-															</div>
-														</div>
-													</div>
+											<div class="row">
+												<!-- arus terment project -->
+												<div class="col-md-6 col-xs-12">
+													<fieldset>
+														<legend style="font-size: 18px;">Arus Terment Project</legend>
+														<table class="table table-hover">
+															<tr>
+																<td><strong>Total Pelaksanaan Utama</strong></td>
+																<td></td>
+															</tr>
+															<tr>
+																<td>Nilai RAB Kontrak</td>
+																<td class="text-right"><?= $proyek['total'] ?></td>
+															</tr>
+															<tr>
+																<td>CCO</td>
+																<td class="text-right"><?= $proyek['cco'] ?></td>
+															</tr>
+															<tr>
+																<td><strong>Nilai Terment diterima</strong></td>
+																<td></td>
+															</tr>
+															<tr>
+																<td><strong>Sisa Terment Project</strong></td>
+																<td></td>
+															</tr>
+														</table>
+													</fieldset>
 												</div>
-											</div>
-											<!-- Arus Kas Pelaksanaan Project -->
-											<div class="box-group" id="accordion_2">
-												<div class="panel box box-default">
-													<div class="box-header with-border">
-														<h4 class="box-title">
-															<a data-toggle="collapse" data-parent="#accordion_2" href="#collapseTwo">
-				                        						Arus Kas Pelaksanaan Project
-				                      						</a>
-														</h4>
-													</div>
-													<div id="collapseTwo" class="panel-collapse collapse">
-														<div class="box-body">
-															<div class="row">
-																<div class="col-md-12">
-																	<table class="table table-hover">
-																		<tr>
-																			<td><strong>Nilai Terment Masuk</strong></td>
-																			<td></td>
-																		</tr>
-																		<tr>
-																			<td><strong>Total Pelaksanaan Project</strong></td>
-																			<td></td>
-																		</tr>
-																		<tr>
-																			<td>Keluaran Tunai</td>
-																			<td></td>
-																		</tr>
-																		<tr>
-																			<td>Keluaran Kredit</td>
-																			<td></td>
-																		</tr>
-																		<tr>
-																			<td><strong>Saldo Kas Pelaksanaan</strong></td>
-																			<td></td>
-																		</tr>
-																		<tr>
-																			<td><strong>Selisih Terment Masuk - Keluran Tunai</strong></td>
-																			<td></td>
-																		</tr>
-																	</table>
-																</div>
-															</div>
-														</div>
-													</div>
-												</div>	
-											</div>
-											
-													
+
+												<!-- arus kas pelaksanaan project -->
+												<div class="col-md-6 col-xs-12">
+													<fieldset>
+														<legend style="font-size: 18px;">Arus Kas Pelaksanaan Project</legend>
+														<table class="table table-hover">
+															<tr>
+																<td><strong>Nilai Terment Masuk</strong></td>
+																<td></td>
+															</tr>
+															<tr>
+																<td><strong>Total Pelaksanaan Project</strong></td>
+																<td></td>
+															</tr>
+															<tr>
+																<td>Keluaran Tunai</td>
+																<td></td>
+															</tr>
+															<tr>
+																<td>Keluaran Kredit</td>
+																<td></td>
+															</tr>
+															<tr>
+																<td><strong>Saldo Kas Pelaksanaan</strong></td>
+																<td></td>
+															</tr>
+															<tr>
+																<td><strong>Selisih Terment Masuk - Keluran Tunai</strong></td>
+																<td></td>
+															</tr>
+														</table>
+													</fieldset>
+												</div>
+											</div>	
 										</div>
 
 										<!-- Tab 3 -->
@@ -285,9 +270,9 @@
 																<th class="text-right">No</th>
 																<th>ID Pengajuan / Operasional</th>
 																<th>ID Sub Kas Kecil</th>
-																<th>Nama</th>
 																<th>Tanggal</th>
 																<th class="text-right">Total</th>
+																<th>Aksi</th>
 															</tr>
 														</thead>
 														<tbody>

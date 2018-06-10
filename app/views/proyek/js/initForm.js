@@ -380,7 +380,7 @@ function getDataForm(){
 		status: $('#status').val().trim(),
 	}
 
-	data.append('token', $('#token_form').val().trim());
+	data.append('token', $('#token').val().trim());
 	data.append('id', $('#id').val().trim());
 	data.append('dataProyek', JSON.stringify(dataProyek));
 	data.append('dataDetail', JSON.stringify(listDetail));
@@ -436,7 +436,7 @@ function getEdit(id){
 		url: BASE_URL+'proyek/get-edit/'+id.toLowerCase(),
 		type: 'post',
 		dataType: 'json',
-		data: {'token_edit': $('#token_form').val().trim()},
+		data: {'token': $('#token').val().trim()},
 		beforeSend: function(){},
 		success: function(output){
 			console.log(output);
@@ -590,7 +590,7 @@ function generateID(){
 	$.ajax({
 		url: BASE_URL+'proyek/get-last-id/',
 		type: 'post',
-		data: {token: $('#token_form').val().trim()},
+		data: {token: $('#token').val().trim()},
 		beforeSend: function(){},
 		success: function(output){
 			$('#id').val(output);	

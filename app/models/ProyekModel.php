@@ -191,7 +191,7 @@
 			$statment->execute(
 				array(
 					':id_proyek' => $data['id_proyek'],
-					':id_sub_kas_kecil' => $data['id_skc'],
+					':id_sub_kas_kecil' => $data['id_skk'],
 				)
 			);
 			$statment->closeCursor();
@@ -237,8 +237,8 @@
 		*
 		*/
 		private function updateProyek($data){
-			$query = "INSERT INTO proyek (id, pemilik, tgl, pembangunan, luas_area, alamat, kota, estimasi, total, dp, cco, status) ";
-			$query .= "VALUES (:id, :pemilik, :tgl, :pembangunan, :luas_area, :alamat, :kota, :estimasi, :total, :dp, :cco, :status);";
+			$query = "UPDATE proyek SET id = :id, pemilik = :pemilik, tgl = :tgl, pembangunan = :pembangunan, luas_area = :luas_area, ";
+			$query .= "alamat = :alamat, kota = :kota, estimasi = :estimasi, total = :total, dp = :dp, cco = :cco, status = :status;";
 			$statment = $this->koneksi->prepare($query);
 			$statment->execute(
 				array(
@@ -263,8 +263,7 @@
 		*
 		*/
 		private function updateDetail($data){
-			$query = 'INSERT INTO detail_proyek (id_proyek, angsuran, persentase, total, status) ';
-			$query .= 'VALUES (:id_proyek, :angsuran, :persentase, :total, :status);';
+			$query = 'UPDATE detail_proyek SET angsuran = :angsuran, persentase = :persentase, total = :total, status = :status WHERE id = :id;';
 			$statment = $this->koneksi->prepare($query);
 			$statment->execute(
 				array(
@@ -282,12 +281,12 @@
 		*
 		*/
 		private function updateSkk($data){
-			$query = 'INSERT INTO logistik_proyek (id_proyek, id_sub_kas_kecil) VALUES (:id_proyek, :id_sub_kas_kecil);';
+			$query = 'UPDATE logistik_proyek SET id_sub_kas_kecil = :id_sub_kas_kecil;';
 			$statment = $this->koneksi->prepare($query);
 			$statment->execute(
 				array(
 					':id_proyek' => $data['id_proyek'],
-					':id_sub_kas_kecil' => $data['id_skc'],
+					':id_sub_kas_kecil' => $data['id_skk'],
 				)
 			);
 			$statment->closeCursor();
@@ -298,12 +297,10 @@
 		*/
 		public function delete($id){
 			try{
-				$query = 'CALL hapus_proyek (:id)';
+				$query = 'CALL hapus_proyek (:id);';
 				$statment = $this->koneksi->prepare($query);
 				$statment->execute(
-					array(
-						':id' => $id,
-					)
+					array(':id' => $id)
 				);
 				$statment->closeCursor();
 

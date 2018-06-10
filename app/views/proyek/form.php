@@ -17,7 +17,7 @@
     </section>
     <section class="content container-fluid">
   		<form id="form_proyek" role="form">
-  			<input type="hidden" id="token_form" value="<?= $this->data['token_form']?>">
+  			<input type="hidden" id="token" value="<?= $this->data['token']?>">
   	
   			<!-- panel tambah data proyek -->
   			<div class="row">
@@ -278,6 +278,4 @@
 
 	var listSkk = [];
 	var indexSkk = 0;
-
-	var valStatus = "<?php print $this->data['status']; ?>";
 </script>
