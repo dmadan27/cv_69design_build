@@ -86,8 +86,11 @@
 			$detail_pengajuan = ((isset($_POST["detail_pengajuan"])) && !empty($_POST["detail_pengajuan"])) ? $_POST["detail_pengajuan"] : false;
 
     	if ($this->status && ($pengajuan != false) && ($detail_pengajuan != false)) {
-				$pengajuan = json_decode($pengajuan);
-				$detail_pengajuan = json_decode($detail_pengajuan);
+
+				$data = array(
+					'pengajuan' => json_decode($pengajuan),
+					'detail_pengajuan' => json_decode($detail_pengajuan)
+				);
 
 				$resultQuery = $this->Pengajuan_sub_kas_kecilModel->insert($data);
 
@@ -154,7 +157,7 @@
 				$next = ($page < $totalPage) ? ($page + 1) : null;
 
 				$output['list_proyek'] = $dataProyek;
-				$output['next'] = $this->status;
+				$output['next'] = $next;
 			}
 			echo json_encode($output);
 		}
