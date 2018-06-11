@@ -120,6 +120,7 @@ class Operasional_ProyekModel extends Database implements ModelInterface{
 			return $result;
 		}
 
+	
 		/**
 		* 
 		*/

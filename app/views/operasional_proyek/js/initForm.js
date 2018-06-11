@@ -611,6 +611,30 @@ function setSkc(){
 /**
 *
 */
+function setStatusDetailOperasionalProyek(){
+		$.ajax({
+		url: BASE_URL+'operasional-proyek/get-status-detail-operasional-proyek',
+		dataType: 'json',
+		beforeSend: function(){},
+		success: function(data){
+			console.log(data);
+			$.each(data, function(index, item){
+				var newOption = new Option(item.text, item.id);
+				$('#status').append(newOption).trigger('change');
+			});
+			$('#status').val(null).trigger('change');
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+            console.log(jqXHR, textStatus, errorThrown);
+            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+        }
+	})	
+
+}
+
+/**
+*
+*/
 function generateID(){
 	$.ajax({
 		url: BASE_URL+'operasional-proyek/get-last-id/',

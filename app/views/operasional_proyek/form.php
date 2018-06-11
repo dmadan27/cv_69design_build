@@ -11,7 +11,7 @@
         </h1>
         <ol class="breadcrumb">
           <li><a href="<?= BASE_URL; ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-          <li><a href="<?= BASE_URL.'operasional-proyek/'; ?>">Proyek</a></li>
+          <li><a href="<?= BASE_URL.'operasional-proyek/'; ?>">Operasional Proyek</a></li>
           <li class="active">Form Data Operasional Proyek</li>
         </ol>
     </section>
@@ -75,7 +75,7 @@
                                         <div class="input-group" style="width: 100%">
                                          <div class="input-group">
                                                 <span class="input-group-addon">Rp.</span>
-                                                <input type="text" class="form-control field" id="sub_total_detail" name="subtotal" placeholder="Masukan Subtotal" >
+                                                <input type="text" class="form-control field" id="sub_total_detail" name="subtotal" placeholder="Masukan Total Pengajuan" >
                                                 <span class="input-group-addon">,00-</span>
                                           </div>
                                         </div>
@@ -180,6 +180,7 @@
                                             <div class="form-group field-jenis_detail has-feedback">
                                                 <label for="jenis_detail">Jenis</label>
                                                 <div class="form-group">
+                                                	<fieldset></fieldset>
                                                 	<input type="radio" class="form-control flat-red field" name="jenis" id="jenis_detail">
                                                 <input type="radio" class="form-control flat-red field" name="jenis" id="jenis_detail">
 
@@ -242,7 +243,11 @@
                                             <!-- Status -->
                                             <div class="form-group field-status_detail has-feedback">
                                                 <label for="status_detail">Status</label>
-                                                <select class="form-control select2" name="status" id="status_detail"></select>
+                                                <select class="form-control select2" name="status" id="status_detail">
+                                              	 <option value="TUNAI">TUNAI</option>
+                                                <option value="KREDIT">KREDIT</option>
+                                                </select>
+                                               
                                                 <span class="help-block small pesan pesan-status_detail"></span>
                                             </div>
 
@@ -273,6 +278,9 @@
                                             <div class="form-group field-status_lunas_detail has-feedback">
                                                 <label for="status_lunas_detail">Status Lunas</label>
                                                <select name="status_lunas" id="status_lunas_detail" class="form-control field">
+                                               	<option value="LUNAS">LUNAS</option>
+                                               	<option value="BELUM LUNAS">BELUM LUNAS</option>
+                                               	
                                                </select>
                                                 <span class="help-block small pesan pesan-status_lunas_detail"></span>
                                             </div>  

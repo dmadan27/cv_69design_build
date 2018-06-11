@@ -368,6 +368,8 @@ class Operasional_Proyek extends CrudAbstract{
 		}
 
 		echo json_encode($data);
-}	
+	}
+
+	
 
 }
