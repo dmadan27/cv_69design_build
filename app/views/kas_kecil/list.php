@@ -52,7 +52,7 @@
 									<!-- <th>Email</th>
 									<th>Foto</th> -->
 									<th>Saldo</th>
-									<!-- <th>Status</th> -->
+									<th>Status</th>
 									<th>Aksi</th>
 								</tr>
 							</thead>

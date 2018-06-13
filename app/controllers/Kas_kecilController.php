@@ -74,8 +74,8 @@ class Kas_kecil extends Crud_modalsAbstract{
 			// config datatable
 			$config_dataTable = array(
 				'tabel' => 'kas_kecil',
-				'kolomOrder' => array(null, 'id', 'nama', 'alamat', 'no_telp',  'saldo', null),
-				'kolomCari' => array('id','nama'),
+				'kolomOrder' => array(null, 'id', 'nama', 'alamat', 'no_telp',  'saldo', 'status',null),
+				'kolomCari' => array('id','nama', 'alamat', 'no_telp',  'saldo', 'status'),
 				'orderBy' => array('id' => 'asc'),
 				'kondisi' => false,
 			);
@@ -112,6 +112,7 @@ class Kas_kecil extends Crud_modalsAbstract{
 				$dataRow[] = $row['alamat'];
 				$dataRow[] = $row['no_telp'];
 				$dataRow[] = $row['saldo'];
+				$dataRow[] = $row['status'];
 				
 				$dataRow[] = $aksi;
 				$data[] = $dataRow;
