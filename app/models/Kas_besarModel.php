@@ -73,20 +73,45 @@
 		* 
 		*/
 		public function insert($data){
-			// try{
-			// 	$this->koneksi->beginTransaction();
+			try{
+				$this->koneksi->beginTransaction();
 
-			// 	$this->insertBank($data);
+				$this->insertKasBesar($data);
 
-			// 	$this->koneksi->commit();
+				$this->koneksi->commit();
 
-			// 	return true;
-			// }
-			// catch(PDOException $e){
-			// 	$this->koneksi->rollback();
-			// 	die($e->getMessage());
-			// 	// return false;
-			// }
+				return true;
+			}
+			catch(PDOException $e){
+				$this->koneksi->rollback();
+				die($e->getMessage());
+				// return false;
+			}	
+		}
+
+		/**
+		* 
+		*/
+		public function insertKasBesar($data){
+			$level = "KAS BESAR";
+			$query = "CALL tambah_kas_besar (:id, :nama, :alamat, :no_telp, :email, :foto, :saldo, :status, :password,:level);";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id' => $data['id'],
+					':nama' => $data['nama'],
+					':alamat' => $data['alamat'],
+					':no_telp' => $data['no_telp'],
+					':email' => $data['email'],
+					':foto' => $data['foto'],
+					':saldo' => $data['saldo'],
+					':status' => $data['status'],
+					':password' => $data['password'],
+					':level' => $level,
+				)
+			);
+			$statement->closeCursor();
 		}
 
 		/**
@@ -127,6 +152,34 @@
 			// 	die($e->getMessage());
 			// 	// return false;
 			// }
+		}
+
+		/**
+		*
+		*/
+		public function getLastID(){
+			$query = "SELECT MAX(id) id FROM kas_besar;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+
+		/**
+		*
+		*/
+		public function checkExistEmail($email){
+			$query = "SELECT COUNT(*) total FROM kas_besar WHERE email =:email";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':email', $email);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			if($result['total'] > 0) return false;
+			else return true;
 		}
 
 
