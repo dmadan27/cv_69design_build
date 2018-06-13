@@ -55,6 +55,82 @@
 
 		}
 
+				/**
+		* 
+		*/
+		public function getById($id){
+			$query = "SELECT * FROM kas_besar WHERE id = :id;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+
+		/**
+		* 
+		*/
+		public function insert($data){
+			// try{
+			// 	$this->koneksi->beginTransaction();
+
+			// 	$this->insertBank($data);
+
+			// 	$this->koneksi->commit();
+
+			// 	return true;
+			// }
+			// catch(PDOException $e){
+			// 	$this->koneksi->rollback();
+			// 	die($e->getMessage());
+			// 	// return false;
+			// }
+		}
+
+		/**
+		* 
+		*/
+		public function update($data){
+			// try{
+			// 	$this->koneksi->beginTransaction();
+
+			// 	$this->updateBank($data);
+
+			// 	$this->koneksi->commit();
+
+			// 	return true;
+			// }
+			// catch(PDOException $e){
+			// 	$this->koneksi->rollback();
+			// 	die($e->getMessage());
+			// 	// return false;
+			// }
+		}
+
+		/**
+		* 
+		*/
+		public function delete($id){
+			// try{
+			// 	$this->koneksi->beginTransaction();
+
+			// 	$this->deleteBank($id);
+
+			// 	$this->koneksi->commit();
+
+			// 	return true;
+			// }
+			// catch(PDOException $e){
+			// 	$this->koneksi->rollback();
+			// 	die($e->getMessage());
+			// 	// return false;
+			// }
+		}
+
+
+
 		/**
 		* 
 		*/
