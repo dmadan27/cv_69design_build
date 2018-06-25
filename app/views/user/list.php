@@ -48,9 +48,10 @@
 										<tr>
 											<th class="text-center" style="width: 35px">No</th>
 											<th class="text-center">Username</th>
-											<th class="text-center">Password</th>
+											<th class="text-center">Nama</th>
+											<th class="text-center">Status</th>
 											<th class="text-center">Level</th>
-											<th class="text-center">Aksi</th>
+											<!-- <th class="text-center">Aksi</th> -->
 										</tr>
 									</thead>
 									<tbody>
