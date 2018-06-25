@@ -83,17 +83,6 @@
                         <span class="help-block small pesan pesan-password_confirm"></span>
                       </div>
 
-                        <!-- saldo -->
-                      <div class="form-group field-saldo has-feedback">
-                        <label for="saldo">Saldo</label>
-                        <div class="input-group">
-                          <span class="input-group-addon">Rp</span>
-                          <input type="number" min="0" step="any" name="saldo" id="saldo" class="form-control field" placeholder="Masukan Saldo">
-                          <span class="input-group-addon">.00</span>
-                        </div>
-                        <span class="help-block small pesan pesan-saldo"></span>
-                      </div>
-
                        <!-- status -->
                       <div class="form-group field-status has-feedback">
                         <label for="status">Status</label>
