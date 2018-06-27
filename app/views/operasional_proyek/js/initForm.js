@@ -12,6 +12,7 @@ $(document).ready(function () {
     });
 
     setNamaProyek();
+    setNamaBank();
 
  	//Date picker
     $('.datepicker').datepicker({
@@ -37,19 +38,6 @@ $(document).ready(function () {
     	// resetModal();
     	$('#modalDetailOperasionalKaskecil').modal();
     });
-
-    // tambah skc
-	// $('#tambah_skc').on('click', function(){
-	// 	if($('#skc').val() != null) addSkc();
- //    	console.log(listSkc);
- //    });    
-
-    // $('#form_detail').submit(function(e){
-    // 	e.preventDefault();
-    // 	addDetail();
-
-    // 	return false;
-    // });
 
     // Submit Proyek
     $('#form_operasional_proyek').submit(function(e){
@@ -78,98 +66,102 @@ $(document).ready(function () {
 	*
 	*/
 	function addDetail(){
-		// var index = indexDetail++;
+		var index = indexDetail++;
 
-		// var persentase = parseFloat($('#persentase').val().trim()) ? parseFloat($('#persentase').val().trim()) : $('#persentase').val().trim();
-		// var total_detail = parseFloat($('#total_detail').val().trim()) ? parseFloat($('#total_detail').val().trim()) : $('#total_detail').val().trim();
+		var qty_detail = parseFloat($('#qty_detail').val().trim()) ? parseFloat($('#qty_detail').val().trim()) : $('#qty_detail').val().trim();
+		var harga_detail = parseFloat($('#harga_detail').val().trim()) ? parseFloat($('#harga_detail').val().trim()) : $('#harga_detail').val().trim();
+		var sub_total_detail = parseFloat($('#sub_total_detail').val().trim()) ? parseFloat($('#sub_total_detail').val().trim()) : $('#sub_total_detail').val().trim();
+		var harga_asli_detail = parseFloat($('#harga_asli_detail').val().trim()) ? parseFloat($('#harga_asli_detail').val().trim()) : $('#harga_asli_detail').val().trim();
+		var sisa_detail = parseFloat($('#sisa_detail').val().trim()) ? parseFloat($('#sisa_detail').val().trim()) : $('#sisa_detail').val().trim();
+		 
+		var data = {
+			index: index,
+			id: '',
+			id_operasional_proyek : $('#id_operasional_proyek').val().trim(),
+			nama : $('#nama_detail').val().trim(),
+			jenis : $('#jenis_detail').val().trim(),
+			satuan : $('#satuan_detail').val().trim(),
+			qty : qty_detail,
+			harga : harga_detail,
+			sub_total : sub_total_detail,
+			status :  $('#status').val().trim(),
+			aksi: 'tambah',
+			delete: false,
+		};
 
-		// var data = {
-		// 	index: index,
-		// 	id: '',
-		// 	id_proyek: $('#id').val().trim(),
-		// 	angsuran: $('#angsuran').val().trim(),
-		// 	persentase: persentase,
-		// 	total_detail: total_detail,
-		// 	status_detail: $('#status_detail').val().trim(),
-		// 	aksi: 'tambah',
-		// 	delete: false,
-		// };
+		validDetail(data);
 
-		// validDetail(data);
-
-		// console.log('Index : '+index);
-		// console.log('Index Utama: '+indexDetail);
+		console.log('Index : '+index);
+		console.log('Index Utama: '+indexDetail);
 	}
 
 	/**
 	*
 	*/
 	function validDetail(data){
-		// $.ajax({
-		// 	url: BASE_URL+'proyek/action-add-detail/',
-		// 	type: 'post',
-		// 	dataType: 'json',
-		// 	data: data,
-		// 	beforeSend: function(){
+		$.ajax({
+			url: BASE_URL+'operasional-proyek/action-add-detail/',
+			type: 'post',
+			dataType: 'json',
+			data: data,
+			beforeSend: function(){
 
-		// 	},
-		// 	success: function(output){
-		// 		console.log(output);
-		// 		if(output.status){
-		// 			// tambah data ke list
-		// 			listDetail.push(data);
+			},
+			success: function(output){
+				console.log(output);
+				if(output.status){
+					// tambah data ke list
+					listDetail.push(data);
 
-		// 			// '<input type="text" class="form-control" value="'+data.angsuran+'" onchange="onChange_angsuran('+index+', this)">'
-		// 			// '<div class="input-group"><input type="number" min="0" step="any" onchange="onChange_persentase('+data.index+',this)" class="form-control input-sm" value="'+data.persentase+'"><span class="input-group-addon">%</span></div>'
+					// '<input type="text" class="form-control" value="'+data.angsuran+'" onchange="onChange_angsuran('+index+', this)">'
+					// '<div class="input-group"><input type="number" min="0" step="any" onchange="onChange_persentase('+data.index+',this)" class="form-control input-sm" value="'+data.persentase+'"><span class="input-group-addon">%</span></div>'
 
-		// 			var status = function(value){
-		// 				return (data.status_detail.toLowerCase() == value.toLowerCase()) ? 'selected' : ''
-		// 			};
+					var status = function(value){
+						return (data.status_detail.toLowerCase() == value.toLowerCase()) ? 'selected' : ''
+					};
 
-		// 			// tambah data ke tabel
-		// 			$('#detail_proyekTable > tbody:last-child').append(
-		// 				'<tr>'+
-		// 					'<td></td>'+ // no
-		// 					'<td>' // angsuran
-		// 						+'<input type="text" class="form-control input-sm" value="'+data.angsuran+'" '+
-		// 						'onchange="onChange_angsuran('+data.index+', this)"></td>'+
-		// 					'<td>'+
-		// 						'<div class="input-group">'+
-		// 							'<input type="number" min="0" max="100" step="any" onchange="onChange_persentase('+data.index+',this)" '+
-		// 							'class="form-control input-sm" value="'+data.persentase+'">'+
-		// 							'<span class="input-group-addon">%</span>'+
-		// 						'</div></td>'+ // persentase
-		// 					'<td>'+
-		// 						'<div class="input-group">'+
-		// 							'<span class="input-group-addon">Rp</span>'+
-		// 							'<input type="number" min="0" step="any" onchange="onChange_total('+data.index+',this)" '+
-		// 							'class="form-control input-sm" value="'+data.total_detail+'">'+
-		// 						'</div></td>'+ // total
-		// 					'<td>'+
-		// 						'<select onchange="onChange_status('+data.index+', this)" class="form-control input-sm">'+
-		// 							'<option '+status('BELUM DIBAYAR')+'>BELUM DIBAYAR</option>'+
-		// 							'<option '+status('LUNAS')+'>LUNAS</option>'+
-		// 						'</select>'+
-		// 					'</td>'+ // status
-		// 					'<td>'+btnAksi_detail(data.index)+'</td>'+ // aksi
-		// 				'</tr>'
-		// 			);
-		// 			numbering_listDetail();
-		// 			console.log(listDetail);
+					// tambah data ke tabel
+					$('#detail_OperasionalProyekTable > tbody:last-child').append(
+						'<tr>'+
+							'<td></td>'+ // no
+							'<td>' // nama
+								+'<input type="text" class="form-control input-sm" value="'+data.nama+'" '+
+								'onchange="onChange_nama('+data.index+', this)"></td>'+
+							'<td>'+
+								'<div class="form-group field-nama_detail has-feedback">'+
+                                '<label for="nama_detail">Nama</label>'+
+                                '<input type="text" class="form-control field" id="nama_detail"'+
+                                ' name="nama" placeholder="Masukan Nama Kebutuhan" onchange="onChange_jenis('+data.index+',this)">'+
+                                '<span class="help-block small pesan pesan-nama_detail"></span></div></td>'+
+							'<td>'+btnAksi_detail(data.index)+'</td>'+ // aksi
+						'</tr>'
+					);
+					numbering_listDetail();
+					console.log(listDetail);
 
-		// 			$("#modalDetail").modal('hide');
-		// 			resetModal();
-		// 		}
-		// 		else{
-		// 			// decrement index utama
-		// 			indexDetail -= 1;
-		// 			setError(output.error);
-		// 		}	
-		// 	},
-		// 	error: function (jqXHR, textStatus, errorThrown){ // error handling
-	 //            console.log(jqXHR, textStatus, errorThrown);
-	 //        }
-		// })
+					$("#modalDetailOperasionalKaskecil").modal('hide');
+					resetModal();
+				}
+				else{
+					// decrement index utama
+					indexDetail -= 1;
+					setError(output.error);
+				}	
+			},
+			error: function (jqXHR, textStatus, errorThrown){ // error handling
+	            console.log(jqXHR, textStatus, errorThrown);
+	        }
+		})
+	}
+
+
+	/**
+	*
+	*/
+	function numbering_listDetail(){
+		$('#detail_OperasionalProyekTable tbody tr').each(function(index){
+			$(this).children('td:eq(0)').html(index+1);	
+		});
 	}
 
 	function setNamaProyek(){
@@ -190,6 +182,27 @@ $(document).ready(function () {
             swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
         }
 	})		
+	}
+
+	function setNamaBank(){
+		$.ajax({
+		url: BASE_URL+'operasional-proyek/get-nama-bank',
+		dataType: 'json',
+		beforeSend: function(){},
+		success: function(data){
+			console.log(data);
+			$.each(data, function(index, item){
+				var newOption = new Option(item.text, item.id);
+				$('#id_bank').append(newOption).trigger('change');
+			});
+			$('#id_bank').val(null).trigger('change');
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+            console.log(jqXHR, textStatus, errorThrown);
+            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+        }
+	})		
+
 	}
 
 	/**
