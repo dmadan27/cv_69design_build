@@ -87,14 +87,9 @@
                                           </div>
                                         </div>
                                         <span class="help-block small pesan pesan-total"></span>
-                                    </div>  
+                                    </div>
+                                </div>
                             </div>
-
-                            <!-- panel 2 -->
-                          <!--   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                              <!-- Input Kota -->
-                           <!-- </div> -->
-                          </div>
                         </div>
                         <div class="clearfix"></div>
                     </div>
@@ -114,9 +109,6 @@
                     </div>
                         </div>
                         <div class="box-body">
-                   
-                            
-
                           <!-- Tabel Detail Operasional Proyek -->
                           <div class="row">
                             <!-- panel 1 -->
@@ -146,14 +138,8 @@
                                       </div>
                               </fieldset>
                             </div>
-
-
-
-
-                          </div>
-
-
                         </div>
+                    </div>
                         <div class="clearfix"></div>
                     </div>
             </div>
@@ -184,168 +170,11 @@
   </section>
 </div>
 
+<?php include_once('modal.php'); ?>
+<script type="text/javascript">
+  var listDetail = [];
+  var indexDetail = 0;
 
-
-                            <!-- MODAL DETAIL OPERASIONAL  -->
-                            <div class="modal fade" id="modalDetailOperasionalKaskecil">
-                              <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                  <div class="modal-header">
-                                  	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                  		<span aria-hidden="true">&times;</span>
-                                  	</button>
-                                  	<h4 class="modal-title">Form Tambah Data Operasional Proyek
-                                  	</h4>
-                                  </div>
-                                  <div class="modal-body">
-                                  	<form id="form_operasional_proyek" role="form">
-                                  		<div class="row">
-												            <div class="col-lg-12 col-md-12 col-xs-12">           
-												              <div class="box box-info"> 
-												                        <div class="box-header">
-												                          <div class="box-title">Detail Operasional Proyek</div>
-												                            <div class="box-tools pull-right">
-												                        
-												                    </div>
-										                        </div>
-										                        <div class="box-body">
-										                          <div class="row">
-                            <!-- panel 1  (Kiri) Detail Operasional Proyek-->
-                            <div class="col-md-6">
-                              <fieldset>
-                                      <div class="row">
-                                        <div class="col-md-12">
-                                            <!-- Nama -->
-                                            <div class="form-group field-nama_detail has-feedback">
-                                                <label for="nama_detail">Nama</label>
-                                                <input type="text" class="form-control field" id="nama_detail" name="nama" placeholder="Masukan Nama Kebutuhan" >
-                                                <span class="help-block small pesan pesan-nama_detail"></span>
-                                            </div>
-
-                                            <!-- Jenis -->
-                                            <div class="form-group field-jenis_detail has-feedback">
-                                                <label for="jenis_detail">Jenis</label>
-                                                <div class="form-group">
-                                                	<fieldset>
-                                                		<span>TEKNIS<input type="radio" class="form-control flat-red field" name="jenis" id="jenis_detail" value="TEKNIS"></span>
-                                                		<span>NON TEKNIS<input type="radio" class="form-control flat-red field" name="jenis" id="jenis_detail" value="NON-TEKNIS"></span>
-
-                                                	</fieldset>
-                                                	
-                                                </div>
-                                                
-                                                
-                                                <span class="help-block small pesan pesan-jenis_detail"></span>
-                                            </div>
-
-                                            <!-- Satuan -->
-                                            <div class="form-group field-satuan_detail has-feedback">
-                                                <label for="nama_detail">Satuan</label>
-                                                <input type="text" class="form-control field" name="satuan" id="satuan_detail" placeholder="Masukan Satuan" >
-                                                <span class="help-block small pesan pesan-satuan_detail"></span>
-                                            </div>
-
-                                          <!-- Input qty -->
-                                            <div class="form-group field-qty_detail has-feedback">
-                                                <label for="qty_detail">Kuantiti</label>
-                                                <div class="input-group" style="width: 100%">
-			                                      		<input type="number" class="form-control field" id="qty_detail" name="qty" placeholder="Masukan Kuantiti" min="0" step="any" >
-			                                      		</div>
-                                                <span class="help-block small pesan pesan-qty_detail"></span>
-                                            </div>
-
-
-                                            <!-- Input harga -->
-                                            <div class="form-group field-harga_detail has-feedback">
-                                                <label for="harga_detail">Harga</label>
-                                                <div class="input-group" style="width: 100%">
-                                                 <div class="input-group">
-                                                <span class="input-group-addon">Rp.</span>
-                                                <input type="text" class="form-control field" id="harga_detail" name="harga" placeholder="Masukan Harga" >
-                                                <span class="input-group-addon">,00-</span>
-                                              </div>
-                                                </div>
-                                                <span class="help-block small pesan pesan-harga_detail"></span>
-                                            </div>  
-                                        </div>
-                                      </div>
-                              </fieldset>
-                            </div>
-
-                            <!-- panel 2  (Kanan) Detail Operasional Proyek-->
-                            <div class="col-md-6">
-                              <fieldset>
-                                      <div class="row">
-                                        <div class="col-md-12">
-                                            <!-- Subtotal -->
-                                            <div class="form-group field-sub_total_detail has-feedback">
-                                                <label for="sub_total_detail">Sub Total</label>
-                                                <div class="input-group">
-                                                <span class="input-group-addon">Rp.</span>
-                                                <input type="text" class="form-control field" id="sub_total_detail" name="subtotal" placeholder="Masukan Subtotal" >
-                                                <span class="input-group-addon">,00-</span>
-                                              </div>
-                                                <span class="help-block small pesan pesan-sub_total_detail"></span>
-                                            </div>
-
-                                            <!-- Status -->
-                                            <div class="form-group field-status_detail has-feedback">
-                                                <label for="status_detail">Status</label>
-                                                <select class="form-control select2" name="status" id="status_detail">
-                                              	 <option value="TUNAI">TUNAI</option>
-                                                <option value="KREDIT">KREDIT</option>
-                                                </select>
-                                               
-                                                <span class="help-block small pesan pesan-status_detail"></span>
-                                            </div>
-
-                                            <!-- Harga Asli -->
-                                            <div class="form-group field-harga_asli_detail has-feedback">
-                                                <label for="harga_asli_detail">Harga Asli</label>
-                                                <div class="input-group">
-                                                <span class="input-group-addon">Rp.</span>
-                                                <input type="text" class="form-control field" id="harga_asli_detail" name="harga_asli" placeholder="Masukan Harga Asli" >
-                                                <span class="input-group-addon">,00-</span>
-                                              </div>
-                                                <span class="help-block small pesan pesan-harga_asli_detail"></span>
-                                            </div>
-
-                                            <!-- Input sisa -->
-                                            <div class="form-group field-sisa_detail has-feedback">
-                                                <label for="sisa_detail">Sisa</label>
-                                                <div class="input-group">
-                                                <span class="input-group-addon">Rp.</span>
-                                                <input type="text" class="form-control field" id="sisa_detail" name="sisa" placeholder="" >
-                                                <span class="input-group-addon">,00-</span>
-                                              </div>
-                                                <span class="help-block small pesan pesan-sisa_detail"></span>
-                                            </div>
-
-
-                                            <!-- Input status lunas -->
-                                            <div class="form-group field-status_lunas_detail has-feedback">
-                                                <label for="status_lunas_detail">Status Lunas</label>
-                                               <select name="status_lunas" id="status_lunas_detail" class="form-control field">
-                                               	<option value="LUNAS">LUNAS</option>
-                                               	<option value="BELUM LUNAS">BELUM LUNAS</option>
-                                               	
-                                               </select>
-                                                <span class="help-block small pesan pesan-status_lunas_detail"></span>
-                                            </div>  
-                                        </div>
-                                      </div>
-                              </fieldset>
-                            </div>
-                          </div>
-                      </form> <!-- end of form modal-->
-                  </div>
-                  <div class="modal-footer">
-                  	<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Kembali</button>
-                  	<button type="submit" id="submit_detailOperasional" class="btn btn-primary" value="tambah">Submit</button>
-                                  	
-                                  </div>
-
-                                </div>
-                              </div>
-                            </div>
-                            <!-- END OF MODAL -->
+  var listSkk = [];
+  var indexSkk = 0;
+</script>

@@ -198,6 +198,7 @@ class Operasional_Proyek extends CrudAbstract{
 					$data = array(
 						'id' => $this->validation->validInput($data['id']),
 						'id_proyek' => $this->validation->validInput($data['id_proyek']),
+						'id_bank' => $this->validation->validInput($data['id_bank']),
 						'tgl' => $this->validation->validInput($data['tgl']),
 						'nama' => $this->validation->validInput($data['nama']),
 						'total' => $this->validation->validInput($data['total']),
@@ -407,6 +408,19 @@ class Operasional_Proyek extends CrudAbstract{
 			echo json_encode($output);
 
 	}
+
+	/**
+		* Function validasi form detail
+		*/
+		private function set_validation_detail($data){
+			// angsuran
+			$this->validation->set_rules($data['nama'], 'Nama Kebutuhan', 'nama', 'sring | 1 | 255 | required');
+			
+
+			return $this->validation->run();
+		}
+
+
 
 	
 
