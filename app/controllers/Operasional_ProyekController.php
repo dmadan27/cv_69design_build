@@ -370,6 +370,44 @@ class Operasional_Proyek extends CrudAbstract{
 		echo json_encode($data);
 	}
 
+	public function get_nama_bank(){
+		$this->model('BankModel');
+		$data_nama_bank = $this->BankModel->getAll();
+		$data = array();
+
+		foreach($data_nama_bank as $row){
+			$dataRow = array();
+			$dataRow['id'] = $row['id'];
+			$dataRow['text'] = $row['nama']. ' - '.$row['saldo'];
+
+			$data[] = $dataRow;
+		}
+
+		echo json_encode($data);
+	}
+
+	public function action_add_detail(){
+			$data = isset($_POST) ? $_POST : false;
+			
+			$status = false;
+			$error = "";
+
+			$validasi = $this->set_validation_detail($data);
+			$cek = $validasi['cek'];
+			$error = $validasi['error'];
+
+			if($cek) $status = true;
+
+			$output = array(
+				'status' => $status,
+				// 'notif' => $notif,
+				'error' => $error,
+				'data' => $data,
+			);
+			echo json_encode($output);
+
+	}
+
 	
 
 }

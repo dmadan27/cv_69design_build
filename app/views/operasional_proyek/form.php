@@ -48,6 +48,13 @@
                                         <select class="form-control select2" name="id_proyek" id="id_proyek"></select>
                                         <span class="help-block small pesan pesan-id_proyek"></span>
                                     </div>
+                              <!-- ID Bank -->
+                                    <div class="form-group field-id_bank has-feedback">
+                                        <label for="id_bank">ID Bank</label>
+                                        <select class="form-control select2" name="id_bank" id="id_bank"></select>
+                                        <span class="help-block small pesan pesan-id_bank"></span>
+                                    </div>
+                                    
 
                                     <!-- Tgl -->
                                     <div class="form-group field-tgl has-feedback">
@@ -140,6 +147,45 @@
                               </fieldset>
                             </div>
 
+
+
+
+                          </div>
+
+
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+            </div>
+          </div>
+
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-xs-12">           
+              <div class="box box-info"> 
+                        <div class="box-body">
+                          <div class="row">
+                            <div class="col-md-6 col-xs-12">
+                              <button class="btn btn-default btn-flat btn-lg" type="button">Kembali</button>
+                              </div>
+                            <div class="col-md-6 col-xs-12">
+                              <div class="btn-group pull-right">
+                                <button class="btn btn-default btn-flat btn-lg" type="button">Reset</button>
+                                <button class="btn btn-primary btn-flat btn-lg" id="submit_operasional_proyek" 
+                                type="submit" value="<?= $this->data['action'];?>">Submit</button>
+                              </div>  
+                            </div>
+                          </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+            </div>
+          </div>
+        </form>
+  </section>
+</div>
+
+
+
                             <!-- MODAL DETAIL OPERASIONAL  -->
                             <div class="modal fade" id="modalDetailOperasionalKaskecil">
                               <div class="modal-dialog modal-lg">
@@ -172,7 +218,7 @@
                                             <!-- Nama -->
                                             <div class="form-group field-nama_detail has-feedback">
                                                 <label for="nama_detail">Nama</label>
-                                                <input type="text" class="form-control field" id="nama_detail" name="nama" placeholder="" >
+                                                <input type="text" class="form-control field" id="nama_detail" name="nama" placeholder="Masukan Nama Kebutuhan" >
                                                 <span class="help-block small pesan pesan-nama_detail"></span>
                                             </div>
 
@@ -180,10 +226,12 @@
                                             <div class="form-group field-jenis_detail has-feedback">
                                                 <label for="jenis_detail">Jenis</label>
                                                 <div class="form-group">
-                                                	<fieldset></fieldset>
-                                                	<input type="radio" class="form-control flat-red field" name="jenis" id="jenis_detail">
-                                                <input type="radio" class="form-control flat-red field" name="jenis" id="jenis_detail">
+                                                	<fieldset>
+                                                		<span>TEKNIS<input type="radio" class="form-control flat-red field" name="jenis" id="jenis_detail" value="TEKNIS"></span>
+                                                		<span>NON TEKNIS<input type="radio" class="form-control flat-red field" name="jenis" id="jenis_detail" value="NON-TEKNIS"></span>
 
+                                                	</fieldset>
+                                                	
                                                 </div>
                                                 
                                                 
@@ -289,13 +337,11 @@
                               </fieldset>
                             </div>
                           </div>
-                                  	</form>
-                                  </div>
-                                  <div class="modal-footer">
-                                  	<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Kembali</button>
-                                  	<button type="submit" id="submit_detailOperasional" class="btn btn-primary" value="tambah">
-                                  		Submit
-                                  	</button>
+                      </form> <!-- end of form modal-->
+                  </div>
+                  <div class="modal-footer">
+                  	<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Kembali</button>
+                  	<button type="submit" id="submit_detailOperasional" class="btn btn-primary" value="tambah">Submit</button>
                                   	
                                   </div>
 
@@ -303,39 +349,3 @@
                               </div>
                             </div>
                             <!-- END OF MODAL -->
-
-
-                          </div>
-
-
-                        </div>
-                        <div class="clearfix"></div>
-                    </div>
-            </div>
-          </div>
-
-        <div class="row">
-            <div class="col-lg-12 col-md-12 col-xs-12">           
-              <div class="box box-info"> 
-                        <div class="box-body">
-                          <div class="row">
-                            <div class="col-md-6 col-xs-12">
-                              <button class="btn btn-default btn-flat btn-lg" type="button">Kembali</button>
-                              </div>
-                            <div class="col-md-6 col-xs-12">
-                              <div class="btn-group pull-right">
-                                <button class="btn btn-default btn-flat btn-lg" type="button">Reset</button>
-                                <button class="btn btn-primary btn-flat btn-lg" id="submit_operasional_proyek" 
-                                type="submit" value="<?= $this->data['action'];?>">Submit</button>
-                              </div>  
-                            </div>
-                          </div>
-                        </div>
-                        <div class="clearfix"></div>
-                    </div>
-            </div>
-          </div>
-        </form>
-  </section>
-</div>
-

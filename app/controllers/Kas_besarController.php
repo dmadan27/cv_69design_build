@@ -182,7 +182,6 @@
 							'no_telp' => $this->validation->validInput($data['no_telp']),
 							'email' => $this->validation->validInput($data['email'], false),
 							'foto' => $this->validation->validInput($valueFoto, false),
-							'saldo' => $this->validation->validInput($data['saldo']),
 							'status' => $this->validation->validInput($data['status']),
 							'password' =>  password_hash($this->validation->validInput($data['password'], false), PASSWORD_BCRYPT),
 								
@@ -452,8 +451,6 @@
 			$this->validation->set_rules($data['no_telp'], 'Nomor Telepon', 'no_telp', 'angka | 1 | 255 | required');
 			// email
 			$this->validation->set_rules($data['email'], 'Alamat Email', 'email', 'email | 1 | 255 |', $required);
-			// saldo
-			$this->validation->set_rules($data['saldo'], 'Saldo Awal', 'saldo', 'nilai | 0 | 99999999999 | ', $required);
 			// status
 			$this->validation->set_rules($data['status'], 'Status', 'status', 'string | 1 | 255 | required');
 

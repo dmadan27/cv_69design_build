@@ -94,7 +94,7 @@
 		*/
 		public function insertKasBesar($data){
 			$level = "KAS BESAR";
-			$query = "CALL tambah_kas_besar (:id, :nama, :alamat, :no_telp, :email, :foto, :saldo, :status, :password,:level);";
+			$query = "CALL tambah_kas_besar (:id, :nama, :alamat, :no_telp, :email, :foto,  :status, :password,:level);";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
@@ -105,7 +105,6 @@
 					':no_telp' => $data['no_telp'],
 					':email' => $data['email'],
 					':foto' => $data['foto'],
-					':saldo' => $data['saldo'],
 					':status' => $data['status'],
 					':password' => $data['password'],
 					':level' => $level,

@@ -61,13 +61,13 @@ $(document).ready(function(){
 */
 function getDataForm(){
 	var data = new FormData();
-	var saldo = parseFloat($('#saldo').val().trim()) ? parseFloat($('#saldo').val().trim()) : $('#saldo').val().trim();
+	// var saldo = parseFloat($('#saldo').val().trim()) ? parseFloat($('#saldo').val().trim()) : $('#saldo').val().trim();
 
 	 if($('#submit_kas_besar').val().trim().toLowerCase() == "action-add"){
 	 	data.append('foto', $('#foto')[0].files[0]); //foto
 	 	data.append('email', $('#email').val().trim()); // email kas besar
 		data.append('password', $('#email').val().trim()); // email kas besar
-	 	data.append('saldo',saldo); //saldo awal
+	 	// data.append('saldo',saldo); //saldo awal
 	 }
 
 	 if($('#submit_kas_besar').val().trim().toLowerCase() == "action-edit"){
@@ -77,7 +77,7 @@ function getDataForm(){
 		data.append('no_telp', $('#no_telp').val().trim()); // no_telp kas besar
 		data.append('email', $('#email').val().trim()); // email kas besar
 		data.append('status', $('#status').val().trim()); // status kas besar
-		data.append('saldo',saldo); //saldo awal
+		// data.append('saldo',saldo); //saldo awal
 	 } 
 	 
 	data.append('token', $('#token_form').val().trim());

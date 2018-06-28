@@ -88,8 +88,8 @@
 			
 			// config datatable
 			$config_dataTable = array(
-				'tabel' => 'user',
-				'kolomOrder' => array(null, 'username', 'password', 'level', null),
+				'tabel' => 'v_user',
+				'kolomOrder' => array(null, 'username', 'nama','status', 'level'),
 				'kolomCari' => array('username'),
 				'orderBy' => array('username' => 'asc'),
 				'kondisi' => false,
@@ -114,18 +114,19 @@
 				// $status = ($row['status'] == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-danger">'.$row['status'].'</span>';
 
 				// button aksi
-				$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-				$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".', '."'".$this->token["edit"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-				$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+				// $aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+				// $aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".', '."'".$this->token["edit"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+				// $aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 				
-				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
+				// $aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
 				
 				$dataRow = array();
 				$dataRow[] = $no_urut;
 				$dataRow[] = $row['username'];
-				$dataRow[] = $row['password'];
+				$dataRow[] = $row['nama'];
+				$dataRow[] = $row['status'];
 				$dataRow[] = $row['level'];
-				$dataRow[] = $aksi;
+				// $dataRow[] = $aksi;
 
 				$data[] = $dataRow;
 			}
