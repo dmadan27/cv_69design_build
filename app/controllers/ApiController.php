@@ -313,7 +313,7 @@
 				$dataProfil = $this->Sub_kas_kecilModel->getById($id);
 
 				if(($dataProfil['email'] == $username) && (password_verify($password_lama, $dataProfil['password'])) ){
-					if($this->Sub_kas_kecilModel->updatePassword($id, $password_baru))
+					if($this->Sub_kas_kecilModel->updatePassword($id, password_hash($password_baru, PASSWORD_BCRYPT)))
 						$output['status_aksi'] = true;
 				} 
 				else $output['status'] = false;		
