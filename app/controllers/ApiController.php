@@ -145,7 +145,7 @@
 				$output['id_pengajuan'] = $this->generate_id_pengajuan($id_pengajuan);
 				$output['saldo'] = $this->Sub_kas_kecilModel->getSaldoById($id_skk)['saldo'];
 				$output['sisa_saldo'] = $this->Sub_kas_kecilModel->getSisaSaldoById($id_skk)['sisa_saldo'];
-				$output['pengajuan'] = $this->Pengajuan_sub_kas_kecilModel->getById_mobile(strtoupper($id_pengajuan);
+				$output['pengajuan'] = $this->Pengajuan_sub_kas_kecilModel->getById_mobile(strtoupper($id_pengajuan));
 			} else {
 				$output['status'] = false;
 			}
