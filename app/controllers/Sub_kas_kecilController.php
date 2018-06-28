@@ -181,7 +181,7 @@
 						$cek = false;
 						$error['foto'] = $validasiFoto['error'];
 					}
-					else $valueFoto = $validasiFoto['namaFile'];
+					else $valueFoto = md5($data['id']).$validasiFoto['namaFile'];
 				}
 				else $valueFoto = NULL;
 
@@ -200,7 +200,7 @@
 					);
 
 					if($foto){
-						$path = ROOT.DS.'assets'.DS.'images'.DS.$valueFoto;
+						$path = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$valueFoto;
 						if(!move_uploaded_file($foto['tmp_name'], $path)){
 							$error['foto'] = "Upload Foto Gagal";
 							$status = $cekFoto = false;
