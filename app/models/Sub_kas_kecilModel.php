@@ -90,6 +90,20 @@
 		}
 
 		/**
+		*
+		*/
+		public function getSisaSaldoById($id){
+			$query = "SELECT saldo FROM sub_kas_kecil WHERE id = :id";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;	
+		}
+
+		/**
 		* 
 		*/
 		public function insert($data){

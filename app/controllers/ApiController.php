@@ -55,7 +55,7 @@
 		*/
 		public function add_pengajuan(){
 			$this->model('Sub_kas_kecilModel');
-			$this->model('Pengajuan_sub_kas_kecilModel');
+			// $this->model('Pengajuan_sub_kas_kecilModel');
 
 			$output = array();
 			$output['status'] = $this->status;
@@ -67,6 +67,7 @@
 
 				$output['id_pengajuan'] = $this->generate_id_pengajuan($id_pengajuan);
 				$output['saldo'] = $this->Sub_kas_kecilModel->getSaldoById($id_skk)['saldo'];
+				$output['sisa_saldo'] = $this->Sub_kas_kecilModel->getSisaSaldoById($id_skk)['sisa_saldo'];
 			} else {
 				$output['status'] = false;
 			}
@@ -85,7 +86,7 @@
 			$pengajuan = ((isset($_POST["pengajuan"])) && !empty($_POST["pengajuan"])) ? $_POST["pengajuan"] : false;
 			$detail_pengajuan = ((isset($_POST["detail_pengajuan"])) && !empty($_POST["detail_pengajuan"])) ? $_POST["detail_pengajuan"] : false;
 
-    	if ($this->status && ($pengajuan != false) && ($detail_pengajuan != false)) {
+    		if ($this->status && ($pengajuan != false) && ($detail_pengajuan != false)) {
 
 				$data = array(
 					'pengajuan' => json_decode($pengajuan),
@@ -135,7 +136,56 @@
 		*
 		*/
 		public function add_laporan(){
+			$this->model('Sub_kas_kecilModel');
+			$this->model('Pengajuan_sub_kas_kecilModel');
 
+			$output = array();
+			$output['status'] = $this->status;
+
+			$id_pengajuan = ((isset($_POST['id_pengajuan'])) && !empty($_POST['id_pengajuan'])) ? $_POST['id_pengajuan'] : false;
+			$id_skk = ((isset($_POST['id'])) && !empty($_POST['id'])) ? $_POST['id'] : false;
+
+			if ($this->status && ($id_pengajuan != false) && ($id_skk != false)) {
+				$output['id_pengajuan'] = $this->generate_id_pengajuan($id_pengajuan);
+				$output['saldo'] = $this->Sub_kas_kecilModel->getSaldoById($id_skk)['saldo'];
+				$output['sisa_saldo'] = $this->Sub_kas_kecilModel->getSisaSaldoById($id_skk)['sisa_saldo'];
+				$output['pengajuan'] = $this->Pengajuan_sub_kas_kecilModel->getById_mobile(strtoupper($id_pengajuan);
+			} else {
+				$output['status'] = false;
+			}
+			echo json_encode($output);	
+		}
+
+		/**
+		*
+		*/
+		public function action_add_laporan(){
+			$this->model('Pengajuan_sub_kas_kecilModel');
+
+			$output = array();
+			$output['status'] = $this->status;
+
+			$pengajuan = ((isset($_POST["pengajuan"])) && !empty($_POST["pengajuan"])) ? $_POST["pengajuan"] : false;
+			$detail_pengajuan = ((isset($_POST["detail_pengajuan"])) && !empty($_POST["detail_pengajuan"])) ? $_POST["detail_pengajuan"] : false;
+
+    		if ($this->status && ($pengajuan != false) && ($detail_pengajuan != false)) {
+
+				$data = array(
+					'pengajuan' => json_decode($pengajuan),
+					'detail_pengajuan' => json_decode($detail_pengajuan)
+				);
+
+				$resultQuery = $this->Pengajuan_sub_kas_kecilModel->insert($data);
+
+				if ($resultQuery === true) {
+					$output['status'] = true;
+				} else {
+					$output['error'] = $resultQuery;
+				}
+			} else {
+				$output['status'] = false;
+			}
+			echo json_encode($output);	
 		}
 
 		/**
@@ -212,7 +262,6 @@
 			}
 			return $id;
 		}
-
 
 		/**
 		*

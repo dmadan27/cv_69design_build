@@ -124,81 +124,6 @@
 			return $result;
 		}
 
-
-		/**
-		*
-		*/
-		public function insert($data) {
-
-			$data_pengajuan = $data["pengajuan"];
-			$data_detail_pengajuan = $data["detail_pengajuan"];
-
-			try {
-				$this->koneksi->beginTransaction();
-
-				$this->insert_pengajuan($data_pengajuan);
-
-				foreach ($data_detail_pengajuan as $key => $value) {
-					$this->insert_detail_pengajuan($value, $data_pengajuan->id);
-				}
-
-				$this->koneksi->commit();
-
-				return true;
-			} catch (PDOException $e) {
-				$this->koneksi->rollback();
-				return $e->getMessage();
-			}
-		}
-
-		/**
-		*
-		*/
-		private function insert_pengajuan($data) {
-			$query = "INSERT INTO pengajuan_sub_kas_kecil (id, id_sub_kas_kecil, id_proyek, tgl, total, dana_disetujui, status, status_laporan) VALUES ";
-			$query .= "(:id, :id_sub_kas_kecil, :id_proyek, :tgl, :total, :dana_disetujui, :status, :status_laporan);";
-			$statment = $this->koneksi->prepare($query);
-			$statment->execute(
-				array(
-					':id' => $data->id,
-					':id_sub_kas_kecil' => $data->id_sub_kas_kecil,
-					':id_proyek' => $data->id_proyek,
-					':tgl' => date('Y-m-d'),
-					':total' => $data->total,
-					':dana_disetujui' => null,
-					':status' => $data->status,
-					':status_laporan' => null
-				)
-			);
-			$statment->closeCursor();
-		}
-
-		/**
-		*
-		*/
-		private function insert_detail_pengajuan($data, $id_pengajuan) {
-			$query	= "INSERT INTO detail_pengajuan_sub_kas_kecil (id, id_pengajuan, nama, jenis, satuan, qty, harga, subtotal, status, harga_asli, sisa, status_lunas) VALUES";
-			$query .= "(null, :id_pengajuan, :nama, :jenis, :satuan, :qty, :harga, :subtotal, :status, :harga_asli, :sisa, :status_lunas)";
-
-			$statment = $this->koneksi->prepare($query);
-			$statment->execute(
-				array(
-					':id_pengajuan' => $id_pengajuan,
-					':nama' => $data->nama,
-					':jenis' => $data->jenis,
-					':satuan' => $data->satuan,
-					':qty' => $data->qty,
-					':harga' => $data->harga,
-					':subtotal' => $data->subtotal,
-					':status' => null,
-					':harga_asli' => null,
-					':sisa' => null,
-					':status_lunas' => null
-				)
-			);
-			$statment->closeCursor();
-		}
-
 		/**
 		*
 		*/
@@ -260,7 +185,7 @@
 			}
 		}
 
-		// ======================== mobile = ======================= //
+		// ======================== mobile ========================= //
 
 			/**
 			*
@@ -338,6 +263,121 @@
 				$statement->execute();
 
 				return $statement->rowCount();
+			}
+
+			/**
+			*
+			*/
+			public function insert($data) {
+
+				$data_pengajuan = $data["pengajuan"];
+				$data_detail_pengajuan = $data["detail_pengajuan"];
+
+				try {
+					$this->koneksi->beginTransaction();
+
+					$this->insert_pengajuan($data_pengajuan);
+
+					foreach ($data_detail_pengajuan as $key => $value) {
+						$this->insert_detail_pengajuan($value, $data_pengajuan->id);
+					}
+
+					$this->koneksi->commit();
+
+					return true;
+				} catch (PDOException $e) {
+					$this->koneksi->rollback();
+					return $e->getMessage();
+				}
+			}
+
+			/**
+			*
+			*/
+			private function insert_pengajuan($data) {
+				$query = "INSERT INTO pengajuan_sub_kas_kecil (id, id_sub_kas_kecil, id_proyek, tgl, total, dana_disetujui, status, status_laporan) VALUES ";
+				$query .= "(:id, :id_sub_kas_kecil, :id_proyek, :tgl, :total, :dana_disetujui, :status, :status_laporan);";
+				$statment = $this->koneksi->prepare($query);
+				$statment->execute(
+					array(
+						':id' => $data->id,
+						':id_sub_kas_kecil' => $data->id_sub_kas_kecil,
+						':id_proyek' => $data->id_proyek,
+						':tgl' => date('Y-m-d'),
+						':total' => $data->total,
+						':dana_disetujui' => null,
+						':status' => $data->status,
+						':status_laporan' => null
+					)
+				);
+				$statment->closeCursor();
+			}
+
+			/**
+			*
+			*/
+			private function insert_detail_pengajuan($data, $id_pengajuan) {
+				$query	= "INSERT INTO detail_pengajuan_sub_kas_kecil (id, id_pengajuan, nama, jenis, satuan, qty, harga, subtotal, status, harga_asli, sisa, status_lunas) VALUES";
+				$query .= "(null, :id_pengajuan, :nama, :jenis, :satuan, :qty, :harga, :subtotal, :status, :harga_asli, :sisa, :status_lunas)";
+
+				$statment = $this->koneksi->prepare($query);
+				$statment->execute(
+					array(
+						':id_pengajuan' => $id_pengajuan,
+						':nama' => $data->nama,
+						':jenis' => $data->jenis,
+						':satuan' => $data->satuan,
+						':qty' => $data->qty,
+						':harga' => $data->harga,
+						':subtotal' => $data->subtotal,
+						':status' => null,
+						':harga_asli' => null,
+						':sisa' => null,
+						':status_lunas' => null
+					)
+				);
+				$statment->closeCursor();
+			}
+
+			/**
+			*
+			*/
+			public function insert_laporan(){
+				try {
+					$this->koneksi->beginTransaction();
+
+					$this->insert_pengajuan($data_pengajuan);
+
+					// update pengajuan
+
+					// insert upload foto laporan
+
+					$this->koneksi->commit();
+
+					return true;
+				} catch (PDOException $e) {
+					$this->koneksi->rollback();
+					return $e->getMessage();
+				}
+			}
+
+			/**
+			*
+			*/
+			private function update_laporan(){
+				$query = "UPDATE pengajuan_sub_kas_kecil SET ";
+
+				$statement = $this->koneksi->prepare($query);
+				$statement->execute(
+
+				);
+			}
+
+			/**
+			*
+			*/
+			private function insert_foto_laporan(){
+
 			}
 
 		// ========================================================= //
