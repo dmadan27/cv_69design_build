@@ -125,10 +125,6 @@
 				$output['status'] = false;
 			}
 
-			// $temp = 0;
-			// for($i=1; $i<1000000; $i++){
-			// 	$temp += $i;
-			// }
 			echo json_encode($output);
 		}
 
@@ -216,7 +212,28 @@
 		*
 		*/
 		public function profil(){
+			$this->model('Sub_kas_kecilModel');
 
+			$id = isset($_POST['id']) ? $_POST['id'] : false;
+
+			$output = array();
+			$output['status'] = $this->status;
+
+			if ($this->status) {
+				$dataProfil = $this->Sub_kas_kecilModel->getById($id);
+
+				$output['profil'] = array(
+					'id' => $dataProfil['id'],
+					'nama' => $dataProfil['nama'],
+					'alamat' => $dataProfil['alamat'],
+					'no_telp' => $dataProfil['no_telp'],
+					'email' => $dataProfil['email'],
+					'foto' => $dataProfil['foto'],
+					'saldo' => $dataProfil['saldo'],
+					'status' => $dataProfil['status'],
+				);
+			}
+			echo json_encode($output);
 		}
 
 		/**
