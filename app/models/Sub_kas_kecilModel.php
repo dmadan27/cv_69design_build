@@ -154,8 +154,28 @@
 		/**
 		*
 		*/
-		public function updatePassword($id){
+		public function updatePassword($id, $password){
+			try {
+				$this->koneksi->beginTransaction();
 
+				$query	= "UPDATE sub_kas_kecil SET password = :password WHERE id = :id";
+
+				$statment = $this->koneksi->prepare($query);
+				$statment->execute(
+					array(
+						':id' => $id,
+						':password' => $password,
+					)
+				);
+				$statment->closeCursor();
+
+				$this->koneksi->commit();
+
+				return true;
+			} catch (PDOException $e) {
+				$this->koneksi->rollback();
+				return $e->getMessage();
+			}
 		}
 
 		/**
