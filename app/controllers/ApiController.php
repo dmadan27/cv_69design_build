@@ -222,6 +222,14 @@
 			if ($this->status) {
 				$dataProfil = $this->Sub_kas_kecilModel->getById($id);
 
+				// cek kondisi foto
+				if(!empty($dataProfil['foto'])){
+					// cek foto di storage
+					$filename = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$dataProfil['foto'];
+					if(!file_exists($filename)) $dataProfil['foto'] = null;
+				}
+				else $dataProfil['foto'] = null;
+
 				$output['profil'] = array(
 					'id' => $dataProfil['id'],
 					'nama' => $dataProfil['nama'],
