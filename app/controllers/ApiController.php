@@ -7,6 +7,7 @@
 	class Api extends Controller{
 
 		protected $status = true;
+		protected $status_aksi = false;
 
 		/**
 		*
@@ -290,6 +291,34 @@
 				$id = $kode.sprintf("%04s", $noUrut);
 			}
 			return $id;
+		}
+
+		/**
+		*
+		*/
+		public function ganti_password(){
+			$this->model('Sub_kas_kecilModel');
+
+			$id = isset($_POST['id']) ? $_POST['id'] : false;
+			$username = isset($_POST['username']) ? $_POST['username'] : false;
+			$password_lama = isset($_POST['password_lama']) ? $_POST['password_lama'] : false;
+			$password_baru = isset($_POST['password_baru']) ? $_POST['password_baru'] : false;
+			// $password_konf = isset($_POST['password_konf']) ? $_POST['password_konf'] : false;
+
+			$output = array();
+			$output['status'] = $this->status;
+			$output['status_aksi'] = $this->status_aksi;
+
+			if ($this->status) {
+				$dataProfil = $this->Sub_kas_kecilModel->getById($id);
+
+				if(($dataProfil['email'] == $username) && (password_verify($password_lama, $dataProfil['password'])) ){
+					if($this->Sub_kas_kecilModel->updatePassword($id, $password_baru))
+						$output['status_aksi'] = true;
+				} 
+				else $output['status'] = false;		
+			}
+			echo json_encode($output);
 		}
 
 		/**
