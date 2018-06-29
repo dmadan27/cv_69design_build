@@ -231,7 +231,10 @@
 					if(!empty($dataProfil['foto'])){
 						// cek foto di storage
 						$filename = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$dataProfil['foto'];
-						if(!file_exists($filename)) $dataProfil['foto'] = null;
+						if(!file_exists($filename)) 
+							$foto = null;
+						else
+							$foto = BASE_URL.'assets/images/user/'.$dataProfil['foto'];
 					}
 					else $dataProfil['foto'] = null;
 
@@ -241,7 +244,7 @@
 						'alamat' => $dataProfil['alamat'],
 						'no_telp' => $dataProfil['no_telp'],
 						'email' => $dataProfil['email'],
-						'foto' => $dataProfil['foto'],
+						'foto' => $foto,
 						'saldo' => $dataProfil['saldo'],
 						'status' => $dataProfil['status'],
 					);
