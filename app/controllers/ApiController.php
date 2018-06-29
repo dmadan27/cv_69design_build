@@ -144,7 +144,7 @@
 			$id_skk = ((isset($_POST['id'])) && !empty($_POST['id'])) ? $_POST['id'] : false;
 
 			if ($this->status && ($id_pengajuan != false) && ($id_skk != false)) {
-				$output['id_pengajuan'] = $this->generate_id_pengajuan($id_pengajuan);
+				$output['id_pengajuan'] = $id_pengajuan;
 				$output['saldo'] = $this->Sub_kas_kecilModel->getSaldoById($id_skk)['saldo'];
 				$output['sisa_saldo'] = $this->Sub_kas_kecilModel->getSisaSaldoById($id_skk)['sisa_saldo'];
 				$output['pengajuan'] = $this->Pengajuan_sub_kas_kecilModel->getById_mobile(strtoupper($id_pengajuan));
