@@ -15,7 +15,8 @@
 		public function __construct(){
 			$this->auth();
 			$this->auth->mobileOnly();
-			if(!$this->auth->cekAuthMobile()) $this->status = false;
+			if(!$this->auth->cekAuthMobile())
+				$this->status = false;
 		}
 
 		/**
@@ -150,7 +151,7 @@
 			} else {
 				$output['status'] = false;
 			}
-			echo json_encode($output);	
+			echo json_encode($output);
 		}
 
 		/**
@@ -182,7 +183,7 @@
 			} else {
 				$output['status'] = false;
 			}
-			echo json_encode($output);	
+			echo json_encode($output);
 		}
 
 		/**
@@ -244,7 +245,7 @@
 						'saldo' => $dataProfil['saldo'],
 						'status' => $dataProfil['status'],
 					);
-				}		
+				}
 			}
 			echo json_encode($output);
 		}
@@ -315,8 +316,7 @@
 				if(($dataProfil['email'] == $username) && (password_verify($password_lama, $dataProfil['password'])) ){
 					if($this->Sub_kas_kecilModel->updatePassword($id, password_hash($password_baru, PASSWORD_BCRYPT)))
 						$output['status_aksi'] = true;
-				} 
-				else $output['status'] = false;		
+				}
 			}
 			echo json_encode($output);
 		}
