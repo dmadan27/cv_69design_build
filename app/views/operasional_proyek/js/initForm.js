@@ -101,13 +101,14 @@ $(document).ready(function () {
 		 
 		var data = {
 			index: index,
-			id: '',
+			// id: '',
 			// id_operasional_proyek : $('#id_operasional_proyek').val().trim(),
 			nama : $('#nama_detail').val().trim(),
 			// jenis : $('#jenis_detail').val().trim(),
 			// satuan : $('#satuan_detail').val().trim(),
 			// qty : qty_detail,
 			// harga : harga_detail,
+			// status : $('#status_detail').val().trim(),
 			// sub_total : sub_total_detail,
 			// status :  $('#status').val().trim(),
 			aksi: 'tambah',
@@ -145,6 +146,16 @@ $(document).ready(function () {
 					// 	return (data.status_detail.toLowerCase() == value.toLowerCase()) ? 'selected' : ''
 					// };
 
+					// var status = function(value){
+					// }
+					// 	return (data.status.toLowerCase() == value.toLowerCase()) ? 'selected' : ''
+					// };
+
+					// var jenis = function(value){
+					// 	return (data.jenis.toLowerCase() == value.toLowerCase()) ? 'selected' : ''
+					// };
+
+
 					// tambah data ke tabel
 					$('#detail_OperasionalproyekTable > tbody:last-child').append(
 						'<tr>'+
@@ -152,6 +163,29 @@ $(document).ready(function () {
 							'<td>' // nama
 								+'<input type="text" class="form-control input-sm" value="'+data.nama+'" '+
 								'onchange="onChange_nama('+data.index+', this)"></td>'+
+							// '<td>' // jenis
+							// 	+'<select onchange="onChange_jenis('+data.index+', this)" class="form-control input-sm">'+ 
+							// 		'<option '+status('TEKNIS')+'>TEKNIS</option>'+
+							// 		'<option '+status('NON-TEKNIS')+'>NON-TEKNIS</option>'+
+							// 	+'</select>'+'</td>'+
+							// '<td>'+ // satuan
+							// 	'<input type="text" class="form-control input-sm" value="'+data.satuan+'" '+
+							// 	'onchange="onChange_satuan('+data.index+', this)"></td>'+
+							// '<td>'+ // qty
+							// 	+'<input type="text" class="form-control input-sm" value="'+data.qty+'" '+
+							// 	'onchange="onChange_qty('+data.index+', this)"></td>'+
+							// '<td>'+ // harga
+							// 	+'<input type="text" class="form-control input-sm" value="'+data.harga+'" '+
+							// 	'onchange="onChange_harga('+data.index+', this)"></td>'+
+							// '<td>' // status
+							// 	+'<select onchange="onChange_status('+data.index+', this)" class="form-control input-sm">'+ 
+							// 		'<option '+status('TUNAI')+'>TUNAI</option>'+
+							// 		'<option '+status('KREDIT')+'>KREDIT</option>'+
+							// 	+'</select>'+
+								
+								
+								
+									
 							
 							'<td>'+btnAksi_detail(data.index)+'</td>'+ // aksi
 						'</tr>'
@@ -179,11 +213,21 @@ $(document).ready(function () {
 	*
 	*/
 	function numbering_listDetail(){
-		$('#detail_OperasionalProyekTable tbody tr').each(function(index){
+		$('#detail_OperasionalproyekTable tbody tr').each(function(index){
 			$(this).children('td:eq(0)').html(index+1);	
 		});
 	}
 
+	/**
+	*
+	*/
+	function btnAksi_detail(index){
+		var btn = '<button type="button" class="btn btn-danger btn-flat btn-sm"'+
+					' title="Hapus data dari list" onclick="delete_detail('+index+', this)">'+
+					'<i class="fa fa-trash"></i></button>';
+
+		return btn;
+	}
 
 	/**
 	*
@@ -199,6 +243,83 @@ $(document).ready(function () {
 		console.log(listDetail);
 
 	}
+
+	/**
+	*
+	*/
+	function onChange_jenis(){
+		$.each(listDetail, function(i, item){
+			if(item.index == index){
+				item.jenis = val.value;
+			}
+		});
+		numbering_listDetail();
+
+		console.log(listDetail);
+
+	}
+
+	/**
+	*
+	*/
+	function onChange_satuan(){
+		$.each(listDetail, function(i, item){
+			if(item.index == index){
+				item.satuan = val.value;
+			}
+		});
+		numbering_listDetail();
+
+		console.log(listDetail);
+
+	}
+
+	/**
+	*
+	*/
+	function onChange_qty(){
+		$.each(listDetail, function(i, item){
+			if(item.index == index){
+				item.qty = parseFloat(val.value);
+			}
+		});
+		numbering_listDetail();
+
+		console.log(listDetail);
+
+	}
+
+	/**
+	*
+	*/
+	function onChange_harga(){
+		$.each(listDetail, function(i, item){
+			if(item.index == index){
+				item.harga = parseFloat(val.value);
+			}
+		});
+		numbering_listDetail();
+
+		console.log(listDetail);
+
+	}
+
+	/**
+	*
+	*/
+	function onChange_status(){
+		$.each(listDetail, function(i, item){
+			if(item.index == index){
+				item.status = val.value;
+			}
+		});
+		numbering_listDetail();
+
+		console.log(listDetail);
+
+	}
+
+
 	function setNamaProyek(){
 		$.ajax({
 		url: BASE_URL+'operasional-proyek/get-nama-proyek',
@@ -242,16 +363,7 @@ $(document).ready(function () {
 
 	
 
-	/**
-	*
-	*/
-	function btnAksi_detail(index){
-		var btn = '<button type="button" class="btn btn-danger btn-flat btn-sm"'+
-					' title="Hapus data dari list" onclick="delete_detail('+index+', this)">'+
-					'<i class="fa fa-trash"></i></button>';
-
-		return btn;
-	}
+	
 
 	
 
@@ -261,16 +373,18 @@ $(document).ready(function () {
 */
 function getDataForm(){
 	var data = new FormData();
-		var total= parseFloat($('#total').val().trim()) ? parseFloat($('#total').val().trim()) : $('#total').val().trim();
+
+		var total = parseFloat($('#total').val().trim()) ? parseFloat($('#total').val().trim()) : $('#total').val().trim();
 
 		// var estimasi= parseFloat($('#estimasi').val().trim()) ? parseFloat($('#estimasi').val().trim()) : $('#estimasi').val().trim();
 	// var total= parseFloat($('#total').val().trim()) ? parseFloat($('#total').val().trim()) : $('#total').val().trim();
 	// var dp= parseFloat($('#dp').val().trim()) ? parseFloat($('#dp').val().trim()) : $('#dp').val().trim();
 	// var cco = parseFloat($('#cco').val().trim()) ? parseFloat($('#cco').val().trim()) : $('#cco').val().trim();
 
-	// var dataProyek = {
-	// 	id: $('#id').val().trim(),
+	// var dataOperasionalProyek = {
+	// 	id_operasional_proyek: $('#id_operasional_proyek').val().trim(),
 	// 	id_proyek: $('#id_proyek').val().trim(),
+	// 	id_bank: $('#id_bank').val().trim(),
 	// 	tgl: $('#tgl').val().trim(),
 	// 	nama: $('#nama').val().trim(),
 	// 	total: $('#total').val().trim(),
@@ -280,9 +394,10 @@ function getDataForm(){
 
 
 	data.append('token', $('#token_form').val().trim());
+	// data.append('dataOperasionalProyek', JSON.stringify(dataOperasionalProyek));
 	data.append('id', $('#id').val().trim());
 	data.append('id_proyek', $('#id_proyek').val().trim());
-	data.append('id_bank', $('#bank').val().trim());
+	data.append('id_bank', $('#id_bank').val().trim());
 	data.append('tgl', $('#tgl').val().trim());
 	data.append('nama', $('#nama').val().trim());
 	data.append('total', total);
@@ -304,7 +419,7 @@ function submit(){
 	var data = getDataForm();
 
 	$.ajax({
-		url: BASE_URL+'operasional_proyek/'+$('#submit_operasional_proyek').val().trim()+'/',
+		url: BASE_URL+'operasional-proyek/'+$('#submit_operasional_proyek').val().trim()+'/',
 		type: 'POST',
 		dataType: 'json',
 		data: data,
@@ -552,7 +667,7 @@ function resetForm(){
 */
 function resetModal(){
 	$('#form_detail').trigger('reset');
-	$('modalDetailOperasional').trigger('reset');
+	// $('modalDetailOperasional').trigger('reset');
 
 	// hapus semua pesan
 	$('#form_detail .pesan').text('');

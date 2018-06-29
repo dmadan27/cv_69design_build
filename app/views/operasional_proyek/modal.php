@@ -28,8 +28,10 @@
                         <label for="jenis_detail">Jenis</label>
                         <div class="form-group">
                           <fieldset>
-                            <span>TEKNIS<input type="radio" class="form-control flat-red field" name="jenis" id="jenis_detail" value="TEKNIS"></span>
-                            <span>NON TEKNIS<input type="radio" class="form-control flat-red field" name="jenis" id="jenis_detail" value="NON-TEKNIS"></span>
+                            <select name="jenis" class="form-control select2" id="jenis_detail">
+                                <option value="TEKNIS">TEKNIS</option>
+                                <option value="NON-TEKNIS">NON TEKNIS</option>
+                            </select>
                           </fieldset>
                         </div>
                         <span class="help-block small pesan pesan-jenis_detail"></span>

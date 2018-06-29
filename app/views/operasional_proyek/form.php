@@ -82,7 +82,7 @@
                                         <div class="input-group" style="width: 100%">
                                          <div class="input-group">
                                                 <span class="input-group-addon">Rp.</span>
-                                                <input type="text" class="form-control field" id="sub_total_detail" name="subtotal" placeholder="Masukan Total Pengajuan" >
+                                                <input type="text" class="form-control field" id="total" name="total" placeholder="Masukan Total Pengajuan" >
                                                 <span class="input-group-addon">,00-</span>
                                           </div>
                                         </div>
@@ -125,9 +125,11 @@
                                           <tr>
                                             <th class="" style="width: 15px">No</th>
                                             <th>Nama</th>
-                                            <th class="" style="width: 150px;">Jenis</th>
-                                            <th class="">Satuan</th>
-                                            <th>Status</th>
+                                            <!-- <th>Jenis</th> -->
+                                           <!--  <th>Satuan</th>
+                                            <th>Qty</th>
+                                            <th>Harga</th>
+                                            <th>Status</th> -->
                                             <th>Aksi</th>
                                           </tr>
                                         </thead>
@@ -175,6 +177,5 @@
   var listDetail = [];
   var indexDetail = 0;
 
-  var listSkk = [];
-  var indexSkk = 0;
+
 </script>

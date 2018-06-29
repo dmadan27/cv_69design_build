@@ -169,7 +169,7 @@ class Operasional_Proyek extends CrudAbstract{
 
 		public function action_add(){
 			$data = isset($_POST) ? $_POST : false;
-			$this->auth->cekToken($_SESSION['token_operasional_proyek']['add'], $data['token'], 'operasional_proyek');
+			$this->auth->cekToken($_SESSION['token_operasional_proyek']['add'], $data['token'], 'operasional-proyek');
 			
 			$status = false;
 			$error = "";
@@ -182,7 +182,7 @@ class Operasional_Proyek extends CrudAbstract{
 			}
 			else{
 				// validasi data
-				$validasi = $this->set_validation($data['action']);
+				$validasi = $this->set_validation($data);
 				$cek = $validasi['cek'];
 				$error = $validasi['error'];
 
@@ -230,7 +230,7 @@ class Operasional_Proyek extends CrudAbstract{
 				'status' => $status,
 				'notif' => $notif,
 				'error' => $error,
-				// 'data' => $data,
+				'data' => $data,
 			);
 
 			echo json_encode($output);		
@@ -316,13 +316,14 @@ class Operasional_Proyek extends CrudAbstract{
 	/**
 		* Function validasi form utama
 		*/
-		private function set_validation($data, $action){
-			$required = ($action =="action-add") ? 'not_required' : 'required';
-
+		private function set_validation($data){
+			
 			// id
 			$this->validation->set_rules($data['id'], 'ID Operasional Proyek', 'id', 'string | 1 | 255 | required');
 			// id_proyek
-			$this->validation->set_rules($data['id_proyek'], 'ID proyek', 'proyek', 'string | 1 | 255 | required');
+			$this->validation->set_rules($data['id_proyek'], 'ID proyek', 'id_proyek', 'string | 1 | 255 | required');
+			// id_bank
+			$this->validation->set_rules($data['id_bank'], 'ID Bank', 'id_bank', 'string | 1 | 255 | required');
 			// tgl
 			$this->validation->set_rules($data['tgl'], 'Tanggal Operasional Proyek', 'tgl', 'string | 1 | 255 | required');
 			// nama
@@ -413,8 +414,8 @@ class Operasional_Proyek extends CrudAbstract{
 		* Function validasi form detail
 		*/
 		private function set_validation_detail($data){
-			// angsuran
-			$this->validation->set_rules($data['nama'], 'Nama Kebutuhan', 'nama', 'sring | 1 | 255 | required');
+			// nama
+			$this->validation->set_rules($data['nama'], 'Nama Kebutuhan', 'nama', 'string | 1 | 255 | required');
 			
 
 			return $this->validation->run();
