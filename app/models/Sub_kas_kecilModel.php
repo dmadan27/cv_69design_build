@@ -214,6 +214,7 @@
 
 
 		/* ============================== mobile ===================================== */
+		
 		public function updateProfil_mobile($id, $telepon, $alamat) {
 			$query = "UPDATE sub_kas_kecil SET alamat = :alamat, no_telp = :no_telp WHERE id = :id;";
 

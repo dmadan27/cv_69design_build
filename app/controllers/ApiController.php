@@ -277,6 +277,10 @@
 			echo json_encode($output);
 		}
 
+
+		/**
+		*
+		*/
 		public function edit_profil() {
 			$this->model('Sub_kas_kecilModel');
 
@@ -297,6 +301,28 @@
 
 			echo json_encode($output);	
 		}
+
+		/**
+		*
+		*/
+		public function edit_foto_profil() {
+			// $this->model('Sub_kas_kecilModel');
+
+			// $id = isset($_POST['id']) ? $_POST['id'] : false;
+			// $foto = $_FILES['foto'];
+
+			// $output = array();
+			// $output['status'] = $this->status;
+		}
+
+
+		/**
+		*
+		*/
+		public function lupa_password() {
+
+		}
+
 
 		/**
 		*
