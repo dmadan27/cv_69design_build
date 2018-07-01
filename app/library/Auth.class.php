@@ -18,11 +18,32 @@
 		*/
 		public function cekAuth(){
 			if(!$this->isLogin()){
-				session_unset();
-				session_destroy();
-				header('Location: '.BASE_URL.'login');
-				die();
+				$this->lockscreen = isset($_SESSION['sess_lockscreen']) ? $_SESSION['sess_lockscreen'] : false;
+
+				// cek lockscreen
+				if($this->lockscreen){
+					$actual_link = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+					header('Location: '.BASE_URL.'login/lockscreen/?callback='.$actual_link);
+					die();
+				}
+				else{
+					session_unset();
+					session_destroy();
+					header('Location: '.BASE_URL.'login');
+					die();
+				}
+
+				// var_dump($_SESSION['sess_lockscreen']);
 			}
+
+			$cekTimeout = isset($_POST['timeout']) ? $_POST['timeout'] : false;
+
+			if(!$cekTimeout){
+				$_SESSION['timeout'] = 'timeout++';
+				$_SESSION['sess_timeout'] = date('Y-m-d H:i:s', time()+(60*60));
+			}
+			else $_SESSION['timeout'] = 'no';
+				
 		}
 
 		/**
@@ -50,7 +71,9 @@
 		public function isLogin(){
 			$this->jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
 			$this->login = isset($_SESSION['sess_login']) ? $_SESSION['sess_login'] : false;
-			// $this->lockscreen = isset($_SESSION['sess_locksreen']) ? $_SESSION['sess_locksreen'] : false;
+			$this->lockscreen = isset($_SESSION['sess_lockscreen']) ? $_SESSION['sess_lockscreen'] : false;
+			$this->timeout = isset($_SESSION['sess_timeout']) ? strtotime($_SESSION['sess_timeout']) : false;
+			// $cekTimeout = isset($_GET['timeout']) ? $_GET['timeout'] : false;
 
 			if($this->jenis){ // untuk mobile
 				$user = isset($_POST['username']) ? $_POST['username'] : false;
@@ -76,8 +99,19 @@
 				else return false;
 			}
 			else{ // untuk sistem
-				if(!$this->login) return false;
-				else return true;
+				if(!$this->login) 
+					return false;
+				
+				if($this->login && (time() > $this->timeout)){
+					$_SESSION['sess_login'] = false;
+					$_SESSION['sess_lockscreen'] = true;
+					return false;
+				}
+
+				// if($cekTimeout && $cekTimeout == 'no') return true;
+				
+				// $_SESSION['sess_timeout'] = date('Y-m-d H:i:s', time()+(15));
+				return true; 
 			}
 		}
 
