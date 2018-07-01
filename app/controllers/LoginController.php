@@ -30,6 +30,8 @@
 			else{ // jika sistem
 				if($this->auth->isLogin()) $this->redirect(BASE_URL); // jika sudah login, tidak bisa akses
 				else{ // jika belum login
+					$_SESSION['sess_lockscreen'] = false;
+
 					if($_SERVER['REQUEST_METHOD'] == "POST") $this->loginSistem(); // jika request post login
 					else $this->view('login'); // jika bukan, atau hanya menampilkan halaman login
 				}
@@ -43,12 +45,14 @@
 		* set session default
 		* return berupa json
 		*/
-		private function loginSistem(){
+		private function loginSistem($callback = false){
 			$this->username = isset($_POST['username']) ? $_POST['username'] : false;
 			$this->password = isset($_POST['password']) ? $_POST['password'] : false;
 
 			$errorUser = $errorPass = "";
 			$notif = '';
+			
+			// $callback = $_GET;
 			
 			// get username
 			$dataUser = $this->UserModel->getUser($this->username);
@@ -66,24 +70,8 @@
 			else{
 				if(password_verify($this->password, $dataUser['password'])){
 					$status = true;
-					$_SESSION['sess_login'] = true;
-					$_SESSION['sess_locksreen'] = false;
-					$_SESSION['sess_level'] = $dataUser['level'];
-
-					// set data profil sesuai dgn jenis user
-					if(strtolower($dataUser['level']) == 'kas besar') 
-						$dataProfil = $this->UserModel->getKasBesar($this->username);
-					else 
-						$dataProfil = $this->UserModel->getKasKecil($this->username);
-
-					$_SESSION['sess_id'] = $dataProfil['id'];
-					$_SESSION['sess_nama'] = $dataProfil['nama'];
-					$_SESSION['sess_alamat'] = $dataProfil['alamat'];
-					$_SESSION['sess_email'] = $dataProfil['email'];
-					$_SESSION['sess_foto'] = $dataProfil['foto'];
-					$_SESSION['sess_status'] = $dataProfil['status'];
-					$_SESSION['sess_welcome'] = true;
-					$_SESSION['sess_locksreen'] = false;
+					// $callback = isset($_GET['callback']) ? $_GET['callback'] : false;
+					$this->setSession($dataUser['level']);
 				}
 				else{
 					$status = false;
@@ -106,6 +94,7 @@
 
 			$output = array(
 				'status' => $status,
+				'callback' => $callback,
 				'error' => $error,
 				'notif' => $notif,
 			);
@@ -178,7 +167,50 @@
 		* set ulang session login dan session lockscreen saja
 		*/
 		public function lockscreen(){
+			$lockscreen = isset($_SESSION['sess_lockscreen']) ? $_SESSION['sess_lockscreen'] : false;
+			$callback = isset($_GET['callback']) ? $_GET['callback'] : false;
 
+			if(!$lockscreen) $this->redirect(BASE_URL);
+			else{
+				if($_SERVER['REQUEST_METHOD'] == "POST") $this->loginSistem($callback); // jika request post login
+				else $this->view('lockscreen'); // jika bukan, atau hanya menampilkan halaman login
+			}
+		}
+
+		/**
+		*
+		*/
+		private function setSession($level){
+			// set data profil sesuai dgn jenis user
+			if(strtolower($level) == 'kas besar') 
+				$dataProfil = $this->UserModel->getKasBesar($this->username);
+			else {
+				$dataProfil = $this->UserModel->getKasKecil($this->username);
+				$_SESSION['sess_saldo'] = $dataProfil['saldo'];
+			}
+
+			// cek kondisi foto
+			if(!empty($dataProfil['foto'])){
+				// cek foto di storage
+				$filename = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$dataProfil['foto'];
+				if(!file_exists($filename)) 
+					$foto = BASE_URL.'assets/images/user/default.jpg';
+				else
+					$foto = BASE_URL.'assets/images/user/'.$dataProfil['foto'];
+			}
+			else $foto = BASE_URL.'assets/images/user/default.jpg';
+
+			$_SESSION['sess_login'] = true;
+			$_SESSION['sess_lockscreen'] = false;
+			$_SESSION['sess_level'] = $level;
+			$_SESSION['sess_id'] = $dataProfil['id'];
+			$_SESSION['sess_nama'] = $dataProfil['nama'];
+			$_SESSION['sess_alamat'] = $dataProfil['alamat'];
+			$_SESSION['sess_email'] = $dataProfil['email'];
+			$_SESSION['sess_foto'] = $foto;
+			$_SESSION['sess_status'] = $dataProfil['status'];
+			$_SESSION['sess_welcome'] = true;
+			$_SESSION['sess_timeout'] = date('Y-m-d H:i:s', time()+(60*60)); // 1 jam idle
 		}
 
 		/**
