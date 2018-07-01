@@ -212,6 +212,32 @@
 			return $result;
 		}
 
+
+		/* ============================== mobile ===================================== */
+		public function updateProfil_mobile($id, $telepon, $alamat) {
+			$query = "UPDATE sub_kas_kecil SET alamat = :alamat, no_telp = :no_telp WHERE id = :id;";
+
+			try {
+
+				$this->koneksi->beginTransaction();
+				$statement = $this->koneksi->prepare($query);
+				$statement->execute(
+					array(
+						':alamat' => $alamat, 
+						':no_telp' => $telepon, 
+						':id' => $id, 
+					)
+				);
+				$statement->closeCursor();
+				$this->koneksi->commit();
+
+				return true;
+			} catch (PDOException $e) {
+				$this->koneksi->rollback();
+				return $e->getMessage();
+			}
+		}
+
 		/**
 		* 
 		*/

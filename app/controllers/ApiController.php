@@ -277,6 +277,27 @@
 			echo json_encode($output);
 		}
 
+		public function edit_profil() {
+			$this->model('Sub_kas_kecilModel');
+
+			$id = isset($_POST['id']) ? $_POST['id'] : false;
+			$alamat = isset($_POST['alamat']) ? $_POST['alamat'] : "";
+			$telepon = isset($_POST['telepon'])  ? $_POST['telepon'] : "";
+
+			$output = array();
+			$output['status'] = $this->status;
+
+			if ($this->status) {
+				$hasil = $this->Sub_kas_kecilModel->updateProfil_mobile($id,$telepon,$alamat);
+
+				if ($hasil === true) {
+					$output['status_aksi'] = true;
+				}
+			}
+
+			echo json_encode($output);	
+		}
+
 		/**
 		*
 		*/
