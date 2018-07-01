@@ -38,11 +38,7 @@
 
 			$cekTimeout = isset($_POST['timeout']) ? $_POST['timeout'] : false;
 
-			if(!$cekTimeout){
-				$_SESSION['timeout'] = 'timeout++';
-				$_SESSION['sess_timeout'] = date('Y-m-d H:i:s', time()+(60*60));
-			}
-			else $_SESSION['timeout'] = 'no';
+			if(!$cekTimeout) $_SESSION['sess_timeout'] = date('Y-m-d H:i:s', time()+(60*60));
 				
 		}
 
