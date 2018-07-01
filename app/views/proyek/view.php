@@ -157,7 +157,7 @@
 																<table class="table table-hover">
 																	<thead>
 																		<tr>
-																			<th>No</th>
+																			<th class="text-right">No</th>
 																			<th>ID Sub Kas Kecil</th>
 																			<th>Nama</th>
 																		</tr>
@@ -167,7 +167,7 @@
 																			$no = 1;
 																			foreach($skk as $row){
 																				echo "<tr>";
-																				echo "<td>".$no++."</td>";
+																				echo "<td class='text-right'>".$no++."</td>";
 																				foreach($row as $value){
 																					echo "<td>".$value."</td>";
 																				}
