@@ -69,6 +69,8 @@ class Operasional_ProyekModel extends Database implements ModelInterface{
 		* 
 		*/
 		public function insert($data){
+			// $dataOperasionalProyek = $data['dataOperasionalProyek'];
+			// $dataDetail = $data['dataDetail'];
 			$query = "INSERT INTO operasional_proyek (id, id_proyek,id_bank, tgl, nama, total) VALUES (:id, :id_proyek, :id_bank, :tgl, :nama, :total);";
 
 			$statment = $this->koneksi->prepare($query);

@@ -169,6 +169,8 @@ class Operasional_Proyek extends CrudAbstract{
 
 		public function action_add(){
 			$data = isset($_POST) ? $_POST : false;
+			// $dataOperasionalProyek = isset($_POST['dataOperasionalProyek']) ? json_decode($_POST['dataOperasionalProyek'], true) : false;
+			// $dataDetail = isset($_POST['dataDetail']) ? json_decode($_POST['dataDetail'], true) : false;
 			$this->auth->cekToken($_SESSION['token_operasional_proyek']['add'], $data['token'], 'operasional-proyek');
 			
 			$status = false;
@@ -186,12 +188,7 @@ class Operasional_Proyek extends CrudAbstract{
 				$cek = $validasi['cek'];
 				$error = $validasi['error'];
 
-				// $getSaldo = $this->BankModel->getById($data['id_bank'])['saldo'];
-
-				// if($data['nominal'] > $getSaldo){
-				// 	$cek = false;
-				// 	$error['nominal'] = "Nominal terlalu besar dan melebihi saldo bank";
-				// }
+				// if(empty($dataDetail)) $cek = false;
 
 				if($cek){
 					// validasi inputan
@@ -203,6 +200,11 @@ class Operasional_Proyek extends CrudAbstract{
 						'nama' => $this->validation->validInput($data['nama']),
 						'total' => $this->validation->validInput($data['total']),
 					);
+
+					// $dataInsert = array(
+					// 	'dataOperasionalProyek' => $dataProyek,
+					// 	'dataDetail' => $dataDetail,
+					// );
 
 					if($this->Operasional_ProyekModel->insert($data)) {
 						$status = true;
@@ -316,7 +318,7 @@ class Operasional_Proyek extends CrudAbstract{
 	/**
 		* Function validasi form utama
 		*/
-		private function set_validation($data){
+		private function set_validation($data, $action){
 			
 			// id
 			$this->validation->set_rules($data['id'], 'ID Operasional Proyek', 'id', 'string | 1 | 255 | required');
@@ -394,7 +396,7 @@ class Operasional_Proyek extends CrudAbstract{
 			$status = false;
 			$error = "";
 
-			$validasi = $this->set_validation_detail($data);
+			// $validasi = $this->set_validation_detail($data);
 			$cek = $validasi['cek'];
 			$error = $validasi['error'];
 
@@ -416,6 +418,9 @@ class Operasional_Proyek extends CrudAbstract{
 		private function set_validation_detail($data){
 			// nama
 			$this->validation->set_rules($data['nama'], 'Nama Kebutuhan', 'nama', 'string | 1 | 255 | required');
+			// jenis
+			$this->validation->set_rules($data['jenis'], 'Jenis Kebutuhan', 'jenis', 'string | 1 | 255 | required');
+			
 			
 
 			return $this->validation->run();
