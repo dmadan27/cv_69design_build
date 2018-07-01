@@ -15,7 +15,9 @@ function load_notif(){
 
 	$.ajax({
 		url: BASE_URL+url,
+		type: 'POST',
 		dataType: 'json',
+		data:{'timeout': 'no'},
 		berofeSend: function(){},
 		success: function(data){
 			$('#view-all').attr('href', data.view_all);
@@ -34,6 +36,9 @@ function load_notif(){
 		error: function (jqXHR, textStatus, errorThrown){ // error handling
             console.log(jqXHR, textStatus, errorThrown);
             swal("Pesan Gagal", "Terjadi Kesalahan Teknis Pada Notifikasi, Silahkan Coba Kembali", "error");
+            setTimeout(function(){ 
+                 location.reload();
+            }, 1500);
         }
 	})
 }
