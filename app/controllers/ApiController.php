@@ -133,6 +133,30 @@
 		/**
 		*
 		*/
+		public function laporan() {
+			$this->model('Laporan_pengajuan_sub_kas_kecilModel');
+
+			$output = array();
+			$output['status'] = $this->status;
+
+			if ($this->status) {
+				$page = (isset($_POST['page']) && !empty($_POST['page'])) ? $_POST['page'] : 1;
+
+				$dataLaporan = $this->Laporan_pengajuan_sub_kas_kecilModel->getAll_mobile($page);
+				$totalData = $this->Laporan_pengajuan_sub_kas_kecilModel->get_recordTotal_mobile();
+				$totalPage = ceil($totalData/10);
+
+				$next = ($page < $totalPage) ? ($page + 1) : null;
+
+				$output['list_laporan'] = $dataLaporan;
+				$output['next'] = $next;
+			}
+			echo json_encode($output);
+		}
+
+		/**
+		*
+		*/
 		public function add_laporan(){
 			$this->model('Sub_kas_kecilModel');
 			$this->model('Pengajuan_sub_kas_kecilModel');
