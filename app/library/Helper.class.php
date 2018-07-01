@@ -11,7 +11,7 @@
 		* contoh: Rp. 1.590.850,00
 		*/	
 		public function cetakRupiah($value){
-			$rupiah = 'Rp. '.number_format($value, 2, ',', '.');
+			$rupiah = 'Rp '.number_format($value, 2, ',', '.');
 			return $rupiah;
 		}
 
@@ -25,7 +25,7 @@
 		}
 
 		/**
-		* FUngsi cetak tgl sesuai dengan format yang di inginkan
+		* Fungsi cetak tgl sesuai dengan format yang di inginkan
 		* param $tgl harus berformat 'yyyy-mm-dd'
 		* param $format : 
 		* 'dd-mm-yyyy' (27-02-1995), 
