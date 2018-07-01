@@ -125,11 +125,11 @@
                                           <tr>
                                             <th class="" style="width: 15px">No</th>
                                             <th>Nama</th>
-                                            <!-- <th>Jenis</th> -->
-                                           <!--  <th>Satuan</th>
+                                            <th>Jenis</th>
+                                            <th>Satuan</th>
                                             <th>Qty</th>
                                             <th>Harga</th>
-                                            <th>Status</th> -->
+                                            <th>Status</th>
                                             <th>Aksi</th>
                                           </tr>
                                         </thead>

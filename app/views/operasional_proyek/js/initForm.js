@@ -93,8 +93,8 @@ $(document).ready(function () {
 	function addDetail(){
 		var index = indexDetail++;
 
-		// var qty_detail = parseFloat($('#qty_detail').val().trim()) ? parseFloat($('#qty_detail').val().trim()) : $('#qty_detail').val().trim();
-		// var harga_detail = parseFloat($('#harga_detail').val().trim()) ? parseFloat($('#harga_detail').val().trim()) : $('#harga_detail').val().trim();
+		var qty_detail = parseFloat($('#qty_detail').val().trim()) ? parseFloat($('#qty_detail').val().trim()) : $('#qty_detail').val().trim();
+		var harga_detail = parseFloat($('#harga_detail').val().trim()) ? parseFloat($('#harga_detail').val().trim()) : $('#harga_detail').val().trim();
 		// var sub_total_detail = parseFloat($('#sub_total_detail').val().trim()) ? parseFloat($('#sub_total_detail').val().trim()) : $('#sub_total_detail').val().trim();
 		// var harga_asli_detail = parseFloat($('#harga_asli_detail').val().trim()) ? parseFloat($('#harga_asli_detail').val().trim()) : $('#harga_asli_detail').val().trim();
 		// var sisa_detail = parseFloat($('#sisa_detail').val().trim()) ? parseFloat($('#sisa_detail').val().trim()) : $('#sisa_detail').val().trim();
@@ -104,18 +104,73 @@ $(document).ready(function () {
 			// id: '',
 			// id_operasional_proyek : $('#id_operasional_proyek').val().trim(),
 			nama : $('#nama_detail').val().trim(),
-			// jenis : $('#jenis_detail').val().trim(),
-			// satuan : $('#satuan_detail').val().trim(),
-			// qty : qty_detail,
-			// harga : harga_detail,
-			// status : $('#status_detail').val().trim(),
+			jenis : $('#jenis_detail').val().trim(),
+			satuan : $('#satuan_detail').val().trim(),
+			qty : qty_detail,
+			harga : harga_detail,
+			status : $('#status_detail').val().trim(),
 			// sub_total : sub_total_detail,
 			// status :  $('#status').val().trim(),
 			aksi: 'tambah',
 			delete: false,
 		};
 
-		validDetail(data);
+		// validDetail(data);
+
+		// start testing-----------------------
+				listDetail.push(data);
+
+			var jenis = function(value){
+						return (data.jenis.toLowerCase() == value.toLowerCase()) ? 'selected' : ''
+					};
+			var status = function(value){
+			return (data.status.toLowerCase() == value.toLowerCase()) ? 'selected' : ''
+		};
+
+
+
+			// tambah data ke tabel
+					$('#detail_OperasionalproyekTable > tbody:last-child').append(
+						'<tr>'+
+							'<td></td>'+ // no
+							'<td>' // nama
+								+'<input type="text" class="form-control input-sm" value="'+data.nama+'" '+
+								'onchange="onChange_nama('+data.index+', this)"></td>'+
+							'<td>' // jenis
+								+'<select onchange="onChange_jenis('+data.index+', this)" class="form-control input-sm">'+ 
+									'<option '+jenis('TEKNIS')+'>TEKNIS</option>'+
+									'<option '+jenis('NONTEKNIS')+'>NONTEKNIS</option>'+
+								'</select></td>'+
+							'<td>'+ // satuan
+								'<input type="text" class="form-control input-sm" value="'+data.satuan+'" '+
+								'onchange="onChange_satuan('+data.index+', this)"></td>'+
+							'<td>'+ // qty
+								'<input type="text" class="form-control input-sm" value="'+data.qty+'" '+
+								'onchange="onChange_qty('+data.index+', this)"></td>'+
+							'<td>'+ // harga
+								'<input type="text" class="form-control input-sm" value="'+data.harga+'" '+
+								'onchange="onChange_harga('+data.index+', this)"></td>'+
+							'<td>' // status
+								+'<select onchange="onChange_status('+data.index+', this)" class="form-control input-sm">'+ 
+									'<option '+status('TUNAI')+'>TUNAI</option>'+
+									'<option '+status('KREDIT')+'>KREDIT</option>'+
+								+'</select></td>'+
+								
+								
+								
+									
+							
+							'<td>'+btnAksi_detail(data.index)+'</td>'+ // aksi
+						'</tr>'
+					);
+					numbering_listDetail();
+					console.log(listDetail);
+
+					$("#modalDetailOperasional").modal('hide');
+					resetModal();
+
+					// end of testing---------------------------------------
+
 
 		console.log('Index : '+index);
 		console.log('Index Utama: '+indexDetail);
@@ -137,37 +192,24 @@ $(document).ready(function () {
 				console.log(output);
 				if(output.status){
 					// tambah data ke list
-					listDetail.push(data);
+				listDetail.push(data);
 
-					// '<input type="text" class="form-control" value="'+data.angsuran+'" onchange="onChange_angsuran('+index+', this)">'
-					// '<div class="input-group"><input type="number" min="0" step="any" onchange="onChange_persentase('+data.index+',this)" class="form-control input-sm" value="'+data.persentase+'"><span class="input-group-addon">%</span></div>'
+			var jenis = function(value){
+						return (data.jenis.toLowerCase() == value.toLowerCase()) ? 'selected' : ''
+					};
 
-					// var status = function(value){
-					// 	return (data.status_detail.toLowerCase() == value.toLowerCase()) ? 'selected' : ''
-					// };
-
-					// var status = function(value){
-					// }
-					// 	return (data.status.toLowerCase() == value.toLowerCase()) ? 'selected' : ''
-					// };
-
-					// var jenis = function(value){
-					// 	return (data.jenis.toLowerCase() == value.toLowerCase()) ? 'selected' : ''
-					// };
-
-
-					// tambah data ke tabel
+			// tambah data ke tabel
 					$('#detail_OperasionalproyekTable > tbody:last-child').append(
 						'<tr>'+
 							'<td></td>'+ // no
 							'<td>' // nama
 								+'<input type="text" class="form-control input-sm" value="'+data.nama+'" '+
 								'onchange="onChange_nama('+data.index+', this)"></td>'+
-							// '<td>' // jenis
-							// 	+'<select onchange="onChange_jenis('+data.index+', this)" class="form-control input-sm">'+ 
-							// 		'<option '+status('TEKNIS')+'>TEKNIS</option>'+
-							// 		'<option '+status('NON-TEKNIS')+'>NON-TEKNIS</option>'+
-							// 	+'</select>'+'</td>'+
+							'<td>' // jenis
+								+'<select onchange="onChange_jenis('+data.index+', this)" class="form-control input-sm">'+ 
+									'<option '+jenis('TEKNIS')+'>TEKNIS</option>'+
+									'<option '+jenis('NONTEKNIS')+'>NONTEKNIS</option>'+
+								'</select></td>'+
 							// '<td>'+ // satuan
 							// 	'<input type="text" class="form-control input-sm" value="'+data.satuan+'" '+
 							// 	'onchange="onChange_satuan('+data.index+', this)"></td>'+
@@ -247,7 +289,7 @@ $(document).ready(function () {
 	/**
 	*
 	*/
-	function onChange_jenis(){
+	function onChange_jenis(index, val){
 		$.each(listDetail, function(i, item){
 			if(item.index == index){
 				item.jenis = val.value;
@@ -262,7 +304,7 @@ $(document).ready(function () {
 	/**
 	*
 	*/
-	function onChange_satuan(){
+	function onChange_satuan(index, val){
 		$.each(listDetail, function(i, item){
 			if(item.index == index){
 				item.satuan = val.value;
@@ -277,10 +319,10 @@ $(document).ready(function () {
 	/**
 	*
 	*/
-	function onChange_qty(){
+	function onChange_qty(index, val){
 		$.each(listDetail, function(i, item){
 			if(item.index == index){
-				item.qty = parseFloat(val.value);
+				item.qty = val.value;
 			}
 		});
 		numbering_listDetail();
@@ -292,10 +334,10 @@ $(document).ready(function () {
 	/**
 	*
 	*/
-	function onChange_harga(){
+	function onChange_harga(index, val){
 		$.each(listDetail, function(i, item){
 			if(item.index == index){
-				item.harga = parseFloat(val.value);
+				item.harga =val.value;
 			}
 		});
 		numbering_listDetail();
@@ -307,7 +349,7 @@ $(document).ready(function () {
 	/**
 	*
 	*/
-	function onChange_status(){
+	function onChange_status(index, val){
 		$.each(listDetail, function(i, item){
 			if(item.index == index){
 				item.status = val.value;
@@ -390,6 +432,15 @@ function getDataForm(){
 	// 	total: $('#total').val().trim(),
 	// }
 
+	// var dataOperasionalProyek = {
+	// 	id  : $('#id').val().trim(),
+	// 	id_proyek: $('#id_proyek').val().trim(),
+	// 	id_bank: $('#id_bank').val().trim(),
+	// 	tgl: $('#tgl').val().trim(),
+	// 	nama: $('#nama').val().trim(),
+	// 	total: $('#total').val().trim()
+	// }
+
 
 
 
@@ -400,13 +451,7 @@ function getDataForm(){
 	data.append('id_bank', $('#id_bank').val().trim());
 	data.append('tgl', $('#tgl').val().trim());
 	data.append('nama', $('#nama').val().trim());
-	data.append('total', total);
-
-
-	// data.append('dataProyek', JSON.stringify(dataProyek));
-	// data.append('dataDetail', JSON.stringify(listDetail));
-	// data.append('dataSkc', JSON.stringify(listSkc));
-	// data.append('id', $('#id').val().trim());
+	data.append('total', $('#total').val().trim());
 	data.append('action', $('#submit_operasional_proyek').val().trim());
 
 	return data;
