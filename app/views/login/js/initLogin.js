@@ -76,7 +76,27 @@ function submit_login(){
 *
 */
 function submit_lupaPassword(){
-
+	$.ajax({
+		url: BASE_URL+'lupa-password/',
+		type: 'POST',
+		dataType: 'json',
+		data:{
+			'username': $('#email').val().trim()
+		},
+		beforeSend: function(){},
+		success: function(output){
+			console.log(output);
+			// if(output.status) document.location=BASE_URL;
+			// else {
+			// 	toastr.warning(output.notif.message, output.notif.title);
+			// 	setError(output.error);
+			// }
+		},
+		error: function (jqXHR, textStatus, errorThrown) { // error handling
+            console.log(jqXHR, textStatus, errorThrown);
+            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+        }
+	})
 }
 
 /**
