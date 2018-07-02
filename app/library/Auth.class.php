@@ -32,10 +32,9 @@
 					header('Location: '.BASE_URL.'login');
 					die();
 				}
-
-				// var_dump($_SESSION['sess_lockscreen']);
 			}
 
+			// param khusus untuk notifikasi atau req dari ajax yg tidak reload halaman
 			$cekTimeout = isset($_POST['timeout']) ? $_POST['timeout'] : false;
 
 			if(!$cekTimeout) $_SESSION['sess_timeout'] = date('Y-m-d H:i:s', time()+(60*60));
@@ -49,16 +48,8 @@
 		*/
 		public function cekAuthMobile(){
 			$this->mobileOnly();
-			// $this->jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
-			// if($this->jenis){
+
 			return $status = $this->isLogin() ? true : false;
-
-			// $output = array(
-			// 	'status' => $status,
-			// );
-
-			// echo json_encode($output);
-			// }
 		}
 
 		/**
@@ -67,18 +58,16 @@
 		public function isLogin(){
 			$this->jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
 			$this->login = isset($_SESSION['sess_login']) ? $_SESSION['sess_login'] : false;
-			$this->lockscreen = isset($_SESSION['sess_lockscreen']) ? $_SESSION['sess_lockscreen'] : false;
 			$this->timeout = isset($_SESSION['sess_timeout']) ? strtotime($_SESSION['sess_timeout']) : false;
-			// $cekTimeout = isset($_GET['timeout']) ? $_GET['timeout'] : false;
 
-			if($this->jenis){ // untuk mobile
+			if($this->jenis && $this->jenis == 'sub-kas-kecil'){ // untuk mobile
 				$user = isset($_POST['username']) ? $_POST['username'] : false;
 				$token = isset($_POST['token']) ? $_POST['token'] : false;
 
 				// get token di db
 				require_once ROOT.DS.'app'.DS.'models'.DS.'TokenModel.php';
 				$tokenModel = new TokenModel();
-				$this->token = $tokenModel->getToken($user);
+				$this->token = $tokenModel->getToken_mobile($user);
 
 				if($this->token){
 					// pengecekan token, dan tgl exp
@@ -104,9 +93,6 @@
 					return false;
 				}
 
-				// if($cekTimeout && $cekTimeout == 'no') return true;
-				
-				// $_SESSION['sess_timeout'] = date('Y-m-d H:i:s', time()+(15));
 				return true; 
 			}
 		}
@@ -118,17 +104,10 @@
 		public function mobileOnly(){
 			$this->jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
 
-			if((!$this->jenis) || ($this->jenis != 'mobile')){
+			if((!$this->jenis) || ($this->jenis != 'sub-kas-kecil')){
 				header('Location: '.BASE_URL);
 				die();
 			}
-		}
-
-		/**
-		*
-		*/
-		private function getAkses($user){
-
 		}
 
 		/**
@@ -142,7 +121,7 @@
 		    $codeAlphabet.= "0123456789";
 		    $max = strlen($codeAlphabet); // edited
 
-		    for ($i=0; $i < 25; $i++) {
+		    for ($i=0; $i < 50; $i++) {
 		        $token .= $codeAlphabet[$this->crypto_rand_secure(0, $max-1)];
 		    }
 
