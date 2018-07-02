@@ -13,7 +13,7 @@
 	</a>
 	<ul class="treeview-menu">
 		<li class="menu-pengajuan"><a href="<?= BASE_URL."pengajuan-sub-kas-kecil/"; ?>"><i class="fa fa-circle-o"></i> Data Pengajuan</a></li>
-		<li class="menu-laporan"><a href="<?= BASE_URL."pengajuan-sub-kas-kecil/laporan/"; ?>"><i class="fa fa-circle-o"></i> Data Laporan Pengajuan</a></li>
+		<li class="menu-laporan"><a href="<?= BASE_URL."laporan-sub-kas-kecil/"; ?>"><i class="fa fa-circle-o"></i> Data Laporan Pengajuan</a></li>
 	</ul>
 </li>
 <!-- menu data saldo kas kecil -->
