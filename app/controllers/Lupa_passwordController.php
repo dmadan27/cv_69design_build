@@ -5,32 +5,193 @@
 	*
 	*/
 	class Lupa_password extends Controller{
+
 		/**
 		*
 		*/
 		public function __construct(){
-			
+			$this->auth();
+			$this->model('UserModel');
+			$this->model('TokenModel');
 		}
 
 		/**
 		*
 		*/
 		public function index(){
+			$jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
 
+			// cek jenis akses
+			if($jenis && $jenis == 'sub-kas-kecil') $this->lupa_password_mobile(); // jika mobile
+			else{ // jika sistem
+				if($this->auth->isLogin()) $this->redirect(BASE_URL); // jika sudah login, tidak bisa akses
+				else $this->lupa_password();
+			}
 		}
 
 		/**
 		*
 		*/
 		private function lupa_password(){
+			$email = isset($_POST['username']) ? $_POST['username'] : false;
 
+			$status = false;
+			$errorEmail = "";
+			$notif = $dataToken = '';
+
+			$dataEmail = $this->UserModel->getUser($email);
+
+			if(!$dataEmail){
+				$errorEmail = "Email Tidak Ditemukan";
+				$notif = array(
+					'title' => "Pesan Pemberitahuan",
+					'message' => "Silahkan Cek Kembali Form Isian",
+				);
+			}
+			else{
+				$dataToken = $this->getToken($email);
+
+				if(strtolower($dataEmail['level']) == 'kas besar') 
+					$dataUser = $this->UserModel->getKasBesar($email);
+				else if(strtolower($dataEmail['level']) == 'kas kecil')
+					$dataUser = $this->UserModel->getKasKecil($email);
+				else if(strtolower($dataEmail['level']) == 'sub kas kecil')
+					$dataUser = $this->UserModel->getSubKasKecil($email);
+
+				// kirim email
+				$link = BASE_URL.'lupa-password/reset/?user='.$email.'&token='.$dataToken['token_asli'];
+				$sendTo = array(
+					'email' => $email,
+					'name' => $dataUser['nama'],
+					'text' => "Hai ".$dataUser['nama'].",\nKlik link berikut untuk mereset password: ".$link."\nHarap lakukan reset password sebelum tanggal ".$dataToken['tgl_exp'],
+				);
+				
+				$sendEmail = $this->sendEmail($sendTo);
+
+				if($sendEmail['status']) {
+					// get data token lama dan hapus
+					if($this->TokenModel->setToken_lupa_password($dataToken)) $status = true;
+				}
+				else $errorEmail = $sendEmail['error'];
+			}
+
+			$output = array(
+				'status' => $status,
+				'error' => $errorEmail,
+				'notif' => $notif,
+				'token' => $dataToken,
+			);
+
+			echo json_encode($output);
 		}
 
 		/**
 		*
 		*/
 		public function lupa_password_mobile(){
+			$this->auth->mobileOnly();
+		}
+
+		/**
+		*
+		*/
+		private function getToken($username){
+			$token = $this->auth->getToken();
+			$tokenSave = password_hash($token, PASSWORD_BCRYPT);
+			$dataToken = array(
+				'username' => $username,
+				'token_asli' => $token,
+				'token' => $tokenSave,
+				'tgl_buat' => date('Y-m-d H:i:s'),
+				'tgl_exp' => date('Y-m-d H:i:s', time()+(60*60*24*1)),
+			);
+
+			return $dataToken;
+		}
+
+		/**
+		*
+		*/
+		private function cekToken(){
+			$token = $this->TokenModel->getToken_lupa_password($this->username);
+
+			if($token){
+				if ( ($this->token == "") 
+					|| (!password_verify($this->token, $token['token'])) 
+					|| (time() > strtotime($token['tgl_exp'])) ) 
+					return false;
+				else if( ($this->token != "") 
+					&& (password_verify($this->token, $token['token'])) 
+					&& (time() <= strtotime($token['tgl_exp'])) ) 
+					return true;
+				else return false;
+			}
+			else return false;
+		}
+
+		/**
+		*
+		*/
+		private function sendEmail($sendTo){
+			require_once ROOT.DS.'app'.DS.'library'.DS.'PHPMailer'.DS.'PHPMailerAutoload.php';
+			$mail = new PHPMailer;
+
+			$status = false;
+			$error = '';
+
+			$username = 'ramadan@lordraze.com';
+			$password = 'VixyBlack27';
+			$cc = 'rarasta27@gmail.com';
+			$nama_pengirim = 'ADMIN 69 DESIGN BUILD';
+			$subjek = 'Reset Password';
 			
+			$mail->CharSet = 'utf-8';
+			ini_set('default_charset', 'UTF-8');
+			$mail->isSMTP();
+			$mail->SMTPDebug = 0;  //untuk tahu semua debug nya
+			$mail->Debugoutput = 'html';
+			$mail->Host = 'majora.rapidplex.com'; //sesuaikan lagi  - 'smtp.gmail.com' (google)  -  mail.lordraze.com  -  majora.rapidplex.com
+			$mail->Port = 465; //sesuaikan lagi  -  587 (google)  -  465 (domain)
+			$mail->SMTPSecure = 'ssl'; //sesuaikan lagi
+			$mail->SMTPAuth = true;
+			$mail->Username = $username; 
+			$mail->Password = $password;
+			$mail->setFrom($username, $nama_pengirim);
+			$mail->addAddress($sendTo['email'], $sendTo['name']);
+			$mail->addCC($cc);
+			$mail->Subject = $subjek;
+			$mail->Body = $sendTo['text'];
+
+			if(!$mail->send()) $error = "Kirim Email Error: ".$mail->ErrorrInfo;
+			else $status = true;
+
+			$output = array(
+				'status' => $status,
+				'error' => $error,
+			);
+
+			return $output;
+		}
+
+		/**
+		*
+		*/
+		public function reset(){
+			if($this->auth->isLogin()) $this->redirect(BASE_URL);
+
+			$this->validation();
+
+			$this->token = isset($_GET['token']) ? $this->validation->validInput($_GET['token'], false) : false;
+			$this->username = isset($_GET['user']) ? $this->validation->validInput($_GET['user'], false) : false;
+
+			// echo $this->token;
+			// echo '</br>';
+			// echo $this->username;
+
+			if((!$this->token || !$this->username) && !$this->cekToken())
+				$this->redirect(BASE_URL);
+			else
+				$this->view('reset_password');
 		}
 
 	}
