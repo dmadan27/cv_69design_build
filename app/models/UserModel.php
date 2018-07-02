@@ -51,6 +51,13 @@
 		/**
 		* 
 		*/
+		public function getAll(){
+			
+		}
+
+		/**
+		* 
+		*/
 		public function getUser($username){
 			$query = "SELECT * FROM user WHERE BINARY username = :username";
 
@@ -120,7 +127,8 @@
 
 			return $result;
 		}
-			/**
+
+		/**
 		* 
 		*/
 		public function insert($data){
@@ -151,6 +159,51 @@
 		}
 
 		/**
+		*
+		*/
+		public function updatePassword($data, $lupa_password = false){
+			$query = "UPDATE user SET password = :password WHERE username = :username";
+
+			try{
+				$this->koneksi->beginTransaction();
+				
+				$statement = $this->koneksi->prepare($query);
+				$statement->execute(
+					array(
+						':password' => $data['password'],
+						':username' => $data['username'],
+					)
+				);
+				$statement->closeCursor();
+
+				if($lupa_password) $this->delete_lupa_password($data['username']);
+
+				$this->koneksi->commit();
+
+				return true;
+			}
+			catch(PDOException $e){
+				$this->koneksi->rollback();
+				die($e->getMessage());
+				// return false;
+			}
+
+			
+		}
+
+		/**
+		* 
+		*/
+		private function delete_lupa_password($user){
+			$query = "DELETE FROM token_lupa_password WHERE username = :username";
+
+			$statement = $this->koneksi->prepare($query);	
+			$statement->execute(array(':username' => $user));
+
+			$statement->closeCursor();
+		}
+
+		/**
 		* 
 		*/
 		public function delete($id){
@@ -162,13 +215,6 @@
 
 			// return $result;
 		}		
-
-		/**
-		* 
-		*/
-		public function getAll(){
-			
-		}
 
 		/**
 		* 
