@@ -148,8 +148,8 @@
 			// insert proyek
 			$query = "INSERT INTO proyek (id, pemilik, tgl, pembangunan, luas_area, alamat, kota, estimasi, total, dp, cco, status) ";
 			$query .= "VALUES (:id, :pemilik, :tgl, :pembangunan, :luas_area, :alamat, :kota, :estimasi, :total, :dp, :cco, :status);";
-			$statment = $this->koneksi->prepare($query);
-			$statment->execute(
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
 				array(
 					':id' => $data['id'],
 					':pemilik' => $data['pemilik'],
@@ -165,7 +165,7 @@
 					':status' => $data['status'],
 				)
 			);
-			$statment->closeCursor();
+			$statement->closeCursor();
 		}
 
 		/**
@@ -175,8 +175,8 @@
 			// insert detail_proyek
 			$query = 'INSERT INTO detail_proyek (id_proyek, angsuran, persentase, total, status) ';
 			$query .= 'VALUES (:id_proyek, :angsuran, :persentase, :total, :status);';
-			$statment = $this->koneksi->prepare($query);
-			$statment->execute(
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
 				array(
 					':id_proyek' => $data['id_proyek'],
 					':angsuran' => $data['angsuran'],
@@ -185,7 +185,7 @@
 					':status' => $data['status_detail'],
 				)
 			);
-			$statment->closeCursor();
+			$statement->closeCursor();
 		}
 
 		/**
@@ -193,14 +193,14 @@
 		*/
 		private function insertSkk($data){
 			$query = 'INSERT INTO logistik_proyek (id_proyek, id_sub_kas_kecil) VALUES (:id_proyek, :id_sub_kas_kecil);';
-			$statment = $this->koneksi->prepare($query);
-			$statment->execute(
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
 				array(
 					':id_proyek' => $data['id_proyek'],
 					':id_sub_kas_kecil' => $data['id_skk'],
 				)
 			);
-			$statment->closeCursor();
+			$statement->closeCursor();
 		}
 
 		/**
@@ -243,10 +243,10 @@
 		*
 		*/
 		private function updateProyek($data){
-			$query = "UPDATE proyek SET id = :id, pemilik = :pemilik, tgl = :tgl, pembangunan = :pembangunan, luas_area = :luas_area, ";
-			$query .= "alamat = :alamat, kota = :kota, estimasi = :estimasi, total = :total, dp = :dp, cco = :cco, status = :status;";
-			$statment = $this->koneksi->prepare($query);
-			$statment->execute(
+			$query = "UPDATE proyek SET pemilik = :pemilik, tgl = :tgl, pembangunan = :pembangunan, luas_area = :luas_area, ";
+			$query .= "alamat = :alamat, kota = :kota, estimasi = :estimasi, total = :total, dp = :dp, cco = :cco, status = :status WHERE id = :id;";
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
 				array(
 					':id' => $data['id'],
 					':pemilik' => $data['pemilik'],
@@ -262,7 +262,7 @@
 					':status' => $data['status'],
 				)
 			);
-			$statment->closeCursor();
+			$statement->closeCursor();
 		}
 
 		/**
@@ -270,8 +270,8 @@
 		*/
 		private function updateDetail($data){
 			$query = 'UPDATE detail_proyek SET angsuran = :angsuran, persentase = :persentase, total = :total, status = :status WHERE id = :id;';
-			$statment = $this->koneksi->prepare($query);
-			$statment->execute(
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
 				array(
 					':id_proyek' => $data['id_proyek'],
 					':angsuran' => $data['angsuran'],
@@ -280,7 +280,7 @@
 					':status' => $data['status_detail'],
 				)
 			);
-			$statment->closeCursor();
+			$statement->closeCursor();
 		}
 
 		/**
@@ -288,14 +288,14 @@
 		*/
 		private function updateSkk($data){
 			$query = 'UPDATE logistik_proyek SET id_sub_kas_kecil = :id_sub_kas_kecil;';
-			$statment = $this->koneksi->prepare($query);
-			$statment->execute(
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
 				array(
 					':id_proyek' => $data['id_proyek'],
 					':id_sub_kas_kecil' => $data['id_skk'],
 				)
 			);
-			$statment->closeCursor();
+			$statement->closeCursor();
 		}
 
 		/**
@@ -304,11 +304,11 @@
 		public function delete($id){
 			try{
 				$query = 'CALL hapus_proyek (:id);';
-				$statment = $this->koneksi->prepare($query);
-				$statment->execute(
+				$statement = $this->koneksi->prepare($query);
+				$statement->execute(
 					array(':id' => $id)
 				);
-				$statment->closeCursor();
+				$statement->closeCursor();
 
 				$this->koneksi->commit();
 
