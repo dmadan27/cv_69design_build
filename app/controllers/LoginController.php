@@ -52,13 +52,11 @@
 			$errorUser = $errorPass = "";
 			$notif = '';
 			
-			// $callback = $_GET;
-			
 			// get username
 			$dataUser = $this->UserModel->getUser($this->username);
 
 			// cek username
-			if(!$dataUser){
+			if(!$dataUser || $dataUser['level'] == 'SUB KAS KECIL'){
 				$status = false;
 				$errorUser = "Username atau Password Anda Salah";
 				$errorPass = $errorUser;
@@ -70,7 +68,6 @@
 			else{
 				if(password_verify($this->password, $dataUser['password'])){
 					$status = true;
-					// $callback = isset($_GET['callback']) ? $_GET['callback'] : false;
 					$this->setSession($dataUser['level']);
 				}
 				else{
@@ -112,44 +109,41 @@
 		private function loginMobile(){
 			$this->auth->mobileOnly();
 
+			$status = false;
+			$token = null;
+
 			// validasi pengguna
 			$user = isset($_POST['username']) ? $_POST['username'] : false;
 			$pass = isset($_POST['password']) ? $_POST['password'] : false;
 
-			// get user
-			$this->model('sub_kas_kecilModel');
-			$dataUser = $this->sub_kas_kecilModel->getUser($user);
+			$dataUser = $this->UserModel->getUser($user);
 
-			if(!$dataUser){
-				$token = null;
-				$status = false;
-			}
-			else{
+			// if(!$dataUser || $dataUser['level'] != 'SUB KAS KECIL'){
+			// 	$token = null;
+			// 	$status = false;
+			// }
+			if($dataUser || $dataUser['level'] == 'SUB KAS KECIL'){
 				if(password_verify($pass, $dataUser['password'])) {
-				// if($pass == $dataUser['password']) {
-					$status = true;
-					
 					// generate token
 					$token = md5($this->auth->getToken());
 					$tokenSave = password_hash($token, PASSWORD_BCRYPT);
 					$dataToken = array(
-						'id_sub_kas_kecil' => $dataUser['id'],
+						'username' => $dataUser['username'],
 						'token' => $tokenSave,
 						'tgl_buat' => date('Y-m-d H:i:s'),
 						'tgl_exp' => date('Y-m-d H:i:s', time()+(60*60*24*30)),
 					);
 
-					$this->model('tokenModel');
+					$this->model('TokenModel');
 					
-					// get data token lama dan hapus
-					$this->tokenModel->delete($dataUser['id']);
+					if($this->TokenModel->setToken_mobile($dataToken)) $status = true;
+					else $token = null;
 
-					// tambah token baru
-					$this->tokenModel->insert($dataToken);	
-				}
-				else{
-					$token = null;
-					$status = false;
+					// // get data token lama dan hapus
+					// $this->tokenModel->delete_mobile($dataUser['id']);
+
+					// // tambah token baru
+					// $this->tokenModel->insert_mobile($dataToken);	
 				}
 			}
 
@@ -211,6 +205,7 @@
 			$_SESSION['sess_status'] = $dataProfil['status'];
 			$_SESSION['sess_welcome'] = true;
 			$_SESSION['sess_timeout'] = date('Y-m-d H:i:s', time()+(60*60)); // 1 jam idle
+			// $_SESSION['sess_akses'] = '';
 		}
 
 		/**
