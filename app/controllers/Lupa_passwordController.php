@@ -313,7 +313,7 @@
 					'password' => password_hash($this->password_baru, PASSWORD_BCRYPT),
 				);
 
-				if($this->UserModel->updatePassword($data)){
+				if($this->UserModel->updatePassword($data, true)){
 					$status = true;
 					$notif = array(
 						'title' => "Pesan Berhasil",
