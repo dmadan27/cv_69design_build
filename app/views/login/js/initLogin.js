@@ -56,11 +56,16 @@ function submit_login(){
 			'username': $('#username').val().trim(),
 			'password': $('#password').val().trim(),
 		},
-		beforeSend: function(){},
+		beforeSend: function(){
+			$('#submit_login').prop('disabled', true);
+			$('#submit_login').prepend('<i class="fa fa-spin fa-refresh"></i> ');
+		},
 		success: function(output){
 			console.log(output);
 			if(output.status) document.location=BASE_URL;
 			else {
+				$('#submit_login').prop('disabled', false);
+				$('#submit_login').html($('#submit_login').text());
 				toastr.warning(output.notif.message, output.notif.title);
 				setError(output.error);
 			}
@@ -68,6 +73,8 @@ function submit_login(){
 		error: function (jqXHR, textStatus, errorThrown) { // error handling
             console.log(jqXHR, textStatus, errorThrown);
             swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+            $('#submit_login').prop('disabled', false);
+			$('#submit_login').html($('#submit_login').text());
         }
 	})
 }
@@ -83,18 +90,32 @@ function submit_lupaPassword(){
 		data:{
 			'username': $('#email').val().trim()
 		},
-		beforeSend: function(){},
+		beforeSend: function(){
+			$('#submit_lupaPassword').prop('disabled', true);
+			$('#submit_lupaPassword').prepend('<i class="fa fa-spin fa-refresh"></i> ');
+		},
 		success: function(output){
 			console.log(output);
-			// if(output.status) document.location=BASE_URL;
-			// else {
-			// 	toastr.warning(output.notif.message, output.notif.title);
-			// 	setError(output.error);
-			// }
+			if(output.status){
+				swal(output.notif.title, output.notif.message, "success");
+				$('#submit_lupaPassword').prop('disabled', false);
+				$('#submit_lupaPassword').html($('#submit_lupaPassword').text());
+				resetForm();
+				$('.form-lupa-password').slideUp();
+				$('.form-login').slideDown();
+			}
+			else {
+				$('#submit_lupaPassword').prop('disabled', false);
+				$('#submit_lupaPassword').html($('#submit_lupaPassword').text());
+				toastr.warning(output.notif.message, output.notif.title);
+				setError(output.error);
+			}
 		},
 		error: function (jqXHR, textStatus, errorThrown) { // error handling
             console.log(jqXHR, textStatus, errorThrown);
             swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+            $('#submit_lupaPassword').prop('disabled', false);
+			$('#submit_lupaPassword').html($('#submit_lupaPassword').text());
         }
 	})
 }

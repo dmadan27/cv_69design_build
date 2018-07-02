@@ -16,6 +16,7 @@
 		*/
 		public function __construct(){
 			$this->auth();
+			$this->validation();
 			$this->model('UserModel');
 		}
 
@@ -23,7 +24,7 @@
 		* fungsi index untuk akses utama controller login
 		*/
 		public function index(){
-			$jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
+			$jenis = isset($_POST['jenis']) ? $this->validation->validInput($_POST['jenis'], false) : false;
 
 			// cek jenis login
 			if($jenis) $this->loginMobile(); // jika mobile
@@ -46,8 +47,8 @@
 		* return berupa json
 		*/
 		private function loginSistem($callback = false){
-			$this->username = isset($_POST['username']) ? $_POST['username'] : false;
-			$this->password = isset($_POST['password']) ? $_POST['password'] : false;
+			$this->username = isset($_POST['username']) ? $this->validation->validInput($_POST['username'], false) : false;
+			$this->password = isset($_POST['password']) ? $this->validation->validInput($_POST['password'], false) : false;
 
 			$errorUser = $errorPass = "";
 			$notif = '';
@@ -113,16 +114,18 @@
 			$token = null;
 
 			// validasi pengguna
-			$user = isset($_POST['username']) ? $_POST['username'] : false;
-			$pass = isset($_POST['password']) ? $_POST['password'] : false;
+			$user = isset($_POST['username']) ? $this->validation->validInput($_POST['username'], false) : false;
+			$pass = isset($_POST['password']) ? $this->validation->validInput($_POST['password'], false) : false;
 
 			$dataUser = $this->UserModel->getUser($user);
+			$id = null;
 
 			// if(!$dataUser || $dataUser['level'] != 'SUB KAS KECIL'){
 			// 	$token = null;
 			// 	$status = false;
 			// }
 			if($dataUser || $dataUser['level'] == 'SUB KAS KECIL'){
+				$id = $this->UserModel->getSubKasKecil($user)['id'];
 				if(password_verify($pass, $dataUser['password'])) {
 					// generate token
 					$token = md5($this->auth->getToken());
@@ -148,7 +151,7 @@
 			}
 
 			$output = array(
-				'id' => $dataUser['id'],
+				'id' => $id,
 				'token' => $token,
 				'status' => $status,
 			);
@@ -178,10 +181,12 @@
 			// set data profil sesuai dgn jenis user
 			if(strtolower($level) == 'kas besar') 
 				$dataProfil = $this->UserModel->getKasBesar($this->username);
-			else {
+			else if(strtolower($level) == 'kas kecil') {
 				$dataProfil = $this->UserModel->getKasKecil($this->username);
 				$_SESSION['sess_saldo'] = $dataProfil['saldo'];
 			}
+			else if(strtolower($level) == 'owner')
+				$dataProfil = $this->UserModel->getOwner($this->username);
 
 			// cek kondisi foto
 			if(!empty($dataProfil['foto'])){
