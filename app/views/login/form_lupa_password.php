@@ -2,7 +2,7 @@
 	<p class="login-box-msg">Masukkan Email Anda<br>Intruksi Selanjutnya Akan Dikirim ke Email Anda</p>
 	<form id="form_lupa_password">
 		<div class="form-group field-email has-feedback">
-			<input type="text" name="email" class="form-control field" placeholder="Email">
+			<input type="text" id="email" class="form-control field" placeholder="Email">
 			<span class="glyphicon glyphicon-envelope form-control-feedback"></span>
 			<span class="help-block small pesan pesan-email"></span>
 		</div>

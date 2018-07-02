@@ -6,11 +6,15 @@
 	*/
 	class Lupa_password extends Controller{
 
+		protected $password_baru;
+		protected $password_konf;
+
 		/**
 		*
 		*/
 		public function __construct(){
 			$this->auth();
+			$this->validation();
 			$this->model('UserModel');
 			$this->model('TokenModel');
 		}
@@ -19,7 +23,7 @@
 		*
 		*/
 		public function index(){
-			$jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
+			$jenis = isset($_POST['jenis']) ? $this->validation->validInput($_POST['jenis'], false) : false;
 
 			// cek jenis akses
 			if($jenis && $jenis == 'sub-kas-kecil') $this->lupa_password_mobile(); // jika mobile
@@ -33,7 +37,7 @@
 		*
 		*/
 		private function lupa_password(){
-			$email = isset($_POST['username']) ? $_POST['username'] : false;
+			$email = isset($_POST['username']) ? $this->validation->validInput($_POST['username'], false) : false;
 
 			$status = false;
 			$errorEmail = "";
@@ -57,6 +61,8 @@
 					$dataUser = $this->UserModel->getKasKecil($email);
 				else if(strtolower($dataEmail['level']) == 'sub kas kecil')
 					$dataUser = $this->UserModel->getSubKasKecil($email);
+				else if(strtolower($dataEmail['level']) == 'owner')
+					$dataUser = $this->UserModel->getOwner($email);
 
 				// kirim email
 				$link = BASE_URL.'lupa-password/reset/?user='.$email.'&token='.$dataToken['token_asli'];
@@ -70,14 +76,32 @@
 
 				if($sendEmail['status']) {
 					// get data token lama dan hapus
-					if($this->TokenModel->setToken_lupa_password($dataToken)) $status = true;
+					if($this->TokenModel->setToken_lupa_password($dataToken)) {
+						$status = true;
+						$notif = array(
+							'title' => "Pesan Berhasil",
+							'message' => "Pengajuan Reset Password Berhasil, Silahkan Cek Email Anda Untuk Langkah Selanjutnya",
+						);
+					}
+					else{
+						$notif = array(
+							'title' => "Pesan Gagal",
+							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+						);
+					}
 				}
-				else $errorEmail = $sendEmail['error'];
+				else {
+					$errorEmail = $sendEmail['error'];
+					$notif = array(
+						'title' => "Pesan Gagal",
+						'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+					);
+				}
 			}
 
 			$output = array(
 				'status' => $status,
-				'error' => $errorEmail,
+				'error' => array('email' => $errorEmail),
 				'notif' => $notif,
 				'token' => $dataToken,
 			);
@@ -88,8 +112,72 @@
 		/**
 		*
 		*/
-		public function lupa_password_mobile(){
+		private function lupa_password_mobile(){
 			$this->auth->mobileOnly();
+
+			$email = isset($_POST['username']) ? $this->validation->validInput($_POST['username'], false) : false;
+
+			$status = false;
+			$errorEmail = "";
+			$notif = $dataToken = '';
+
+			$dataEmail = $this->UserModel->getUser($email);
+
+			if(!$dataEmail){
+				$errorEmail = "Email Tidak Ditemukan";
+				$notif = array(
+					'title' => "Pesan Pemberitahuan",
+					'message' => "Silahkan Cek Kembali Form Isian",
+				);
+			}
+			else{
+				$dataToken = $this->getToken($email);
+
+				$dataUser = $this->UserModel->getSubKasKecil($email);
+
+				// kirim email
+				$link = BASE_URL.'lupa-password/reset/?user='.$email.'&token='.$dataToken['token_asli'];
+				$sendTo = array(
+					'email' => $email,
+					'name' => $dataUser['nama'],
+					'text' => "Hai ".$dataUser['nama'].",\nKlik link berikut untuk mereset password: ".$link."\nHarap lakukan reset password sebelum tanggal ".$dataToken['tgl_exp'],
+				);
+				
+				$sendEmail = $this->sendEmail($sendTo);
+
+				if($sendEmail['status']) {
+					// get data token lama dan hapus
+					if($this->TokenModel->setToken_lupa_password($dataToken)) {
+						$status = true;
+						$notif = array(
+							'title' => "Pesan Berhasil",
+							'message' => "Pengajuan Reset Password Berhasil, Silahkan Cek Email Anda Untuk Langkah Selanjutnya",
+						);
+					}
+					else{
+						$notif = array(
+							'title' => "Pesan Gagal",
+							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+						);
+					}
+				}
+				else {
+					$errorEmail = $sendEmail['error'];
+					$notif = array(
+						'title' => "Pesan Gagal",
+						'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+					);
+				}
+			}
+
+			$output = array(
+				'status' => $status,
+				'error' => array('email' => $errorEmail),
+				'notif' => $notif,
+				'token' => $dataToken,
+			);
+
+			echo json_encode($output);
 		}
 
 		/**
@@ -179,19 +267,93 @@
 		public function reset(){
 			if($this->auth->isLogin()) $this->redirect(BASE_URL);
 
-			$this->validation();
-
 			$this->token = isset($_GET['token']) ? $this->validation->validInput($_GET['token'], false) : false;
 			$this->username = isset($_GET['user']) ? $this->validation->validInput($_GET['user'], false) : false;
 
-			// echo $this->token;
-			// echo '</br>';
-			// echo $this->username;
 
-			if((!$this->token || !$this->username) && !$this->cekToken())
+			if(!$this->token || !$this->username){
 				$this->redirect(BASE_URL);
-			else
-				$this->view('reset_password');
+			}
+			else{
+				if($this->cekToken()){
+					if($_SERVER['REQUEST_METHOD'] == "POST") $this->action_reset($this->username);
+					else $this->view('reset_password');
+				}
+				else $this->redirect(BASE_URL);
+			}
+
+		}
+
+		/**
+		*
+		*/
+		private function action_reset($username){
+			$this->password_baru = isset($_POST['password_baru']) ? $this->validation->validInput($_POST['password_baru'], false) : false;
+			$this->password_konf = isset($_POST['password_konf']) ? $this->validation->validInput($_POST['password_konf'], false) : false;
+
+			$error = $notif = '';
+			$status = false;
+
+			$validasi = $this->set_validation(
+				$data = array(
+					'password_baru' => $this->password_baru, 
+					'password_konf' => $this->password_konf
+				));
+			$cek = $validasi['cek'];
+			$error = $validasi['error'];
+
+			if($this->password_baru !== $this->password_konf){
+				$cek = false;
+				$error['password_baru'] = $error['password_konf'] = 'Konfirmasi Password dan Password Baru Tidak Sama !';
+			}
+
+			if($cek){
+				$data = array(
+					'username' => $username,
+					'password' => password_hash($this->password_baru, PASSWORD_BCRYPT),
+				);
+
+				if($this->UserModel->updatePassword($data)){
+					$status = true;
+					$notif = array(
+						'title' => "Pesan Berhasil",
+						'message' => "Password Anda Berhasil di Reset, Silahkan Coba Login Kembali",
+					);
+				}
+				else{
+					$notif = array(
+						'title' => "Pesan Gagal",
+						'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+					);
+				}
+			}
+			else{
+				$notif = array(
+					'title' => "Pesan Pemberitahuan",
+					'message' => "Silahkan Cek Kembali Form Isian",
+				);
+			}
+
+			$output = array(
+				'status' => $status,
+				'notif' => $notif,
+				'error' => $error,
+				// 'data' => $data
+			);
+
+			echo json_encode($output);
+		}
+
+		/**
+		*
+		*/
+		private function set_validation($data){
+			// password baru
+			$this->validation->set_rules($data['password_baru'], 'Password Baru', 'password_baru', 'string | 5 | 255 | required');
+			// password konf
+			$this->validation->set_rules($data['password_konf'], 'Konfirmasi Password', 'password_konf', 'string | 5 | 255 | required');
+
+			return $this->validation->run();
 		}
 
 	}
