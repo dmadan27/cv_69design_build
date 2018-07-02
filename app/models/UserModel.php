@@ -19,7 +19,32 @@
 
 		// ======================= dataTable ======================= //
 
-			
+			/**
+			* 
+			*/
+			public function getAllDataTable($config){
+				$this->dataTable->set_config($config);
+				$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
+				$statement->execute();
+				$result = $statement->fetchAll();
+
+				return $result;
+			}
+
+				/**
+			* 
+			*/
+			public function recordFilter(){
+				return $this->dataTable->recordFilter();
+
+			}
+
+			/**
+			* 
+			*/
+			public function recordTotal(){
+				return $this->dataTable->recordTotal();
+			}
 
 		// ========================================================= //
 
@@ -70,28 +95,16 @@
 		/**
 		* 
 		*/
-		public function getAllDataTable($config){
-			$this->dataTable->set_config($config);
-			$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
+		public function getSubKasKecil($username){
+			$query = "SELECT skk.id, skk.nama, skk.alamat, skk.email, skk.foto, skk.saldo, skk.status ";
+			$query .= "FROM user u JOIN sub_kas_kecil skk ON skk.email = u.username WHERE u.username = :username";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':username', $username);
 			$statement->execute();
-			$result = $statement->fetchAll();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
 
 			return $result;
-		}
-
-			/**
-		* 
-		*/
-		public function recordFilter(){
-			return $this->dataTable->recordFilter();
-
-		}
-
-		/**
-		* 
-		*/
-		public function recordTotal(){
-			return $this->dataTable->recordTotal();
 		}
 
 		/**
