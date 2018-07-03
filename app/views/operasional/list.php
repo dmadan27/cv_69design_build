@@ -47,7 +47,6 @@
 									<thead>
 										<tr>
 											<th class="text-right" style="width: 35px">No</th>
-											<th>ID</th>
 											<th>Bank</th>
 											<th>Tanggal</th>
 											<th>Nama</th>
