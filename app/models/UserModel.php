@@ -73,7 +73,7 @@
 		* 
 		*/
 		public function getKasBesar($username){
-			$query = "SELECT kb.id, kb.nama, kb.alamat, kb.email, kb.foto, kb.status ";
+			$query = "SELECT kb.id, kb.nama, kb.alamat, kb.no_telp, kb.email, kb.foto, kb.status ";
 			$query .= "FROM user u JOIN kas_besar kb ON kb.email = u.username WHERE u.username = :username";
 
 			$statement = $this->koneksi->prepare($query);
@@ -88,7 +88,7 @@
 		* 
 		*/
 		public function getKasKecil($username){
-			$query = "SELECT kk.id, kk.nama, kk.alamat, kk.email, kk.foto, kk.saldo, kk.status ";
+			$query = "SELECT kk.id, kk.nama, kk.alamat, kk.no_telp, kk.email, kk.foto, kk.saldo, kk.status ";
 			$query .= "FROM user u JOIN kas_kecil kk ON kk.email = u.username WHERE u.username = :username";
 
 			$statement = $this->koneksi->prepare($query);
@@ -103,7 +103,7 @@
 		* 
 		*/
 		public function getSubKasKecil($username){
-			$query = "SELECT skk.id, skk.nama, skk.alamat, skk.email, skk.foto, skk.saldo, skk.status ";
+			$query = "SELECT skk.id, skk.nama, skk.alamat, skk.no_telp, skk.email, skk.foto, skk.saldo, skk.status ";
 			$query .= "FROM user u JOIN sub_kas_kecil skk ON skk.email = u.username WHERE u.username = :username";
 
 			$statement = $this->koneksi->prepare($query);
@@ -121,7 +121,7 @@
 			$query = "SELECT * FROM user WHERE username = :username;";
 
 			$statement = $this->koneksi->prepare($query);
-			$statement->bindParam(':id', $id);
+			$statement->bindParam(':username', $id);
 			$statement->execute();
 			$result = $statement->fetch(PDO::FETCH_ASSOC);
 
