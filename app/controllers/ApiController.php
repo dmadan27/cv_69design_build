@@ -17,6 +17,8 @@
 			$this->auth->mobileOnly();
 			if(!$this->auth->cekAuthMobile())
 				$this->status = false;
+
+			$this->validation();
 		}
 
 		/**
@@ -38,7 +40,7 @@
 			$output['status'] = $this->status;
 
 			if ($this->status) {
-				$page = (isset($_POST['page']) && !empty($_POST['page'])) ? $_POST['page'] : 1;
+				$page = (isset($_POST['page']) && !empty($_POST['page'])) ? $this->validation->validInput($_POST['page']) : 1;
 
 				$dataPengajuan = $this->Pengajuan_sub_kas_kecilModel->getAll_mobile($page);
 				$totalData = $this->Pengajuan_sub_kas_kecilModel->get_recordTotal_mobile();
@@ -62,8 +64,8 @@
 			$output = array();
 			$output['status'] = $this->status;
 
-			$id_pengajuan = ((isset($_POST['id_pengajuan'])) && !empty($_POST['id_pengajuan'])) ? $_POST['id_pengajuan'] : false;
-			$id_skk = ((isset($_POST['id'])) && !empty($_POST['id'])) ? $_POST['id'] : false;
+			$id_pengajuan = ((isset($_POST['id_pengajuan'])) && !empty($_POST['id_pengajuan'])) ? $this->validation->validInput($_POST['id_pengajuan']) : false;
+			$id_skk = ((isset($_POST['id'])) && !empty($_POST['id'])) ? $this->validation->validInput($_POST['id']) : false;
 
 			if ($this->status && ($id_pengajuan != false) && ($id_skk != false)) {
 
@@ -117,7 +119,7 @@
 			$output = array();
 			$output['status'] = $this->status;
 
-			$id_pengajuan = ((isset($_POST['id_pengajuan'])) && !empty($_POST['id_pengajuan'])) ? $_POST['id_pengajuan'] : false;
+			$id_pengajuan = ((isset($_POST['id_pengajuan'])) && !empty($_POST['id_pengajuan'])) ? $this->validation->validInput($_POST['id_pengajuan']) : false;
 
 			if ($this->status && ($id_pengajuan != false)) {
 				$dataDetail = $this->Pengajuan_sub_kas_kecilModel->getById_mobile(strtoupper($id_pengajuan));
@@ -140,7 +142,7 @@
 			$output['status'] = $this->status;
 
 			if ($this->status) {
-				$page = (isset($_POST['page']) && !empty($_POST['page'])) ? $_POST['page'] : 1;
+				$page = (isset($_POST['page']) && !empty($_POST['page'])) ? $this->validation->validInput($_POST['page']) : 1;
 
 				$dataLaporan = $this->Laporan_pengajuan_sub_kas_kecilModel->getAll_mobile($page);
 				$totalData = $this->Laporan_pengajuan_sub_kas_kecilModel->get_recordTotal_mobile();
@@ -164,8 +166,8 @@
 			$output = array();
 			$output['status'] = $this->status;
 
-			$id_pengajuan = ((isset($_POST['id_pengajuan'])) && !empty($_POST['id_pengajuan'])) ? $_POST['id_pengajuan'] : false;
-			$id_skk = ((isset($_POST['id'])) && !empty($_POST['id'])) ? $_POST['id'] : false;
+			$id_pengajuan = ((isset($_POST['id_pengajuan'])) && !empty($_POST['id_pengajuan'])) ? $this->validation->validInput($_POST['id_pengajuan']) : false;
+			$id_skk = ((isset($_POST['id'])) && !empty($_POST['id'])) ? $this->validation->validInput($_POST['id']) : false;
 
 			if ($this->status && ($id_pengajuan != false) && ($id_skk != false)) {
 				$output['id_pengajuan'] = $id_pengajuan;
@@ -220,7 +222,7 @@
 			$output['status'] = $this->status;
 
 			if ($this->status) {
-				$page = (isset($_POST['page']) && !empty($_POST['page'])) ? $_POST['page'] : 1;
+				$page = (isset($_POST['page']) && !empty($_POST['page'])) ? $this->validation->validInput($_POST['page']) : 1;
 
 				$dataProyek = $this->ProyekModel->getAll_mobile($page);
 				$totalData = $this->ProyekModel->get_recordTotal_mobile();
@@ -240,8 +242,8 @@
 		public function profil(){
 			$this->model('Sub_kas_kecilModel');
 
-			$id = isset($_POST['id']) ? $_POST['id'] : false;
-			$username = isset($_POST['username']) ? $_POST['username'] : false;
+			$id = isset($_POST['id']) ? $this->validation->validInput($_POST['id']) : false;
+			$username = isset($_POST['username']) ? $this->validation->validInput($_POST['username']) : false;
 
 			$output = array();
 			$output['status'] = $this->status;
@@ -284,9 +286,9 @@
 		public function edit_profil() {
 			$this->model('Sub_kas_kecilModel');
 
-			$id = isset($_POST['id']) ? $_POST['id'] : false;
-			$alamat = isset($_POST['alamat']) ? $_POST['alamat'] : "";
-			$telepon = isset($_POST['telepon'])  ? $_POST['telepon'] : "";
+			$id = isset($_POST['id']) ? $this->validation->validInput($_POST['id']) : false;
+			$alamat = isset($_POST['alamat']) ? $this->validation->validInput($_POST['alamat']) : "";
+			$telepon = isset($_POST['telepon'])  ? $this->validation->validInput($_POST['telepon']) : "";
 
 			$output = array();
 			$output['status'] = $this->status;
@@ -334,7 +336,7 @@
 			$output['status'] = $this->status;
 
 			if ($this->status) {
-				$page = (isset($_POST['page']) && !empty($_POST['page'])) ? $_POST['page'] : 1;
+				$page = (isset($_POST['page']) && !empty($_POST['page'])) ? $this->validation->validInput($_POST['page']) : 1;
 
 				$dataMutasi = $this->Mutasi_saldo_sub_kas_kecilModel->getAll_mobile($page);
 				$totalData = $this->Mutasi_saldo_sub_kas_kecilModel->get_recordTotal_mobile();
@@ -372,25 +374,60 @@
 		*
 		*/
 		public function ganti_password(){
-			$this->model('Sub_kas_kecilModel');
+			$this->model('UserModel');
 
-			$id = isset($_POST['id']) ? $_POST['id'] : false;
-			$username = isset($_POST['username']) ? $_POST['username'] : false;
-			$password_lama = isset($_POST['password_lama']) ? $_POST['password_lama'] : false;
-			$password_baru = isset($_POST['password_baru']) ? $_POST['password_baru'] : false;
-			// $password_konf = isset($_POST['password_konf']) ? $_POST['password_konf'] : false;
+			$id = isset($_POST['id']) ? $this->validation->validInput($_POST['id'], false) : false;
+			$username = isset($_POST['username']) ? $this->validation->validInput($_POST['username'], false) : false;
+			$password_lama = isset($_POST['password_lama']) ? $this->validation->validInput($_POST['password_lama'], false) : false;
+			$password_baru = isset($_POST['password_baru']) ? $this->validation->validInput($_POST['password_baru'], false) : false;
+			$password_konf = isset($_POST['password_konf']) ? $this->validation->validInput($_POST['password_konf'], false) : false;
 
 			$output = array();
 			$output['status'] = $this->status;
 			$output['status_aksi'] = $this->status_aksi;
 
-			if ($this->status) {
-				$dataProfil = $this->Sub_kas_kecilModel->getById($id);
+			$output['error'] = $error = '';
 
-				if(($dataProfil['email'] == $username) && (password_verify($password_lama, $dataProfil['password'])) ){
-					if($this->Sub_kas_kecilModel->updatePassword($id, password_hash($password_baru, PASSWORD_BCRYPT)))
-						$output['status_aksi'] = true;
+			if ($this->status) {
+				$validasi = $this->set_validation_ganti_password(
+					$data = array(
+						'password_lama' => $password_lama,
+						'password_baru' => $password_baru, 
+						'password_konf' => $password_konf
+					)
+				);
+			
+				$cek = $validasi['cek'];
+				$error = $validasi['error'];
+
+				$dataProfil = $this->Sub_kas_kecilModel->getById($id);
+				$verify_password = $this->UserModel->getById($username)['password'];
+
+				// jika username dan password lama sama
+				if(($dataProfil['email'] == $username) 
+					&& (password_verify($password_lama, $verify_password)) ){
+
+					// cek password baru dan konfirmasi
+					if($password_baru !== $password_konf){
+						$cek = false;
+						$error['password_baru'] = $error['password_konf'] = 'Konfirmasi Password dan Password Baru Tidak Sama !';
+					}
+
+					// jika lolos semua validasi
+					if($cek){
+						$data = array(
+							'username' => $username,
+							'password' => password_hash($password_baru, PASSWORD_BCRYPT),
+						);
+						if($this->UserModel->updatePassword($data))
+							$output['status_aksi'] = true;
+					}
+					
 				}
+				else $error['password_lama'] = 'Password Lama Anda Salah';
+
+				$output['error'] = $error;
+				
 			}
 			echo json_encode($output);
 		}
@@ -429,6 +466,20 @@
 			$this->validation->set_rules($data['harga'], 'Total', 'total', 'nilai | 1 | 99999999 | required');
 			// subtotal
 			$this->validation->set_rules($data['subtotal'], 'Total', 'total', 'nilai | 1 | 99999999 | required');
+
+			return $this->validation->run();
+		}
+
+		/**
+		*
+		*/
+		private function set_validation_ganti_password($data){
+			// password lama
+			$this->validation->set_rules($data['password_lama'], 'Password Lama', 'password_lama', 'string | 5 | 255 | required');
+			// password baru
+			$this->validation->set_rules($data['password_baru'], 'Password Baru', 'password_baru', 'string | 5 | 255 | required');
+			// password konf
+			$this->validation->set_rules($data['password_konf'], 'Konfirmasi Password', 'password_konf', 'string | 5 | 255 | required');
 
 			return $this->validation->run();
 		}
