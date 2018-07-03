@@ -8,6 +8,7 @@
 
 		protected $password_baru;
 		protected $password_konf;
+		protected $status = false;
 
 		/**
 		*
@@ -37,76 +38,78 @@
 		*
 		*/
 		private function lupa_password(){
-			$email = isset($_POST['username']) ? $this->validation->validInput($_POST['username'], false) : false;
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$email = isset($_POST['username']) ? $this->validation->validInput($_POST['username'], false) : false;
 
-			$status = false;
-			$errorEmail = "";
-			$notif = $dataToken = '';
+				$errorEmail = "";
+				$notif = $dataToken = '';
 
-			$dataEmail = $this->UserModel->getUser($email);
+				$dataEmail = $this->UserModel->getUser($email);
 
-			if(!$dataEmail){
-				$errorEmail = "Email Tidak Ditemukan";
-				$notif = array(
-					'title' => "Pesan Pemberitahuan",
-					'message' => "Silahkan Cek Kembali Form Isian",
-				);
-			}
-			else{
-				$dataToken = $this->getToken($email);
+				if(!$dataEmail){
+					$errorEmail = "Email Tidak Ditemukan";
+					$notif = array(
+						'title' => "Pesan Pemberitahuan",
+						'message' => "Silahkan Cek Kembali Form Isian",
+					);
+				}
+				else{
+					$dataToken = $this->getToken($email);
 
-				if(strtolower($dataEmail['level']) == 'kas besar') 
-					$dataUser = $this->UserModel->getKasBesar($email);
-				else if(strtolower($dataEmail['level']) == 'kas kecil')
-					$dataUser = $this->UserModel->getKasKecil($email);
-				else if(strtolower($dataEmail['level']) == 'sub kas kecil')
-					$dataUser = $this->UserModel->getSubKasKecil($email);
-				else if(strtolower($dataEmail['level']) == 'owner')
-					$dataUser = $this->UserModel->getOwner($email);
+					if(strtolower($dataEmail['level']) == 'kas besar') 
+						$dataUser = $this->UserModel->getKasBesar($email);
+					else if(strtolower($dataEmail['level']) == 'kas kecil')
+						$dataUser = $this->UserModel->getKasKecil($email);
+					else if(strtolower($dataEmail['level']) == 'sub kas kecil')
+						$dataUser = $this->UserModel->getSubKasKecil($email);
+					else if(strtolower($dataEmail['level']) == 'owner')
+						$dataUser = $this->UserModel->getOwner($email);
 
-				// kirim email
-				$link = BASE_URL.'lupa-password/reset/?user='.$email.'&token='.$dataToken['token_asli'];
-				$sendTo = array(
-					'email' => $email,
-					'name' => $dataUser['nama'],
-					'text' => "Hai ".$dataUser['nama'].",\nKlik link berikut untuk mereset password: ".$link."\nHarap lakukan reset password sebelum tanggal ".$dataToken['tgl_exp'],
-				);
-				
-				$sendEmail = $this->sendEmail($sendTo);
+					// kirim email
+					$link = BASE_URL.'lupa-password/reset/?user='.$email.'&token='.$dataToken['token_asli'];
+					$sendTo = array(
+						'email' => $email,
+						'name' => $dataUser['nama'],
+						'text' => "Hai ".$dataUser['nama'].",\nKlik link berikut untuk mereset password: ".$link."\nHarap lakukan reset password sebelum tanggal ".$dataToken['tgl_exp'],
+					);
+					
+					$sendEmail = $this->sendEmail($sendTo);
 
-				if($sendEmail['status']) {
-					// get data token lama dan hapus
-					if($this->TokenModel->setToken_lupa_password($dataToken)) {
-						$status = true;
-						$notif = array(
-							'title' => "Pesan Berhasil",
-							'message' => "Pengajuan Reset Password Berhasil, Silahkan Cek Email Anda Untuk Langkah Selanjutnya",
-						);
+					if($sendEmail['status']) {
+						// get data token lama dan hapus
+						if($this->TokenModel->setToken_lupa_password($dataToken)) {
+							$this->status = true;
+							$notif = array(
+								'title' => "Pesan Berhasil",
+								'message' => "Pengajuan Reset Password Berhasil, Silahkan Cek Email Anda Untuk Langkah Selanjutnya",
+							);
+						}
+						else{
+							$notif = array(
+								'title' => "Pesan Gagal",
+								'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+							);
+						}
 					}
-					else{
+					else {
+						$errorEmail = $sendEmail['error'];
 						$notif = array(
 							'title' => "Pesan Gagal",
 							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 						);
 					}
 				}
-				else {
-					$errorEmail = $sendEmail['error'];
-					$notif = array(
-						'title' => "Pesan Gagal",
-						'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
-					);
-				}
+
+				$output = array(
+					'status' => $this->status,
+					'error' => array('email' => $errorEmail),
+					'notif' => $notif,
+					'token' => $dataToken,
+				);
+
+				echo json_encode($output);
 			}
-
-			$output = array(
-				'status' => $status,
-				'error' => array('email' => $errorEmail),
-				'notif' => $notif,
-				'token' => $dataToken,
-			);
-
-			echo json_encode($output);
+			else $this->redirect();	
 		}
 
 		/**
@@ -117,7 +120,6 @@
 
 			$email = isset($_POST['username']) ? $this->validation->validInput($_POST['username'], false) : false;
 
-			$status = false;
 			$errorEmail = "";
 			$notif = $dataToken = '';
 
@@ -148,7 +150,7 @@
 				if($sendEmail['status']) {
 					// get data token lama dan hapus
 					if($this->TokenModel->setToken_lupa_password($dataToken)) {
-						$status = true;
+						$this->status = true;
 						$notif = array(
 							'title' => "Pesan Berhasil",
 							'message' => "Pengajuan Reset Password Berhasil, Silahkan Cek Email Anda Untuk Langkah Selanjutnya",
@@ -171,7 +173,7 @@
 			}
 
 			$output = array(
-				'status' => $status,
+				'status' => $this->status,
 				'error' => array('email' => $errorEmail),
 				'notif' => $notif,
 				'token' => $dataToken,
@@ -292,13 +294,13 @@
 			$this->password_konf = isset($_POST['password_konf']) ? $this->validation->validInput($_POST['password_konf'], false) : false;
 
 			$error = $notif = '';
-			$status = false;
 
 			$validasi = $this->set_validation(
 				$data = array(
 					'password_baru' => $this->password_baru, 
 					'password_konf' => $this->password_konf
-				));
+				)
+			);
 			$cek = $validasi['cek'];
 			$error = $validasi['error'];
 
@@ -314,7 +316,7 @@
 				);
 
 				if($this->UserModel->updatePassword($data, true)){
-					$status = true;
+					$this->status = true;
 					$notif = array(
 						'title' => "Pesan Berhasil",
 						'message' => "Password Anda Berhasil di Reset, Silahkan Coba Login Kembali",
@@ -335,7 +337,7 @@
 			}
 
 			$output = array(
-				'status' => $status,
+				'status' => $this->status,
 				'notif' => $notif,
 				'error' => $error,
 				// 'data' => $data
