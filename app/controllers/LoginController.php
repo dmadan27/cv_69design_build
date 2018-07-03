@@ -205,12 +205,20 @@
 			$_SESSION['sess_id'] = $dataProfil['id'];
 			$_SESSION['sess_nama'] = $dataProfil['nama'];
 			$_SESSION['sess_alamat'] = $dataProfil['alamat'];
+			$_SESSION['sess_telp'] = $dataProfil['no_telp'];
 			$_SESSION['sess_email'] = $dataProfil['email'];
 			$_SESSION['sess_foto'] = $foto;
 			$_SESSION['sess_status'] = $dataProfil['status'];
 			$_SESSION['sess_welcome'] = true;
 			$_SESSION['sess_timeout'] = date('Y-m-d H:i:s', time()+(60*60)); // 1 jam idle
 			// $_SESSION['sess_akses'] = '';
+		}
+
+		/**
+		*
+		*/
+		private function setAkses($level){
+
 		}
 
 		/**
