@@ -34,8 +34,8 @@ $(document).ready(function(){
             }
         ],
         createdRow: function(row, data, dataIndex){
-            for(var i = 0; i < 7; i++){
-                if(i == 0 || i == 5) $('td:eq('+i+')', row).addClass('text-right');
+            for(var i = 0; i < 6; i++){
+                if(i == 0 || i == 4) $('td:eq('+i+')', row).addClass('text-right');
             }
         }
     });

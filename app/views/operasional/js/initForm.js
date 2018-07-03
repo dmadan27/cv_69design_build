@@ -68,7 +68,7 @@ function getDataForm(){
 	if($('#submit_operasional').val().trim().toLowerCase() == "action-edit"){
 		data.append('id', $('#id').val().trim());
 		// data.append('id_bank', $('#id_bank').val().trim());
-		// data.append('tgl', $('#tgl').val().trim());
+		data.append('tgl', $('#tgl').val().trim());
 		// data.append('nama', $('#nama').val().trim());
 		// data.append('nominal', nominal);
 		// data.append('ket', $('#ket').val().trim());
@@ -133,7 +133,8 @@ function getEdit(id, token){
 		resetForm();
 		setIdBank();
 		$('.field-id').css('display', 'none');
-		$('.field-tgl').css('display', 'none');
+		$('.field-tgl').css('display', true);
+		$('#tgl').prop('disabled', true);
 		
 		$('#submit_operasional').prop('value', 'action-edit');
 		$('#submit_operasional').prop('disabled', false);
