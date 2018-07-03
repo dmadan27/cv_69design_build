@@ -64,7 +64,8 @@ $(document).ready(function () {
     		$(".pesan-"+this.id).text('');
     	}
     });
- });
+    
+});
 
 // ================ Function detail proyek =================== //
 
