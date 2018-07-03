@@ -63,18 +63,18 @@
 
 			$output = array();
 			$output['status'] = $this->status;
+			$output['status_aksi'] = $this->status_aksi;
 
 			$id_pengajuan = ((isset($_POST['id_pengajuan'])) && !empty($_POST['id_pengajuan'])) ? $this->validation->validInput($_POST['id_pengajuan']) : false;
 			$id_skk = ((isset($_POST['id'])) && !empty($_POST['id'])) ? $this->validation->validInput($_POST['id']) : false;
 
 			if ($this->status && ($id_pengajuan != false) && ($id_skk != false)) {
-
 				$output['id_pengajuan'] = $this->generate_id_pengajuan($id_pengajuan);
 				$output['saldo'] = $this->Sub_kas_kecilModel->getSaldoById($id_skk)['saldo'];
 				$output['sisa_saldo'] = $this->Sub_kas_kecilModel->getSisaSaldoById($id_skk)['sisa_saldo'];
-			} else {
-				$output['status'] = false;
+				$output['status_aksi'] = true;
 			}
+
 			echo json_encode($output);
 		}
 
@@ -86,6 +86,7 @@
 
 			$output = array();
 			$output['status'] = $this->status;
+			$output['status_aksi'] = $this->status_aksi;
 
 			$pengajuan = ((isset($_POST["pengajuan"])) && !empty($_POST["pengajuan"])) ? $_POST["pengajuan"] : false;
 			$detail_pengajuan = ((isset($_POST["detail_pengajuan"])) && !empty($_POST["detail_pengajuan"])) ? $_POST["detail_pengajuan"] : false;
@@ -100,13 +101,13 @@
 				$resultQuery = $this->Pengajuan_sub_kas_kecilModel->insert($data);
 
 				if ($resultQuery === true) {
-					$output['status'] = true;
+					$output['status_aksi'] = true;
 				} else {
 					$output['error'] = $resultQuery;
+					$output['status_aksi'] = false;
 				}
-			} else {
-				$output['status'] = false;
 			}
+
 			echo json_encode($output);
 		}
 
@@ -125,8 +126,6 @@
 				$dataDetail = $this->Pengajuan_sub_kas_kecilModel->getById_mobile(strtoupper($id_pengajuan));
 
 				$output['detail_pengajuan'] = $dataDetail;
-			} else {
-				$output['status'] = false;
 			}
 
 			echo json_encode($output);
@@ -153,6 +152,7 @@
 				$output['list_laporan'] = $dataLaporan;
 				$output['next'] = $next;
 			}
+
 			echo json_encode($output);
 		}
 
@@ -165,6 +165,7 @@
 
 			$output = array();
 			$output['status'] = $this->status;
+			$output['status_aksi'] = $this->status_aksi;
 
 			$id_pengajuan = ((isset($_POST['id_pengajuan'])) && !empty($_POST['id_pengajuan'])) ? $this->validation->validInput($_POST['id_pengajuan']) : false;
 			$id_skk = ((isset($_POST['id'])) && !empty($_POST['id'])) ? $this->validation->validInput($_POST['id']) : false;
@@ -174,9 +175,9 @@
 				$output['saldo'] = $this->Sub_kas_kecilModel->getSaldoById($id_skk)['saldo'];
 				$output['sisa_saldo'] = $this->Sub_kas_kecilModel->getSisaSaldoById($id_skk)['sisa_saldo'];
 				$output['pengajuan'] = $this->Pengajuan_sub_kas_kecilModel->getById_mobile(strtoupper($id_pengajuan));
-			} else {
-				$output['status'] = false;
+				$output['status_aksi'] = true;				
 			}
+
 			echo json_encode($output);
 		}
 
@@ -308,23 +309,76 @@
 		*
 		*/
 		public function edit_foto_profil() {
-			// $this->model('Sub_kas_kecilModel');
+			$id = isset($_POST['id']) ? $this->validation->validInput($_POST['id'], false) : false;
+			$foto = isset($_FILES['foto']) ? $_FILES['foto'] : false;
 
-			// $id = isset($_POST['id']) ? $_POST['id'] : false;
-			// $foto = $_FILES['foto'];
+			$error = $notif = '';
+			$status_upload = $status_hapus = false;
 
-			// $output = array();
-			// $output['status'] = $this->status;
+			if($this->status){
+				$this->model('Sub_kas_kecilModel');
+				$fotoLama = (!empty($this->Sub_kas_kecilModel->getById($id)['foto']) 
+								|| $this->Sub_kas_kecilModel->getById($id)['foto'] != '') 
+									? ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$this->Sub_kas_kecilModel->getById($id)['foto'] : false;
+
+				// validasi foto
+				if($foto){
+					$configFoto = array(
+						'jenis' => 'gambar',
+						'error' => $foto['error'],
+						'size' => $foto['size'],
+						'name' => $foto['name'],
+						'tmp_name' => $foto['tmp_name'],
+						'max' => 2*1048576,
+					);
+					$validasiFoto = $this->validation->validFile($configFoto);
+					if(!$validasiFoto['cek']){
+						$cek = false;
+						$error['foto'] = $validasiFoto['error'];
+					}
+					else {
+						$cek = true;
+						$fotoBaru = md5($id).$validasiFoto['namaFile'];
+					}
+				}
+				else{
+					$error['foto'] = 'Anda Belum Memilih Foto';
+					$cek = false;
+				}
+
+				// cek validasi
+				if($cek){
+					// upload foto ke server
+					$path = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$fotoBaru;
+					if(!move_uploaded_file($foto['tmp_name'], $path)){
+						$error['foto'] = "Upload Foto Gagal";
+					}
+					else $status_upload = true;
+
+					if($status_upload){
+						// update db
+						if($this->Sub_kas_kecilModel->updateFoto(array('id' => $id, 'foto' => $fotoBaru))) $status_hapus = true;
+						else unlink($path);
+					}
+
+					if($status_hapus){
+						if($fotoLama && file_exists($fotoLama)) unlink($fotoLama);
+
+						$this->status_aksi = true; 
+					}
+				}
+			}
+
+			$output = array(
+				'status' => $this->status,
+				'status_aksi' => $this->status_aksi,
+				'foto' => $foto,
+				'error' => $error,
+				'notif' => $notif,
+			);
+
+			echo json_encode($output);
 		}
-
-
-		/**
-		*
-		*/
-		public function lupa_password() {
-
-		}
-
 
 		/**
 		*
