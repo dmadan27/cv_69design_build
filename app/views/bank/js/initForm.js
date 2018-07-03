@@ -132,6 +132,7 @@ function getEdit(id, token){
 			},
 			error: function (jqXHR, textStatus, errorThrown){ // error handling
 	            console.log(jqXHR, textStatus, errorThrown);
+	            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
 	        }
 		})
 	}
