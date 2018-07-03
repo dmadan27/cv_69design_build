@@ -109,22 +109,45 @@
 		* 
 		*/
 		public function insert($data){
-			$query = "INSERT INTO sub_kas_kecil (id, nama, alamat, no_telp, email, password, foto, saldo, status) ";
-			$query .= "VALUES (:id, :nama, :alamat, :no_telp, :email, :password, :foto, :saldo, :status);";
+			try{
+				$this->koneksi->beginTransaction();
+
+				$this->insertSubKasKecil($data);
+
+				$this->koneksi->commit();
+
+				return true;
+			}
+			catch(PDOException $e){
+				$this->koneksi->rollback();
+				die($e->getMessage());
+				// return false;
+			}	
+		}
+
+		/**
+		*
+		*/
+		private function insertSubKasKecil($data){
+			$level = "SUB KAS KECIL";
+			$query = "CALL tambah_sub_kas_kecil (:id, :nama, :alamat, :no_telp, :email, :foto, :saldo, :status, :password, :level);";
 
 			$statement = $this->koneksi->prepare($query);
-			$statement->bindParam(':id', $data['id']);
-			$statement->bindParam(':nama', $data['nama']);
-			$statement->bindParam(':alamat', $data['alamat']);
-			$statement->bindParam(':no_telp', $data['no_telp']);
-			$statement->bindParam(':email', $data['email']);
-			$statement->bindParam(':password', $data['password']);
-			$statement->bindParam(':foto', $data['foto']);
-			$statement->bindParam(':saldo', $data['saldo']);
-			$statement->bindParam(':status', $data['status']);
-			$result = $statement->execute();
-
-			return $result;
+			$statement->execute(
+				array(
+					':id' => $data['id'],
+					':nama' => $data['nama'],
+					':alamat' => $data['alamat'],
+					':no_telp' => $data['no_telp'],
+					':email' => $data['email'],
+					':foto' => $data['foto'],
+					':saldo' => $data['saldo'],
+					':status' => $data['status'],
+					':password' => $data['password'],
+					':level' => $level,
+				)
+			);
+			$statement->closeCursor();
 		}
 
 		/**

@@ -210,8 +210,6 @@
 					if($cekFoto){
 						// insert db
 
-						// transact
-
 						if($this->Sub_kas_kecilModel->insert($data)) {
 							$status = true;
 							$notif = array(
@@ -226,7 +224,6 @@
 							);
 						}
 
-						// commit
 					}
 				}
 				else{
