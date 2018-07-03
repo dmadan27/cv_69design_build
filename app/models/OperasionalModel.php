@@ -106,9 +106,11 @@
 		* 
 		*/
 		public function update($data){
-			$query = "UPDATE operasional SET nama = :nama, nominal = :nominal, ket =:ket WHERE id = :id;";
+			$query = "UPDATE operasional SET
+			id_bank = :id_bank,  nama = :nama, nominal = :nominal, ket =:ket WHERE id = :id;";
 
 			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id_bank', $data['id_bank']);
 			$statement->bindParam(':nama', $data['nama']);
 			$statement->bindParam(':nominal', $data['nominal']);
 			$statement->bindParam(':ket', $data['ket']);

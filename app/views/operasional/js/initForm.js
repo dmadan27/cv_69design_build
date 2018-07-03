@@ -7,7 +7,7 @@ $(document).ready(function(){
 	});
 
 	
-
+	// 
 	$('#submit_operasional').prop('disabled', true);
 
 	// button tambah
@@ -27,7 +27,7 @@ $(document).ready(function(){
 	// submit operasional
 	$('#form_operasional').submit(function(e){
 		e.preventDefault();
-		submit();
+		submit(edit_view);
 
 		return false;
 	});
@@ -65,7 +65,14 @@ function getDataForm(){
 	var data = new FormData();
 	var nominal = parseFloat($('#nominal').val().trim()) ? parseFloat($('#nominal').val().trim()) : $('#nominal').val().trim();
 
-	if($('#submit_operasional').val().trim().toLowerCase() == "action-edit") data.append('id', $('#id').val().trim());
+	if($('#submit_operasional').val().trim().toLowerCase() == "action-edit"){
+		data.append('id', $('#id').val().trim());
+		// data.append('id_bank', $('#id_bank').val().trim());
+		// data.append('tgl', $('#tgl').val().trim());
+		// data.append('nama', $('#nama').val().trim());
+		// data.append('nominal', nominal);
+		// data.append('ket', $('#ket').val().trim());
+	} 
 
 	data.append('token', $('#token_form').val().trim());
 	data.append('id_bank', $('#id_bank').val().trim()); // id_bank
@@ -81,7 +88,7 @@ function getDataForm(){
 /**
 *
 */
-function submit(){
+function submit(edit_view){
 	var data = getDataForm();
 
 	$.ajax({
@@ -124,7 +131,10 @@ function submit(){
 function getEdit(id, token){
 	if(token != ""){
 		resetForm();
-		// $('.field-saldo').css('display', 'none');
+		setIdBank();
+		$('.field-id').css('display', 'none');
+		$('.field-tgl').css('display', 'none');
+		
 		$('#submit_operasional').prop('value', 'action-edit');
 		$('#submit_operasional').prop('disabled', false);
 		$('#submit_operasional').html('Edit Data');
@@ -174,26 +184,12 @@ function setError(error){
 *
 */
 function setValue(value){
-	// $.each(value, function(index, item){
-	// 	item = (parseFloat(item)) ? (parseFloat(item)) : item;
-	// 	$('#'+index).val(item);
-	// });
+	$.each(value, function(index, item){
+		item = (parseFloat(item)) ? (parseFloat(item)) : item;
+		$('#'+index).val(item);
+	});
 }
 
-/**
-*
-*/
-function setStatus(){
-	// var status = [
-	// 	{value: "AKTIF", text: "AKTIF"},
-	// 	{value: "NONAKTIF", text: "NONAKTIF"},
-	// ];
-
-	// $.each(status, function(index, item){
-	// 	var option = new Option(item.text, item.value);
-	// 	$("#status").append(option);
-	// });
-}
 
 /**
 *

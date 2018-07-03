@@ -125,7 +125,7 @@
 				
 				$dataRow = array();
 				$dataRow[] = $no_urut;
-				$dataRow[] = $row['id'];
+				// $dataRow[] = $row['id'];
 				$dataRow[] = $row['nama_bank'];
 				$dataRow[] = $row['tgl'];
 				$dataRow[] = $row['nama'];
@@ -265,40 +265,24 @@
 				$cek = $validasi['cek'];
 				$error = $validasi['error'];
 
-				$getData = $this->OperasionalModel->getById($id);
-
-				$this->model('BankModel');
-
-				// jika bank ada perubahan
-				if($data['id_bank'] != $getData['id_bank']){
-					$getSaldo = $this->BankModel->getSaldoById($data['id_bank'])['saldo'];
-
-					if($data['nominal'] > $getSaldo){
-						$cek = false;
-						$error['nominal'] = "Nominal terlalu besar dan melebihi saldo bank";
-					}
-				}
-				else{
-					// jika bank sama tapi ada perubahan nominal
-					if($getData['nominal'] != $data['nominal']){
-						$getSaldo = $this->BankModel->getSaldoById($data['id_bank'])['saldo'];
-
-						if($data['nominal'] > ($getSaldo + $getData['nominal'])){
-							$cek = false;
-							$error['nominal'] = "Nominal terlalu besar dan melebihi saldo bank";
-						}
-					}
-				}
+				// $getDataBank = $this->BankModel->getById($id);
+				// $this->model('BankModel');
 
 				if($cek){
 					// validasi inputan
 					$data = array(
-						'id' => $this->validation->validInput($data['id']),
-						'tgl' => $this->validation->validInput($data['tgl']),
-						'nama' => $this->validation->validInput($data['nama']),
-						'nominal' => $this->validation->validInput($data['nominal']),
-						'ket' => $this->validation->validInput($data['ket'])
+						'id' =>  $this->validation->validInput($data['id']),
+						'id_bank' =>  $this->validation->validInput($data['id_bank']),
+						'nama' =>  $this->validation->validInput($data['nama']),
+						'nominal' =>  $this->validation->validInput($data['nominal']),
+						'ket' =>  $this->validation->validInput($data['ket']),
+						
+
 					);
+
+					// update db
+
+					// transact
 
 					if($this->OperasionalModel->update($data)) {
 						$status = true;
@@ -314,6 +298,7 @@
 						);
 					}
 
+					// commit
 				}
 				else {
 					$notif = array(
@@ -321,13 +306,16 @@
 						'message' => "Silahkan Cek Kembali Form Isian",
 					);
 				}
+				
+				
+
 			}
 
 			$output = array(
 				'status' => $status,
 				'notif' => $notif,
 				'error' => $error,
-				// 'data' => $data
+				'data' => $data
 			);
 
 			echo json_encode($output);
@@ -424,47 +412,7 @@
 		* dipakai di detail data
 		*/
 		public function get_mutasi(){
-		// 	$data = isset($_POST) ? $_POST : false;
-		// 	// cek token
-		// 	$this->auth->cekToken($_SESSION['token_bank']['view'], $data['token_view'], 'bank');
-
-		// 	$this->model('Mutasi_bankModel');
-			
-		// 	// config datatable
-		// 	$config_dataTable = array(
-		// 		'tabel' => 'mutasi_bank',
-		// 		'kolomOrder' => array(null, 'tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
-		// 		'kolomCari' => array('tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
-		// 		'orderBy' => array('id' => 'desc'),
-		// 		'kondisi' => 'WHERE id = '.$data['id'].' ',
-		// 	);
-
-		// 	$dataMutasi = $this->Mutasi_bankModel->getAllDataTable($config_dataTable);
-
-		// 	$data = array();
-		// 	$no_urut = $_POST['start'];
-		// 	foreach($dataMutasi as $row){
-		// 		$no_urut++;
-				
-		// 		$dataRow = array();
-		// 		$dataRow[] = $no_urut;
-		// 		$dataRow[] = $row['tgl'];
-		// 		$dataRow[] = $this->helper->cetakRupiah($row['uang_masuk']);
-		// 		$dataRow[] = $this->helper->cetakRupiah($row['uang_keluar']);
-		// 		$dataRow[] = $this->helper->cetakRupiah($row['saldo']);
-		// 		$dataRow[] = $row['ket'];
-
-		// 		$data[] = $dataRow;
-		// 	}
-
-		// 	$output = array(
-		// 		'draw' => $_POST['draw'],
-		// 		'recordsTotal' => $this->Mutasi_bankModel->recordTotal(),
-		// 		'recordsFiltered' => $this->Mutasi_bankModel->recordFilter(),
-		// 		'data' => $data,
-		// 	);
-
-		// 	echo json_encode($output);
+		
 		}
 
 		/**
