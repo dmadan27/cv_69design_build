@@ -99,6 +99,179 @@
 		/**
 		*
 		*/
+		public function edit_foto(){
+			$id = $_SESSION['sess_id'];
+			$foto = isset($_FILES['foto']) ? $_FILES['foto'] : false;
+
+			$error = $notif = '';
+			$status_upload = $status_hapus = false;
+
+			switch ($_SESSION['sess_level']) {
+				case 'KAS BESAR':
+					$model = $this->model('Kas_besarModel');
+					$fotoLama = (!empty($this->Kas_besarModel->getById($id)['foto']) 
+									|| $this->Kas_besarModel->getById($id)['foto'] != '') 
+										? ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$this->Kas_besarModel->getById($id)['foto'] : false;
+					break;
+
+				case 'KAS KECIL':
+					$model = $this->model('Kas_kecilModel');
+					$fotoLama = (!empty($this->Kas_kecilModel->getById($id)['foto']) 
+									|| $this->Kas_kecilModel->getById($id)['foto'] != '') 
+										? ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$this->Kas_kecilModel->getById($id)['foto'] : false;
+					break;
+
+				case 'OWNER':
+					$model = $this->model('OwnerModel');
+					$fotoLama = (!empty($this->OwnerModel->getById($id)['foto']) 
+									|| $this->OwnerModel->getById($id)['foto'] != '') 
+										? ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$this->OwnerModel->getById($id)['foto'] : false;
+					break;
+				
+				default:
+					die();
+					break;
+			}
+
+			// validasi foto
+			if($foto){
+				$configFoto = array(
+					'jenis' => 'gambar',
+					'error' => $foto['error'],
+					'size' => $foto['size'],
+					'name' => $foto['name'],
+					'tmp_name' => $foto['tmp_name'],
+					'max' => 2*1048576,
+				);
+				$validasiFoto = $this->validation->validFile($configFoto);
+				if(!$validasiFoto['cek']){
+					$cek = false;
+					$error['foto'] = $validasiFoto['error'];
+				}
+				else {
+					$cek = true;
+					$fotoBaru = md5($id).$validasiFoto['namaFile'];
+				}
+			}
+			else{
+				$error['foto'] = 'Anda Belum Memilih Foto';
+				$cek = false;
+			}
+
+			// cek validasi
+			if($cek){
+				// upload foto ke server
+				$path = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$fotoBaru;
+				if(!move_uploaded_file($foto['tmp_name'], $path)){
+					$error['foto'] = "Upload Foto Gagal";
+				}
+				else $status_upload = true;
+
+				if($status_upload){
+					// update db
+					if($model->updateFoto(array('id' => $id, 'foto' => $fotoBaru))) $status_hapus = true;
+					else unlink($path);
+				}
+
+				if($status_hapus){
+					if($fotoLama && file_exists($fotoLama)) unlink($fotoLama);
+
+					$this->status = true; 
+				}
+			}
+
+			$output = array(
+				'status' => $this->status,
+				'error' => $error,
+				'notif' => $notif,
+			);
+
+			echo json_encode($output);
+		}
+
+		/**
+		*
+		*/
+		public function hapus_foto(){
+			$id = $_SESSION['sess_id'];
+			$error = $notif = '';
+
+			switch ($_SESSION['sess_level']) {
+				case 'KAS BESAR':
+					$model = $this->model('Kas_besarModel');
+					$fotoLama = (!empty($this->Kas_besarModel->getById($id)['foto']) 
+									|| $this->Kas_besarModel->getById($id)['foto'] != '') 
+										? ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$this->Kas_besarModel->getById($id)['foto'] : false;
+					break;
+
+				case 'KAS KECIL':
+					$model = $this->model('Kas_kecilModel');
+					$fotoLama = (!empty($this->Kas_kecilModel->getById($id)['foto']) 
+									|| $this->Kas_kecilModel->getById($id)['foto'] != '') 
+										? ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$this->Kas_kecilModel->getById($id)['foto'] : false;
+					break;
+
+				case 'OWNER':
+					$model = $this->model('OwnerModel');
+					$fotoLama = (!empty($this->OwnerModel->getById($id)['foto']) 
+									|| $this->OwnerModel->getById($id)['foto'] != '') 
+										? ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$this->OwnerModel->getById($id)['foto'] : false;
+					break;
+				
+				default:
+					die();
+					break;
+			}
+
+			// update foto jadikan null
+			if($model->updateFoto(array('id' => $id, 'foto' => null))){
+				// hapus foto lama
+				if($fotoLama){
+					if(file_exists($fotoLama)){
+						if(unlink($fotoLama)){
+							$notif = array(
+								'title' => "Pesan Berhasil",
+								'message' => "Foto Berhasil Dihapus",
+								'type' => 'success',
+							);
+							$this->status = true;	
+						}
+						else{
+							$model->updateFoto(array('id' => $id, 'foto' => $fotoLama));
+							$notif = array(
+								'title' => "Pesan Gagal",
+								'message' => "Foto Gagal Dihapus",
+								'type' => 'error',
+							);
+						}
+					}
+					else{
+						$model->updateFoto(array('id' => $id, 'foto' => null));
+						$this->status = true;
+					}		
+				}
+				else{
+					$this->status = true;
+					$notif = array(
+						'title' => "Pesan Pemberitahuan",
+						'message' => "Tidak Ada Foto yang Dihapus",
+						'type' => 'warning',
+					);
+				}
+			}
+
+			$output = array(
+				'status' => $this->status,
+				'error' => $error,
+				'notif' => $notif,
+			);
+
+			echo json_encode($output);
+		}
+
+		/**
+		*
+		*/
 		public function ganti_password(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 
