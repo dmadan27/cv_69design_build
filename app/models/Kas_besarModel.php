@@ -117,40 +117,33 @@
 		* 
 		*/
 		public function update($data){
-			// try{
-			// 	$this->koneksi->beginTransaction();
+			$query = "UPDATE kas_besar SET nama = :nama, alamat = :alamat, no_telp = :no_telp, email = :email, status = :status WHERE id = :id;";
 
-			// 	$this->updateBank($data);
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':nama', $data['nama']);
+			$statement->bindParam(':alamat', $data['alamat']);
+			$statement->bindParam(':no_telp', $data['no_telp']);
+			$statement->bindParam(':email', $data['email']);
+			
+			$statement->bindParam(':status', $data['status']);
+			$statement->bindParam(':id', $data['id']);
+			$result = $statement->execute();
 
-			// 	$this->koneksi->commit();
-
-			// 	return true;
-			// }
-			// catch(PDOException $e){
-			// 	$this->koneksi->rollback();
-			// 	die($e->getMessage());
-			// 	// return false;
-			// }
+			return $result;
 		}
 
 		/**
 		* 
 		*/
 		public function delete($id){
-			// try{
-			// 	$this->koneksi->beginTransaction();
+			$query = "DELETE FROM kas_besar WHERE id = :id";
+			
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$result = $statement->execute();
 
-			// 	$this->deleteBank($id);
-
-			// 	$this->koneksi->commit();
-
-			// 	return true;
-			// }
-			// catch(PDOException $e){
-			// 	$this->koneksi->rollback();
-			// 	die($e->getMessage());
-			// 	// return false;
-			// }
+			return $result;
+			
 		}
 
 		/**

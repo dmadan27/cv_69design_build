@@ -24,7 +24,7 @@ $(document).ready(function(){
 		else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
 	});
 
-	// submit kas kecil
+	// submit kas besar
 	$('#form_kas_besar').submit(function(e){
 		e.preventDefault();
 		submit(edit_view);
@@ -142,7 +142,7 @@ function submit(edit_view){
 function getEdit(id, token){
 	if(token != ""){
 		resetForm();
-		$('.field-saldo').css('display', 'none');
+		// $('.field-saldo').css('display', 'none');
 		$('.field-password').css('display', 'none');
 		$('.field-email').css('display', 'none');
 		$('.field-password_confirm').css('display', 'none');

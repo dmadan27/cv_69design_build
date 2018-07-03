@@ -249,9 +249,9 @@
 		public function edit($id){
 			$id = strtoupper($id);
 			$token = isset($_POST['token_edit']) ? $_POST['token_edit'] : false;
-			$this->auth->cekToken($_SESSION['token_bank']['edit'], $token, 'bank');
+			$this->auth->cekToken($_SESSION['token_kas_besar']['edit'], $token, 'kas_besar');
 
-			$data = !empty($this->BankModel->getById($id)) ? $this->BankModel->getById($id) : false;
+			$data = !empty($this->Kas_besarModel->getById($id)) ? $this->Kas_besarModel->getById($id) : false;
 			echo json_encode($data);
 		}
 
@@ -265,7 +265,7 @@
 		*/
 		public function action_edit(){
 			$data = isset($_POST) ? $_POST : false;
-			$this->auth->cekToken($_SESSION['token_bank']['edit'], $data['token'], 'bank');
+			$this->auth->cekToken($_SESSION['token_kas_besar']['edit'], $data['token'], 'kas-besar');
 			
 			$status = false;
 			$error = "";
@@ -285,20 +285,23 @@
 				if($cek){
 					// validasi inputan
 					$data = array(
-						'id' => $this->validation->validInput($data['id']),
-						'nama' => $this->validation->validInput($data['nama']),
-						'status' => $this->validation->validInput($data['status'])
+						'id' =>  $this->validation->validInput($data['id']),
+						'nama' =>  $this->validation->validInput($data['nama']),
+						'alamat' =>  $this->validation->validInput($data['alamat']),
+						'no_telp' =>  $this->validation->validInput($data['no_telp']),
+						'email' =>  $this->validation->validInput($data['email'], false),
+						'status' =>  $this->validation->validInput($data['status']),
 					);
 
 					// update db
 
 					// transact
 
-					if($this->BankModel->update($data)) {
+					if($this->Kas_besarModel->update($data)) {
 						$status = true;
 						$notif = array(
 							'title' => "Pesan Berhasil",
-							'message' => "Edit Data Bank Berhasil",
+							'message' => "Edit Data Kas Besar Berhasil",
 						);
 					}
 					else {
@@ -322,7 +325,7 @@
 				'status' => $status,
 				'notif' => $notif,
 				'error' => $error,
-				// 'data' => $data
+				'data' => $data
 			);
 
 			echo json_encode($output);
@@ -395,9 +398,9 @@
 		public function delete($id){
 			$id = strtoupper($id);
 			$token = isset($_POST['token_delete']) ? $_POST['token_delete'] : false;
-			$this->auth->cekToken($_SESSION['token_bank']['delete'], $token, 'bank');
+			$this->auth->cekToken($_SESSION['token_kas_besar']['delete'], $token, 'kas_besar');
 			
-			if($this->BankModel->delete($id)) $status = true;
+			if($this->Kas_besarModel->delete($id)) $status = true;
 			else $status = false;
 
 			echo json_encode($status);
