@@ -60,8 +60,6 @@
 						$dataUser = $this->UserModel->getKasBesar($email);
 					else if(strtolower($dataEmail['level']) == 'kas kecil')
 						$dataUser = $this->UserModel->getKasKecil($email);
-					else if(strtolower($dataEmail['level']) == 'sub kas kecil')
-						$dataUser = $this->UserModel->getSubKasKecil($email);
 					else if(strtolower($dataEmail['level']) == 'owner')
 						$dataUser = $this->UserModel->getOwner($email);
 
