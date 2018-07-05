@@ -4,6 +4,8 @@
 <li class="menu-beranda"><a href="<?= BASE_URL ?>"><i class="fa fa-link"></i> <span>Beranda</span></a></li>
 <!-- menu data proyek -->
 <li class="menu-proyek"><a href="<?= BASE_URL."proyek/"; ?>"><i class="fa fa-link"></i> <span>Data Proyek</span></a></li>
+<!-- menu data pengajuan kas kecil -->
+<li class="menu-pengajuan-kas-kecil"><a href="<?= BASE_URL."pengajuan-kas-kecil/"; ?>"><i class="fa fa-link"></i> <span>Data Pengajuan Kas Kecil</span></a></li>
 <!-- menu data pengajuan sub kas kecil -->
 <li class="treeview menu-pengajuan-sub-kas-kecil">
 	<a href="javascript:void(0)"><i class="fa fa-link"></i> <span>Data Pengajuan Sub Kas Kecil</span>

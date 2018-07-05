@@ -91,9 +91,9 @@
 		/**
 		* 
 		*/
-		public function insertKasKecil($data){
+		private function insertKasKecil($data){
 			$level = "KAS KECIL";
-			$query = "CALL tambah_kas_kecil (:id, :nama, :alamat, :no_telp, :email, :foto, :saldo, :status, :password,:level);";
+			$query = "CALL tambah_kas_kecil (:id, :nama, :alamat, :no_telp, :email, :foto, :saldo, :status, :password, :level);";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
@@ -135,6 +135,37 @@
 		/**
 		*
 		*/
+		public function updateProfil($data){
+			$query = "UPDATE kas_kecil SET nama = :nama, alamat = :alamat, no_telp = :no_telp WHERE id = :id;";
+
+			try{
+				$this->koneksi->beginTransaction();
+
+				$statement = $this->koneksi->prepare($query);
+				$statement->execute(
+				array(
+					':id' => $data['id'],
+					':nama' => $data['nama'],
+					':alamat' => $data['alamat'],
+					':no_telp' => $data['no_telp'],
+				)
+			);
+			$statement->closeCursor();	
+
+				$this->koneksi->commit();
+
+				return true;
+			}
+			catch(PDOException $e){
+				$this->koneksi->rollback();
+				die($e->getMessage());
+				// return false;
+			}
+		}
+
+		/**
+		*
+		*/
 		public function updateFoto($data){
 			$query = "UPDATE kas_kecil SET foto = :foto WHERE id = :id";
 
@@ -159,7 +190,6 @@
 				die($e->getMessage());
 				// return false;
 			}
-
 				
 		}
 
