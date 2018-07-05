@@ -49,7 +49,7 @@
 		public function cekAuthMobile(){
 			$this->mobileOnly();
 
-			return $status = $this->isLogin() ? true : false;
+			return $this->isLogin() ? true : false;
 		}
 
 		/**

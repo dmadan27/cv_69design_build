@@ -243,8 +243,8 @@
 		public function profil(){
 			$this->model('Sub_kas_kecilModel');
 
-			$id = isset($_POST['id']) ? $this->validation->validInput($_POST['id']) : false;
-			$username = isset($_POST['username']) ? $this->validation->validInput($_POST['username']) : false;
+			$id = isset($_POST['id']) ? $this->validation->validInput($_POST['id'], false) : false;
+			$username = isset($_POST['username']) ? $this->validation->validInput($_POST['username'], false) : false;
 
 			$output = array();
 			$output['status'] = $this->status;
@@ -263,7 +263,7 @@
 						else
 							$foto = BASE_URL.'assets/images/user/'.$dataProfil['foto'];
 					}
-					else $dataProfil['foto'] = null;
+					else $foto = null;
 
 					$output['profil'] = array(
 						'id' => $dataProfil['id'],
@@ -287,7 +287,7 @@
 		public function edit_profil() {
 			$this->model('Sub_kas_kecilModel');
 
-			$id = isset($_POST['id']) ? $this->validation->validInput($_POST['id']) : false;
+			$id = isset($_POST['id']) ? $this->validation->validInput($_POST['id'], false) : false;
 			$alamat = isset($_POST['alamat']) ? $this->validation->validInput($_POST['alamat']) : "";
 			$telepon = isset($_POST['telepon'])  ? $this->validation->validInput($_POST['telepon']) : "";
 
