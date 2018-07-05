@@ -57,7 +57,7 @@
 			$dataUser = $this->UserModel->getUser($this->username);
 
 			// cek username
-			if(!$dataUser || $dataUser['level'] == 'SUB KAS KECIL'){
+			if(!$dataUser || $dataUser['level'] == 'SUB KAS KECIL' || $dataUser['status'] != 'AKTIF'){
 				$status = false;
 				$errorUser = "Username atau Password Anda Salah";
 				$errorPass = $errorUser;
@@ -124,7 +124,7 @@
 			// 	$token = null;
 			// 	$status = false;
 			// }
-			if($dataUser || $dataUser['level'] == 'SUB KAS KECIL'){
+			if($dataUser && $dataUser['level'] == 'SUB KAS KECIL' && $dataUser['status'] == 'AKTIF'){
 				$id = $this->UserModel->getSubKasKecil($user)['id'];
 				if(password_verify($pass, $dataUser['password'])) {
 					// generate token
