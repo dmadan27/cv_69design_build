@@ -161,6 +161,9 @@
 	</section>
 	<!-- /.content -->
 
-	<?php include('form.php') ?>
+	<?php 
+		include('form.php');
+		include('form_foto.php');
+	?>
 
 </div>

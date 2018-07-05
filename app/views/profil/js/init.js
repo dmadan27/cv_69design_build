@@ -14,13 +14,10 @@ $(document).ready(function(){
 		}
 	});
 
-	// button edit profil
+	// button edit profil, // submit edit profil
 	$('#btn_edit').on('click', function(){
-		// $('#modalProfil').modal();
 		getEdit();
 	});
-
-	// submit edit profil
 	$('#form_edit_profil').on('submit', function(e){
 		e.preventDefault();
 		submit_profil();
@@ -30,7 +27,18 @@ $(document).ready(function(){
 
 	// button edit foto
 	$('#edit_foto').on('click', function(){
+		$('#modalFoto').modal();
+	});
+	$('#form_edit_foto').on('submit', function(e){
+		e.preventDefault();
+		submit_foto();
 
+		return false;
+	});
+
+	// button hapus foto
+	$('#delete_foto').on('click', function(){
+		delete_foto();
 	});
 
 	// submit ganti password
@@ -51,7 +59,17 @@ $(document).ready(function(){
 			$('.field-'+this.id).removeClass('has-error').removeClass('has-success');
 			$(".pesan-"+this.id).text('');	
 		}
-	});	
+	});
+
+	var foto = $('#foto').dropify();
+	foto.on('dropify.afterClear', function(event, element) {
+        $('.field-foto').removeClass('has-error').removeClass('has-success');
+		$(".pesan-foto").text('');
+    });
+
+    $('#modalFoto').on('hidden.bs.modal', function (e){
+    	clearDropify();
+    });
 });
 
 /**
@@ -87,7 +105,141 @@ function getEdit(){
 *
 */
 function submit_profil(){
+	var data = {
+		'nama' : $('#nama').val().trim(),
+		'alamat' : $('#alamat').val().trim(),
+		'no_telp' : $('#no_telp').val().trim(),
+	};
 
+	$.ajax({
+		url: BASE_URL+'profil/'+$('#submit_edit_profil').val().trim()+'/',
+		type: 'POST',
+		dataType: 'json',
+		data: data,
+		beforeSend: function(){
+			$('#submit_edit_profil').prop('disabled', true);
+			$('#submit_edit_profil').prepend('<i class="fa fa-spin fa-refresh"></i> ');
+		},
+		success: function(output){
+			console.log(output);
+			$('#submit_edit_profil').prop('disabled', false);
+			$('#submit_edit_profil').html($('#submit_edit_profil').text());
+			
+			if(!output.status) {	
+				setError(output.error);
+				toastr.warning(output.notif.message, output.notif.title);
+			}
+			else{
+				toastr.success(output.notif.message, output.notif.title);
+				resetForm();
+				$("#modalProfil").modal('hide');
+				setTimeout(function(){ location.reload(); }, 1000);
+			}
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+            console.log(jqXHR, textStatus, errorThrown);
+            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+
+            $("#modalProfil").modal('hide');
+            $('#submit_edit_profil').prop('disabled', false);
+			$('#submit_edit_profil').html($('#submit_edit_profil').text());
+        }
+	})
+}
+
+/**
+*
+*/
+function submit_foto(){
+	var data = new FormData();
+	data.append('foto', $("#foto")[0].files[0]);
+
+	$.ajax({
+		url: BASE_URL+'profil/'+$('#submit_edit_foto').val().trim(),
+		type: 'POST',
+		dataType: 'json',
+		data: data,
+		contentType: false,
+		cache: false,
+		processData: false,
+		beforeSend: function(){
+			$('#delete_foto').prop('disabled', true);
+			$('#submit_edit_foto').prop('disabled', true);
+			$('#submit_edit_foto').prepend('<i class="fa fa-spin fa-refresh"></i> ');
+		},
+		success: function(output){
+			console.log(output);
+			
+			if(!output.status){
+				setError(output.error);
+				toastr.warning(output.notif.message, output.notif.title);
+			}
+			else{
+				toastr.success(output.notif.message, output.notif.title);
+				$("#modalFoto").modal('hide');
+				setTimeout(function(){ location.reload();}, 1500);
+			}
+
+			$('#delete_foto').prop('disabled', false);
+			$('#submit_edit_foto').prop('disabled', false);
+			$('#submit_edit_foto').html($('#submit_edit_foto').text());
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+            console.log(jqXHR, textStatus, errorThrown);
+            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+            $('#delete_foto').prop('disabled', false);
+            $('#submit_edit_foto').prop('disabled', false);
+			$('#submit_edit_foto').html($('#submit_edit_foto').text());
+        }
+	})
+}
+
+/**
+*
+*/
+function delete_foto(){
+	swal({
+		title: "Pesan Konfirmasi",
+		text: "Apakah Anda Yakin Akan Menghapus Foto Profil !!",
+		type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Hapus!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: false,
+	}, function(){
+		$.ajax({
+			url: BASE_URL+'profil/'+$('#delete_foto').val().trim(),
+			type: 'post',
+			dataType: 'json',
+			// data: {"token_delete": token},
+			beforeSend: function(){
+				$('#submit_edit_foto').prop('disabled', true);
+				$('#delete_foto').prop('disabled', true);
+				$('#delete_foto').prepend('<i class="fa fa-spin fa-refresh"></i> ');
+			},
+			success: function(output){
+				console.log(output);
+				swal(output.notif.title, output.notif.message, output.notif.type);
+				
+				if(output){
+					$("#modalFoto").modal('hide');
+					setTimeout(function(){ location.reload();}, 1500);
+				}
+
+				$('#submit_edit_foto').prop('disabled', false);
+				$('#delete_foto').prop('disabled', false);
+				$('#delete_foto').html($('#delete_foto').text());
+			},
+			error: function (jqXHR, textStatus, errorThrown){ // error handling
+	            console.log(jqXHR, textStatus, errorThrown);
+                swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+                $('#submit_edit_foto').prop('disabled', false);
+				$('#delete_foto').prop('disabled', false);
+				$('#delete_foto').html($('#delete_foto').text());
+	        }
+		})
+	});
 }
 
 /**
@@ -184,4 +336,14 @@ function resetForm_ganti_password(){
 
 	// hapus semua feedback
 	$('#form_ganti_password .form-group').removeClass('has-success').removeClass('has-error');
+}
+
+/**
+*
+*/
+function clearDropify(){
+	var foto = $('#foto').dropify();
+	foto = foto.data('dropify');
+	foto.resetPreview();
+	foto.clearElement();
 }

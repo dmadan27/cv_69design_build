@@ -11,8 +11,6 @@
                 <h4 class="modal-title">Form Data Profil</h4>
 			</div>
 			<form id="form_edit_profil" role="form">
-				<input type="hidden" id="id">
-				<input type="hidden" id="token_form">
 				<!-- body modal -->
 				<div class="modal-body">
 					<!-- field nama -->
