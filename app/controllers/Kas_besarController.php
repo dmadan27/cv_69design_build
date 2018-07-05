@@ -338,11 +338,11 @@
 		*/
 		public function detail($id){
 			$id = strtoupper($id);
-			if(empty($id) || $id == "") $this->redirect(BASE_URL."bank/");
+			if(empty($id) || $id == "") $this->redirect(BASE_URL."kas-besar/");
 
-			$data_detail = !empty($this->BankModel->getById($id)) ? $this->BankModel->getById($id) : false;
+			$data_detail = !empty($this->Kas_besarModel->getById($id)) ? $this->Kas_besarModel->getById($id) : false;
 
-			if(!$data_detail) $this->redirect(BASE_URL."bank/");
+			if(!$data_detail) $this->redirect(BASE_URL."kas-besar/");
 
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
@@ -350,14 +350,14 @@
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
-				'app/views/bank/js/initView.js',
-				'app/views/bank/js/initForm.js',
+				'app/views/kas_besar/js/initView.js',
+				'app/views/kas_besar/js/initForm.js',
 			);
 
 			$config = array(
 				'title' => array(
-					'main' => 'Data Bank',
-					'sub' => 'Detail Data Bank',
+					'main' => 'Data Kas Besar',
+					'sub' => 'Detail Data Kas Besar',
 				),
 				'css' => $css,
 				'js' => $js,
@@ -365,28 +365,28 @@
 
 			$status = ($data_detail['status'] == "AKTIF") ? '<span class="label label-success">'.$data_detail['status'].'</span>' : '<span class="label label-danger">'.$data_detail['status'].'</span>';
 			
-			$_SESSION['token_bank']['view'] = md5($this->auth->getToken());
-			$_SESSION['token_bank']['edit'] = md5($this->auth->getToken());
-			$_SESSION['token_bank']['delete'] = md5($this->auth->getToken());
+			$_SESSION['token_kas_besar']['view'] = md5($this->auth->getToken());
+			$_SESSION['token_kas_besar']['edit'] = md5($this->auth->getToken());
+			$_SESSION['token_kas_besar']['delete'] = md5($this->auth->getToken());
 			
 			$this->token = array(
-				'view' => password_hash($_SESSION['token_bank']['view'], PASSWORD_BCRYPT),
-				'edit' => password_hash($_SESSION['token_bank']['edit'], PASSWORD_BCRYPT),
-				'delete' => password_hash($_SESSION['token_bank']['delete'], PASSWORD_BCRYPT)
+				'view' => password_hash($_SESSION['token_kas_besar']['view'], PASSWORD_BCRYPT),
+				'edit' => password_hash($_SESSION['token_kas_besar']['edit'], PASSWORD_BCRYPT),
+				'delete' => password_hash($_SESSION['token_kas_besar']['delete'], PASSWORD_BCRYPT)
 			);
 
 			$data = array(
-				'id_bank' => $data_detail['id'],
+				'id' => $data_detail['id'],
 				'nama' => $data_detail['nama'],
-				'saldo' => $this->helper->cetakRupiah($data_detail['saldo']),
+				'alamat' => $data_detail['alamat'],
+				'no_telp' => $data_detail['no_telp'],
+				'email' => $data_detail['email'],
+				'foto' => $data_detail['foto'],
 				'status' => $status,
 				'token' => $this->token,
 			);
 
-			// echo "<pre>";
-			// print_r($this->token);
-			// echo "</pre>";
-			$this->layout('bank/view', $config, $data);
+			$this->layout('kas_besar/view', $config, $data);
 		}
 
 		/**
