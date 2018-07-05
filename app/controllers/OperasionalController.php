@@ -327,56 +327,60 @@
 		* param $id didapat dari url
 		*/
 		public function detail($id){
-			// $id = strtoupper($id);
-			// if(empty($id) || $id == "") $this->redirect(BASE_URL."bank/");
+			$id = strtoupper($id);
+			if(empty($id) || $id == "") $this->redirect(BASE_URL."operasional/");
 
-			// $data_detail = !empty($this->BankModel->getById($id)) ? $this->BankModel->getById($id) : false;
+			$data_detail = !empty($this->OperasionalModel->getById($id)) ? $this->OperasionalModel->getById($id) : false;
 
-			// if(!$data_detail) $this->redirect(BASE_URL."bank/");
+			if(!$data_detail) $this->redirect(BASE_URL."operasional/");
 
-			// $css = array(
-			// 	'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
-			// );
-			// $js = array(
-			// 	'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
-			// 	'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
-			// 	'app/views/bank/js/initView.js',
-			// 	'app/views/bank/js/initForm.js',
-			// );
+			$css = array(
+				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+			);
+			$js = array(
+				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
+				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'app/views/operasional/js/initView.js',
+				// 'app/views/operasional/js/initForm.js',
+			);
 
-			// $config = array(
-			// 	'title' => array(
-			// 		'main' => 'Data Bank',
-			// 		'sub' => 'Detail Data Bank',
-			// 	),
-			// 	'css' => $css,
-			// 	'js' => $js,
-			// );
+			$config = array(
+				'title' => array(
+					'main' => 'Data Operasional',
+					'sub' => 'Detail Data Operasional',
+				),
+				'css' => $css,
+				'js' => $js,
+			);
 
 			// $status = ($data_detail['status'] == "AKTIF") ? '<span class="label label-success">'.$data_detail['status'].'</span>' : '<span class="label label-danger">'.$data_detail['status'].'</span>';
 			
-			// $_SESSION['token_bank']['view'] = md5($this->auth->getToken());
-			// $_SESSION['token_bank']['edit'] = md5($this->auth->getToken());
-			// $_SESSION['token_bank']['delete'] = md5($this->auth->getToken());
+			$_SESSION['token_operasional']['view'] = md5($this->auth->getToken());
+			$_SESSION['token_operasional']['edit'] = md5($this->auth->getToken());
+			$_SESSION['token_operasional']['delete'] = md5($this->auth->getToken());
 			
-			// $this->token = array(
-			// 	'view' => password_hash($_SESSION['token_bank']['view'], PASSWORD_BCRYPT),
-			// 	'edit' => password_hash($_SESSION['token_bank']['edit'], PASSWORD_BCRYPT),
-			// 	'delete' => password_hash($_SESSION['token_bank']['delete'], PASSWORD_BCRYPT)
-			// );
+			$this->token = array(
+				'view' => password_hash($_SESSION['token_operasional']['view'], PASSWORD_BCRYPT),
+				'edit' => password_hash($_SESSION['token_operasional']['edit'], PASSWORD_BCRYPT),
+				'delete' => password_hash($_SESSION['token_operasional']['delete'], PASSWORD_BCRYPT)
+			);
 
-			// $data = array(
-			// 	'id_bank' => $data_detail['id'],
-			// 	'nama' => $data_detail['nama'],
-			// 	'saldo' => $this->helper->cetakRupiah($data_detail['saldo']),
-			// 	'status' => $status,
-			// 	'token' => $this->token,
-			// );
+			$data = array(
+				'id' => $data_detail['id'],
+				'id_bank' => $data_detail['id_bank'],
+				'id_kas_besar' => $data_detail['id_kas_besar'],
+				'tgl' => $data_detail['tgl'],
+				'nama' => $data_detail['nama'],
+				'nominal' => $this->helper->cetakRupiah($data_detail['nominal']),
+				'ket' => $data_detail['ket'],
+				'token' => $this->token,
+			);
 
-			// // echo "<pre>";
-			// // print_r($this->token);
-			// // echo "</pre>";
-			// $this->layout('bank/view', $config, $data);
+			// echo "<pre>";
+			// print_r($this->token);
+			// echo "</pre>";
+			$this->layout('operasional/view', $config, $data);
+			
 		}
 
 		/**
