@@ -342,15 +342,25 @@
 			/**
 			*
 			*/
-			public function insert_laporan(){
+			public function insert_laporan($data){
+				$data_detail_laporan = $data['detail_laporan'];
+				$data_foto = $data['foto'];
+
 				try {
 					$this->koneksi->beginTransaction();
 
-					$this->insert_pengajuan($data_pengajuan);
+					// update pengajuan - status laporan
+					$this->update_status_laporan($data->id_pengajuan);
 
-					// update pengajuan
+					// update detail pengajuan
+					foreach($data_detail_laporan as $key => $value){
+						$this->update_detail_laporan($value);
+					}
 
 					// insert upload foto laporan
+					foreach($data_foto as $key => $value){
+						$this->insert_foto_laporan($value, $data->id_pengajuan);
+					}
 
 					$this->koneksi->commit();
 
@@ -358,26 +368,57 @@
 				} catch (PDOException $e) {
 					$this->koneksi->rollback();
 					return $e->getMessage();
+					// return false;
 				}
 			}
 
 			/**
 			*
 			*/
-			private function update_laporan(){
-				$query = "UPDATE pengajuan_sub_kas_kecil SET ";
+			private function update_status_laporan($id){
+				$status_laporan = 'PENDING';
+				$query = "UPDATE pengajuan_sub_kas_kecil SET status_laporan = :status_laporan WHERE id = :id";
 
 				$statement = $this->koneksi->prepare($query);
 				$statement->execute(
-
+					':id' => $id,
+					':status_laporan' => $status_laporan,
 				);
+				$statment->closeCursor();
 			}
 
 			/**
 			*
 			*/
-			private function insert_foto_laporan(){
+			private function update_detail_laporan($data){
+				$status = 'TUNAI';
+				$status_lunas = 'LUNAS';
 
+				$query = "UPDATE detail_pengajuan_sub_kas_kecil SET status = :status, harga_asli = :harga_asli, sisa = :sisa, status_laporan = :status_laporan WHERE id = :id";
+
+				$statement = $this->koneksi->prepare($query);
+				$statement->execute(
+					':id' => $data->id,
+					':status' => $data->status,
+					':harga_asli' => $data->harga_asli,
+					':sisa' => $data->sisa,
+					':status_laporan' => $data->status_laporan,
+				);
+				$statment->closeCursor();
+			}
+
+			/**
+			*
+			*/
+			private function insert_foto_laporan($data, $id_pengajuan){
+				$query = 'INSERT INTO upload_laporan_pengajuan_sub_kas_kecil (id_pengajuan, foto) VALUES (:id_pengajuan, :foto)';
+
+				$statement = $this->koneksi->prepare($query);
+				$statement->execute(
+					':id_pengajuan' => $id_pengajuan,
+					':foto' => $data->foto,
+				);
+				$statment->closeCursor();
 			}
 
 		// ========================================================= //
