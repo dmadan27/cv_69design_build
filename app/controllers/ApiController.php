@@ -187,30 +187,148 @@
 		public function action_add_laporan(){
 			$this->model('Pengajuan_sub_kas_kecilModel');
 
-			$output = array();
-			$output['status'] = $this->status;
+			$id_pengajuan = isset($_POST['id_pengajuan']) ? $this->validation->validInput($_POST['id_pengajuan'], false) : false;
+			$detail_laporan = ((isset($_POST["detail_laporan"])) && !empty($_POST["detail_laporan"])) ? $_POST["detail_laporan"] : false;
+			$foto = isset($_FILES['foto']) ? $_FILES['foto'] : false;
+			$jumlah_foto = isset($_POST['jumlah_foto']) ? $this->validation->validInput($_POST['jumlah_foto']) : false;
 
-			$pengajuan = ((isset($_POST["pengajuan"])) && !empty($_POST["pengajuan"])) ? $_POST["pengajuan"] : false;
-			$detail_pengajuan = ((isset($_POST["detail_pengajuan"])) && !empty($_POST["detail_pengajuan"])) ? $_POST["detail_pengajuan"] : false;
+			$status_valid_foto = $status_upload_foto = false;
 
-    		if ($this->status && ($pengajuan != false) && ($detail_pengajuan != false)) {
+    		if ($this->status && $id_pengajuan && $detail_laporan && $foto) {
 
-				$data = array(
-					'pengajuan' => json_decode($pengajuan),
-					'detail_pengajuan' => json_decode($detail_pengajuan)
-				);
+    			// validasi foto
+    			$validasi_foto = $this->validasi_foto($foto);
+    			if($validasi_foto['status'] && ($validasi_foto['jumlah'] == $jumlah_foto)) 
+    				$status_valid_foto = true;
 
-				$resultQuery = $this->Pengajuan_sub_kas_kecilModel->insert($data);
+    			// upload foto
+    			if($status_valid_foto){
+    				$upload_foto = $this->validasi_uploadFoto($validasi_foto['foto']);
+    				if($upload_foto['status'] && ($upload_foto['jumlah']) == $jumlah_foto) 
+    					$status_upload_foto = true;
+    				else 
+    					$this->rollbackFoto($upload_foto['foto']);
+    			}
 
-				if ($resultQuery === true) {
-					$output['status'] = true;
-				} else {
-					$output['error'] = $resultQuery;
-				}
-			} else {
-				$output['status'] = false;
-			}
+    			// simpan db
+    			if($status_upload_foto){
+    				$data_foto = $upload_foto['foto']['fotoBaru'];
+
+    				$data = array(
+    					'id_pengajuan' => $id_pengajuan,
+    					'detail_laporan' => $detail_laporan,
+    					'foto' => $data_foto,
+    				);
+
+    				if($this->Pengajuan_sub_kas_kecilModel->insert_laporan($data))
+    					$this->status_aksi = true;
+    				else $this->rollbackFoto($upload_foto['foto']);
+    			}
+    		}
+
+			$output = array(
+				'status' => $this->status,
+				'status_valid_foto' => $status_valid_foto,
+				'status_upload_foto' => $status_upload_foto,
+				'status_aksi' => $this->status_aksi,
+			);
+
 			echo json_encode($output);
+		}
+
+		/**
+		*
+		*/
+		private function validasi_foto($foto){
+			$status = true;
+			$tempFoto = array();
+			$hitungFoto = 0;
+
+			foreach($foto as $key => $value){
+				$configFoto = array(
+					'jenis' => 'gambar',
+					'error' => $value['error'],
+					'size' => $value['size'],
+					'name' => $value['name'],
+					'tmp_name' => $value['tmp_name'],
+					'max' => 2*1048576,
+				);
+				$validasiFoto = $this->validation->validFile($configFoto);
+				if(!$validasiFoto['cek']){
+					$status = false;
+					$tempFoto[] = array(
+						'tmp_name' => $value['tmp_name'],
+						'foto' => $value['name'],
+						'fotoBaru' => '',
+						'error' => $validasiFoto['error'],
+					);
+					break;
+				}
+				else{
+					$hitungFoto++;
+					$fotoBaru = md5($id).$validasiFoto['namaFile'];
+					$tempFoto[] = array(
+						'tmp_name' => $value['tmp_name'],
+						'foto' => $value['name'],
+						'fotoBaru' => $fotoBaru,
+						'error' => '',
+					);
+				}
+			}
+
+			$output = array(
+				'foto' => $tempFoto,
+				'jumlah' => $hitungFoto,
+				'status' => $status,
+			);
+
+			return $output;
+		}
+
+		/**
+		*
+		*/
+		private function validasi_uploadFoto($foto){
+			$status = true;
+			$tempFoto = array();
+			$hitungFoto = 0;
+
+			foreach($foto as $key => $value){
+				$path = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$value['fotoBaru'];
+				if(!move_uploaded_file($value['tmp_name'], $path)){
+					$status = false;
+					$tempFoto[] = array(
+						'tmp_name' => $value['tmp_name'],
+						'foto' => $value['name'],
+						'fotoBaru' => $value['fotoBaru'],
+						'error' => 'Upload Foto Gagal',
+					);
+					break;
+				}
+
+				$tempFoto[] = array(
+					'tmp_name' => $value['tmp_name'],
+					'foto' => $value['name'],
+					'fotoBaru' => $value['fotoBaru'],
+					'error' => '',
+				);
+				$hitungFoto++;
+			}
+
+			$output = array(
+				'foto' => $tempFoto,
+				'jumlah' => $hitungFoto,
+				'status' => $status,
+			);
+
+			return $output;
+		}
+
+		/**
+		*
+		*/
+		private function rollbackFoto($foto){
+			
 		}
 
 		/**
@@ -418,7 +536,7 @@
 				$id = $id_pengajuan.'0001';
 			} else {
 				$kode = $id_pengajuan;
-				$noUrut = (int)substr($data, 21, 4);
+				$noUrut = (int)substr($data, 25, 4);
 				$noUrut++;
 
 				$id = $kode.sprintf("%04s", $noUrut);
