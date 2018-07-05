@@ -164,6 +164,36 @@
 		}
 		
 		/**
+		*
+		*/
+		public function updateFoto($data){
+			$query = "UPDATE kas_besar SET foto = :foto WHERE id = :id";
+
+			try{
+				$this->koneksi->beginTransaction();
+
+				$statement = $this->koneksi->prepare($query);
+				$statement->execute(
+					array(
+						':foto' => $data['foto'],
+						':id' => $data['id'],
+					)
+				);
+				$statement->closeCursor();
+
+				$this->koneksi->commit();
+
+				return true;
+			}
+			catch(PDOException $e){
+				$this->koneksi->rollback();
+				die($e->getMessage());
+				// return false;
+			}
+				
+		}
+
+		/**
 		* 
 		*/
 		public function delete($id){
