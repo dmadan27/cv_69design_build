@@ -312,7 +312,7 @@
 			$id = isset($_POST['id']) ? $this->validation->validInput($_POST['id'], false) : false;
 			$foto = isset($_FILES['foto']) ? $_FILES['foto'] : false;
 
-			$error = $notif = '';
+			$error = $notif = array();
 			$status_upload = $status_hapus = false;
 
 			if($this->status){
@@ -371,6 +371,8 @@
 
 			$output = array(
 				'status' => $this->status,
+				// 'status_upload' => $status_upload,
+				// 'status_hapus' => $status_hapus,
 				'status_aksi' => $this->status_aksi,
 				'foto' => $foto,
 				'error' => $error,
