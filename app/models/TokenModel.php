@@ -94,9 +94,9 @@
 			* 
 			*/
 			public function getToken_mobile($user){
-				$query = "SELECT t.token, t.tgl_exp FROM token_sub_kas_kecil t ";
-				$query .= "JOIN sub_kas_kecil skc ON skc.id = t.id_sub_kas_kecil ";
-				$query .= "WHERE skc.email = :user";
+				$query = "SELECT t.token, t.tgl_exp FROM token_mobile t ";
+				$query .= "JOIN user u ON u.username = t.username ";
+				$query .= "WHERE u.username = :user";
 
 				$statement = $this->koneksi->prepare($query);
 				$statement->bindParam(':user', $user);

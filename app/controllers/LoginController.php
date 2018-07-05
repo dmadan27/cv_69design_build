@@ -27,7 +27,7 @@
 			$jenis = isset($_POST['jenis']) ? $this->validation->validInput($_POST['jenis'], false) : false;
 
 			// cek jenis login
-			if($jenis) $this->loginMobile(); // jika mobile
+			if($jenis && $jenis == 'sub-kas-kecil') $this->loginMobile(); // jika mobile
 			else{ // jika sistem
 				if($this->auth->isLogin()) $this->redirect(BASE_URL); // jika sudah login, tidak bisa akses
 				else{ // jika belum login
