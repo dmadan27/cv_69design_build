@@ -175,7 +175,7 @@
 				$output['saldo'] = $this->Sub_kas_kecilModel->getSaldoById($id_skk)['saldo'];
 				$output['sisa_saldo'] = $this->Sub_kas_kecilModel->getSisaSaldoById($id_skk)['sisa_saldo'];
 				$output['pengajuan'] = $this->Pengajuan_sub_kas_kecilModel->getById_mobile(strtoupper($id_pengajuan));
-				$output['status_aksi'] = true;				
+				$output['status_aksi'] = true;
 			}
 
 			echo json_encode($output);
@@ -198,15 +198,15 @@
 
     			// validasi foto
     			$validasi_foto = $this->validasi_foto($foto);
-    			if($validasi_foto['status'] && ($validasi_foto['jumlah'] == $jumlah_foto)) 
+    			if($validasi_foto['status'] && ($validasi_foto['jumlah'] == $jumlah_foto))
     				$status_valid_foto = true;
 
     			// upload foto
     			if($status_valid_foto){
     				$upload_foto = $this->validasi_uploadFoto($validasi_foto['foto']);
-    				if($upload_foto['status'] && ($upload_foto['jumlah']) == $jumlah_foto) 
+    				if($upload_foto['status'] && ($upload_foto['jumlah']) == $jumlah_foto)
     					$status_upload_foto = true;
-    				else 
+    				else
     					$this->rollbackFoto($upload_foto['foto']);
     			}
 
@@ -328,7 +328,7 @@
 		*
 		*/
 		private function rollbackFoto($foto){
-			
+
 		}
 
 		/**
@@ -376,7 +376,7 @@
 					if(!empty($dataProfil['foto'])){
 						// cek foto di storage
 						$filename = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$dataProfil['foto'];
-						if(!file_exists($filename)) 
+						if(!file_exists($filename))
 							$foto = null;
 						else
 							$foto = BASE_URL.'assets/images/user/'.$dataProfil['foto'];
@@ -420,7 +420,7 @@
 				}
 			}
 
-			echo json_encode($output);	
+			echo json_encode($output);
 		}
 
 		/**
@@ -435,8 +435,8 @@
 
 			if($this->status){
 				$this->model('Sub_kas_kecilModel');
-				$fotoLama = (!empty($this->Sub_kas_kecilModel->getById($id)['foto']) 
-								|| $this->Sub_kas_kecilModel->getById($id)['foto'] != '') 
+				$fotoLama = (!empty($this->Sub_kas_kecilModel->getById($id)['foto'])
+								|| $this->Sub_kas_kecilModel->getById($id)['foto'] != '')
 									? ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$this->Sub_kas_kecilModel->getById($id)['foto'] : false;
 
 				// validasi foto
@@ -482,7 +482,7 @@
 					if($status_hapus){
 						if($fotoLama && file_exists($fotoLama)) unlink($fotoLama);
 
-						$this->status_aksi = true; 
+						$this->status_aksi = true;
 					}
 				}
 			}
@@ -549,6 +549,7 @@
 		*/
 		public function ganti_password(){
 			$this->model('UserModel');
+			$this->model('Sub_kas_kecilModel');
 
 			$id = isset($_POST['id']) ? $this->validation->validInput($_POST['id'], false) : false;
 			$username = isset($_POST['username']) ? $this->validation->validInput($_POST['username'], false) : false;
@@ -566,11 +567,11 @@
 				$validasi = $this->set_validation_ganti_password(
 					$data = array(
 						'password_lama' => $password_lama,
-						'password_baru' => $password_baru, 
+						'password_baru' => $password_baru,
 						'password_konf' => $password_konf
 					)
 				);
-			
+
 				$cek = $validasi['cek'];
 				$error = $validasi['error'];
 
@@ -578,7 +579,7 @@
 				$verify_password = $this->UserModel->getById($username)['password'];
 
 				// jika username dan password lama sama
-				if(($dataProfil['email'] == $username) 
+				if(($dataProfil['email'] == $username)
 					&& (password_verify($password_lama, $verify_password)) ){
 
 					// cek password baru dan konfirmasi
@@ -596,12 +597,12 @@
 						if($this->UserModel->updatePassword($data))
 							$output['status_aksi'] = true;
 					}
-					
+
 				}
 				else $error['password_lama'] = 'Password Lama Anda Salah';
 
 				$output['error'] = $error;
-				
+
 			}
 			echo json_encode($output);
 		}
