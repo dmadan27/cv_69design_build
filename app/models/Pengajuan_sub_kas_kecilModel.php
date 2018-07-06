@@ -63,7 +63,7 @@
 		}
 
 		/**
-		* 
+		*
 		*/
 		public function getById($id){
 			$query = "SELECT * FROM pengajuan_sub_kas_kecil WHERE id = :id;";
@@ -380,9 +380,10 @@
 				$query = "UPDATE pengajuan_sub_kas_kecil SET status_laporan = :status_laporan WHERE id = :id";
 
 				$statement = $this->koneksi->prepare($query);
-				$statement->execute(
-					':id' => $id,
-					':status_laporan' => $status_laporan,
+				$statement->execute(array(
+						':id' => $id,
+						':status_laporan' => $status_laporan,
+					)
 				);
 				$statment->closeCursor();
 			}
@@ -397,12 +398,13 @@
 				$query = "UPDATE detail_pengajuan_sub_kas_kecil SET status = :status, harga_asli = :harga_asli, sisa = :sisa, status_laporan = :status_laporan WHERE id = :id";
 
 				$statement = $this->koneksi->prepare($query);
-				$statement->execute(
-					':id' => $data->id,
-					':status' => $data->status,
-					':harga_asli' => $data->harga_asli,
-					':sisa' => $data->sisa,
-					':status_laporan' => $data->status_laporan,
+				$statement->execute(array(
+						':id' => $data->id,
+						':status' => $data->status,
+						':harga_asli' => $data->harga_asli,
+						':sisa' => $data->sisa,
+						':status_laporan' => $data->status_laporan,
+					)
 				);
 				$statment->closeCursor();
 			}
@@ -414,9 +416,10 @@
 				$query = 'INSERT INTO upload_laporan_pengajuan_sub_kas_kecil (id_pengajuan, foto) VALUES (:id_pengajuan, :foto)';
 
 				$statement = $this->koneksi->prepare($query);
-				$statement->execute(
-					':id_pengajuan' => $id_pengajuan,
-					':foto' => $data->foto,
+				$statement->execute(array(
+						':id_pengajuan' => $id_pengajuan,
+						':foto' => $data->foto,
+					)
 				);
 				$statment->closeCursor();
 			}
