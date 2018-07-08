@@ -41,7 +41,7 @@ $(document).ready(function(){
 });
 
 function getView(id){
-    // window.location.href = BASE_URL+'kas-kecil/detail/'+id;
+    window.location.href = BASE_URL+'kas-kecil/detail/'+id;
 }
 
 /**

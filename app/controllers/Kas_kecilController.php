@@ -326,9 +326,64 @@ class Kas_kecil extends Crud_modalsAbstract{
 		}
 
 		/**
-		*
+		* Function detail
+		* method untuk get data detail dan setting layouting detail
+		* param $id didapat dari url
 		*/
 		public function detail($id){
+			$id = strtoupper($id);
+			if(empty($id) || $id == "") $this->redirect(BASE_URL."kas-kecil/");
+
+			$data_detail = !empty($this->Kas_kecilModel->getById($id)) ? $this->Kas_kecilModel->getById($id) : false;
+
+			if(!$data_detail) $this->redirect(BASE_URL."kas-kecil/");
+
+			$css = array(
+				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+				'assets/bower_components/dropify/dist/css/dropify.min.css'
+			);
+			$js = array(
+				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
+				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/bower_components/dropify/dist/js/dropify.min.js',
+				'app/views/kas_kecil/js/initView.js',
+				'app/views/kas_kecil/js/initForm.js',
+			);
+
+			$config = array(
+				'title' => array(
+					'main' => 'Data Kas Kecil',
+					'sub' => 'Detail Data Kas Kecil',
+				),
+				'css' => $css,
+				'js' => $js,
+			);
+
+			$status = ($data_detail['status'] == "AKTIF") ? '<span class="label label-success">'.$data_detail['status'].'</span>' : '<span class="label label-danger">'.$data_detail['status'].'</span>';
+			
+			$_SESSION['token_kas_kecil']['view'] = md5($this->auth->getToken());
+			$_SESSION['token_kas_kecil']['edit'] = md5($this->auth->getToken());
+			$_SESSION['token_kas_kecil']['delete'] = md5($this->auth->getToken());
+			
+			$this->token = array(
+				'view' => password_hash($_SESSION['token_kas_kecil']['view'], PASSWORD_BCRYPT),
+				'edit' => password_hash($_SESSION['token_kas_kecil']['edit'], PASSWORD_BCRYPT),
+				'delete' => password_hash($_SESSION['token_kas_kecil']['delete'], PASSWORD_BCRYPT)
+			);
+
+			$data = array(
+				'id' => $data_detail['id'],
+				'nama' => $data_detail['nama'],
+				'alamat' => $data_detail['alamat'],
+				'no_telp' => $data_detail['no_telp'],
+				'email' => $data_detail['email'],
+				'foto' => $data_detail['foto'],
+				'saldo' => $data_detail['saldo'],
+				'status' => $status,
+				'token' => $this->token,
+			);
+
+			$this->layout('kas_kecil/view', $config, $data);
 		}
 
 		/**

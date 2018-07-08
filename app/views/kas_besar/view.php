@@ -37,8 +37,8 @@
 		                 	 	<b>Status</b> <a class="pull-right"><?= $this->data['status']; ?></a>
 		                	</li>
 		              	</ul>
-		              	<button class="btn btn-primary btn-block" type="button" id="btn_edit"><b>Edit Profil</b></button>
-		              	<button class="btn btn-success btn-block" id="edit_foto" title="Edit Foto"><i class="fa fa-camera"></i> Edit Foto</button>
+		              	
+		              	
 		              	<a href="<?= BASE_URL.'kas-besar';  ?>" class="btn btn-default btn-block" role="button"><b>Kembali</b></a>
 					</div>
 				</div>
@@ -50,7 +50,7 @@
 					
 					<ul class="nav nav-tabs">
               			<li class="active"><a href="#data-profil" data-toggle="tab">Data Profil</a></li>
-              			<li><a href="#ganti-password" data-toggle="tab">Ganti Passsword</a></li>
+              			
             		</ul>
             		
             		<div class="tab-content">
@@ -100,48 +100,6 @@
                 			</div>
               			</div>
               			
-              			<!-- Ganti Password -->
-	              		<div class="tab-pane" id="ganti-password">
-	                		<div class="row">
-	                			<div class="col-md-12">
-	                				<form id="form_ganti_password" class="form-horizontal">
-	                					<!-- Password Lama -->
-	                					<div class="form-group field-password_lama has-feedback">
-	                						<label for="password_lama" class="col-sm-2 control-label">Password Lama</label>
-	                						<div class="col-sm-10">
-	                							<input type="password" id="password_lama" class="form-control field" placeholder="Masukkan Password Lama">
-	                							<span class="help-block small pesan pesan-password_lama"></span>
-	                						</div>
-	                					</div>
-
-	                					<!-- Password Baru -->
-	                					<div class="form-group field-password_baru has-feedback">
-	                						<label for="password_baru" class="col-sm-2 control-label">Password Lama</label>
-	                						<div class="col-sm-10">
-	                							<input type="password" id="password_baru" class="form-control field" placeholder="Masukkan Password Baru">
-	                							<span class="help-block small pesan pesan-password_baru"></span>
-	                						</div>
-	                					</div>
-
-	                					<!-- Konfirmasi Password -->
-	                					<div class="form-group field-password_konf has-feedback">
-	                						<label for="password_konf" class="col-sm-2 control-label">Password Lama</label>
-	                						<div class="col-sm-10">
-	                							<input type="password" id="password_konf" class="form-control field" placeholder="Masukkan Konfrimasi Password">
-	                							<span class="help-block small pesan pesan-password_konf"></span>
-	                						</div>
-	                					</div>
-
-	                					<!-- button submit -->
-	                					<div class="form-group">
-	                						<div class="col-sm-offset-2 col-sm-10">
-					                      		<button id="submit_ganti_password" type="submit" class="btn btn-danger">Ganti Password</button>
-					                    	</div>
-	                					</div>
-	                				</form>
-	                			</div>
-	                		</div>
-	              		</div>
 	              		<!-- /.tab-pane -->
 
 		            </div>
