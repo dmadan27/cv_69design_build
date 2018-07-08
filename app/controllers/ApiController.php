@@ -19,6 +19,7 @@
 				$this->status = false;
 
 			$this->validation();
+			$this->helper();
 		}
 
 		/**
@@ -197,7 +198,7 @@
 
 			$id_pengajuan = isset($_POST['id_pengajuan']) ? $this->validation->validInput($_POST['id_pengajuan'], false) : false;
 			$detail_laporan = ((isset($_POST["detail_laporan"])) && !empty($_POST["detail_laporan"])) ? $_POST["detail_laporan"] : false;
-			$foto = isset($_FILES['foto']) ? $_FILES['foto'] : false;
+			$foto = isset($_FILES['foto']) ? $this->helper->reArrayFiles($_FILES['foto']) : false;
 			$jumlah_foto = isset($_POST['jumlah_foto']) ? $this->validation->validInput($_POST['jumlah_foto']) : false;
 
 			$status_valid_foto = $status_upload_foto = false;
