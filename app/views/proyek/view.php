@@ -263,7 +263,7 @@
 											</div>
 											<div class="row">
 												<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-													<input type="hidden" id="token_view" value="<?= $this->data['token_view']; ?>">
+													<!-- <input type="hidden" id="token_view" value="<?= $this->data['token_view']; ?>"> -->
 													<table id="alokasi_dana_proyekTable" class="table table-bordered table-hover">
 														<thead>
 															<tr>

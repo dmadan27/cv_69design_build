@@ -22,6 +22,9 @@ $(document).ready(function () {
       todayBtn: true,
     });
 
+    // slider progress
+    $('.slider').slider();
+
     // input mask
 
  	
@@ -63,6 +66,12 @@ $(document).ready(function () {
     		$('.field-'+this.id).removeClass('has-error').removeClass('has-success');
     		$(".pesan-"+this.id).text('');
     	}
+    });
+
+    // on change tgl
+    $('#tgl').on('change', function(){
+    	if($('#submit_proyek').val() == 'action-add')
+    		generateID(this.value.split('-')[0]);
     });
     
 });
@@ -343,10 +352,7 @@ $(document).ready(function () {
 	function delete_skk(index, val){
 		$(val).parent().parent().remove();
 		$.each(listSkk, function(i, item){
-			if(item.index == index && item.aksi == 'edit') item.status = true;
-			// else (item.index == index && item.aksi == 'tambah'){
-				
-			// }
+			if(item.index == index) item.delete = true;
 		});
 		numbering_listDetail();
 		console.log(listSkk);
@@ -360,11 +366,16 @@ $(document).ready(function () {
 function getDataForm(){
 	var data = new FormData();
 	
-	var luas_area = parseFloat($('#luas_area').val().trim()) ? parseFloat($('#luas_area').val().trim()) : $('#luas_area').val().trim();
-	var estimasi= parseFloat($('#estimasi').val().trim()) ? parseFloat($('#estimasi').val().trim()) : $('#estimasi').val().trim();
-	var total= parseFloat($('#total').val().trim()) ? parseFloat($('#total').val().trim()) : $('#total').val().trim();
-	var dp= parseFloat($('#dp').val().trim()) ? parseFloat($('#dp').val().trim()) : $('#dp').val().trim();
-	var cco = parseFloat($('#cco').val().trim()) ? parseFloat($('#cco').val().trim()) : $('#cco').val().trim();
+	var luas_area = parseFloat($('#luas_area').val().trim()) ? 
+		parseFloat($('#luas_area').val().trim()) : $('#luas_area').val().trim();
+	var estimasi = parseFloat($('#estimasi').val().trim()) ? 
+		parseFloat($('#estimasi').val().trim()) : $('#estimasi').val().trim();
+	var total = parseFloat($('#total').val().trim()) ? 
+		parseFloat($('#total').val().trim()) : $('#total').val().trim();
+	var dp = parseFloat($('#dp').val().trim()) ? 
+		parseFloat($('#dp').val().trim()) : $('#dp').val().trim();
+	var cco = parseFloat($('#cco').val().trim()) ? 
+		parseFloat($('#cco').val().trim()) : $('#cco').val().trim();
 
 	var dataProyek = {
 		id: $('#id').val().trim(),
@@ -379,9 +390,10 @@ function getDataForm(){
 		dp: $('#dp').val().trim(),
 		cco: $('#cco').val().trim(),
 		status: $('#status').val().trim(),
+		progress: $('#progress').val(),
 	}
 
-	data.append('token', $('#token').val().trim());
+	// data.append('token', $('#token').val().trim());
 	data.append('id', $('#id').val().trim());
 	data.append('dataProyek', JSON.stringify(dataProyek));
 	data.append('dataDetail', JSON.stringify(listDetail));
@@ -437,7 +449,9 @@ function getEdit(id){
 		url: BASE_URL+'proyek/get-edit/'+id.toLowerCase(),
 		type: 'post',
 		dataType: 'json',
-		data: {'token': $('#token').val().trim()},
+		data: {
+			// 'token': $('#token').val().trim()
+		},
 		beforeSend: function(){},
 		success: function(output){
 			console.log(output);
@@ -587,13 +601,18 @@ function setSkk(){
 /**
 *
 */
-function generateID(){
+function generateID(tahun = null){
 	$.ajax({
 		url: BASE_URL+'proyek/get-last-id/',
 		type: 'post',
-		data: {token: $('#token').val().trim()},
+		dataType: 'json',
+		data: {
+			// token: $('#token').val().trim()
+			'get_tahun': tahun,
+		},
 		beforeSend: function(){},
 		success: function(output){
+			console.log(output);
 			$('#id').val(output);	
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling

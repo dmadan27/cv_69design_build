@@ -17,7 +17,7 @@
     </section>
     <section class="content container-fluid">
   		<form id="form_proyek" role="form">
-  			<input type="hidden" id="token" value="<?= $this->data['token']?>">
+  			<!-- <input type="hidden" id="token" value="<?= $this->data['token']?>"> -->
   	
   			<!-- panel tambah data proyek -->
   			<div class="row">
@@ -146,14 +146,11 @@
                                     </div>
 
                                     <!-- Progress -->
-                        			<!-- <div class="form-group field-status has-feedback">
-                                        <label for="status">Status Proyek</label>           
-                                        <select class="form-control field" id="status">
-                                        	<option value="BERJALAN" <?= $selected = ($this->data['status'] == "BERJALAN") ? "selected" : ""; ?> >BERJALAN</option>
-                                        	<option value="SELESAI" <?= $selected = ($this->data['status'] == "SELESAI") ? "selected" : ""; ?> >SELESAI</option>
-                                        </select>
-                                        <span class="help-block small pesan pesan-status"></span>
-                                    </div> -->
+                        			<div class="form-group field-progress has-feedback margin">
+                        				<label for="status">Progress Proyek</label>
+                        				<input id="progress" type="text" class="slider form-control field" data-slider-value="<?= $this->data['progress']; ?>" data-slider-min="0" data-slider-max="100" data-slider-id="blue">
+                        				<span class="help-block small pesan pesan-progress"></span>
+                        			</div>
                         		</div>
                         	</div>
                         </div>

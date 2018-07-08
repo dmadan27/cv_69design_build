@@ -40,8 +40,8 @@
 					</div>
 					<!-- box body -->
 					<div class="box-body">
-						<input type="hidden" id="token" value="<?= $this->data['token']; ?>">
-						<input type="hidden" value="<?= $_SESSION['token']['proyek']['list'] ?>">
+						<!-- <input type="hidden" id="token" value="<?= $this->data['token']; ?>"> -->
+						<!-- <input type="hidden" value="<?= $_SESSION['token']['proyek']['list'] ?>"> -->
 						<table id="proyekTable" class="table table-bordered table-hover">
 							<thead>
 								<tr>

@@ -20,16 +20,6 @@
 		}
 
 		/**
-		*
-		*/
-		private function setToken($fitur){
-			$this->token = md5($this->auth->getToken());
-			$_SESSION['token']['proyek'][$fitur] = password_hash($this->token, PASSWORD_BCRYPT);
-
-			return $this->token;
-		}
-
-		/**
 		* 
 		*/
 		public function index(){
@@ -56,18 +46,13 @@
 				'js' => $js,
 			);
 
-			$data = array('token' => $this->setToken('list'));
-			$this->layout('proyek/list', $config, $data);
+			$this->layout('proyek/list', $config, $data = null);
 		}
 
 		/**
 		* 
 		*/
-		public function get_list(){
-			// cek token
-			$token = isset($_POST['token']) ? $_POST['token'] : false;
-			$this->auth->cekToken($token, $_SESSION['token']['proyek']['list'], 'proyek');
-			
+		public function get_list(){	
 			// config datatable
 			$config_dataTable = array(
 				'tabel' => 'proyek',
@@ -79,8 +64,6 @@
 
 			$dataProyek = $this->ProyekModel->getAllDataTable($config_dataTable);
 
-			$sess_token = $_SESSION['token']['proyek']['list'];
-
 			$data = array();
 			$no_urut = $_POST['start'];
 			foreach($dataProyek as $row){
@@ -89,9 +72,9 @@
 				$status = (strtolower($row['status']) == "selesai") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-primary">'.$row['status'].'</span>';
 
 				// button aksi
-				$aksiDetail = '<button onclick="getView('."'".strtolower($row["id"])."'".', '."'".$sess_token."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-				$aksiEdit = '<button onclick="getEdit('."'".strtolower($row["id"])."'".', '."'".$sess_token."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-				$aksiHapus = '<button onclick="getDelete('."'".strtolower($row["id"])."'".', '."'".$sess_token."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+				$aksiDetail = '<button onclick="getView('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+				$aksiEdit = '<button onclick="getEdit('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+				$aksiHapus = '<button onclick="getDelete('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 				
 				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
 				
@@ -134,11 +117,13 @@
 			$css = array(
   				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
 				'assets/bower_components/select2/dist/css/select2.min.css',
+				'assets/plugins/bootstrap-slider/slider.css'
   			);
 			$js = array(
 				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
 				'assets/bower_components/select2/dist/js/select2.full.min.js',
 				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
+				'assets/plugins/bootstrap-slider/bootstrap-slider.js',
 				'app/views/proyek/js/initForm.js',	
 			);
 
@@ -152,7 +137,6 @@
 			);
 
 			$data = array(
-				'token' => $this->setToken('add'),
 				'action' => 'action-add',
 				'id' => '',
 				'pemilik' => '',
@@ -166,6 +150,7 @@
 				'dp' => '',
 				'cco' => '',
 				'status' => '',
+				'progress' => 0,
 			);
 
 			$this->layout('proyek/form', $config, $data);
@@ -175,87 +160,90 @@
 		* 
 		*/
 		public function action_add(){
-			$data = isset($_POST) ? $_POST : false;
-			$dataProyek = isset($_POST['dataProyek']) ? json_decode($_POST['dataProyek'], true) : false;
-			$dataDetail = isset($_POST['dataDetail']) ? json_decode($_POST['dataDetail'], true) : false;
-			$dataSkk = isset($_POST['dataSkk']) ? json_decode($_POST['dataSkk'], true) : false;
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$data = isset($_POST) ? $_POST : false;
+				$dataProyek = isset($_POST['dataProyek']) ? json_decode($_POST['dataProyek'], true) : false;
+				$dataDetail = isset($_POST['dataDetail']) ? json_decode($_POST['dataDetail'], true) : false;
+				$dataSkk = isset($_POST['dataSkk']) ? json_decode($_POST['dataSkk'], true) : false;
+				
+				$status = false;
+				$error = "";
 
-			$this->auth->cekToken($data['token'], $_SESSION['token']['proyek']['add'], 'proyek');
-			
-			$status = false;
-			$error = "";
-
-			if(!$data){
-				$notif = array(
-					'title' => "Pesan Gagal",
-					'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
-				);
-			}
-			else{
-				// validasi data
-				$validasi = $this->set_validation($dataProyek, $data['action']);
-				$cek = $validasi['cek'];
-				$error = $validasi['error'];
-
-				if(empty($dataDetail) || empty($dataSkk)) $cek = false;
-
-				if($cek){
-					// validasi input
-					$dataProyek = array(
-						'id' => $this->validation->validInput($dataProyek['id']),
-						'pemilik' => $this->validation->validInput($dataProyek['pemilik']),
-						'tgl' => $this->validation->validInput($dataProyek['tgl']),
-						'pembangunan' => $this->validation->validInput($dataProyek['pembangunan']),
-						'luas_area' => $this->validation->validInput($dataProyek['luas_area']),
-						'alamat' => $this->validation->validInput($dataProyek['alamat']),
-						'kota' => $this->validation->validInput($dataProyek['kota']),
-						'estimasi' => $this->validation->validInput($dataProyek['estimasi']),
-						'total' => $this->validation->validInput($dataProyek['total']),
-						'dp' => $this->validation->validInput($dataProyek['dp']),
-						'cco' => $this->validation->validInput($dataProyek['cco']),
-						'status' => $this->validation->validInput($dataProyek['status']),	
+				if(!$data){
+					$notif = array(
+						'title' => "Pesan Gagal",
+						'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
 					);
+				}
+				else{
+					// validasi data
+					$validasi = $this->set_validation($dataProyek, $data['action']);
+					$cek = $validasi['cek'];
+					$error = $validasi['error'];
 
-					$dataInsert = array(
-						'dataProyek' => $dataProyek,
-						'dataDetail' => $dataDetail,
-						'dataSkk' => $dataSkk,
-					);
+					if(empty($dataDetail) || empty($dataSkk)) $cek = false;
 
-					// insert data proyek
-					if($this->ProyekModel->insert($dataInsert)){
-						$status = true;
-						$_SESSION['notif'] = array(
-							'title' => "Pesan Berhasil",
-							'message' => "Tambah Data Proyek Baru Berhasil",
+					if($cek){
+						// validasi input
+						$dataProyek = array(
+							'id' => $this->validation->validInput($dataProyek['id']),
+							'pemilik' => $this->validation->validInput($dataProyek['pemilik']),
+							'tgl' => $this->validation->validInput($dataProyek['tgl']),
+							'pembangunan' => $this->validation->validInput($dataProyek['pembangunan']),
+							'luas_area' => $this->validation->validInput($dataProyek['luas_area']),
+							'alamat' => $this->validation->validInput($dataProyek['alamat']),
+							'kota' => $this->validation->validInput($dataProyek['kota']),
+							'estimasi' => $this->validation->validInput($dataProyek['estimasi']),
+							'total' => $this->validation->validInput($dataProyek['total']),
+							'dp' => $this->validation->validInput($dataProyek['dp']),
+							'cco' => $this->validation->validInput($dataProyek['cco']),
+							'status' => $this->validation->validInput($dataProyek['status']),
+							'progress' => $this->validation->validInput($dataProyek['progress'])
 						);
-						$notif = $_SESSION['notif'];
+
+						$dataInsert = array(
+							'dataProyek' => $dataProyek,
+							'dataDetail' => $dataDetail,
+							'dataSkk' => $dataSkk,
+						);
+
+						// insert data proyek
+						if($this->ProyekModel->insert($dataInsert)){
+							$status = true;
+							$_SESSION['notif'] = array(
+								'title' => "Pesan Berhasil",
+								'message' => "Tambah Data Proyek Baru Berhasil",
+							);
+							$notif = $_SESSION['notif'];
+						}
+						else{
+							$notif = array(
+								'title' => "Pesan Gagal",
+								'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
+							);
+						}
 					}
 					else{
 						$notif = array(
-							'title' => "Pesan Gagal",
-							'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
+							'title' => "Pesan Pemberitahuan",
+							'message' => "Silahkan Cek Kembali Form Isian ",
 						);
 					}
 				}
-				else{
-					$notif = array(
-						'title' => "Pesan Pemberitahuan",
-						'message' => "Silahkan Cek Kembali Form Isian ",
-					);
-				}
-			}
 
-			$output = array(
-				'status' => $status,
-				'notif' => $notif,
-				'error' => $error,
-				// 'data' => $data,
-				// 'dataProyek' => $dataProyek,
-				// 'dataDetail' => $dataDetail,
-				// 'dataSkk' => $dataSkk,
-			);
-			echo json_encode($output);
+				$output = array(
+					'status' => $status,
+					'notif' => $notif,
+					'error' => $error,
+					// 'data' => $data,
+					// 'dataProyek' => $dataProyek,
+					// 'dataDetail' => $dataDetail,
+					// 'dataSkk' => $dataSkk,
+				);
+				echo json_encode($output);
+			}
+			else $this->redirect();
+				
 		}
 
 		/**
@@ -272,11 +260,13 @@
 			$css = array(
   				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
 				'assets/bower_components/select2/dist/css/select2.min.css',
+				'assets/plugins/bootstrap-slider/slider.css',
   			);
 			$js = array(
 				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
 				'assets/bower_components/select2/dist/js/select2.full.min.js',
 				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
+				'assets/plugins/bootstrap-slider/bootstrap-slider.js',
 				'app/views/proyek/js/initForm.js',	
 			);
 
@@ -290,7 +280,6 @@
 			);
 
 			$data = array(
-				'token' => $this->setToken('edit'),
 				'action' => 'action-edit',
 				'id' => $dataProyek['id'],
 				'pemilik' => $dataProyek['pemilik'],
@@ -304,6 +293,7 @@
 				'dp' => $dataProyek['dp'],
 				'cco' => $dataProyek['cco'],
 				'status' => $dataProyek['status'],
+				'progress' => $dataProyek['progress'],
 			);
 
 			$this->layout('proyek/form', $config, $data);
@@ -313,113 +303,113 @@
 		*
 		*/
 		public function get_edit($id){
-			$id = strtoupper($id);
-			if(empty($id) || $id == "") $this->redirect(BASE_URL."proyek/");
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$id = strtoupper($id);
+				if(empty($id) || $id == "") $this->redirect(BASE_URL."proyek/");
 
-			$token = isset($_POST['token']) ? $_POST['token'] : false;
-			$this->auth->cekToken($token, $_SESSION['token']['proyek']['edit'], 'proyek');
+				// get data detail dan skk
+				$dataDetail = $this->ProyekModel->getDetailById($id);
+				$dataSkk = $this->ProyekModel->getSkkById($id);
 
-			// get data detail dan skk
-			$dataDetail = $this->ProyekModel->getDetailById($id);
-			$dataSkk = $this->ProyekModel->getSkkById($id);
+				$output = array(
+					'dataDetail' => $dataDetail,
+					'dataSkk' => $dataSkk,
+				);
 
-			$output = array(
-				'dataDetail' => $dataDetail,
-				'dataSkk' => $dataSkk,
-			);
-
-			echo json_encode($output);
+				echo json_encode($output);
+			}
+				
 		}
 
 		/**
 		* 
 		*/
 		public function action_edit(){
-			$data = isset($_POST) ? $_POST : false;
-			$dataProyek = isset($_POST['dataProyek']) ? json_decode($_POST['dataProyek'], true) : false;
-			$dataDetail = isset($_POST['dataDetail']) ? json_decode($_POST['dataDetail'], true) : false;
-			$dataSkk = isset($_POST['dataSkk']) ? json_decode($_POST['dataSkk'], true) : false;
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$data = isset($_POST) ? $_POST : false;
+				$dataProyek = isset($_POST['dataProyek']) ? json_decode($_POST['dataProyek'], true) : false;
+				$dataDetail = isset($_POST['dataDetail']) ? json_decode($_POST['dataDetail'], true) : false;
+				$dataSkk = isset($_POST['dataSkk']) ? json_decode($_POST['dataSkk'], true) : false;			
+				$status = false;
+				$error = $notif = array();
 
-			$this->auth->cekToken($data['token'], $_SESSION['token']['proyek']['edit'], 'proyek');
-			
-			$status = false;
-			$error = "";
-
-			if(!$data){
-				$notif = array(
-					'title' => "Pesan Gagal",
-					'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
-				);
-			}
-			else{
-				// validasi data
-				$validasi = $this->set_validation($dataProyek, $data['action']);
-				$cek = $validasi['cek'];
-				$error = $validasi['error'];
-
-				if(empty($dataDetail) || empty($dataSkk)) $cek = false;
-
-				if($cek){
-					// validasi input
-					$dataProyek = array(
-						'id' => $this->validation->validInput($dataProyek['id']),
-						'pemilik' => $this->validation->validInput($dataProyek['pemilik']),
-						'tgl' => $this->validation->validInput($dataProyek['tgl']),
-						'pembangunan' => $this->validation->validInput($dataProyek['pembangunan']),
-						'luas_area' => $this->validation->validInput($dataProyek['luas_area']),
-						'alamat' => $this->validation->validInput($dataProyek['alamat']),
-						'kota' => $this->validation->validInput($dataProyek['kota']),
-						'estimasi' => $this->validation->validInput($dataProyek['estimasi']),
-						'total' => $this->validation->validInput($dataProyek['total']),
-						'dp' => $this->validation->validInput($dataProyek['dp']),
-						'cco' => $this->validation->validInput($dataProyek['cco']),
-						'status' => $this->validation->validInput($dataProyek['status']),	
+				if(!$data){
+					$notif = array(
+						'title' => "Pesan Gagal",
+						'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
 					);
+				}
+				else{
+					// validasi data
+					$validasi = $this->set_validation($dataProyek, $data['action']);
+					$cek = $validasi['cek'];
+					$error = $validasi['error'];
 
-					// insert data proyek
-					if($this->ProyekModel->update($dataProyek)){
-						// insert data detail
-						foreach($dataDetail as $index => $row){
-							if(!$dataDetail[$index]['delete']) $this->ProyekModel->insertDetail(array_map('strtoupper', $row));
-						}
+					if(empty($dataDetail) || empty($dataSkk)) $cek = false;
 
-						// insert data skk
-						foreach($dataSkk as $index => $row){
-							if(!$dataSkk[$index]['delete']) $this->ProyekModel->insertSkk(array_map('strtoupper', $row));	
-						}
-
-						$status = true;
-						$_SESSION['notif'] = array(
-							'title' => "Pesan Berhasil",
-							'message' => "Tambah Data Proyek Baru Berhasil",
+					if($cek){
+						$dataProyek = array(
+							'id' => $this->validation->validInput($dataProyek['id']),
+							'pemilik' => $this->validation->validInput($dataProyek['pemilik']),
+							'tgl' => $this->validation->validInput($dataProyek['tgl']),
+							'pembangunan' => $this->validation->validInput($dataProyek['pembangunan']),
+							'luas_area' => $this->validation->validInput($dataProyek['luas_area']),
+							'alamat' => $this->validation->validInput($dataProyek['alamat']),
+							'kota' => $this->validation->validInput($dataProyek['kota']),
+							'estimasi' => $this->validation->validInput($dataProyek['estimasi']),
+							'total' => $this->validation->validInput($dataProyek['total']),
+							'dp' => $this->validation->validInput($dataProyek['dp']),
+							'cco' => $this->validation->validInput($dataProyek['cco']),
+							'status' => $this->validation->validInput($dataProyek['status']),
+							'progress' => $this->validation->validInput($dataProyek['progress'])
 						);
-						$notif = $_SESSION['notif'];
+
+						$dataInsert = array(
+							'dataProyek' => $dataProyek,
+							'dataDetail' => $dataDetail,
+							'dataSkk' => $dataSkk,
+						);
+
+						// insert data proyek
+						if($this->ProyekModel->update($dataInsert)){
+							$status = true;
+							$_SESSION['notif'] = array(
+								'title' => "Pesan Berhasil",
+								'message' => "Edit Data Proyek Berhasil",
+							);
+							$notif = $_SESSION['notif'];
+						}
+						else{
+							$notif = array(
+								'title' => "Pesan Gagal",
+								'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
+							);
+						}
+
 					}
 					else{
 						$notif = array(
-							'title' => "Pesan Gagal",
-							'message' => "Terjadi Kesalahan ",
+							'title' => "Pesan Pemberitahuan",
+							'message' => "Silahkan Cek Kembali Form Isian ",
 						);
 					}
-				}
-				else{
-					$notif = array(
-						'title' => "Pesan Pemberitahuan",
-						'message' => "Silahkan Cek Kembali Form Isian ",
-					);
-				}
-			}
 
-			$output = array(
-				'status' => $status,
-				'notif' => $notif,
-				'error' => $error,
-				// 'data' => $data,
-				// 'dataProyek' => $dataProyek,
-				// 'dataDetail' => $dataDetail,
-				// 'dataSkk' => $dataSkk,
-			);
-			echo json_encode($output);
+				}
+
+				$output = array(
+					'status' => $status,
+					'notif' => $notif,
+					'error' => $error,
+					'data' => $data,
+					'dataProyek' => $dataProyek,
+					'dataDetail' => $dataDetail,
+					'dataSkk' => $dataSkk,
+				);
+
+				echo json_encode($output);
+			}
+			else $this->redirect();
+				
 		}
 
 		/**
@@ -451,15 +441,6 @@
 				'js' => $js,
 			);
 
-			// set token
-			$_SESSION['token_proyek'] = array(
-				'view' => md5($this->auth->getToken()),
-			);
-
-			$this->token = array(
-				'view' => password_hash($_SESSION['token_proyek']['view'], PASSWORD_BCRYPT),
-			);
-
 			$dataProyek = array(
 				'id' => $dataProyek['id'],
 				'pemilik' => $dataProyek['pemilik'],
@@ -474,9 +455,9 @@
 				'cco' => $this->helper->cetakRupiah($dataProyek['cco']),
 				'status' => (strtolower($dataProyek['status']) == "lunas") ? '<span class="label label-success">'.$dataProyek['status'].'</span>' : '<span class="label label-primary">'.$dataProyek['status'].'</span>',
 				'progress' => array(
-					'style' => 'style="width: 40%"',
-					'value' => '40',
-					'text' => '40% Success',
+					'style' => 'style="width: '.$dataProyek['progress'].'%"',
+					'value' => $dataProyek['progress'],
+					'text' => $dataProyek['progress'].'% Success',
 				),
 			);
 
@@ -505,7 +486,6 @@
 			$dataArus = array();
 
 			$data = array(
-				'token_view' => $this->token['view'],
 				'data_proyek' => $dataProyek,
 				'data_detail' => $dataDetail,
 				'data_skk' => $dataSkk,
@@ -526,22 +506,34 @@
 		*
 		*/
 		public function get_last_id(){
-			$token = isset($_POST['token']) ? $_POST['token'] : false;
-			$this->auth->cekToken($token, $_SESSION['token']['proyek']['add'], 'proyek');
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$tahun = isset($_POST['get_tahun']) ? $this->validation->validInput($_POST['get_tahun']) : false;
 
-			$data = !empty($this->ProyekModel->getLastID()['id']) ? $this->ProyekModel->getLastID()['id'] : false;
+				$id_temp = ($tahun) ? 'PRY'.$tahun : 'PRY'.date('Y');
 
-			if(!$data) $id = 'PRY0001';
-			else{
-				// $data = implode('', $data);
-				$kode = 'PRY';
-				$noUrut = (int)substr($data, 3, 4);
-				$noUrut++;
+				$data = !empty($this->ProyekModel->getLastID($id_temp)['id']) ? $this->ProyekModel->getLastID($id_temp)['id'] : false;
 
-				$id = $kode.sprintf("%04s", $noUrut);
-			}
+				if(!$data) $id = $id_temp.'0001';
+				else{
+					$noUrut = (int)substr($data, 7, 4);
+					$noUrut++;
 
-			echo $id;
+					$id = $id_temp.sprintf("%04s", $noUrut);
+				}
+
+				// if(!$data) $id = 'PRY0001';
+				// else{
+				// 	// $data = implode('', $data);
+				// 	$kode = 'PRY';
+				// 	$noUrut = (int)substr($data, 3, 4);
+				// 	$noUrut++;
+
+				// 	$id = $kode.sprintf("%04s", $noUrut);
+				// }
+
+				echo json_encode($id);
+			}		
+
 		}
 
 		/**
@@ -601,6 +593,8 @@
 			$this->validation->set_rules($data['cco'], 'CCO', 'cco', 'nilai | 0 | 99999999999 | not_required');
 			// status
 			$this->validation->set_rules($data['status'], 'Status Proyek', 'status', 'string | 1 | 255 | required');
+			// progress
+			$this->validation->set_rules($data['progress'], 'Progress Proyek', 'progress', 'nilai | 0 | 100 | required');
 
 			return $this->validation->run();
 		}

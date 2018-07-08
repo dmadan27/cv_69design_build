@@ -24,7 +24,7 @@ $(document).ready(function(){
             url: BASE_URL+"proyek/get-list/",
             type: 'POST',
             data: {
-                "token" : $('#token').val().trim(),
+                // "token" : $('#token').val().trim(),
             }
         },
         "columnDefs": [
@@ -52,24 +52,26 @@ $(document).ready(function(){
 /**
 *
 */
-function getView(id, token){
-    if(token != "") window.location.href = BASE_URL+'proyek/detail/'+id;
-    else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+function getView(id){
+    // if(token != "") window.location.href = BASE_URL+'proyek/detail/'+id;
+    // else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+    window.location.href = BASE_URL+'proyek/detail/'+id;
 }
 
 /**
 *
 */
-function getEdit(id, token){
-    if(token != "") window.location.href = BASE_URL+'proyek/form/'+id;
-    else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+function getEdit(id){
+    // if(token != "") window.location.href = BASE_URL+'proyek/form/'+id;
+    // else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+    window.location.href = BASE_URL+'proyek/form/'+id;
 }
 
 /**
 *
 */
-function getDelete(id, token){
-    if(token.trim() != ""){
+function getDelete(id){
+    // if(token.trim() != ""){
         swal({
             title: "Pesan Konfirmasi",
             text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
@@ -101,6 +103,6 @@ function getDelete(id, token){
                 }
             })
         });
-    }
-    else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+    // }
+    // else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
 }
