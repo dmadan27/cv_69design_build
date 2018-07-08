@@ -206,7 +206,7 @@
     		if ($this->status && $id_pengajuan && $detail_laporan && $foto) {
 
     			// validasi foto
-    			$validasi_foto = $this->validasi_foto($foto);
+    			$validasi_foto = $this->validasi_foto($foto, $id_pengajuan);
     			if($validasi_foto['status'] && ($validasi_foto['jumlah'] == $jumlah_foto))
     				$status_valid_foto = true;
 
@@ -248,7 +248,7 @@
 		/**
 		*
 		*/
-		private function validasi_foto($foto){
+		private function validasi_foto($foto, $id){
 			$status = true;
 			$tempFoto = array();
 			$hitungFoto = 0;
