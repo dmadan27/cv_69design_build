@@ -196,10 +196,13 @@
 		public function action_add_laporan(){
 			$this->model('Pengajuan_sub_kas_kecilModel');
 
-			$id_pengajuan = isset($_POST['id_pengajuan']) ? $this->validation->validInput($_POST['id_pengajuan'], false) : false;
-			$detail_laporan = ((isset($_POST["detail_laporan"])) && !empty($_POST["detail_laporan"])) ? $_POST["detail_laporan"] : false;
+			$id_pengajuan = isset($_POST['id_pengajuan']) ? 
+							$this->validation->validInput($_POST['id_pengajuan'], false) : false;
+			$detail_laporan = ((isset($_POST["detail_laporan"])) && !empty($_POST["detail_laporan"])) ? 
+							json_decode($_POST["detail_laporan"]) : false;
 			$foto = isset($_FILES['foto']) ? $this->helper->reArrayFiles($_FILES['foto']) : false;
-			$jumlah_foto = isset($_POST['jumlah_foto']) ? $this->validation->validInput($_POST['jumlah_foto']) : false;
+			$jumlah_foto = isset($_POST['jumlah_foto']) ? 
+							$this->validation->validInput($_POST['jumlah_foto']) : false;
 
 			$status_valid_foto = $status_upload_foto = false;
 
@@ -304,7 +307,7 @@
 			$hitungFoto = 0;
 
 			foreach($foto as $key => $value){
-				$path = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$value['fotoBaru'];
+				$path = ROOT.DS.'assets'.DS.'images'.DS.'laporan'.DS.$value['fotoBaru'];
 				if(!move_uploaded_file($value['tmp_name'], $path)){
 					$status = false;
 					$tempFoto[] = array(
