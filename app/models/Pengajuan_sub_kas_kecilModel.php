@@ -350,7 +350,7 @@
 					$this->koneksi->beginTransaction();
 
 					// update pengajuan - status laporan
-					$this->update_status_laporan($data->id_pengajuan);
+					$this->update_status_laporan($data['id_pengajuan']);
 
 					// update detail pengajuan
 					foreach($data_detail_laporan as $key => $value){

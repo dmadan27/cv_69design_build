@@ -221,7 +221,7 @@
 
     			// simpan db
     			if($status_upload_foto){
-    				$data_foto = $upload_foto['foto']['fotoBaru'];
+    				$data_foto = $upload_foto['foto'];
 
     				$data = array(
     					'id_pengajuan' => $id_pengajuan,
@@ -240,6 +240,7 @@
 				'status_valid_foto' => $status_valid_foto,
 				'status_upload_foto' => $status_upload_foto,
 				'status_aksi' => $this->status_aksi,
+				'data' => $data,
 			);
 
 			echo json_encode($output);
