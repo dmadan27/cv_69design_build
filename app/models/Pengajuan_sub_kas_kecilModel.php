@@ -385,7 +385,7 @@
 						':status_laporan' => $status_laporan,
 					)
 				);
-				$statment->closeCursor();
+				$statement->closeCursor();
 			}
 
 			/**
