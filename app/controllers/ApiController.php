@@ -225,8 +225,8 @@
 
     				$data = array(
     					'id_pengajuan' => $id_pengajuan,
-    					'detail_laporan' => json_decode($detail_laporan),
-    					'foto' => json_decode($data_foto),
+    					'detail_laporan' => $detail_laporan,
+    					'foto' => $data_foto,
     				);
 
     				if($this->Pengajuan_sub_kas_kecilModel->insert_laporan($data))

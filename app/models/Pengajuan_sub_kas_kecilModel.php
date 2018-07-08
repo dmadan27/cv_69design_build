@@ -399,11 +399,11 @@
 
 				$statement = $this->koneksi->prepare($query);
 				$statement->execute(array(
-						':id' => $data->id,
-						':status' => $data->status,
-						':harga_asli' => $data->harga_asli,
-						':sisa' => $data->sisa,
-						':status_laporan' => $data->status_laporan,
+						':id' => $data['id'],
+						':status' => $data['status'],
+						':harga_asli' => $data['harga_asli'],
+						':sisa' => $data['sisa'],
+						':status_laporan' => $data['status_laporan'],
 					)
 				);
 				$statment->closeCursor();
@@ -418,7 +418,7 @@
 				$statement = $this->koneksi->prepare($query);
 				$statement->execute(array(
 						':id_pengajuan' => $id_pengajuan,
-						':foto' => $data->foto,
+						':foto' => $data['foto'],
 					)
 				);
 				$statment->closeCursor();
