@@ -403,10 +403,10 @@
 						':status' => $status, //
 						':harga_asli' => $data->harga_asli,
 						':sisa' => $data->sisa,
-						':status_laporan' => $status_laporan, //
+						':status_lunas' => $status_lunas, //
 					)
 				);
-				$statment->closeCursor();
+				$statement->closeCursor();
 			}
 
 			/**
@@ -418,10 +418,10 @@
 				$statement = $this->koneksi->prepare($query);
 				$statement->execute(array(
 						':id_pengajuan' => $id_pengajuan,
-						':foto' => $data->fotoBaru,
+						':foto' => $data['fotoBaru'],
 					)
 				);
-				$statment->closeCursor();
+				$statement->closeCursor();
 			}
 
 		// ========================================================= //
