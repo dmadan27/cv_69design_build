@@ -54,6 +54,8 @@
 					
 					<ul class="nav nav-tabs">
               			<li class="active"><a href="#data-profil" data-toggle="tab">Data Profil</a></li>
+              			<li><a href="#mutasiKasKecil" data-toggle="tab">Mutasi</a></li>
+              			
               			
             		</ul>
             		
@@ -109,6 +111,45 @@
                 					</table>
                 				</div>
                 			</div>
+              			</div>
+
+              			<!-- Data Mutasi Kas Kecil -->
+              			<div class="tab-pane" id="mutasiKasKecil">
+              				<div class="row">
+                				<div class="col-md-12">
+                					<div class="box">
+										<!-- box header -->
+										<div class="box-header with-border">
+											<h3 class="box-title">Data Mutasi Kas Kecil</h3>
+											<!-- export -->
+											<button type="button" class="pull-right btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>	
+										</div>
+										<!-- box body -->
+										<div class="box-body">
+											<div class="row">
+												<input type="hidden" id="id" value="<?= $this->data['id']?>">
+												<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+													<!-- <input type="hidden" id="token_view" value="<?= $this->data['token']['view']; ?>"> -->
+													<table id="mutasiKasKecilTable" class="table table-bordered table-hover">
+														<thead>
+															<tr>
+																<th class="text-right">No</th>
+																<th>Tanggal</th>
+																<th class="text-right">Uang Masuk</th>
+																<th class="text-right">Uang Keluar</th>
+																<th class="text-right">Saldo</th>
+																<th>Keterangan</th>
+															</tr>
+														</thead>
+														<tbody>
+														</tbody>
+													</table>
+												</div>
+											</div>		
+										</div>
+									</div>
+                				</div>
+                			</div>	
               			</div>
               			
 	              		<!-- /.tab-pane -->

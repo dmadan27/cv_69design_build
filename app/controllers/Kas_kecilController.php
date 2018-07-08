@@ -347,7 +347,7 @@ class Kas_kecil extends Crud_modalsAbstract{
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 				'assets/bower_components/dropify/dist/js/dropify.min.js',
 				'app/views/kas_kecil/js/initView.js',
-				'app/views/kas_kecil/js/initForm.js',
+				// 'app/views/kas_kecil/js/initForm.js',
 			);
 
 			$config = array(
@@ -361,15 +361,15 @@ class Kas_kecil extends Crud_modalsAbstract{
 
 			$status = ($data_detail['status'] == "AKTIF") ? '<span class="label label-success">'.$data_detail['status'].'</span>' : '<span class="label label-danger">'.$data_detail['status'].'</span>';
 			
-			$_SESSION['token_kas_kecil']['view'] = md5($this->auth->getToken());
-			$_SESSION['token_kas_kecil']['edit'] = md5($this->auth->getToken());
-			$_SESSION['token_kas_kecil']['delete'] = md5($this->auth->getToken());
+			// $_SESSION['token_kas_kecil']['view'] = md5($this->auth->getToken());
+			// $_SESSION['token_kas_kecil']['edit'] = md5($this->auth->getToken());
+			// $_SESSION['token_kas_kecil']['delete'] = md5($this->auth->getToken());
 			
-			$this->token = array(
-				'view' => password_hash($_SESSION['token_kas_kecil']['view'], PASSWORD_BCRYPT),
-				'edit' => password_hash($_SESSION['token_kas_kecil']['edit'], PASSWORD_BCRYPT),
-				'delete' => password_hash($_SESSION['token_kas_kecil']['delete'], PASSWORD_BCRYPT)
-			);
+			// $this->token = array(
+			// 	'view' => password_hash($_SESSION['token_kas_kecil']['view'], PASSWORD_BCRYPT),
+			// 	'edit' => password_hash($_SESSION['token_kas_kecil']['edit'], PASSWORD_BCRYPT),
+			// 	'delete' => password_hash($_SESSION['token_kas_kecil']['delete'], PASSWORD_BCRYPT)
+			// );
 
 			$data = array(
 				'id' => $data_detail['id'],
@@ -380,7 +380,7 @@ class Kas_kecil extends Crud_modalsAbstract{
 				'foto' => $data_detail['foto'],
 				'saldo' => $data_detail['saldo'],
 				'status' => $status,
-				'token' => $this->token,
+				// 'token' => $this->token,
 			);
 
 			$this->layout('kas_kecil/view', $config, $data);
@@ -428,6 +428,63 @@ class Kas_kecil extends Crud_modalsAbstract{
 		*/
 		public function export(){
 
+		}
+
+		/**
+		* Function get_mutasi
+		* method yang berfungsi untuk get data mutasi bank sesuai dengan id
+		* dipakai di detail data
+		*/
+		public function get_mutasi($id){
+			// $data = isset($_POST) ? $_POST : false;
+			// cek token
+			// $this->auth->cekToken($_SESSION['token_kas_kecil']['view'], $data['token_view'], 'kas-kecil');
+
+			$this->model('Mutasi_saldo_kas_kecilModel');
+			
+			// config datatable
+			$config_dataTable = array(
+				'tabel' => 'mutasi_saldo_kas_kecil',
+				'kolomOrder' => array(null, 'tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
+				'kolomCari' => array('tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
+				'orderBy' => array('id' => 'desc'),
+				'kondisi' => 'WHERE id_kas_kecil = '.$id.' ',
+			);
+
+			$dataMutasi = $this->Mutasi_saldo_kas_kecilModel->getAllDataTable($config_dataTable);
+
+			$data = array();
+			$no_urut = $_POST['start'];
+			foreach($dataMutasi as $row){
+				$no_urut++;
+				
+				$dataRow = array();
+				$dataRow[] = $no_urut;
+				$dataRow[] = $row['tgl'];
+				$dataRow[] = $row['uang_masuk'];
+				$dataRow[] = $row['uang_keluar'];
+				$dataRow[] = $row['saldo'];
+				$dataRow[] = $row['ket'];
+
+				// $dataRow = array();
+				// $dataRow[] = '';
+				// $dataRow[] = '';
+				// $dataRow[] = '';
+				// $dataRow[] = '';
+				// $dataRow[] = '';
+				// $dataRow[] = '';
+
+				$data[] = $dataRow;
+			}
+
+			$output = array(
+				'draw' => $_POST['draw'],
+				'recordsTotal' => $this->Mutasi_saldo_kas_kecilModel->recordTotal(),
+				'recordsFiltered' => $this->Mutasi_saldo_kas_kecilModel->recordFilter(),
+				'data' => $data,
+			);
+
+			echo json_encode($output);
 		}
 
 		private function set_validation($data){
