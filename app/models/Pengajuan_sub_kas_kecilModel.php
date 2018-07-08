@@ -393,7 +393,7 @@
 			*/
 			private function update_detail_laporan($data){
 				$status = 'TUNAI';
-				$status_lunas = 'LUNAS';
+				$status_laporan = 'PENDING';
 
 				$query = "UPDATE detail_pengajuan_sub_kas_kecil SET status = :status, harga_asli = :harga_asli, sisa = :sisa, status_laporan = :status_laporan WHERE id = :id";
 
