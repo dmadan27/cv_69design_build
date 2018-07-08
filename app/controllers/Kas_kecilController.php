@@ -371,13 +371,23 @@ class Kas_kecil extends Crud_modalsAbstract{
 			// 	'delete' => password_hash($_SESSION['token_kas_kecil']['delete'], PASSWORD_BCRYPT)
 			// );
 
+			if(!empty($data_detail['foto'])){
+				// cek foto di storage
+				$filename = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$data_detail['foto'];
+				if(!file_exists($filename)) 
+					$foto = BASE_URL.'assets/images/user/default.jpg';
+				else
+					$foto = BASE_URL.'assets/images/user/'.$data_detail['foto'];
+			}
+			else $foto = BASE_URL.'assets/images/user/default.jpg';
+
 			$data = array(
 				'id' => $data_detail['id'],
 				'nama' => $data_detail['nama'],
 				'alamat' => $data_detail['alamat'],
 				'no_telp' => $data_detail['no_telp'],
 				'email' => $data_detail['email'],
-				'foto' => $data_detail['foto'],
+				'foto' => $foto,
 				'saldo' => $data_detail['saldo'],
 				'status' => $status,
 				// 'token' => $this->token,
@@ -439,7 +449,7 @@ class Kas_kecil extends Crud_modalsAbstract{
 			// $data = isset($_POST) ? $_POST : false;
 			// cek token
 			// $this->auth->cekToken($_SESSION['token_kas_kecil']['view'], $data['token_view'], 'kas-kecil');
-
+			$id = strtoupper($id);
 			$this->model('Mutasi_saldo_kas_kecilModel');
 			
 			// config datatable
@@ -448,11 +458,12 @@ class Kas_kecil extends Crud_modalsAbstract{
 				'kolomOrder' => array(null, 'tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
 				'kolomCari' => array('tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
 				'orderBy' => array('id' => 'desc'),
-				'kondisi' => 'WHERE id_kas_kecil = '.$id.' ',
+				'kondisi' => 'WHERE id_kas_kecil = "'.$id.'"',
+				// 'kondisi' => false,
 			);
 
 			$dataMutasi = $this->Mutasi_saldo_kas_kecilModel->getAllDataTable($config_dataTable);
-
+			// var_dump($dataMutasi);
 			$data = array();
 			$no_urut = $_POST['start'];
 			foreach($dataMutasi as $row){
@@ -460,19 +471,11 @@ class Kas_kecil extends Crud_modalsAbstract{
 				
 				$dataRow = array();
 				$dataRow[] = $no_urut;
-				$dataRow[] = $row['tgl'];
-				$dataRow[] = $row['uang_masuk'];
-				$dataRow[] = $row['uang_keluar'];
-				$dataRow[] = $row['saldo'];
+				$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
+				$dataRow[] = $this->helper->cetakRupiah($row['uang_masuk']);
+				$dataRow[] = $this->helper->cetakRupiah($row['uang_keluar']);
+				$dataRow[] = $this->helper->cetakRupiah($row['saldo']);
 				$dataRow[] = $row['ket'];
-
-				// $dataRow = array();
-				// $dataRow[] = '';
-				// $dataRow[] = '';
-				// $dataRow[] = '';
-				// $dataRow[] = '';
-				// $dataRow[] = '';
-				// $dataRow[] = '';
 
 				$data[] = $dataRow;
 			}

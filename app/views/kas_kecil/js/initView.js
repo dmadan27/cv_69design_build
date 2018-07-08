@@ -39,7 +39,7 @@ $(document).ready(function(){
                 if(i != 5) $('td:eq('+i+')', row).addClass('text-right');
             }
 
-            console.log(data);
+            // console.log(data);
         }
     });
 

@@ -28,22 +28,18 @@
 						<h3 class="profile-username text-center"><?= $this->data['nama']; ?></h3>
               			<p class="text-muted text-center"></p>
               			<ul class="list-group list-group-unbordered">
-              				<?php 
-              					             				?>
 		                	<li class="list-group-item">
 		                  		<b>Email</b> <a class="pull-right"><?= $this->data['email']; ?></a>
 		                	</li>
 		                	<li class="list-group-item">
 		                  		<b>Saldo</b> <a class="pull-right"><?= $this->data['saldo']; ?></a>
 		                	</li>
-		                	
 		                	<li class="list-group-item">
 		                 	 	<b>Status</b> <a class="pull-right"><?= $this->data['status']; ?></a>
 		                	</li>
 		              	</ul>
 		              	
-		              	
-		              	<a href="<?= BASE_URL.'kas-kecil';  ?>" class="btn btn-default btn-block" role="button"><b>Kembali</b></a>
+		              	<a href="<?= BASE_URL.'kas-kecil'; ?>" class="btn btn-default btn-block" role="button"><b>Kembali</b></a>
 					</div>
 				</div>
 			</div>
@@ -54,9 +50,7 @@
 					
 					<ul class="nav nav-tabs">
               			<li class="active"><a href="#data-profil" data-toggle="tab">Data Profil</a></li>
-              			<li><a href="#mutasiKasKecil" data-toggle="tab">Mutasi</a></li>
-              			
-              			
+              			<li><a href="#data-mutasi" data-toggle="tab">Data Mutasi</a></li>
             		</ul>
             		
             		<div class="tab-content">
@@ -114,7 +108,7 @@
               			</div>
 
               			<!-- Data Mutasi Kas Kecil -->
-              			<div class="tab-pane" id="mutasiKasKecil">
+              			<div class="tab-pane" id="data-mutasi">
               				<div class="row">
                 				<div class="col-md-12">
                 					<div class="box">
