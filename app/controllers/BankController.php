@@ -375,10 +375,10 @@
 		* method yang berfungsi untuk get data mutasi bank sesuai dengan id
 		* dipakai di detail data
 		*/
-		public function get_mutasi(){
-			$data = isset($_POST) ? $_POST : false;
-			// cek token
-			$this->auth->cekToken($_SESSION['token_bank']['view'], $data['token_view'], 'bank');
+		public function get_mutasi($id){
+			// $data = isset($_POST) ? $_POST : false;
+			// // cek token
+			// $this->auth->cekToken($_SESSION['token_bank']['view'], $data['token_view'], 'bank');
 
 			$this->model('Mutasi_bankModel');
 			
@@ -388,7 +388,7 @@
 				'kolomOrder' => array(null, 'tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
 				'kolomCari' => array('tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
 				'orderBy' => array('id' => 'desc'),
-				'kondisi' => 'WHERE id = '.$data['id'].' ',
+				'kondisi' => 'WHERE id_bank = '.$id.' ',
 			);
 
 			$dataMutasi = $this->Mutasi_bankModel->getAllDataTable($config_dataTable);

@@ -21,11 +21,11 @@ $(document).ready(function(){
         processing: true,
         serverSide: true,
         ajax: {
-            url: BASE_URL+"bank/get-mutasi/",
+            url: BASE_URL+"bank/get-mutasi/"+$('#id').val().trim(),
             type: 'POST',
             data: {
-                "token_view" : $('#token_view').val().trim(),
-                "id" : $('#id').val().trim(),
+                // "token_view" : $('#token_view').val().trim(),
+                // "id" : $('#id').val().trim(),
             }
         },
         "columnDefs": [
