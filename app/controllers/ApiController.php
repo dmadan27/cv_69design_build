@@ -341,7 +341,7 @@
 		*
 		*/
 		private function rollbackFoto($foto){
-
+			$this->status_aksi = false;
 		}
 
 		/**

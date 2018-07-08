@@ -359,7 +359,7 @@
 
 					// insert upload foto laporan
 					foreach($data_foto as $key => $value){
-						$this->insert_foto_laporan($value, $data->id_pengajuan);
+						$this->insert_foto_laporan($value, $data['id_pengajuan']);
 					}
 
 					$this->koneksi->commit();
@@ -393,9 +393,9 @@
 			*/
 			private function update_detail_laporan($data){
 				$status = 'TUNAI';
-				$status_laporan = 'PENDING';
+				$status_lunas = 'LUNAS';
 
-				$query = "UPDATE detail_pengajuan_sub_kas_kecil SET status = :status, harga_asli = :harga_asli, sisa = :sisa, status_laporan = :status_laporan WHERE id = :id";
+				$query = "UPDATE detail_pengajuan_sub_kas_kecil SET status = :status, harga_asli = :harga_asli, sisa = :sisa, status_lunas = :status_lunas WHERE id = :id";
 
 				$statement = $this->koneksi->prepare($query);
 				$statement->execute(array(
