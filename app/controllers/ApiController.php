@@ -308,7 +308,7 @@
 					$status = false;
 					$tempFoto[] = array(
 						'tmp_name' => $value['tmp_name'],
-						'foto' => $value['name'],
+						'foto' => $value['foto'],
 						'fotoBaru' => $value['fotoBaru'],
 						'error' => 'Upload Foto Gagal',
 					);
@@ -317,7 +317,7 @@
 
 				$tempFoto[] = array(
 					'tmp_name' => $value['tmp_name'],
-					'foto' => $value['name'],
+					'foto' => $value['foto'],
 					'fotoBaru' => $value['fotoBaru'],
 					'error' => '',
 				);
