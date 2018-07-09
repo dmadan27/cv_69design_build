@@ -185,6 +185,7 @@
 					// validasi inputan
 					$data = array(
 						'id_bank' => $this->validation->validInput($data['id_bank']),
+						'id_kas_besar' => $_SESSION['sess_id'],
 						'tgl' => $this->validation->validInput($data['tgl']),
 						'nama' => $this->validation->validInput($data['nama']),
 						'nominal' => $this->validation->validInput($data['nominal']),

@@ -15,6 +15,7 @@ $(document).ready(function(){
 		setIdBank();
 		if(this.value.trim() != ""){
 			resetForm();
+			$('#tgl').prop('disabled', false);
 			$('#submit_operasional').prop('value', 'action-add');
 			$('#submit_operasional').prop('disabled', false);
 			$('#submit_operasional').html('Simpan Data');

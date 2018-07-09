@@ -76,12 +76,13 @@
 			try{
 				$this->koneksi->beginTransaction();
 
-				$query = "CALL tambah_operasional (:id_bank, :tgl, :nama, :nominal, :ket)";
+				$query = "CALL tambah_operasional (:id_bank, :id_kas_besar, :tgl, :nama, :nominal, :ket)";
 
 				$statement = $this->koneksi->prepare($query);
 				$statement->execute(
 					array(
 						':id_bank' => $data['id_bank'],
+						':id_kas_besar' => $data['id_kas_besar'],
 						':tgl' => $data['tgl'],
 						':nama' => $data['nama'],
 						':nominal' => $data['nominal'],
