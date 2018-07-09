@@ -330,10 +330,74 @@
 		}
 
 		/**
-		*
+		* Function detail
+		* method untuk get data detail dan setting layouting detail
+		* param $id didapat dari url
 		*/
 		public function detail($id){
 			$id = strtoupper($id);
+			if(empty($id) || $id == "") $this->redirect(BASE_URL."sub-kas-kecil/");
+
+			$data_detail = !empty($this->Sub_kas_kecilModel->getById($id)) ? $this->Sub_kas_kecilModel->getById($id) : false;
+
+			if(!$data_detail) $this->redirect(BASE_URL."sub-kas-kecil/");
+
+			$css = array(
+				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+				'assets/bower_components/dropify/dist/css/dropify.min.css'
+			);
+			$js = array(
+				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
+				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/bower_components/dropify/dist/js/dropify.min.js',
+				'app/views/sub_kas_kecil/js/initView.js',
+				// 'app/views/kas_kecil/js/initForm.js',
+			);
+
+			$config = array(
+				'title' => array(
+					'main' => 'Data Kas Kecil',
+					'sub' => 'Detail Data Kas Kecil',
+				),
+				'css' => $css,
+				'js' => $js,
+			);
+
+			$status = ($data_detail['status'] == "AKTIF") ? '<span class="label label-success">'.$data_detail['status'].'</span>' : '<span class="label label-danger">'.$data_detail['status'].'</span>';
+			
+			// $_SESSION['token_kas_kecil']['view'] = md5($this->auth->getToken());
+			// $_SESSION['token_kas_kecil']['edit'] = md5($this->auth->getToken());
+			// $_SESSION['token_kas_kecil']['delete'] = md5($this->auth->getToken());
+			
+			// $this->token = array(
+			// 	'view' => password_hash($_SESSION['token_kas_kecil']['view'], PASSWORD_BCRYPT),
+			// 	'edit' => password_hash($_SESSION['token_kas_kecil']['edit'], PASSWORD_BCRYPT),
+			// 	'delete' => password_hash($_SESSION['token_kas_kecil']['delete'], PASSWORD_BCRYPT)
+			// );
+
+			if(!empty($data_detail['foto'])){
+				// cek foto di storage
+				$filename = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$data_detail['foto'];
+				if(!file_exists($filename)) 
+					$foto = BASE_URL.'assets/images/user/default.jpg';
+				else
+					$foto = BASE_URL.'assets/images/user/'.$data_detail['foto'];
+			}
+			else $foto = BASE_URL.'assets/images/user/default.jpg';
+
+			$data = array(
+				'id' => $data_detail['id'],
+				'nama' => $data_detail['nama'],
+				'alamat' => $data_detail['alamat'],
+				'no_telp' => $data_detail['no_telp'],
+				'email' => $data_detail['email'],
+				'foto' => $foto,
+				'saldo' => $data_detail['saldo'],
+				'status' => $status,
+				// 'token' => $this->token,
+			);
+
+			$this->layout('sub_kas_kecil/view', $config, $data);
 		}
 
 		/**
@@ -365,6 +429,96 @@
 		*
 		*/
 		public function export(){
+
+		}
+
+		public function get_mutasi($id){
+			// $data = isset($_POST) ? $_POST : false;
+			// cek token
+			// $this->auth->cekToken($_SESSION['token_kas_kecil']['view'], $data['token_view'], 'kas-kecil');
+			$id = strtoupper($id);
+			$this->model('Mutasi_saldo_sub_kas_kecilModel');
+			
+			// config datatable
+			$config_dataTable = array(
+				'tabel' => 'mutasi_saldo_sub_kas_kecil',
+				'kolomOrder' => array(null, 'tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
+				'kolomCari' => array('tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
+				'orderBy' => array('id' => 'desc'),
+				'kondisi' => 'WHERE id_sub_kas_kecil = "'.$id.'"',
+				// 'kondisi' => false,
+			);
+
+			$dataMutasi = $this->Mutasi_saldo_sub_kas_kecilModel->getAllDataTable($config_dataTable);
+			// var_dump($dataMutasi);
+			$data = array();
+			$no_urut = $_POST['start'];
+			foreach($dataMutasi as $row){
+				$no_urut++;
+				
+				$dataRow = array();
+				$dataRow[] = $no_urut;
+				$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
+				$dataRow[] = $this->helper->cetakRupiah($row['uang_masuk']);
+				$dataRow[] = $this->helper->cetakRupiah($row['uang_keluar']);
+				$dataRow[] = $this->helper->cetakRupiah($row['saldo']);
+				$dataRow[] = $row['ket'];
+
+				$data[] = $dataRow;
+			}
+
+			$output = array(
+				'draw' => $_POST['draw'],
+				'recordsTotal' => $this->Mutasi_saldo_sub_kas_kecilModel->recordTotal(),
+				'recordsFiltered' => $this->Mutasi_saldo_sub_kas_kecilModel->recordFilter(),
+				'data' => $data,
+			);
+
+			echo json_encode($output);
+
+
+		}
+
+		public function get_history_pengajuan($id){
+			$id = strtoupper($id);
+			$this->model('Pengajuan_sub_kas_kecilModel');
+			
+			// config datatable
+			$config_dataTable = array(
+				'tabel' => 'pengajuan_sub_kas_kecil',
+				'kolomOrder' => array(null, 'tgl', 'total', 'dana_disetujui', 'status','status_laporan'),
+				'kolomCari' => array('tgl', 'total', 'dana_disetujui', 'status','status_laporan'),
+				'orderBy' => array('id' => 'desc'),
+				'kondisi' => 'WHERE id_sub_kas_kecil = "'.$id.'"',
+			);
+
+			$dataMutasi = $this->Pengajuan_sub_kas_kecilModel->getAllDataTable($config_dataTable);
+			// var_dump($dataMutasi);
+			$data = array();
+			$no_urut = $_POST['start'];
+			foreach($dataMutasi as $row){
+				$no_urut++;
+				
+				$dataRow = array();
+				$dataRow[] = $no_urut;
+				$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
+				$dataRow[] = $this->helper->cetakRupiah($row['total']);
+				$dataRow[] = $this->helper->cetakRupiah($row['dana_disetujui']);
+				$dataRow[] = $row['status'];
+				$dataRow[] = $row['status_laporan'];
+
+				$data[] = $dataRow;
+			}
+
+			$output = array(
+				'draw' => $_POST['draw'],
+				'recordsTotal' => $this->Pengajuan_sub_kas_kecilModel->recordTotal(),
+				'recordsFiltered' => $this->Pengajuan_sub_kas_kecilModel->recordFilter(),
+				'data' => $data,
+			);
+
+			echo json_encode($output);
+
 
 		}
 

@@ -490,6 +490,49 @@ class Kas_kecil extends Crud_modalsAbstract{
 			echo json_encode($output);
 		}
 
+		public function get_history_pengajuan($id){
+			$id = strtoupper($id);
+			$this->model('Pengajuan_kasKecilModel');
+			
+			// config datatable
+			$config_dataTable = array(
+				'tabel' => 'pengajuan_kas_kecil',
+				'kolomOrder' => array(null, 'tgl', 'nama', 'total', 'status'),
+				'kolomCari' => array('tgl', 'nama', 'total', 'status'),
+				'orderBy' => array('id' => 'desc'),
+				'kondisi' => 'WHERE id_kas_kecil = "'.$id.'"',
+				// 'kondisi' => false,
+			);
+
+			$dataMutasi = $this->Pengajuan_kasKecilModel->getAllDataTable($config_dataTable);
+			// var_dump($dataMutasi);
+			$data = array();
+			$no_urut = $_POST['start'];
+			foreach($dataMutasi as $row){
+				$no_urut++;
+				
+				$dataRow = array();
+				$dataRow[] = $no_urut;
+				$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
+				$dataRow[] = $row['nama'];
+				$dataRow[] = $this->helper->cetakRupiah($row['total']);
+				$dataRow[] = $row['status'];
+
+				$data[] = $dataRow;
+			}
+
+			$output = array(
+				'draw' => $_POST['draw'],
+				'recordsTotal' => $this->Pengajuan_kasKecilModel->recordTotal(),
+				'recordsFiltered' => $this->Pengajuan_kasKecilModel->recordFilter(),
+				'data' => $data,
+			);
+
+			echo json_encode($output);
+
+
+		}
+
 		private function set_validation($data){
 			$required = ($data['action'] =="action-edit") ? 'not_required' : 'required';
 
