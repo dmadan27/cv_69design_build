@@ -113,10 +113,12 @@ class Operasional_ProyekModel extends Database implements ModelInterface{
 			// return $result;
 		}
 
-		public function getLastID(){
-			$query = "SELECT MAX(id) id FROM operasional_proyek;";
+		public function getLastID($id){
+			$id .= "%";
+			$query = "SELECT MAX(id) AS id FROM operasional_proyek WHERE id LIKE :id";
 
 			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
 			$statement->execute();
 			$result = $statement->fetch(PDO::FETCH_ASSOC);
 

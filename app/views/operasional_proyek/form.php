@@ -129,7 +129,11 @@
                                             <th>Satuan</th>
                                             <th>Qty</th>
                                             <th>Harga</th>
+                                            <th>Sub Total</th>
                                             <th>Status</th>
+                                            <th>Harga Asli</th>
+                                            <th>Sisa</th>
+                                            <th>Status Lunas</th>
                                             <th>Aksi</th>
                                           </tr>
                                         </thead>

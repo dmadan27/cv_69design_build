@@ -336,27 +336,40 @@ class Operasional_Proyek extends CrudAbstract{
 			return $this->validation->run();
 		}
 
-	/**
-	*
-	*/
-	public function get_last_id(){
-		$token = isset($_POST['token']) ? $_POST['token'] : false;
-		$this->auth->cekToken($_SESSION['token_operasional_proyek']['add'], $token, 'operasional_proyek');
 
-		$data = !empty($this->Operasional_ProyekModel->getLastID()['id']) ? $this->Operasional_ProyekModel->getLastID()['id'] : false;
+		/**
+		*
+		*/
+		public function get_last_id(){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$proyek = isset($_POST['get_proyek']) ? $this->validation->validInput($_POST['get_proyek']) : false;
 
-		if(!$data) $id = 'OPRY0001';
-		else{
-			// $data = implode('', $data);
-			$kode = 'OPRY';
-			$noUrut = (int)substr($data, 4, 4);
-			$noUrut++;
+				$id_temp = ($proyek) ? 'OPRY-'.$proyek.'-' : 'OPRY-[ID_PROYEK]-';
 
-			$id = $kode.sprintf("%04s", $noUrut);
+				$data = !empty($this->Operasional_ProyekModel->getLastID($id_temp)['id']) ? $this->Operasional_ProyekModel->getLastID($id_temp)['id'] : false;
+
+				if(!$data) $id = $id_temp.'0001';
+				else{
+					$noUrut = (int)substr($data, 17, 4);
+					$noUrut++;
+
+					$id = $id_temp.sprintf("%04s", $noUrut);
+				}
+
+				// if(!$data) $id = 'PRY0001';
+				// else{
+				// 	// $data = implode('', $data);
+				// 	$kode = 'PRY';
+				// 	$noUrut = (int)substr($data, 3, 4);
+				// 	$noUrut++;
+
+				// 	$id = $kode.sprintf("%04s", $noUrut);
+				// }
+
+				echo json_encode($id);
+			}		
+
 		}
-
-		echo $id;
-	}
 
 	public function get_nama_proyek(){
 		$this->model('ProyekModel');
@@ -391,24 +404,24 @@ class Operasional_Proyek extends CrudAbstract{
 	}
 
 	public function action_add_detail(){
-			$data = isset($_POST) ? $_POST : false;
-			
-			$status = false;
-			$error = "";
+		$data = isset($_POST) ? $_POST : false;
+		
+		$status = false;
+		$error = "";
 
-			// $validasi = $this->set_validation_detail($data);
-			$cek = $validasi['cek'];
-			$error = $validasi['error'];
+		$validasi = $this->set_validation_detail($data);
+		$cek = $validasi['cek'];
+		$error = $validasi['error'];
 
-			if($cek) $status = true;
+		if($cek) $status = true;
 
-			$output = array(
-				'status' => $status,
-				// 'notif' => $notif,
-				'error' => $error,
-				'data' => $data,
-			);
-			echo json_encode($output);
+		$output = array(
+			'status' => $status,
+			// 'notif' => $notif,
+			'error' => $error,
+			'data' => $data,
+		);
+		echo json_encode($output);
 
 	}
 
@@ -417,11 +430,25 @@ class Operasional_Proyek extends CrudAbstract{
 		*/
 		private function set_validation_detail($data){
 			// nama
-			$this->validation->set_rules($data['nama'], 'Nama Kebutuhan', 'nama', 'string | 1 | 255 | required');
+			$this->validation->set_rules($data['nama_detail'], 'Nama Kebutuhan', 'nama_detail', 'string | 1 | 255 | required');
 			// jenis
-			$this->validation->set_rules($data['jenis'], 'Jenis Kebutuhan', 'jenis', 'string | 1 | 255 | required');
-			
-			
+			$this->validation->set_rules($data['jenis_detail'], 'Jenis Kebutuhan', 'jenis_detail', 'string | 1 | 255 | required');
+			// satuan
+			$this->validation->set_rules($data['satuan_detail'], 'Satuan', 'satuan_detail', 'string | 1 | 255 | required');
+			// kuantiti
+			$this->validation->set_rules($data['qty_detail'], 'Kuantiti', 'qty_detail', 'angka | 1 | 255 | required');
+			// harga
+			$this->validation->set_rules($data['harga_detail'], 'Harga Kebutuhan', 'harga_detail', 'nilai | 1 | 9999999999 | required');
+			// sub_total
+			$this->validation->set_rules($data['sub_total_detail'], 'Sub Total', 'sub_total_detail', 'nilai | 1 | 9999999999 | required');
+			// status
+			$this->validation->set_rules($data['status_detail'], 'Status', 'status_detail', 'string | 1 | 255 | required');
+			// harga asli
+			$this->validation->set_rules($data['harga_asli_detail'], 'Harga Asli', 'harga_asli_detail', 'nilai | 1 | 9999999999 | required');
+			// sisa
+			$this->validation->set_rules($data['sisa_detail'], 'Sisa', 'sisa_detail', 'nilai | 1 | 9999999999 | required');
+			// status lunas
+			$this->validation->set_rules($data['status_lunas_detail'], 'Status Lunas', 'status_lunas_detail', 'string | 1 | 255 | required');
 
 			return $this->validation->run();
 		}
