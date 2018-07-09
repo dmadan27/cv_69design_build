@@ -139,3 +139,10 @@ function getDelete(id, token){
 function back(){
     window.location.href = BASE_URL+'sub-kas-kecil/';
 }
+
+/**
+*
+*/
+function getView(){
+
+}

@@ -486,8 +486,8 @@
 			// config datatable
 			$config_dataTable = array(
 				'tabel' => 'pengajuan_sub_kas_kecil',
-				'kolomOrder' => array(null, 'tgl', 'total', 'dana_disetujui', 'status','status_laporan'),
-				'kolomCari' => array('tgl', 'total', 'dana_disetujui', 'status','status_laporan'),
+				'kolomOrder' => array(null, 'tgl', 'total', 'dana_disetujui', 'status'),
+				'kolomCari' => array('tgl', 'total', 'dana_disetujui', 'status'),
 				'orderBy' => array('id' => 'desc'),
 				'kondisi' => 'WHERE id_sub_kas_kecil = "'.$id.'"',
 			);
@@ -498,6 +498,10 @@
 			$no_urut = $_POST['start'];
 			foreach($dataMutasi as $row){
 				$no_urut++;
+
+				// button aksi
+				$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+				$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
 				
 				$dataRow = array();
 				$dataRow[] = $no_urut;
@@ -505,7 +509,7 @@
 				$dataRow[] = $this->helper->cetakRupiah($row['total']);
 				$dataRow[] = $this->helper->cetakRupiah($row['dana_disetujui']);
 				$dataRow[] = $row['status'];
-				$dataRow[] = $row['status_laporan'];
+				$dataRow[] = $aksi;
 
 				$data[] = $dataRow;
 			}

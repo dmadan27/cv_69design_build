@@ -173,7 +173,7 @@
 																<th class="text-right">Total</th>
 																<th class="text-right">Dana Disetujui</th>
 																<th>Status</th>
-																<th>Status Laporan</th>
+																<th>Aksi</th>
 															</tr>
 														</thead>
 														<tbody>
