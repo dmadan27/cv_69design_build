@@ -1,7 +1,9 @@
 <?php 
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 	$sess_welcome = isset($_SESSION['sess_welcome']) ? $_SESSION['sess_welcome'] : false;
-	unset($_SESSION['sess_welcome']); 
+	$sess_notif = isset($_SESSION['notif']) ? $_SESSION['notif'] : false;
+	unset($_SESSION['sess_welcome']);
+	unset($_SESSION['notif']);
 ?>
 
 <!DOCTYPE html>
@@ -31,6 +33,26 @@
 		    var BASE_URL = "<?php print BASE_URL; ?>";
 		    var urlParams = <?php echo json_encode($_GET, JSON_HEX_TAG);?>;
 		    var level = "<?php print $_SESSION['sess_level']; ?>";
+
+		    /**
+			*
+			*/
+			function setNotif(notif){
+				switch(notif.type){
+					case 'success':
+						toastr.success(notif.message, notif.title);
+						break;
+					case 'warning':
+						toastr.warning(notif.message, notif.title);
+						break;
+					case 'danger':
+						toastr.danger(notif.message, notif.title);
+						break;
+					default:
+						toastr.info(notif.message, notif.title);
+						break; 
+				}
+			}
 		</script>
 		<?php 
 			require_once "layout/js/js.php";
@@ -42,7 +64,18 @@
 			    	});
 			    </script>
 		        <?php
-		    } 
+		    }
+
+		    if($sess_notif){
+		    	?>
+		        <script type="text/javascript">
+		        	var sess_notif = <?php echo json_encode($sess_notif);?>;
+			    	$(document).ready(function(){
+			    		setNotif(sess_notif);
+			    	});
+			    </script>
+		        <?php
+		    }
 		?>
 	</body>
 </html>

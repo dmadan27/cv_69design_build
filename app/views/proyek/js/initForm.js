@@ -26,8 +26,34 @@ $(document).ready(function () {
     $('.slider').slider();
 
     // input mask
-
+    $('.input-mask-uang').inputmask({ 
+    	alias : 'currency',
+    	prefix: '', 
+    	radixPoint: ',',
+    	digits: 0,
+    	groupSeparator: '.', 
+    	clearMaskOnLostFocus: true, 
+    	digitsOptional: false,
+    });
  	
+ 	// on change field
+    $('.field').on('change', function(){
+    	if(this.value !== ""){
+    		$('.field-'+this.id).removeClass('has-error').addClass('has-success');
+    		$(".pesan-"+this.id).text('');
+    	}
+    	else{
+    		$('.field-'+this.id).removeClass('has-error').removeClass('has-success');
+    		$(".pesan-"+this.id).text('');
+    	}
+    });
+
+    // on change tgl
+    $('#tgl').on('change', function(){
+    	if($('#submit_proyek').val() == 'action-add')
+    		generateID(this.value.split('-')[0]);
+    });
+
     // tambah detail
     $('#tambah_detail').on('click', function(){
     	console.log(listDetail);
@@ -56,22 +82,9 @@ $(document).ready(function () {
     	return false;
     });
 
-    // on change field
-    $('.field').on('change', function(){
-    	if(this.value !== ""){
-    		$('.field-'+this.id).removeClass('has-error').addClass('has-success');
-    		$(".pesan-"+this.id).text('');
-    	}
-    	else{
-    		$('.field-'+this.id).removeClass('has-error').removeClass('has-success');
-    		$(".pesan-"+this.id).text('');
-    	}
-    });
-
-    // on change tgl
-    $('#tgl').on('change', function(){
-    	if($('#submit_proyek').val() == 'action-add')
-    		generateID(this.value.split('-')[0]);
+    // btn reset
+    $('#btn_reset').on('click', function(){
+    	reset();
     });
     
 });
@@ -85,7 +98,11 @@ $(document).ready(function () {
 		var index = indexDetail++;
 
 		var persentase = parseFloat($('#persentase').val().trim()) ? parseFloat($('#persentase').val().trim()) : $('#persentase').val().trim();
-		var total_detail = parseFloat($('#total_detail').val().trim()) ? parseFloat($('#total_detail').val().trim()) : $('#total_detail').val().trim();
+		var total_detail = ($('#total_detail').inputmask) ? 
+			( parseFloat($('#total_detail').inputmask('unmaskedvalue')) ?
+				parseFloat($('#total_detail').inputmask('unmaskedvalue')) : 
+				$('#total_detail').inputmask('unmaskedvalue')
+			) : $('#total_detail').val().trim();
 
 		var data = {
 			index: index,
@@ -259,7 +276,11 @@ $(document).ready(function () {
 	function delete_detail(index, val){
 		$(val).parent().parent().remove();
 		$.each(listDetail, function(i, item){
-			if(item.index == index) item.delete = true;
+			if(item.index == index && item.aksi == 'tambah') {
+				// item.delete = true;
+				listDetail.splice(index, 1);
+			}
+			else if(item.index == index && item.aksi != 'tambah') item.delete = true;
 		});
 		numbering_listDetail();
 		console.log(listDetail);
@@ -352,7 +373,11 @@ $(document).ready(function () {
 	function delete_skk(index, val){
 		$(val).parent().parent().remove();
 		$.each(listSkk, function(i, item){
-			if(item.index == index) item.delete = true;
+			if(item.index == index && item.aksi == 'tambah'){
+				// item.delete = true;
+				listSkk.splice(index, 1);	
+			}
+			else if(item.index == index && item.aksi != 'tambah') item.delete = true;
 		});
 		numbering_listDetail();
 		console.log(listSkk);
@@ -370,12 +395,24 @@ function getDataForm(){
 		parseFloat($('#luas_area').val().trim()) : $('#luas_area').val().trim();
 	var estimasi = parseFloat($('#estimasi').val().trim()) ? 
 		parseFloat($('#estimasi').val().trim()) : $('#estimasi').val().trim();
-	var total = parseFloat($('#total').val().trim()) ? 
-		parseFloat($('#total').val().trim()) : $('#total').val().trim();
-	var dp = parseFloat($('#dp').val().trim()) ? 
-		parseFloat($('#dp').val().trim()) : $('#dp').val().trim();
-	var cco = parseFloat($('#cco').val().trim()) ? 
-		parseFloat($('#cco').val().trim()) : $('#cco').val().trim();
+
+	var total = ($('#total').inputmask) ? 
+		( parseFloat($('#total').inputmask('unmaskedvalue')) ?
+			parseFloat($('#total').inputmask('unmaskedvalue')) : 
+			$('#total').inputmask('unmaskedvalue')
+		) : $('#total').val().trim();
+
+	var dp = ($('#dp').inputmask) ? 
+		( parseFloat($('#dp').inputmask('unmaskedvalue')) ?
+			parseFloat($('#dp').inputmask('unmaskedvalue')) : 
+			$('#dp').inputmask('unmaskedvalue')
+		) : $('#dp').val().trim();
+
+	var cco = ($('#cco').inputmask) ? 
+		( parseFloat($('#cco').inputmask('unmaskedvalue')) ?
+			parseFloat($('#cco').inputmask('unmaskedvalue')) : 
+			$('#cco').inputmask('unmaskedvalue')
+		) : $('#cco').val().trim();
 
 	var dataProyek = {
 		id: $('#id').val().trim(),
@@ -386,9 +423,9 @@ function getDataForm(){
 		alamat: $('#alamat').val().trim(),
 		kota: $('#kota').val().trim(),
 		estimasi: $('#estimasi').val().trim(),
-		total: $('#total').val().trim(),
-		dp: $('#dp').val().trim(),
-		cco: $('#cco').val().trim(),
+		total: total,
+		dp: dp,
+		cco: cco,
 		status: $('#status').val().trim(),
 		progress: $('#progress').val(),
 	}
@@ -423,11 +460,18 @@ function submit(){
 		},
 		success: function(output){
 			console.log(output);
+
+			if(!output.cek.data_detail)
+				setNotif(output.notif.data_detail);
+
+			if(!output.cek.data_skk)
+				setNotif(output.notif.data_skk);			
+
 			if(!output.status){
 				$('#submit_proyek').prop('disabled', false);
 				$('#submit_proyek').html($('#submit_proyek').text());
 				setError(output.error);
-				toastr.warning(output.notif.message, output.notif.title);
+				setNotif(output.notif.default);
 			}
 			else window.location.href = BASE_URL+'proyek/';
 		},
@@ -647,4 +691,17 @@ function resetModal(){
 
 	// hapus semua feedback
 	$('#form_detail .form-group').removeClass('has-success').removeClass('has-error');
+}
+
+/**
+*
+*/
+function reset(){
+	resetForm();
+	resetModal();
+	$('#detail_proyekTable tbody tr').remove();
+	$('#sub_kas_kecilTable tbody tr').remove();
+	indexDetail = indexSkk = 0;
+	listDetail = listSkk = [];
+	generateID();
 }

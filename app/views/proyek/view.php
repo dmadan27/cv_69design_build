@@ -23,6 +23,7 @@
 	</section>
 	<!-- Main content -->
 	<section class="content container-fluid">
+		<input type="hidden" id="id" value="<?= strtolower($proyek['id']); ?>">
 		<div class="row">
 			<div class="col-lg-12 col-md-12 col-xs-12">
 				<div class="box">
@@ -35,8 +36,10 @@
 				              			<li><a href="#tab_2" data-toggle="tab">Arus Terment dan Kas Pelaksanaan Project</a></li>
 				              			<li><a href="#tab_3" data-toggle="tab">Alokasi Dana Project</a></li>
 									</ul>
+
 									<!-- tab content -->
 									<div class="tab-content">
+										
 										<!-- Tab 1: profil proyek -->
 										<div class="tab-pane active" id="tab_1">
 											<div class="row">
@@ -194,23 +197,23 @@
 														<table class="table table-hover">
 															<tr>
 																<td><strong>Total Pelaksanaan Utama</strong></td>
-																<td></td>
+																<td class="text-right"><strong><?= $arus['total_pelaksana_utama'] ?></strong></td>
 															</tr>
 															<tr>
 																<td>Nilai RAB Kontrak</td>
-																<td class="text-right"><?= $proyek['total'] ?></td>
+																<td class="text-right"><?= $arus['nilai_rab'] ?></td>
 															</tr>
 															<tr>
 																<td>CCO</td>
-																<td class="text-right"><?= $proyek['cco'] ?></td>
+																<td class="text-right"><?= $arus['cco'] ?></td>
 															</tr>
 															<tr>
 																<td><strong>Nilai Terment diterima</strong></td>
-																<td></td>
+																<td class="text-right"><strong><?= $arus['nilai_terment_diterima'] ?></strong></td>
 															</tr>
 															<tr>
 																<td><strong>Sisa Terment Project</strong></td>
-																<td></td>
+																<td class="text-right"><strong><?= $arus['sisa_terment_project'] ?></strong></td>
 															</tr>
 														</table>
 													</fieldset>
@@ -223,27 +226,27 @@
 														<table class="table table-hover">
 															<tr>
 																<td><strong>Nilai Terment Masuk</strong></td>
-																<td></td>
+																<td class="text-right"><strong><?= $arus['nilai_terment_masuk'] ?></strong></td>
 															</tr>
 															<tr>
 																<td><strong>Total Pelaksanaan Project</strong></td>
-																<td></td>
+																<td class="text-right"><strong><?= $arus['total_pelaksana_project'] ?></strong></td>
 															</tr>
 															<tr>
 																<td>Keluaran Tunai</td>
-																<td></td>
+																<td class="text-right"><?= $arus['keluaran_tunai'] ?></td>
 															</tr>
 															<tr>
 																<td>Keluaran Kredit</td>
-																<td></td>
+																<td class="text-right"><?= $arus['keluaran_kredit'] ?></td>
 															</tr>
 															<tr>
 																<td><strong>Saldo Kas Pelaksanaan</strong></td>
-																<td></td>
+																<td class="text-right"><strong><?= $arus['saldo_kas_pelaksanaan'] ?></strong></td>
 															</tr>
 															<tr>
 																<td><strong>Selisih Terment Masuk - Keluran Tunai</strong></td>
-																<td></td>
+																<td class="text-right"><strong><?= $arus['selisih'] ?></strong></td>
 															</tr>
 														</table>
 													</fieldset>
@@ -253,31 +256,72 @@
 
 										<!-- Tab 3 -->
 										<div class="tab-pane" id="tab_3">
-											<div class="row">
-												<div class="col-md-12">
-													<div class="form-group">
-														<!-- export -->
-														<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>	
-													</div>	
+
+											<!-- tabel pengajuan skk -->
+											<div class="panel box box-primary">
+												<div class="box-header with-border">
+													<h6 class="box-title">
+                      									<a data-toggle="collapse" data-parent="#accordion" href="#collapse_pengajuan">
+								                        	Data Pengajuan Sub Kas Kecil
+								                      	</a>
+								                    </h6>
+												</div>
+												<div id="collapse_pengajuan" class="panel-collapse collapse in">
+													<div class="box-body">
+														<div class="form-group">
+															<!-- export -->
+															<button type="button" class="btn btn-success btn-flat" id="exportExcel_pengajuan"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+														</div>
+														<table id="pengajuan_skkTable" class="table table-bordered table-hover">
+															<thead>
+																<tr>
+																	<th class="text-right">No</th>
+																	<th>ID</th>
+																	<th>Nama</th>
+																	<th>Sub Kas Kecil</th>
+																	<th>Tanggal</th>
+																	<th class="text-right">Total</th>
+																	<th>Aksi</th>
+																</tr>
+															</thead>
+															<tbody>
+															</tbody>
+														</table>
+													</div>
 												</div>
 											</div>
-											<div class="row">
-												<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-													<!-- <input type="hidden" id="token_view" value="<?= $this->data['token_view']; ?>"> -->
-													<table id="alokasi_dana_proyekTable" class="table table-bordered table-hover">
-														<thead>
-															<tr>
-																<th class="text-right">No</th>
-																<th>ID Pengajuan / Operasional</th>
-																<th>ID Sub Kas Kecil</th>
-																<th>Tanggal</th>
-																<th class="text-right">Total</th>
-																<th>Aksi</th>
-															</tr>
-														</thead>
-														<tbody>
-														</tbody>
-													</table>
+											
+											<!-- tabel operasional proyek -->
+											<div class="panel box box-primary">
+												<div class="box-header with-border">
+													<h6 class="box-title">
+                      									<a data-toggle="collapse" data-parent="#accordion" href="#collapse_operasional">
+								                        	Data Operasional Proyek
+								                      	</a>
+								                    </h6>
+												</div>
+												<div id="collapse_operasional" class="panel-collapse collapse in">
+													<div class="box-body">
+														<div class="form-group">
+															<!-- export -->
+															<button type="button" class="btn btn-success btn-flat" id="exportExcel_operasional"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+														</div>
+														<table id="operasional_proyekTable" class="table table-bordered table-hover">
+															<thead>
+																<tr>
+																	<th class="text-right">No</th>
+																	<th>ID</th>
+																	<th>Nama</th>
+																	<th>Kas Besar</th>
+																	<th>Tanggal</th>
+																	<th class="text-right">Total</th>
+																	<th>Aksi</th>
+																</tr>
+															</thead>
+															<tbody>
+															</tbody>
+														</table>
+													</div>
 												</div>
 											</div>
 										</div>
@@ -290,7 +334,24 @@
 			</div>
 		</div>
 
-						
+		<!-- panel button -->
+		<div class="row">
+  			<div class="col-lg-12 col-md-12 col-xs-12">    				
+  				<div class="box box-info"> 
+                    <div class="box-body">
+                    	<div class="row">
+                    		<div class="col-md-12 col-xs-12">
+                    			<div class="btn-group">
+									<a href="<?= BASE_URL.'proyek/'; ?>" class="btn btn-default btn-flat btn-lg" role="button">Kembali</a>
+	                    			<a href="<?= BASE_URL.'proyek/form/'.strtolower($proyek['id']); ?>" class="btn btn-success btn-flat btn-lg" role="button">Edit</a>
+								</div>		
+                       		</div>
+                    	</div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+  			</div>
+  		</div>			
 	</section>
 	<!-- /.content -->
 

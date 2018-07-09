@@ -312,6 +312,9 @@
 		public function delete($id){
 			try{
 				$query = 'CALL hapus_proyek (:id);';
+
+				$this->koneksi->beginTransaction();
+				
 				$statement = $this->koneksi->prepare($query);
 				$statement->execute(
 					array(':id' => $id)

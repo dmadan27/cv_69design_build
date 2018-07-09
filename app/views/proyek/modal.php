@@ -41,7 +41,7 @@
 						<label for="total_detail">Total</label>
 						<div class="input-group">
 							<span class="input-group-addon">Rp</span>
-			                <input type="number" min="0" step="any" name="total_detail" id="total_detail" class="form-control field" placeholder="Masukkan Total">
+			                <input type="text" name="total_detail" id="total_detail" class="form-control field input-mask-uang" placeholder="Masukkan Total">
 			                <span class="input-group-addon">.00</span>
 						</div>
 						<span class="help-block small pesan pesan-total_detail"></span>

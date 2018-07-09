@@ -52,6 +52,7 @@
 									<th>Pembangunan</th>
 									<th>Kota</th>
 									<th class="text-right">Total</th>
+									<th>Progress</th>
 									<th>Status</th>
 									<th>Aksi</th>
 								</tr>

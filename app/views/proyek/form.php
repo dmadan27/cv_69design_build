@@ -107,7 +107,7 @@
                                       	<label for="total">Total RAB</label>
                                       	<div class="input-group">
                                       		<span class="input-group-addon">Rp.</span>
-                                      		<input type="text" class="form-control field" id="total" name="total" placeholder="Masukan Total RAB" value="<?= $this->data['total']; ?>">
+                                      		<input type="text" class="form-control field input-mask-uang" id="total" name="total" placeholder="Masukan Total RAB" value="<?= $this->data['total']; ?>">
                                       		<span class="input-group-addon">,00-</span>
                                       	</div>
                                       	<span class="help-block small pesan pesan-total"></span>
@@ -118,7 +118,7 @@
                                       	<label for="dp">DP</label>
                                        	<div class="input-group">
                                       		<span class="input-group-addon">Rp.</span>
-                                      		<input type="text" class="form-control field" id="dp" name="dp" placeholder="Masukkan DP" value="<?= $this->data['dp']; ?>">
+                                      		<input type="text" class="form-control field input-mask-uang" id="dp" name="dp" placeholder="Masukkan DP" value="<?= $this->data['dp']; ?>">
                                       		<span class="input-group-addon">,00-</span>
                                       	</div>
                                  	 	<span class="help-block small pesan pesan-dp"></span>
@@ -129,7 +129,7 @@
                                       	<label for="cco">CCO</label>
                                       	<div class="input-group">
                                       		<span class="input-group-addon">Rp.</span>
-                                      		<input type="text" class="form-control field" id="cco" name="cco" placeholder="Masukan Change Contract Order" value="<?= $this->data['cco']; ?>">
+                                      		<input type="text" class="form-control field input-mask-uang" id="cco" name="cco" placeholder="Masukan Change Contract Order" value="<?= $this->data['cco']; ?>">
                                       		<span class="input-group-addon">,00-</span>
                                       	</div>
                                       	<span class="help-block small pesan pesan-cco"></span>
@@ -249,11 +249,11 @@
                         <div class="box-body">
                         	<div class="row">
                         		<div class="col-md-6 col-xs-12">
-                        			<button class="btn btn-default btn-flat btn-lg" type="button">Kembali</button>
+                        			<a href="<?= BASE_URL.'proyek/'; ?>" class="btn btn-default btn-flat btn-lg" role="button">Kembali</a>
                            		</div>
                         		<div class="col-md-6 col-xs-12">
                         			<div class="btn-group pull-right">
-	                        			<button class="btn btn-default btn-flat btn-lg" type="button">Reset</button>
+	                        			<button class="btn btn-default btn-flat btn-lg" id="btn_reset" type="button">Reset</button>
 	                        			<button class="btn btn-primary btn-flat btn-lg" id="submit_proyek" 
 	                        			type="submit" value="<?= $this->data['action'];?>">Submit</button>
                         			</div>	

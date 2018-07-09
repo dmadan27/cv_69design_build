@@ -7,6 +7,7 @@
 	class Proyek extends CrudAbstract{
 		
 		protected $token;
+		private $status = false;
 
 		/**
 		* 
@@ -56,8 +57,8 @@
 			// config datatable
 			$config_dataTable = array(
 				'tabel' => 'proyek',
-				'kolomOrder' => array(null, 'id', 'pemilik', 'tgl', 'pembangunan', 'kota', 'total', 'status', null),
-				'kolomCari' => array('id', 'pemilik', 'tgl', 'pembangunan', 'luas_area', 'status'),
+				'kolomOrder' => array(null, 'id', 'pemilik', 'tgl', 'pembangunan', 'kota', 'total', 'progress', 'status', null),
+				'kolomCari' => array('id', 'pemilik', 'tgl', 'pembangunan', 'luas_area', 'status', 'progress'),
 				'orderBy' => array('id' => 'desc', 'status' => 'asc'),
 				'kondisi' => false,
 			);
@@ -70,6 +71,15 @@
 				$no_urut++;
 
 				$status = (strtolower($row['status']) == "selesai") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-primary">'.$row['status'].'</span>';
+
+				if($row['progress'] == 100)
+					$progress = '<span class="label label-success">'.$row['progress'].' %</span>';
+				else if($row['progress'] >= 50  && $row['progress'] < 100)
+					$progress = '<span class="label label-primary">'.$row['progress'].' %</span>';
+				else if($row['progress'] >= 20 && $row['progress'] < 50)
+					$progress = '<span class="label label-warning">'.$row['progress'].' %</span>';
+				else if($row['progress'] < 20)
+					$progress = '<span class="label label-danger">'.$row['progress'].' %</span>';
 
 				// button aksi
 				$aksiDetail = '<button onclick="getView('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
@@ -86,6 +96,7 @@
 				$dataRow[] = $row['pembangunan'];
 				$dataRow[] = $row['kota'];
 				$dataRow[] = $this->helper->cetakRupiah($row['total']);
+				$dataRow[] = $progress;
 				$dataRow[] = $status;
 				$dataRow[] = $aksi;
 
@@ -166,8 +177,8 @@
 				$dataDetail = isset($_POST['dataDetail']) ? json_decode($_POST['dataDetail'], true) : false;
 				$dataSkk = isset($_POST['dataSkk']) ? json_decode($_POST['dataSkk'], true) : false;
 				
-				$status = false;
-				$error = "";
+				$error = $notif = array();
+				$cekDetail = $cekSkk = true;
 
 				if(!$data){
 					$notif = array(
@@ -181,7 +192,14 @@
 					$cek = $validasi['cek'];
 					$error = $validasi['error'];
 
-					if(empty($dataDetail) || empty($dataSkk)) $cek = false;
+					if(empty($dataDetail)){
+						$cek = false;
+						$cekDetail = false;
+					}
+					if(empty($dataSkk)) {
+						$cek = false;
+						$cekSkk = false;
+					}
 
 					if($cek){
 						// validasi input
@@ -209,36 +227,60 @@
 
 						// insert data proyek
 						if($this->ProyekModel->insert($dataInsert)){
-							$status = true;
+							$this->status = true;
 							$_SESSION['notif'] = array(
+								'type' => "success",
 								'title' => "Pesan Berhasil",
 								'message' => "Tambah Data Proyek Baru Berhasil",
 							);
-							$notif = $_SESSION['notif'];
+							$notif['default'] = $_SESSION['notif'];
 						}
 						else{
-							$notif = array(
+							$notif['default'] = array(
+								'type' => "error",
 								'title' => "Pesan Gagal",
 								'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
 							);
 						}
 					}
 					else{
-						$notif = array(
+						if(!$cekDetail){
+							$notif['data_detail'] = array(
+								'type' => 'warning',
+								'title' => "Pesan Pemberitahuan",
+								'message' => "Silahkan Cek Kembali Data Detail",
+							);
+						}
+
+						if(!$cekSkk){
+							$notif['data_skk'] = array(
+								'type' => 'warning',
+								'title' => "Pesan Pemberitahuan",
+								'message' => "Silahkan Cek Kembali Data Logistik Proyek",
+							);
+						}
+
+						$notif['default'] = array(
+							'type' => 'warning',
 							'title' => "Pesan Pemberitahuan",
-							'message' => "Silahkan Cek Kembali Form Isian ",
+							'message' => "Silahkan Cek Kembali Form Isian",
 						);
 					}
 				}
 
 				$output = array(
-					'status' => $status,
+					'status' => $this->status,
 					'notif' => $notif,
 					'error' => $error,
+					'cek' => array(
+						'cek' => $cek,
+						'data_detail' => $cekDetail,
+						'data_skk' => $cekSkk,
+					),
 					// 'data' => $data,
-					// 'dataProyek' => $dataProyek,
-					// 'dataDetail' => $dataDetail,
-					// 'dataSkk' => $dataSkk,
+					'dataProyek' => $dataProyek,
+					'dataDetail' => $dataDetail,
+					'dataSkk' => $dataSkk,
 				);
 				echo json_encode($output);
 			}
@@ -330,8 +372,9 @@
 				$dataProyek = isset($_POST['dataProyek']) ? json_decode($_POST['dataProyek'], true) : false;
 				$dataDetail = isset($_POST['dataDetail']) ? json_decode($_POST['dataDetail'], true) : false;
 				$dataSkk = isset($_POST['dataSkk']) ? json_decode($_POST['dataSkk'], true) : false;			
-				$status = false;
+				
 				$error = $notif = array();
+				$cekDetail = $cekSkk = true;
 
 				if(!$data){
 					$notif = array(
@@ -345,7 +388,15 @@
 					$cek = $validasi['cek'];
 					$error = $validasi['error'];
 
-					if(empty($dataDetail) || empty($dataSkk)) $cek = false;
+					if(empty($dataDetail)){
+						$cek = false;
+						$cekDetail = false;
+					}
+
+					if(empty($dataSkk)) {
+						$cek = false;
+						$cekSkk = false;
+					}
 
 					if($cek){
 						$dataProyek = array(
@@ -364,23 +415,25 @@
 							'progress' => $this->validation->validInput($dataProyek['progress'])
 						);
 
-						$dataInsert = array(
+						$dataUpdate = array(
 							'dataProyek' => $dataProyek,
 							'dataDetail' => $dataDetail,
 							'dataSkk' => $dataSkk,
 						);
 
 						// insert data proyek
-						if($this->ProyekModel->update($dataInsert)){
-							$status = true;
+						if($this->ProyekModel->update($dataUpdate)){
+							$this->status = true;
 							$_SESSION['notif'] = array(
+								'type' => "success",
 								'title' => "Pesan Berhasil",
 								'message' => "Edit Data Proyek Berhasil",
 							);
-							$notif = $_SESSION['notif'];
+							$notif['default'] = $_SESSION['notif'];
 						}
 						else{
-							$notif = array(
+							$notif['default'] = array(
+								'type' => "error",
 								'title' => "Pesan Gagal",
 								'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
 							);
@@ -388,7 +441,24 @@
 
 					}
 					else{
-						$notif = array(
+						if(!$cekDetail){
+							$notif['data_detail'] = array(
+								'type' => 'warning',
+								'title' => "Pesan Pemberitahuan",
+								'message' => "Silahkan Cek Kembali Data Detail",
+							);
+						}
+
+						if(!$cekSkk){
+							$notif['data_skk'] = array(
+								'type' => 'warning',
+								'title' => "Pesan Pemberitahuan",
+								'message' => "Silahkan Cek Kembali Data Logistik Proyek",
+							);
+						}
+
+						$notif['default'] = array(
+							'type' => "warning",
 							'title' => "Pesan Pemberitahuan",
 							'message' => "Silahkan Cek Kembali Form Isian ",
 						);
@@ -397,10 +467,15 @@
 				}
 
 				$output = array(
-					'status' => $status,
+					'status' => $this->status,
 					'notif' => $notif,
 					'error' => $error,
-					'data' => $data,
+					'cek' => array(
+						'cek' => $cek,
+						'data_detail' => $cekDetail,
+						'data_skk' => $cekSkk,
+					),
+					// 'data' => $data,
 					'dataProyek' => $dataProyek,
 					'dataDetail' => $dataDetail,
 					'dataSkk' => $dataSkk,
@@ -441,6 +516,10 @@
 				'js' => $js,
 			);
 
+			$total = $dataProyek['total'];
+			$dp = $dataProyek['dp'];
+			$cco = $dataProyek['cco'];
+
 			$dataProyek = array(
 				'id' => $dataProyek['id'],
 				'pemilik' => $dataProyek['pemilik'],
@@ -450,7 +529,7 @@
 				'alamat' => $dataProyek['alamat'],
 				'kota' => $dataProyek['kota'],
 				'estimasi' => $dataProyek['estimasi'].' Bulan',
-				'total' => $this->helper->cetakRupiah($dataProyek['total']),
+				'total' => $this->helper->cetakRupiah($total),
 				'dp' => $this->helper->cetakRupiah($dataProyek['dp']),
 				'cco' => $this->helper->cetakRupiah($dataProyek['cco']),
 				'status' => (strtolower($dataProyek['status']) == "lunas") ? '<span class="label label-success">'.$dataProyek['status'].'</span>' : '<span class="label label-primary">'.$dataProyek['status'].'</span>',
@@ -483,7 +562,20 @@
 				$dataSkk[] = $dataRow;
 			}
 
-			$dataArus = array();
+			$total_pelaksana_utama = $total + $cco;
+			$dataArus = array(
+				'total_pelaksana_utama' => $this->helper->cetakRupiah($total_pelaksana_utama),
+				'nilai_rab' => $dataProyek['total'],
+				'cco' => $dataProyek['cco'],
+				'nilai_terment_diterima' => $this->helper->cetakRupiah(0),
+				'sisa_terment_project' => $this->helper->cetakRupiah(0),
+				'nilai_terment_masuk' => $this->helper->cetakRupiah(0),
+				'total_pelaksana_project' => $this->helper->cetakRupiah(0),
+				'keluaran_tunai' => $this->helper->cetakRupiah(0),
+				'keluaran_kredit' => $this->helper->cetakRupiah(0),
+				'saldo_kas_pelaksanaan' => $this->helper->cetakRupiah(0),
+				'selisih' => $this->helper->cetakRupiah(0)
+			);
 
 			$data = array(
 				'data_proyek' => $dataProyek,
@@ -499,7 +591,11 @@
 		*
 		*/
 		public function delete($id){
+			if($_SERVER['REQUEST_METHOD'] == "POST" && $id != ''){
+				if($this->ProyekModel->delete($id)) $this->status = true;
+			}
 
+			echo json_encode($this->status);
 		}
 
 		/**

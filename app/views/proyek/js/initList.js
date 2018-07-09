@@ -29,13 +29,13 @@ $(document).ready(function(){
         },
         "columnDefs": [
             {
-                "targets":[0, 8],
+                "targets":[0, 9],
                 "orderable":false,
             }
         ],
         createdRow: function(row, data, dataIndex){
             if($(data[7]).text().toLowerCase() == "selesai") $(row).addClass('danger');
-            for(var i = 0; i < 9; i++){
+            for(var i = 0; i < 10; i++){
                 if(i == 0 || i == 6) $('td:eq('+i+')', row).addClass('text-right');
             }
         }
@@ -43,8 +43,9 @@ $(document).ready(function(){
 
     // btn tambah
     $('#tambah').on('click', function(){
-        if(this.value.trim() != "") window.location.href = BASE_URL+'proyek/form/';
-        else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+        // if(this.value.trim() != "") 
+            window.location.href = BASE_URL+'proyek/form/';
+        // else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
     });
 
 });
@@ -86,16 +87,17 @@ function getDelete(id){
                 url: BASE_URL+'proyek/delete/'+id,
                 type: 'post',
                 dataType: 'json',
-                data: {"token_delete": token},
-                beforeSend: function(){
-
+                data: {
+                    // "token_delete": token
                 },
+                beforeSend: function(){},
                 success: function(output){
                     console.log(output);
                     if(output){
                         swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
                         $("#proyekTable").DataTable().ajax.reload();
                     }
+                    else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
                 },
                 error: function (jqXHR, textStatus, errorThrown){ // error handling
                     console.log(jqXHR, textStatus, errorThrown);
