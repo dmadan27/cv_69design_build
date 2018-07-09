@@ -377,13 +377,23 @@
 				'delete' => password_hash($_SESSION['token_kas_besar']['delete'], PASSWORD_BCRYPT)
 			);
 
+			if(!empty($data_detail['foto'])){
+				// cek foto di storage
+				$filename = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$data_detail['foto'];
+				if(!file_exists($filename)) 
+					$foto = BASE_URL.'assets/images/user/default.jpg';
+				else
+					$foto = BASE_URL.'assets/images/user/'.$data_detail['foto'];
+			}
+			else $foto = BASE_URL.'assets/images/user/default.jpg';
+
 			$data = array(
 				'id' => $data_detail['id'],
 				'nama' => $data_detail['nama'],
 				'alamat' => $data_detail['alamat'],
 				'no_telp' => $data_detail['no_telp'],
 				'email' => $data_detail['email'],
-				'foto' => $data_detail['foto'],
+				'foto' => $foto,
 				'status' => $status,
 				'token' => $this->token,
 			);
