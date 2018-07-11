@@ -416,7 +416,7 @@
 
 				$statement = $this->koneksi->prepare($query);
 				$statement->execute(array(
-						':id' => $data->id,
+						':id' => $data->id_detail,
 						':status' => $status, //
 						':harga_asli' => $data->harga_asli,
 						':sisa' => $data->sisa,
