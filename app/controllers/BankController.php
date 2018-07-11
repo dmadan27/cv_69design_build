@@ -6,7 +6,8 @@
 	*/
 	class Bank extends Crud_modalsAbstract{
 
-		protected $token;
+		private $token;
+		private $status;
 
 		/**
 		* load auth, cekAuth
@@ -54,24 +55,8 @@
 				'css' => $css,
 				'js' => $js,
 			);
-			
-			// set token
-			$_SESSION['token_bank'] = array(
-				'list' => md5($this->auth->getToken()),
-				'add' => md5($this->auth->getToken()),
-			);
 
-			$this->token = array(
-				'list' => password_hash($_SESSION['token_bank']['list'], PASSWORD_BCRYPT),
-				'add' => password_hash($_SESSION['token_bank']['add'], PASSWORD_BCRYPT),	
-			);
-
-			$data = array(
-				'token_list' => $this->token['list'],
-				'token_add' => $this->token['add'],
-			);
-
-			$this->layout('bank/list', $config, $data);
+			$this->layout('bank/list', $config, $data = null);
 		}	
 
 		/**
@@ -81,63 +66,53 @@
 		* return json
 		*/
 		public function get_list(){
-			$token = isset($_POST['token_list']) ? $_POST['token_list'] : false;
-			
-			// cek token
-			$this->auth->cekToken($_SESSION['token_bank']['list'], $token, 'bank');
-			
-			// config datatable
-			$config_dataTable = array(
-				'tabel' => 'bank',
-				'kolomOrder' => array(null, 'nama', 'saldo', 'status', null),
-				'kolomCari' => array('nama', 'saldo', 'status'),
-				'orderBy' => array('id' => 'asc'),
-				'kondisi' => false,
-			);
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				// config datatable
+				$config_dataTable = array(
+					'tabel' => 'bank',
+					'kolomOrder' => array(null, 'nama', 'saldo', 'status', null),
+					'kolomCari' => array('nama', 'saldo', 'status'),
+					'orderBy' => array('id' => 'asc'),
+					'kondisi' => false,
+				);
 
-			$dataBank = $this->BankModel->getAllDataTable($config_dataTable);
+				$dataBank = $this->BankModel->getAllDataTable($config_dataTable);
 
-			// set token
-			$_SESSION['token_bank']['edit'] = md5($this->auth->getToken());
-			$_SESSION['token_bank']['delete'] = md5($this->auth->getToken());
-			
-			$this->token = array(
-				'edit' => password_hash($_SESSION['token_bank']['edit'], PASSWORD_BCRYPT),
-				'delete' => password_hash($_SESSION['token_bank']['delete'], PASSWORD_BCRYPT),	
-			);
+				$data = array();
+				$no_urut = $_POST['start'];
+				foreach($dataBank as $row){
+					$no_urut++;
 
-			$data = array();
-			$no_urut = $_POST['start'];
-			foreach($dataBank as $row){
-				$no_urut++;
+					$status = ($row['status'] == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-danger">'.$row['status'].'</span>';
 
-				$status = ($row['status'] == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-danger">'.$row['status'].'</span>';
+					// button aksi
+					$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+					$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+					$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+					
+					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
+					
+					$dataRow = array();
+					$dataRow[] = $no_urut;
+					$dataRow[] = $row['nama'];
+					$dataRow[] = $this->helper->cetakRupiah($row['saldo']);
+					$dataRow[] = $status;
+					$dataRow[] = $aksi;
 
-				// button aksi
-				$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-				$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".', '."'".$this->token["edit"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-				$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
-				
-				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
-				
-				$dataRow = array();
-				$dataRow[] = $no_urut;
-				$dataRow[] = $row['nama'];
-				$dataRow[] = $this->helper->cetakRupiah($row['saldo']);
-				$dataRow[] = $status;
-				$dataRow[] = $aksi;
+					$data[] = $dataRow;
+				}
 
-				$data[] = $dataRow;
+				$output = array(
+					'draw' => $_POST['draw'],
+					'recordsTotal' => $this->BankModel->recordTotal(),
+					'recordsFiltered' => $this->BankModel->recordFilter(),
+					'data' => $data,
+				);
+
+				echo json_encode($output);
 			}
-
-			$output = array(
-				'draw' => $_POST['draw'],
-				'recordsTotal' => $this->BankModel->recordTotal(),
-				'recordsFiltered' => $this->BankModel->recordFilter(),
-				'data' => $data,
-			);
-
-			echo json_encode($output);		
+			else $this->redirect();
+							
 		}
 
 		/**
@@ -149,62 +124,68 @@
 		* error => error apa saja yang ada dari hasil validasi
 		*/
 		public function action_add(){
-			$data = isset($_POST) ? $_POST : false;
-			$this->auth->cekToken($_SESSION['token_bank']['add'], $data['token'], 'bank');
-			
-			$status = false;
-			$error = "";
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$data = isset($_POST) ? $_POST : false;
+						
+				$error = $notif = array();
 
-			if(!$data){
-				$notif = array(
-					'title' => "Pesan Gagal",
-					'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
-				);
-			}
-			else{
-				// validasi data
-				$validasi = $this->set_validation($data);
-				$cek = $validasi['cek'];
-				$error = $validasi['error'];
-
-				if($cek){
-					// validasi inputan
-					$data = array(
-						'nama' => $this->validation->validInput($data['nama']),
-						'saldo' => $this->validation->validInput($data['saldo']),
-						'status' => $this->validation->validInput($data['status']),
+				if(!$data){
+					$notif = array(
+						'type' => 'error',
+						'title' => "Pesan Gagal",
+						'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
 					);
+				}
+				else{
+					// validasi data
+					$validasi = $this->set_validation($data);
+					$cek = $validasi['cek'];
+					$error = $validasi['error'];
 
-					if($this->BankModel->insert($data)) {
-						$status = true;
-						$notif = array(
-							'title' => "Pesan Berhasil",
-							'message' => "Tambah Data Bank Baru Berhasil",
+					if($cek){
+						// validasi inputan
+						$data = array(
+							'nama' => $this->validation->validInput($data['nama']),
+							'saldo' => $this->validation->validInput($data['saldo']),
+							'status' => $this->validation->validInput($data['status']),
 						);
+
+						if($this->BankModel->insert($data)) {
+							$this->status = true;
+							$notif = array(
+								'type' => 'success',
+								'title' => "Pesan Berhasil",
+								'message' => "Tambah Data Bank Baru Berhasil",
+							);
+						}
+						else {
+							$notif = array(
+								'type' => 'error',
+								'title' => "Pesan Gagal",
+								'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+							);
+						}
 					}
 					else {
 						$notif = array(
-							'title' => "Pesan Gagal",
-							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+							'type' => 'warning',
+							'title' => "Pesan Pemberitahuan",
+							'message' => "Silahkan Cek Kembali Form Isian",
 						);
 					}
 				}
-				else {
-					$notif = array(
-						'title' => "Pesan Pemberitahuan",
-						'message' => "Silahkan Cek Kembali Form Isian",
-					);
-				}
+
+				$output = array(
+					'status' => $status,
+					'notif' => $notif,
+					'error' => $error,
+					// 'data' => $data
+				);
+
+				echo json_encode($output);	
 			}
-
-			$output = array(
-				'status' => $status,
-				'notif' => $notif,
-				'error' => $error,
-				// 'data' => $data
-			);
-
-			echo json_encode($output);		
+			else $this->redirect();
+			
 		}
 
 		/**
@@ -215,11 +196,14 @@
 		*/
 		public function edit($id){
 			$id = strtoupper($id);
-			$token = isset($_POST['token_edit']) ? $_POST['token_edit'] : false;
-			$this->auth->cekToken($_SESSION['token_bank']['edit'], $token, 'bank');
 
-			$data = !empty($this->BankModel->getById($id)) ? $this->BankModel->getById($id) : false;
-			echo json_encode($data);
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$data = !empty($this->BankModel->getById($id)) ? $this->BankModel->getById($id) : false;
+
+				echo json_encode($data);
+			}
+			else $this->redirect();	
+			
 		}
 
 		/**
@@ -231,68 +215,72 @@
 		* error => error apa saja yang ada dari hasil validasi
 		*/
 		public function action_edit(){
-			$data = isset($_POST) ? $_POST : false;
-			$this->auth->cekToken($_SESSION['token_bank']['edit'], $data['token'], 'bank');
-			
-			$status = false;
-			$error = "";
 
-			if(!$data){
-				$notif = array(
-					'title' => "Pesan Gagal",
-					'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
-				);
-			}
-			else{
-				// validasi data
-				$validasi = $this->set_validation($data);
-				$cek = $validasi['cek'];
-				$error = $validasi['error'];
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$data = isset($_POST) ? $_POST : false;
+				
+				$status = false;
+				$error = "";
 
-				if($cek){
-					// validasi inputan
-					$data = array(
-						'id' => $this->validation->validInput($data['id']),
-						'nama' => $this->validation->validInput($data['nama']),
-						'status' => $this->validation->validInput($data['status'])
+				if(!$data){
+					$notif = array(
+						'title' => "Pesan Gagal",
+						'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
 					);
+				}
+				else{
+					// validasi data
+					$validasi = $this->set_validation($data);
+					$cek = $validasi['cek'];
+					$error = $validasi['error'];
 
-					// update db
-
-					// transact
-
-					if($this->BankModel->update($data)) {
-						$status = true;
-						$notif = array(
-							'title' => "Pesan Berhasil",
-							'message' => "Edit Data Bank Berhasil",
+					if($cek){
+						// validasi inputan
+						$data = array(
+							'id' => $this->validation->validInput($data['id']),
+							'nama' => $this->validation->validInput($data['nama']),
+							'status' => $this->validation->validInput($data['status'])
 						);
+
+						// update db
+
+						// transact
+
+						if($this->BankModel->update($data)) {
+							$status = true;
+							$notif = array(
+								'title' => "Pesan Berhasil",
+								'message' => "Edit Data Bank Berhasil",
+							);
+						}
+						else {
+							$notif = array(
+								'title' => "Pesan Gagal",
+								'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+							);
+						}
+
+						// commit
 					}
 					else {
 						$notif = array(
-							'title' => "Pesan Gagal",
-							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+							'title' => "Pesan Pemberitahuan",
+							'message' => "Silahkan Cek Kembali Form Isian",
 						);
 					}
+				}
 
-					// commit
-				}
-				else {
-					$notif = array(
-						'title' => "Pesan Pemberitahuan",
-						'message' => "Silahkan Cek Kembali Form Isian",
-					);
-				}
+				$output = array(
+					'status' => $status,
+					'notif' => $notif,
+					'error' => $error,
+					// 'data' => $data
+				);
+
+				echo json_encode($output);
 			}
-
-			$output = array(
-				'status' => $status,
-				'notif' => $notif,
-				'error' => $error,
-				// 'data' => $data
-			);
-
-			echo json_encode($output);
+			else $this->redirect();
+				
 		}
 
 		/**
@@ -328,23 +316,12 @@
 			);
 
 			$status = ($data_detail['status'] == "AKTIF") ? '<span class="label label-success">'.$data_detail['status'].'</span>' : '<span class="label label-danger">'.$data_detail['status'].'</span>';
-			
-			$_SESSION['token_bank']['view'] = md5($this->auth->getToken());
-			$_SESSION['token_bank']['edit'] = md5($this->auth->getToken());
-			$_SESSION['token_bank']['delete'] = md5($this->auth->getToken());
-			
-			$this->token = array(
-				'view' => password_hash($_SESSION['token_bank']['view'], PASSWORD_BCRYPT),
-				'edit' => password_hash($_SESSION['token_bank']['edit'], PASSWORD_BCRYPT),
-				'delete' => password_hash($_SESSION['token_bank']['delete'], PASSWORD_BCRYPT)
-			);
 
 			$data = array(
 				'id_bank' => $data_detail['id'],
 				'nama' => $data_detail['nama'],
 				'saldo' => $this->helper->cetakRupiah($data_detail['saldo']),
 				'status' => $status,
-				'token' => $this->token,
 			);
 
 			// echo "<pre>";
@@ -361,8 +338,8 @@
 		*/
 		public function delete($id){
 			$id = strtoupper($id);
-			$token = isset($_POST['token_delete']) ? $_POST['token_delete'] : false;
-			$this->auth->cekToken($_SESSION['token_bank']['delete'], $token, 'bank');
+			// $token = isset($_POST['token_delete']) ? $_POST['token_delete'] : false;
+			// $this->auth->cekToken($_SESSION['token_bank']['delete'], $token, 'bank');
 			
 			if($this->BankModel->delete($id)) $status = true;
 			else $status = false;
