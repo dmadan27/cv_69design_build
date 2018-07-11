@@ -6,7 +6,7 @@
 	*/
 	class Proyek extends CrudAbstract{
 		
-		protected $token;
+		private $token;
 		private $status = false;
 
 		/**
@@ -53,64 +53,67 @@
 		/**
 		* 
 		*/
-		public function get_list(){	
-			// config datatable
-			$config_dataTable = array(
-				'tabel' => 'proyek',
-				'kolomOrder' => array(null, 'id', 'pemilik', 'tgl', 'pembangunan', 'kota', 'total', 'progress', 'status', null),
-				'kolomCari' => array('id', 'pemilik', 'tgl', 'pembangunan', 'luas_area', 'status', 'progress'),
-				'orderBy' => array('id' => 'desc', 'status' => 'asc'),
-				'kondisi' => false,
-			);
+		public function get_list(){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				// config datatable
+				$config_dataTable = array(
+					'tabel' => 'proyek',
+					'kolomOrder' => array(null, 'id', 'pemilik', 'tgl', 'pembangunan', 'kota', 'total', 'progress', 'status', null),
+					'kolomCari' => array('id', 'pemilik', 'tgl', 'pembangunan', 'luas_area', 'status', 'progress'),
+					'orderBy' => array('id' => 'desc', 'status' => 'asc'),
+					'kondisi' => false,
+				);
 
-			$dataProyek = $this->ProyekModel->getAllDataTable($config_dataTable);
+				$dataProyek = $this->ProyekModel->getAllDataTable($config_dataTable);
 
-			$data = array();
-			$no_urut = $_POST['start'];
-			foreach($dataProyek as $row){
-				$no_urut++;
+				$data = array();
+				$no_urut = $_POST['start'];
+				foreach($dataProyek as $row){
+					$no_urut++;
 
-				$status = (strtolower($row['status']) == "selesai") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-primary">'.$row['status'].'</span>';
+					$status = (strtolower($row['status']) == "selesai") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-primary">'.$row['status'].'</span>';
 
-				if($row['progress'] == 100)
-					$progress = '<span class="label label-success">'.$row['progress'].' %</span>';
-				else if($row['progress'] >= 50  && $row['progress'] < 100)
-					$progress = '<span class="label label-primary">'.$row['progress'].' %</span>';
-				else if($row['progress'] >= 20 && $row['progress'] < 50)
-					$progress = '<span class="label label-warning">'.$row['progress'].' %</span>';
-				else if($row['progress'] < 20)
-					$progress = '<span class="label label-danger">'.$row['progress'].' %</span>';
+					if($row['progress'] == 100)
+						$progress = '<span class="label label-success">'.$row['progress'].' %</span>';
+					else if($row['progress'] >= 50  && $row['progress'] < 100)
+						$progress = '<span class="label label-primary">'.$row['progress'].' %</span>';
+					else if($row['progress'] >= 20 && $row['progress'] < 50)
+						$progress = '<span class="label label-warning">'.$row['progress'].' %</span>';
+					else if($row['progress'] < 20)
+						$progress = '<span class="label label-danger">'.$row['progress'].' %</span>';
 
-				// button aksi
-				$aksiDetail = '<button onclick="getView('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-				$aksiEdit = '<button onclick="getEdit('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-				$aksiHapus = '<button onclick="getDelete('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
-				
-				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
-				
-				$dataRow = array();
-				$dataRow[] = $no_urut;
-				$dataRow[] = $row['id'];
-				$dataRow[] = $row['pemilik'];
-				$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
-				$dataRow[] = $row['pembangunan'];
-				$dataRow[] = $row['kota'];
-				$dataRow[] = $this->helper->cetakRupiah($row['total']);
-				$dataRow[] = $progress;
-				$dataRow[] = $status;
-				$dataRow[] = $aksi;
+					// button aksi
+					$aksiDetail = '<button onclick="getView('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+					$aksiEdit = '<button onclick="getEdit('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+					$aksiHapus = '<button onclick="getDelete('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+					
+					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
+					
+					$dataRow = array();
+					$dataRow[] = $no_urut;
+					$dataRow[] = $row['id'];
+					$dataRow[] = $row['pemilik'];
+					$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
+					$dataRow[] = $row['pembangunan'];
+					$dataRow[] = $row['kota'];
+					$dataRow[] = $this->helper->cetakRupiah($row['total']);
+					$dataRow[] = $progress;
+					$dataRow[] = $status;
+					$dataRow[] = $aksi;
 
-				$data[] = $dataRow;
+					$data[] = $dataRow;
+				}
+
+				$output = array(
+					'draw' => $_POST['draw'],
+					'recordsTotal' => $this->ProyekModel->recordTotal(),
+					'recordsFiltered' => $this->ProyekModel->recordFilter(),
+					'data' => $data,
+				);
+
+				echo json_encode($output);
 			}
-
-			$output = array(
-				'draw' => $_POST['draw'],
-				'recordsTotal' => $this->ProyekModel->recordTotal(),
-				'recordsFiltered' => $this->ProyekModel->recordFilter(),
-				'data' => $data,
-			);
-
-			echo json_encode($output);
+			else $this->redirect();	
 		}
 
 		/**
@@ -181,7 +184,8 @@
 				$cekDetail = $cekSkk = true;
 
 				if(!$data){
-					$notif = array(
+					$notif['default'] = array(
+						'type' => 'error'
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
 					);
@@ -282,6 +286,7 @@
 					'dataDetail' => $dataDetail,
 					'dataSkk' => $dataSkk,
 				);
+				
 				echo json_encode($output);
 			}
 			else $this->redirect();
@@ -360,7 +365,7 @@
 
 				echo json_encode($output);
 			}
-				
+			else $this->redirect();	
 		}
 
 		/**
@@ -590,18 +595,123 @@
 		/**
 		*
 		*/
+		public function get_list_pengajuan($proyek){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				// config datatable
+				$config_dataTable = array(
+					'tabel' => 'pengajuan_sub_kas_kecil',
+					'kolomOrder' => array(null, 'id', 'nama', 'id_sub_kas_kecil', 'tgl', null),
+					'kolomCari' => array('id', 'nama', 'id_sub_kas_kecil', 'tgl', 'total'),
+					'orderBy' => array('tgl' => 'desc'),
+					'kondisi' => 'WHERE id_proyek = "'.$proyek.'"',
+				);
+
+				$this->model('Pengajuan_sub_kas_kecilModel');
+				$dataPengajuan = $this->Pengajuan_sub_kas_kecilModel->getAllDataTable($config_dataTable);
+
+				$data = array();
+				$no_urut = $_POST['start'];
+				foreach($dataPengajuan as $row){
+					$no_urut++;
+
+					// button aksi
+					$aksiDetail = '<button onclick="getView('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+					
+					$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
+					
+					$dataRow = array();
+					$dataRow[] = $no_urut;
+					$dataRow[] = $row['id'];
+					$dataRow[] = $row['nama'];
+					$dataRow[] = $row['id_sub_kas_kecil'];
+					$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
+					$dataRow[] = $this->helper->cetakRupiah($row['total']);
+					$dataRow[] = $aksi;
+
+					$data[] = $dataRow;
+				}
+
+				$output = array(
+					'draw' => $_POST['draw'],
+					'recordsTotal' => $this->Pengajuan_sub_kas_kecilModel->recordTotal(),
+					'recordsFiltered' => $this->Pengajuan_sub_kas_kecilModel->recordFilter(),
+					'data' => $data,
+				);
+
+				echo json_encode($output);
+			}
+			else $this->redirect();
+		}
+
+		/**
+		*
+		*/
+		public function get_list_operasional($proyek){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				// config datatable
+				$config_dataTable = array(
+					'tabel' => 'operasional_proyek',
+					'kolomOrder' => array(null, 'id', 'nama', 'id_kas_besar', 'tgl', null),
+					'kolomCari' => array('id', 'nama', 'id_kas_besar', 'tgl', 'total'),
+					'orderBy' => array('tgl' => 'desc'),
+					'kondisi' => 'WHERE id_proyek = "'.$proyek.'"',
+				);
+
+				$this->model('Operasional_proyekModel');
+				$dataOperasional = $this->Operasional_proyekModel->getAllDataTable($config_dataTable);
+
+				$data = array();
+				$no_urut = $_POST['start'];
+				foreach($dataOperasional as $row){
+					$no_urut++;
+
+					// button aksi
+					$aksiDetail = '<button onclick="getView('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+					
+					$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
+					
+					$dataRow = array();
+					$dataRow[] = $no_urut;
+					$dataRow[] = $row['id'];
+					$dataRow[] = $row['nama'];
+					$dataRow[] = $row['id_kas_besar'];
+					$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
+					$dataRow[] = $this->helper->cetakRupiah($row['total']);
+					$dataRow[] = $aksi;
+
+					$data[] = $dataRow;
+				}
+
+				$output = array(
+					'draw' => $_POST['draw'],
+					'recordsTotal' => $this->Operasional_proyekModel->recordTotal(),
+					'recordsFiltered' => $this->Operasional_proyekModel->recordFilter(),
+					'data' => $data,
+				);
+
+				echo json_encode($output);
+			}
+			else $this->redirect();
+		}
+
+		/**
+		*
+		*/
 		public function delete($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST" && $id != ''){
 				if($this->ProyekModel->delete($id)) $this->status = true;
-			}
 
-			echo json_encode($this->status);
+				echo json_encode($this->status);
+			}
+			else $this->redirect();
+			
 		}
 
 		/**
 		*
 		*/
 		public function get_last_id(){
+
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$tahun = isset($_POST['get_tahun']) ? $this->validation->validInput($_POST['get_tahun']) : false;
 
@@ -616,40 +726,37 @@
 
 					$id = $id_temp.sprintf("%04s", $noUrut);
 				}
-
-				// if(!$data) $id = 'PRY0001';
-				// else{
-				// 	// $data = implode('', $data);
-				// 	$kode = 'PRY';
-				// 	$noUrut = (int)substr($data, 3, 4);
-				// 	$noUrut++;
-
-				// 	$id = $kode.sprintf("%04s", $noUrut);
-				// }
-
-				echo json_encode($id);
-			}		
-
+				
+				echo json_encode($id);				
+			}
+			else $this->redirect();	
+	
 		}
 
 		/**
 		*
 		*/
 		public function get_skk(){
-			$this->model('Sub_kas_kecilModel');
 
-			$data_skk = $this->Sub_kas_kecilModel->getAll();
-			$data = array();
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$this->model('Sub_kas_kecilModel');
 
-			foreach($data_skk as $row){
-				$dataRow = array();
-				$dataRow['id'] = $row['id'];
-				$dataRow['text'] = $row['id'].' - '.$row['nama'];
+				$data_skk = $this->Sub_kas_kecilModel->getAll();
+				$data = array();
 
-				$data[] = $dataRow;
+				foreach($data_skk as $row){
+					$dataRow = array();
+					$dataRow['id'] = $row['id'];
+					$dataRow['text'] = $row['id'].' - '.$row['nama'];
+
+					$data[] = $dataRow;
+				}
+
+				echo json_encode($data);\
+
 			}
-
-			echo json_encode($data);
+			else $this->redirect();
+	
 		}
 
 		/**
@@ -657,6 +764,38 @@
 		*/
 		public function export(){
 
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+
+			}
+			else $this->redirect();
+		}
+
+		/**
+		*
+		*/
+		public function action_add_detail(){
+			
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$data = isset($_POST) ? $_POST : false;
+				$error = array();
+
+				$validasi = $this->set_validation_detail($data);
+				$cek = $validasi['cek'];
+				$error = $validasi['error'];
+
+				if($cek) $this->status = true;
+
+				$output = array(
+					'status' => $this->status,
+					// 'notif' => $notif,
+					'error' => $error,
+					'data' => $data,
+				);
+
+				echo json_encode($output);
+			}
+			else $this->redirect();
+				
 		}
 
 		/**
@@ -693,30 +832,6 @@
 			$this->validation->set_rules($data['progress'], 'Progress Proyek', 'progress', 'nilai | 0 | 100 | required');
 
 			return $this->validation->run();
-		}
-
-		/**
-		*
-		*/
-		public function action_add_detail(){
-			$data = isset($_POST) ? $_POST : false;
-			
-			$status = false;
-			$error = "";
-
-			$validasi = $this->set_validation_detail($data);
-			$cek = $validasi['cek'];
-			$error = $validasi['error'];
-
-			if($cek) $status = true;
-
-			$output = array(
-				'status' => $status,
-				// 'notif' => $notif,
-				'error' => $error,
-				'data' => $data,
-			);
-			echo json_encode($output);
 		}
 
 		/**

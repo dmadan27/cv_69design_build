@@ -625,6 +625,7 @@ function setStatusDetail(){
 function setSkk(){
 	$.ajax({
 		url: BASE_URL+'proyek/get-skk',
+		type: 'post',
 		dataType: 'json',
 		beforeSend: function(){},
 		success: function(data){

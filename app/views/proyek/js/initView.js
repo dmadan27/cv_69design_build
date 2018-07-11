@@ -22,7 +22,7 @@ $(document).ready(function(){
         processing: true,
         serverSide: true,
         ajax: {
-            url: BASE_URL+"proyek/get-pengajuan-skk/"+$('#id').val().trim(),
+            url: BASE_URL+"proyek/get-list-pengajuan/"+$('#id').val().trim(),
             type: 'POST',
             data: {
                 // "token" : $('#token').val().trim(),
@@ -65,7 +65,7 @@ $(document).ready(function(){
         processing: true,
         serverSide: true,
         ajax: {
-            url: BASE_URL+"proyek/get-operasional-proyek/"+$('#id').val().trim(),
+            url: BASE_URL+"proyek/get-list-operasional/"+$('#id').val().trim(),
             type: 'POST',
             data: {
                 // "token" : $('#token').val().trim(),
