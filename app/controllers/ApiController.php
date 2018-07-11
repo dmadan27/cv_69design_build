@@ -252,6 +252,41 @@
 		/**
 		*
 		*/
+		public function detail_foto_laporan(){
+			$this->model('Pengajuan_sub_kas_kecilModel');
+
+			$output = array();
+			$output['status'] = $this->status;
+
+			$id_pengajuan = ((isset($_POST['id_pengajuan'])) && !empty($_POST['id_pengajuan'])) ? 
+				$this->validation->validInput($_POST['id_pengajuan']) : false;
+
+			if ($this->status && $id_pengajuan) {
+				$dataFoto = $this->Pengajuan_sub_kas_kecilModel->getFotoById_mobile(strtoupper($id_pengajuan));
+
+				// var_dump($dataFoto);
+				$data = array();
+				if(!empty($dataFoto)){
+
+					foreach ($dataFoto['foto'] as $value) {
+						$filename = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$value;
+						if(!file_exists($filename))
+							$data[] = null;
+						else
+							$data[] = BASE_URL.'assets/images/user/'.$value;
+					}
+
+				}
+
+				$output['foto'] = $data;
+			}
+
+			echo json_encode($output);
+		}
+
+		/**
+		*
+		*/
 		private function validasi_foto($foto, $id){
 			$status = true;
 			$tempFoto = array();
