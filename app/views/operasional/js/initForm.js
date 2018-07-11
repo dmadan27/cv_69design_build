@@ -55,6 +55,17 @@ $(document).ready(function(){
 		}
 	});
 
+	// input mask
+    $('.input-mask-uang').inputmask({ 
+    	alias : 'currency',
+    	prefix: '', 
+    	radixPoint: ',',
+    	digits: 0,
+    	groupSeparator: '.', 
+    	clearMaskOnLostFocus: true, 
+    	digitsOptional: false,
+    });
+
 });
 
 /**
@@ -64,8 +75,14 @@ $(document).ready(function(){
 */
 function getDataForm(){
 	var data = new FormData();
-	var nominal = parseFloat($('#nominal').val().trim()) ? parseFloat($('#nominal').val().trim()) : $('#nominal').val().trim();
+	// var nominal = parseFloat($('#nominal').val().trim()) ? parseFloat($('#nominal').val().trim()) : $('#nominal').val().trim();
 
+	var nominal = ($('#nominal').inputmask) ? 
+		( parseFloat($('#nominal').inputmask('unmaskedvalue')) ?
+			parseFloat($('#nominal').inputmask('unmaskedvalue')) : 
+			$('#nominal').inputmask('unmaskedvalue')
+		) : $('#nominal').val().trim();
+		
 	if($('#submit_operasional').val().trim().toLowerCase() == "action-edit"){
 		data.append('id', $('#id').val().trim());
 		// data.append('id_bank', $('#id_bank').val().trim());

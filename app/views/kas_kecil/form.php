@@ -88,7 +88,7 @@
                         <label for="saldo">Saldo</label>
                         <div class="input-group">
                           <span class="input-group-addon">Rp</span>
-                          <input type="number" min="0" step="any" name="saldo" id="saldo" class="form-control field" placeholder="Masukan Saldo">
+                          <input type="text" name="saldo" id="saldo" class="form-control field input-mask-uang" placeholder="Masukan Saldo">
                           <span class="input-group-addon">.00</span>
                         </div>
                         <span class="help-block small pesan pesan-saldo"></span>

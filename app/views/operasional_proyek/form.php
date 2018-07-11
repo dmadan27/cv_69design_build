@@ -82,7 +82,7 @@
                                         <div class="input-group" style="width: 100%">
                                          <div class="input-group">
                                                 <span class="input-group-addon">Rp.</span>
-                                                <input type="text" class="form-control field" id="total" name="total" placeholder="Masukan Total Pengajuan" >
+                                                <input type="text" class="form-control field input-mask-uang" id="total" name="total" placeholder="Masukan Total Pengajuan" >
                                                 <span class="input-group-addon">,00-</span>
                                           </div>
                                         </div>

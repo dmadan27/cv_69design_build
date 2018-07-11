@@ -50,6 +50,17 @@ $(document).ready(function(){
 		$(".pesan-foto").text('');
     });
 
+    // input mask
+    $('.input-mask-uang').inputmask({ 
+    	alias : 'currency',
+    	prefix: '', 
+    	radixPoint: ',',
+    	digits: 0,
+    	groupSeparator: '.', 
+    	clearMaskOnLostFocus: true, 
+    	digitsOptional: false,
+    });
+
 
 
 });
@@ -61,7 +72,13 @@ $(document).ready(function(){
 */
 function getDataForm(){
 	var data = new FormData();
-	var saldo = parseFloat($('#saldo').val().trim()) ? parseFloat($('#saldo').val().trim()) : $('#saldo').val().trim();
+	// var saldo = parseFloat($('#saldo').val().trim()) ? parseFloat($('#saldo').val().trim()) : $('#saldo').val().trim();
+
+	var saldo = ($('#saldo').inputmask) ? 
+		( parseFloat($('#saldo').inputmask('unmaskedvalue')) ?
+			parseFloat($('#saldo').inputmask('unmaskedvalue')) : 
+			$('#saldo').inputmask('unmaskedvalue')
+		) : $('#saldo').val().trim();
 
 	 if($('#submit_kas_kecil').val().trim().toLowerCase() == "action-add"){
 	 	data.append('foto', $('#foto')[0].files[0]); //foto

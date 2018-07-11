@@ -4,6 +4,7 @@ Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 class Operasional_Proyek extends CrudAbstract{
 
 	protected $token;
+	private $status = false;
 
 	public function __construct(){
 			$this->auth();
@@ -25,6 +26,7 @@ class Operasional_Proyek extends CrudAbstract{
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
 				'app/views/operasional_proyek/js/initList.js',
 
 			);
@@ -168,74 +170,106 @@ class Operasional_Proyek extends CrudAbstract{
 		}
 
 		public function action_add(){
-			$data = isset($_POST) ? $_POST : false;
-			// $dataOperasionalProyek = isset($_POST['dataOperasionalProyek']) ? json_decode($_POST['dataOperasionalProyek'], true) : false;
-			// $dataDetail = isset($_POST['dataDetail']) ? json_decode($_POST['dataDetail'], true) : false;
-			$this->auth->cekToken($_SESSION['token_operasional_proyek']['add'], $data['token'], 'operasional-proyek');
-			
-			$status = false;
-			$error = "";
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$data = isset($_POST) ? $_POST : false;
+				$dataOperasionalProyek = isset($_POST['dataOperasionalProyek']) ? json_decode($_POST['dataOperasionalProyek'], true) : false;
+				$dataDetail = isset($_POST['dataDetail']) ? json_decode($_POST['dataDetail'], true) : false;
+				// $dataSkk = isset($_POST['dataSkk']) ? json_decode($_POST['dataSkk'], true) : false;
+				
+				$error = $notif = array();
+				$cekDetail = true;
 
-			if(!$data){
-				$notif = array(
-					'title' => "Pesan Gagal",
-					'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
-				);
-			}
-			else{
-				// validasi data
-				$validasi = $this->set_validation($data);
-				$cek = $validasi['cek'];
-				$error = $validasi['error'];
-
-				// if(empty($dataDetail)) $cek = false;
-
-				if($cek){
-					// validasi inputan
-					$data = array(
-						'id' => $this->validation->validInput($data['id']),
-						'id_proyek' => $this->validation->validInput($data['id_proyek']),
-						'id_bank' => $this->validation->validInput($data['id_bank']),
-						'tgl' => $this->validation->validInput($data['tgl']),
-						'nama' => $this->validation->validInput($data['nama']),
-						'total' => $this->validation->validInput($data['total']),
-					);
-
-					// $dataInsert = array(
-					// 	'dataOperasionalProyek' => $dataProyek,
-					// 	'dataDetail' => $dataDetail,
-					// );
-
-					if($this->Operasional_ProyekModel->insert($data)) {
-						$status = true;
-						$notif = array(
-							'title' => "Pesan Berhasil",
-							'message' => "Tambah Data Operasional Baru Berhasil",
-						);
-					}
-					else {
-						$notif = array(
-							'title' => "Pesan Gagal",
-							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
-						);
-					}
-				}
-				else {
+				if(!$data){
 					$notif = array(
-						'title' => "Pesan Pemberitahuan",
-						'message' => "Silahkan Cek Kembali Form Isian",
+						'title' => "Pesan Gagal",
+						'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
 					);
 				}
+				else{
+					// validasi data
+					$validasi = $this->set_validation($dataOperasionalProyek, $data['action']);
+					$cek = $validasi['cek'];
+					$error = $validasi['error'];
+
+					if(empty($dataDetail)){
+						$cek = false;
+						$cekDetail = false;
+					}
+					
+
+					if($cek){
+						$ket = 'OPERASIONAL PROYEK ['.$dataOperasionalProyek['id'].'] - '.strtoupper($dataOperasionalProyek['nama']);
+
+						// validasi input
+						$dataOperasionalProyek = array(
+							'id' => $this->validation->validInput($dataOperasionalProyek['id']),
+							'id_proyek' => $this->validation->validInput($dataOperasionalProyek['id_proyek']),
+							'id_bank' => $this->validation->validInput($dataOperasionalProyek['id_bank']),
+							'id_kas_besar' => $_SESSION['sess_id'],
+							'tgl' => $this->validation->validInput($dataOperasionalProyek['tgl']),
+							'nama' => $this->validation->validInput($dataOperasionalProyek['nama']),
+							'total' => $this->validation->validInput($dataOperasionalProyek['total']),
+							'ket' => $ket,
+						);
+
+						$dataInsert = array(
+							'dataOperasionalProyek' => $dataOperasionalProyek,
+							'dataDetail' => $dataDetail
+						);
+
+						// insert data proyek
+						if($this->Operasional_ProyekModel->insert($dataInsert)){
+							$this->status = true;
+							$_SESSION['notif'] = array(
+								'type' => "success",
+								'title' => "Pesan Berhasil",
+								'message' => "Tambah Data Operasional Proyek Baru Berhasil",
+							);
+							$notif['default'] = $_SESSION['notif'];
+						}
+						else{
+							$notif['default'] = array(
+								'type' => "error",
+								'title' => "Pesan Gagal",
+								'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
+							);
+						}
+					}
+					else{
+						if(!$cekDetail){
+							$notif['data_detail'] = array(
+								'type' => 'warning',
+								'title' => "Pesan Pemberitahuan",
+								'message' => "Silahkan Cek Kembali Data Detail",
+							);
+						}
+
+						$notif['default'] = array(
+							'type' => 'warning',
+							'title' => "Pesan Pemberitahuan",
+							'message' => "Silahkan Cek Kembali Form Isian",
+						);
+					}
+				}
+
+				$output = array(
+					'status' => $this->status,
+					'notif' => $notif,
+					'error' => $error,
+					'cek' => array(
+						'cek' => $cek,
+						'data_detail' => $cekDetail,
+						
+					),
+					'data' => $data,
+					'dataOperasionalProyek' => $dataOperasionalProyek,
+					'dataDetail' => $dataDetail,
+				
+				);
+				echo json_encode($output);
 			}
+			else $this->redirect();
 
-			$output = array(
-				'status' => $status,
-				'notif' => $notif,
-				'error' => $error,
-				'data' => $data,
-			);
-
-			echo json_encode($output);		
 		}
 
 	

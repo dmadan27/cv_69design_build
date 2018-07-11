@@ -60,7 +60,7 @@
                                 <div class="input-group" style="width: 100%">
                                     <div class="input-group">
                                         <span class="input-group-addon">Rp.</span>
-                                        <input type="text" class="form-control field" id="harga_detail" name="harga" placeholder="Masukan Harga" >
+                                        <input type="text" class="form-control field input-mask-uang" id="harga_detail" name="harga" placeholder="Masukan Harga" >
                                         <span class="input-group-addon">,00-</span>
                                     </div>
                                 </div>
@@ -76,7 +76,7 @@
                                 <label for="sub_total_detail">Sub Total</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">Rp.</span>
-                                    <input type="text" class="form-control field" id="sub_total_detail" name="subtotal" placeholder="Masukan Subtotal" >
+                                    <input type="text" class="form-control field input-mask-uang" id="sub_total_detail" name="subtotal" placeholder="Masukan Subtotal" >
                                     <span class="input-group-addon">,00-</span>
                                 </div>
                                 <span class="help-block small pesan pesan-sub_total_detail"></span>
@@ -98,7 +98,7 @@
                                 <label for="harga_asli_detail">Harga Asli</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">Rp.</span>
-                                    <input type="text" class="form-control field" id="harga_asli_detail" name="harga_asli" placeholder="Masukan Harga Asli" >
+                                    <input type="text" class="form-control field input-mask-uang" id="harga_asli_detail" name="harga_asli" placeholder="Masukan Harga Asli" >
                                     <span class="input-group-addon">,00-</span>
                                 </div>
                                 <span class="help-block small pesan pesan-harga_asli_detail"></span>
@@ -109,7 +109,7 @@
                                 <label for="sisa_detail">Sisa</label>
                                 <div class="input-group">
                                     <span class="input-group-addon">Rp.</span>
-                                    <input type="text" class="form-control field" id="sisa_detail" name="sisa" placeholder="Masukan Sisa" >
+                                    <input type="text" class="form-control field  input-mask-uang" id="sisa_detail" name="sisa" placeholder="Masukan Sisa" >
                                     <span class="input-group-addon">,00-</span>
                                 </div>
                                 <span class="help-block small pesan pesan-sisa_detail"></span>
