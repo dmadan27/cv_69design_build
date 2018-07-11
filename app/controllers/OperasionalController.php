@@ -47,6 +47,7 @@
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
 				'assets/bower_components/select2/dist/js/select2.full.min.js',
+				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
 				'app/views/operasional/js/initList.js',
 				'app/views/operasional/js/initForm.js',
 			);
