@@ -32,6 +32,15 @@ $(document).ready(function () {
     });
 
     // input mask
+    $('.input-mask-uang').inputmask({ 
+    	alias : 'currency',
+    	prefix: '', 
+    	radixPoint: ',',
+    	digits: 0,
+    	groupSeparator: '.', 
+    	clearMaskOnLostFocus: true, 
+    	digitsOptional: false,
+    });
 
     //Flat red color scheme for iCheck
     $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
@@ -120,6 +129,7 @@ $(document).ready(function () {
 		var data = {
 			index: index,
 			id: '',
+			id_operasional_proyek : $('#id').val().trim(),
 			nama_detail : $('#nama_detail').val().trim(),
 			jenis_detail : $('#jenis_detail').val().trim(),
 			satuan_detail : $('#satuan_detail').val().trim(),
@@ -255,6 +265,7 @@ $(document).ready(function () {
 		var data = {
 			index: $('#id_detail').val().trim(),
 			id: '',
+			id_operasional_proyek : $('#id').val().trim(),
 			nama_detail : $('#nama_detail').val().trim(),
 			jenis_detail : $('#jenis_detail').val().trim(),
 			satuan_detail : $('#satuan_detail').val().trim(),
@@ -382,42 +393,28 @@ function setNamaBank(){
 function getDataForm(){
 	var data = new FormData();
 
-		var total = parseFloat($('#total').val().trim()) ? parseFloat($('#total').val().trim()) : $('#total').val().trim();
+	// var total = parseFloat($('#total').val().trim()) ? parseFloat($('#total').val().trim()) : $('#total').val().trim();
 
-		// var estimasi= parseFloat($('#estimasi').val().trim()) ? parseFloat($('#estimasi').val().trim()) : $('#estimasi').val().trim();
-	// var total= parseFloat($('#total').val().trim()) ? parseFloat($('#total').val().trim()) : $('#total').val().trim();
-	// var dp= parseFloat($('#dp').val().trim()) ? parseFloat($('#dp').val().trim()) : $('#dp').val().trim();
-	// var cco = parseFloat($('#cco').val().trim()) ? parseFloat($('#cco').val().trim()) : $('#cco').val().trim();
+	var total = ($('#total').inputmask) ? 
+		( parseFloat($('#total').inputmask('unmaskedvalue')) ?
+			parseFloat($('#total').inputmask('unmaskedvalue')) : 
+			$('#total').inputmask('unmaskedvalue')
+		) : $('#total').val().trim();
 
-	// var dataOperasionalProyek = {
-	// 	id_operasional_proyek: $('#id_operasional_proyek').val().trim(),
-	// 	id_proyek: $('#id_proyek').val().trim(),
-	// 	id_bank: $('#id_bank').val().trim(),
-	// 	tgl: $('#tgl').val().trim(),
-	// 	nama: $('#nama').val().trim(),
-	// 	total: $('#total').val().trim(),
-	// }
+	var dataOperasionalProyek = {
+		id : $('#id').val().trim(),
+		id_proyek : $('#id_proyek').val().trim(),
+		id_bank : $('#id_bank').val().trim(),
+		tgl : $('#tgl').val().trim(),
+		nama : $('#nama').val().trim(),
+		total : total
+	}
 
-	// var dataOperasionalProyek = {
-	// 	id  : $('#id').val().trim(),
-	// 	id_proyek: $('#id_proyek').val().trim(),
-	// 	id_bank: $('#id_bank').val().trim(),
-	// 	tgl: $('#tgl').val().trim(),
-	// 	nama: $('#nama').val().trim(),
-	// 	total: $('#total').val().trim()
-	// }
-
-
-
-
-	data.append('token', $('#token_form').val().trim());
+	// data.append('token', $('#token_form').val().trim());
 	// data.append('dataOperasionalProyek', JSON.stringify(dataOperasionalProyek));
 	data.append('id', $('#id').val().trim());
-	data.append('id_proyek', $('#id_proyek').val().trim());
-	data.append('id_bank', $('#id_bank').val().trim());
-	data.append('tgl', $('#tgl').val().trim());
-	data.append('nama', $('#nama').val().trim());
-	data.append('total', $('#total').val().trim());
+	data.append('dataOperasionalProyek', JSON.stringify(dataOperasionalProyek));
+	data.append('dataDetail', JSON.stringify(listDetail));
 	data.append('action', $('#submit_operasional_proyek').val().trim());
 
 	return data;
@@ -447,7 +444,8 @@ function submit(){
 				$('#submit_operasional_proyek').prop('disabled', false);
 				$('#submit_operasional_proyek').html($('#submit_operasional_proyek').text());
 				setError(output.error);
-				toastr.warning(output.notif.message, output.notif.title);
+				setNotif(output.notif.default);
+				// toastr.warning(output.notif.message, output.notif.title);
 			}
 			else window.location.href = BASE_URL+'operasional-proyek/';
 		},
