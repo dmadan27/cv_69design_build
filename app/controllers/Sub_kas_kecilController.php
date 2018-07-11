@@ -39,6 +39,7 @@
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 				'assets/bower_components/dropify/dist/js/dropify.min.js',
+				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
 				'app/views/sub_kas_kecil/js/initList.js',
 				'app/views/sub_kas_kecil/js/initForm.js',
 			);
