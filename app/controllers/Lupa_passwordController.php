@@ -123,7 +123,7 @@
 
 			$dataEmail = $this->UserModel->getUser($email);
 
-			if(!$dataEmail){
+			if(!$dataEmail || $dataEmail["level"] != "SUB KAS KECIL"){
 				$errorEmail = "Email Tidak Ditemukan";
 				$notif = array(
 					'title' => "Pesan Pemberitahuan",

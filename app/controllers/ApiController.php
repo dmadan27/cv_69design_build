@@ -268,12 +268,12 @@
 				$data = array();
 				if(!empty($dataFoto)){
 
-					foreach ($dataFoto['foto'] as $value) {
-						$filename = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$value;
+					foreach ($dataFoto as $value) {
+						$filename = ROOT.DS.'assets'.DS.'images'.DS.'laporan'.DS.$value['foto'];
 						if(!file_exists($filename))
 							$data[] = null;
 						else
-							$data[] = BASE_URL.'assets/images/user/'.$value;
+							$data[] = BASE_URL.'assets/images/laporan/'.$value["foto"];
 					}
 
 				}
@@ -282,6 +282,8 @@
 			}
 
 			echo json_encode($output);
+			// echo "<pre>";
+			// echo var_dump($dataFoto);
 		}
 
 		/**
