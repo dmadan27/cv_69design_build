@@ -269,11 +269,15 @@
 				if(!empty($dataFoto)){
 
 					foreach ($dataFoto as $value) {
+						$row = array();
+						$row['id'] = $value['id'];
 						$filename = ROOT.DS.'assets'.DS.'images'.DS.'laporan'.DS.$value['foto'];
 						if(!file_exists($filename))
-							$data[] = null;
+							$row['foto'] = null;
 						else
-							$data[] = BASE_URL.'assets/images/laporan/'.$value["foto"];
+							$row['foto'] = BASE_URL.'assets/images/laporan/'.$value["foto"];
+
+						$data[] = $row;
 					}
 
 				}

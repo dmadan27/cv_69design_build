@@ -136,6 +136,7 @@
 				$dataUser = $this->UserModel->getSubKasKecil($email);
 
 				// kirim email
+				// tambah &tipe=sub-kas-kecil
 				$link = BASE_URL.'lupa-password/reset/?user='.$email.'&token='.$dataToken['token_asli'];
 				$sendTo = array(
 					'email' => $email,

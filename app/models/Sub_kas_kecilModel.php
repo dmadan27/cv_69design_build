@@ -95,7 +95,7 @@
 		public function getSisaSaldoById($id){
 			$query = "SELECT skk.saldo, (skk.saldo - SUM(pskk.total)) sisa_saldo FROM sub_kas_kecil skk ";
 			$query .= "JOIN pengajuan_sub_kas_kecil pskk ON skk.id=pskk.id_sub_kas_kecil ";
-			$query .= "WHERE skk.id = :id AND pskk.status = 'DISETUJUI' AND pskk.status_laporan IS NULL GROUP BY skk.id";
+			$query .= "WHERE skk.id = :id AND pskk.status = ('DISETUJUI' OR 'LANGSUNG') AND pskk.status_laporan IS NULL GROUP BY skk.id";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id', $id);
