@@ -49,7 +49,7 @@
                   <label for="nominal">Nominal</label>
                   <div class="input-group">
                     <span class="input-group-addon">Rp</span>
-                      <input type="number" min="0" step="any" name="nominal" id="nominal" class="form-control field" placeholder="Masukkan Nominal">
+                      <input type="text" name="nominal" id="nominal" class="form-control field input-mask-uang" placeholder="Masukkan Nominal">
                       <span class="input-group-addon">.00</span>
                     </div>
                   <span class="help-block small pesan pesan-nominal"></span>
