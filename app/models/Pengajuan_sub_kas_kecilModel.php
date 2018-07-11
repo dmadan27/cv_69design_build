@@ -245,6 +245,23 @@
 			/**
 			*
 			*/
+			public function getFotoById_mobile($id_pengajuan){
+				$id = isset($_POST['id']) ? $_POST['id'] : false;
+
+				$query = "SELECT * FROM upload_laporan_pengajuan_sub_kas_kecil ";
+				$query .= "WHERE id_pengajuan = :id";
+
+				$statement = $this->koneksi->prepare($query);
+				$statement->bindParam(':id', $id_pengajuan);
+				$result = $statement->execute();
+				$result = $statement->fetchAll();
+
+				return $result;
+			}
+
+			/**
+			*
+			*/
 			public function get_recordTotal_mobile(){
 				$koneksi = $this->openConnection();
 
