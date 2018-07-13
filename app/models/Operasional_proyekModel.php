@@ -1,6 +1,7 @@
 <?php
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
-class Operasional_ProyekModel extends Database implements ModelInterface{
+	
+	class Operasional_ProyekModel extends Database implements ModelInterface{
 	
 	protected $koneksi;
 	protected $dataTable;
