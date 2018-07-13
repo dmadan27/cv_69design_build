@@ -185,7 +185,7 @@
 
 				if(!$data){
 					$notif['default'] = array(
-						'type' => 'error'
+						'type' => 'error',
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
 					);
@@ -537,7 +537,9 @@
 				'total' => $this->helper->cetakRupiah($total),
 				'dp' => $this->helper->cetakRupiah($dataProyek['dp']),
 				'cco' => $this->helper->cetakRupiah($dataProyek['cco']),
-				'status' => (strtolower($dataProyek['status']) == "lunas") ? '<span class="label label-success">'.$dataProyek['status'].'</span>' : '<span class="label label-primary">'.$dataProyek['status'].'</span>',
+				'status' => (strtolower($dataProyek['status']) == "lunas") ? 
+					'<span class="label label-success">'.$dataProyek['status'].'</span>' : 
+					'<span class="label label-primary">'.$dataProyek['status'].'</span>',
 				'progress' => array(
 					'style' => 'style="width: '.$dataProyek['progress'].'%"',
 					'value' => $dataProyek['progress'],
@@ -551,7 +553,9 @@
 			 	$dataRow['angsuran'] = $row['angsuran'];
 			 	$dataRow['persentase'] = $row['persentase'].' %';
 				$dataRow['total'] = $this->helper->cetakRupiah($row['total_detail']);
-				$dataRow['status'] = (strtolower($row['status_detail']) == "selesai") ? '<span class="label label-success">'.$row['status_detail'].'</span>' : '<span class="label label-primary">'.$row['status_detail'].'</span>';
+				$dataRow['status'] = (strtolower($row['status_detail']) == "selesai") ? 
+					'<span class="label label-success">'.$row['status_detail'].'</span>' : 
+					'<span class="label label-primary">'.$row['status_detail'].'</span>';
 				$dataRow[] = '<button onclick="getEditDetail('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Detail Proyek"><i class="fa fa-pencil"></i></button>';
 
 				$dataDetail[] = $dataRow;
@@ -615,7 +619,8 @@
 					$no_urut++;
 
 					// button aksi
-					$aksiDetail = '<button onclick="getView('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+					$aksiDetail = '<button onclick="getView('."'".strtolower($row["id"])."'".')" type="button" ';
+					$aksiDetail .= 'class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
 					
 					$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
 					
@@ -666,7 +671,8 @@
 					$no_urut++;
 
 					// button aksi
-					$aksiDetail = '<button onclick="getView('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+					$aksiDetail = '<button onclick="getView('."'".strtolower($row["id"])."'".')" type="button" ';
+					$aksiDetail .= 'class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
 					
 					$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
 					
@@ -752,7 +758,7 @@
 					$data[] = $dataRow;
 				}
 
-				echo json_encode($data);\
+				echo json_encode($data);
 
 			}
 			else $this->redirect();

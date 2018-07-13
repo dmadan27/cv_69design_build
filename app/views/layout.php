@@ -45,14 +45,15 @@
 					case 'warning':
 						toastr.warning(notif.message, notif.title);
 						break;
-					case 'danger':
-						toastr.danger(notif.message, notif.title);
+					case 'error':
+						toastr.error(notif.message, notif.title);
 						break;
 					default:
 						toastr.info(notif.message, notif.title);
 						break; 
 				}
 			}
+			
 		</script>
 		<?php 
 			require_once "layout/js/js.php";

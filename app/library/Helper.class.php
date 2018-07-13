@@ -105,6 +105,13 @@
 		/**
 		*
 		*/
+		public function cekArray($data){
+			
+		}
+
+		/**
+		*
+		*/
 		public function reArrayFiles($file_post) {
 		    $file_ary = array();
 		    $file_count = count($file_post['name']);

@@ -79,10 +79,20 @@
 		* 
 		*/
 		public function insert($data){
+			$query = "INSERT INTO bank (nama, saldo, status) VALUES (:nama, :saldo, :status);";
+
 			try{
 				$this->koneksi->beginTransaction();
 
-				$this->insertBank($data);
+				$statement = $this->koneksi->prepare($query);
+				$result = $statement->execute(
+					array(
+						':nama' => $data['nama'],
+						':saldo' => $data['saldo'],
+						':status' => $data['status']
+					)
+				);
+				$statement->closeCursor();
 
 				$this->koneksi->commit();
 
@@ -93,33 +103,26 @@
 				die($e->getMessage());
 				// return false;
 			}
-		}
-
-		/**
-		*
-		*/
-		private function insertBank($data){
-			$query = "INSERT INTO bank (nama, saldo, status) VALUES (:nama, :saldo, :status);";
-
-			$statement = $this->koneksi->prepare($query);
-			$result = $statement->execute(
-				array(
-					':nama' => $data['nama'],
-					':saldo' => $data['saldo'],
-					':status' => $data['status']
-				)
-			);
-			$statement->closeCursor();
 		}
 
 		/**
 		* 
 		*/
 		public function update($data){
+			$query = "UPDATE bank SET nama = :nama, status = :status WHERE id = :id;";
+
 			try{
 				$this->koneksi->beginTransaction();
 
-				$this->updateBank($data);
+				$statement = $this->koneksi->prepare($query);
+				$statement->execute(
+					array(
+						':nama' => $data['nama'],
+						':status' => $data['status'],
+						':id' => $data['id'],
+					)
+				);
+				$statement->closeCursor();
 
 				$this->koneksi->commit();
 
@@ -132,22 +135,6 @@
 			}
 		}
 
-		/**
-		*
-		*/
-		private function updateBank($data){
-			$query = "UPDATE bank SET nama = :nama, status = :status WHERE id = :id;";
-
-			$statement = $this->koneksi->prepare($query);
-			$statement->execute(
-				array(
-					':nama' => $data['nama'],
-					':status' => $data['status'],
-					':id' => $data['id'],
-				)
-			);
-			$statement->closeCursor();
-		}
 
 		/**
 		* 

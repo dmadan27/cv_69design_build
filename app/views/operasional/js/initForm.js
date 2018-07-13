@@ -123,14 +123,13 @@ function submit(edit_view){
 		},
 		success: function(output){
 			console.log(output);
+			setNotif(output.notif);
 			if(!output.status) {
 				$('#submit_operasional').prop('disabled', false);
 				$('#submit_operasional').html($('#submit_operasional').text());
 				setError(output.error);
-				toastr.warning(output.notif.message, output.notif.title);
 			}
 			else{
-				toastr.success(output.notif.message, output.notif.title);
 				resetForm();
 				$("#modalOperasional").modal('hide');
 				$("#operasionalTable").DataTable().ajax.reload();

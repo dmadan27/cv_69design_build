@@ -6,76 +6,60 @@
 	*/
 	class Kas_besar extends Crud_modalsAbstract{
 
-		protected $token;
-
+		private $token;
+		private $status = false;
 
 		/**
 		*
 		*/
 		public function __construct(){
-				$this->auth();
-				$this->auth->cekAuth();
-				$this->model('Kas_besarModel');
-				$this->helper();
-				$this->validation();
+			$this->auth();
+			$this->auth->cekAuth();
+			$this->model('Kas_besarModel');
+			$this->helper();
+			$this->validation();
 		}	
 
-
+		/**
+		*
+		*/
 		public function index(){
-				$this->list();
-			}
+			$this->list();
+		}
 
-
+		/**
+		*
+		*/
 		protected function list(){
+			$css = array(
+				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+				'assets/bower_components/dropify/dist/css/dropify.min.css',
+			);
+			$js = array(
+				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
+				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/bower_components/dropify/dist/js/dropify.min.js',
+				'app/views/kas_besar/js/initList.js',
+				'app/views/kas_besar/js/initForm.js',
+			);
 
-				$css = array(
-					'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
-					'assets/bower_components/dropify/dist/css/dropify.min.css',
-				);
-				$js = array(
-					'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
-					'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
-					'assets/bower_components/dropify/dist/js/dropify.min.js',
-					'app/views/kas_besar/js/initList.js',
-					'app/views/kas_besar/js/initForm.js',
-				);
+			$config = array(
+				'title' => array(
+					'main' => 'Data Kas Besar',
+					'sub' => 'Menampilkan Semua Data Kas Besar',
+				),
+				'css' => $css,
+				'js' => $js,
+			);
 
-				$config = array(
-					'title' => array(
-						'main' => 'Data Kas Besar',
-						'sub' => 'Menampilkan Semua Data Kas Besar',
-					),
-					'css' => $css,
-					'js' => $js,
-				);
+			$this->layout('kas_besar/list', $config, $data = null);
+		}
 
-				// set token
-				$_SESSION['token_kas_besar'] = array(
-				'list' => md5($this->auth->getToken()),
-				'add' => md5($this->auth->getToken()),
-				);
-
-				$this->token = array(
-				'list' => password_hash($_SESSION['token_kas_besar']['list'], PASSWORD_BCRYPT),
-				'add' => password_hash($_SESSION['token_kas_besar']['add'], PASSWORD_BCRYPT),	
-				);
-
-
-				$data = array(
-				'token_list' => $this->token['list'],
-				'token_add' => $this->token['add'],
-				);
-
-				$this->layout('kas_besar/list', $config, $data);
-				}
-			/**
-			* 
-			*/
-			public function get_list(){
-				// cek token
-				$token = isset($_POST['token_list']) ? $_POST['token_list'] : false;
-				$this->auth->cekToken($_SESSION['token_kas_besar']['list'], $token, 'kas_besar');
-				
+		/**
+		* 
+		*/
+		public function get_list(){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				// config datatable
 				$config_dataTable = array(
 					'tabel' => 'kas_besar',
@@ -87,27 +71,17 @@
 
 				$dataKasBesar = $this->Kas_besarModel->getAllDataTable($config_dataTable);
 
-					// // set token
-				$_SESSION['token_kas_besar']['edit'] = md5($this->auth->getToken());
-				$_SESSION['token_kas_besar']['delete'] = md5($this->auth->getToken());
-
-				$this->token = array(
-				'edit' => password_hash($_SESSION['token_kas_besar']['edit'], PASSWORD_BCRYPT),
-				'delete' => password_hash($_SESSION['token_kas_besar']['delete'], PASSWORD_BCRYPT),	
-				);
-
 				$data = array();
 				$no_urut = $_POST['start'];
 				foreach($dataKasBesar as $row){
 					$no_urut++;
 
-						$status = (strtolower($row['status']) == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-primary">'.$row['status'].'</span>';
+					$status = (strtolower($row['status']) == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-primary">'.$row['status'].'</span>';
 
-
-						//button aksi
-						$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-						$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".', '."'".$this->token["edit"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-						$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+					//button aksi
+					$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+					$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+					$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 					
 					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
 					
@@ -130,21 +104,24 @@
 				);
 
 				echo json_encode($output);
-			}	
+			}
+			else $this->redirect();
+		}	
 
-
-			public function action_add(){
+		/**
+		*
+		*/
+		public function action_add(){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
 				$foto = isset($_FILES['foto']) ? $_FILES['foto'] : false;
 
-				$this->auth->cekToken($_SESSION['token_kas_besar']['add'], $data['token'], 'kas-besar');
-
 				$cekFoto = true;
-				$status = false;
-				$error = "";
+				$error = $notif = array();
 
 				if(!$data){
 					$notif = array(
+						'type' => 'error',
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
 					);
@@ -183,7 +160,7 @@
 							'email' => $this->validation->validInput($data['email'], false),
 							'foto' => $this->validation->validInput($valueFoto, false),
 							'status' => $this->validation->validInput($data['status']),
-							'password' =>  password_hash($this->validation->validInput($data['password'], false), PASSWORD_BCRYPT),
+							'password' => password_hash($this->validation->validInput($data['password'], false), PASSWORD_BCRYPT),
 								
 						);
 
@@ -191,7 +168,7 @@
 							$path = ROOT.DS.'assets'.DS.'images'.DS.$valueFoto;
 							if(!move_uploaded_file($foto['tmp_name'], $path)){
 								$error['foto'] = "Upload Foto Gagal";
-								$status = $cekFoto = false;
+								$this->status = $cekFoto = false;
 							}
 						}
 
@@ -199,14 +176,16 @@
 
 							if($this->Kas_besarModel->checkExistEmail($data['email'])){
 								if($this->Kas_besarModel->insert($data)) {
-									$status = true;
+									$this->status = true;
 									$notif = array(
+										'type' => 'success',
 										'title' => "Pesan Berhasil",
 										'message' => "Tambah Data  Kas Besar Baru Berhasil",
 									);
 								}
 								else {
 									$notif = array(
+										'type' => 'error',
 										'title' => "Pesan Gagal",
 										'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 									);
@@ -214,6 +193,7 @@
 							}
 							else {
 								$notif = array(
+									'type' => 'warning',
 									'title' => "Pesan Pemberitahuan",
 									'message' => "Silahkan Cek Kembali Form Isian",
 								);
@@ -223,6 +203,7 @@
 					}
 					else{
 						$notif = array(
+							'type' => 'warning',
 							'title' => "Pesan Pemberitahuan",
 							'message' => "Silahkan Cek Kembali Form Isian",
 						);
@@ -230,7 +211,7 @@
 				}
 
 				$output = array(
-					'status' => $status,
+					'status' => $this->status,
 					'notif' => $notif,
 					'error' => $error,
 					'data' => $data,
@@ -238,6 +219,9 @@
 				);
 
 				echo json_encode($output);
+			}
+			else $this->redirect();
+				
 		}
 
 		/**
@@ -247,12 +231,15 @@
 		* return berupa json
 		*/
 		public function edit($id){
-			$id = strtoupper($id);
-			$token = isset($_POST['token_edit']) ? $_POST['token_edit'] : false;
-			$this->auth->cekToken($_SESSION['token_kas_besar']['edit'], $token, 'kas_besar');
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$id = strtoupper($id);
 
-			$data = !empty($this->Kas_besarModel->getById($id)) ? $this->Kas_besarModel->getById($id) : false;
-			echo json_encode($data);
+				$data = !empty($this->Kas_besarModel->getById($id)) ? $this->Kas_besarModel->getById($id) : false;
+				
+				echo json_encode($data);
+			}
+			else $this->redirect();
+				
 		}
 
 		/**

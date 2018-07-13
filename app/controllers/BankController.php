@@ -43,6 +43,7 @@
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
 				'app/views/bank/js/initList.js',
 				'app/views/bank/js/initForm.js',
 			);
@@ -110,6 +111,7 @@
 				);
 
 				echo json_encode($output);
+
 			}
 			else $this->redirect();
 							
@@ -215,15 +217,15 @@
 		* error => error apa saja yang ada dari hasil validasi
 		*/
 		public function action_edit(){
-
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
 				
 				$status = false;
-				$error = "";
+				$error = $notif = array();
 
 				if(!$data){
 					$notif = array(
+						'type' => 'error',
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
 					);
@@ -249,12 +251,14 @@
 						if($this->BankModel->update($data)) {
 							$status = true;
 							$notif = array(
+								'type' => 'success',
 								'title' => "Pesan Berhasil",
 								'message' => "Edit Data Bank Berhasil",
 							);
 						}
 						else {
 							$notif = array(
+								'type' => 'error',
 								'title' => "Pesan Gagal",
 								'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 							);
@@ -264,6 +268,7 @@
 					}
 					else {
 						$notif = array(
+							'type' => 'warning',
 							'title' => "Pesan Pemberitahuan",
 							'message' => "Silahkan Cek Kembali Form Isian",
 						);
@@ -302,6 +307,7 @@
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
 				'app/views/bank/js/initView.js',
 				'app/views/bank/js/initForm.js',
 			);
@@ -315,7 +321,9 @@
 				'js' => $js,
 			);
 
-			$status = ($data_detail['status'] == "AKTIF") ? '<span class="label label-success">'.$data_detail['status'].'</span>' : '<span class="label label-danger">'.$data_detail['status'].'</span>';
+			$status = ($data_detail['status'] == "AKTIF") ? 
+				'<span class="label label-success">'.$data_detail['status'].'</span>' : 
+				'<span class="label label-danger">'.$data_detail['status'].'</span>';
 
 			$data = array(
 				'id_bank' => $data_detail['id'],
@@ -324,9 +332,6 @@
 				'status' => $status,
 			);
 
-			// echo "<pre>";
-			// print_r($this->token);
-			// echo "</pre>";
 			$this->layout('bank/view', $config, $data);
 		}
 
@@ -337,14 +342,18 @@
 		* return json
 		*/
 		public function delete($id){
-			$id = strtoupper($id);
-			// $token = isset($_POST['token_delete']) ? $_POST['token_delete'] : false;
-			// $this->auth->cekToken($_SESSION['token_bank']['delete'], $token, 'bank');
-			
-			if($this->BankModel->delete($id)) $status = true;
-			else $status = false;
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$id = strtoupper($id);
+				
+				if(empty($id) || $id == "") $this->redirect(BASE_URL."bank/");
 
-			echo json_encode($status);
+				if($this->BankModel->delete($id)) $status = true;
+				else $status = false;
+
+				echo json_encode($status);
+			}
+			else $this->redirect();
+				
 		}
 
 		/**
@@ -353,47 +362,48 @@
 		* dipakai di detail data
 		*/
 		public function get_mutasi($id){
-			// $data = isset($_POST) ? $_POST : false;
-			// // cek token
-			// $this->auth->cekToken($_SESSION['token_bank']['view'], $data['token_view'], 'bank');
-
-			$this->model('Mutasi_bankModel');
-			
-			// config datatable
-			$config_dataTable = array(
-				'tabel' => 'mutasi_bank',
-				'kolomOrder' => array(null, 'tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
-				'kolomCari' => array('tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
-				'orderBy' => array('id' => 'desc'),
-				'kondisi' => 'WHERE id_bank = '.$id.' ',
-			);
-
-			$dataMutasi = $this->Mutasi_bankModel->getAllDataTable($config_dataTable);
-
-			$data = array();
-			$no_urut = $_POST['start'];
-			foreach($dataMutasi as $row){
-				$no_urut++;
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$this->model('Mutasi_bankModel');
 				
-				$dataRow = array();
-				$dataRow[] = $no_urut;
-				$dataRow[] = $row['tgl'];
-				$dataRow[] = $this->helper->cetakRupiah($row['uang_masuk']);
-				$dataRow[] = $this->helper->cetakRupiah($row['uang_keluar']);
-				$dataRow[] = $this->helper->cetakRupiah($row['saldo']);
-				$dataRow[] = $row['ket'];
+				// config datatable
+				$config_dataTable = array(
+					'tabel' => 'mutasi_bank',
+					'kolomOrder' => array(null, 'tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
+					'kolomCari' => array('tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
+					'orderBy' => array('id' => 'desc'),
+					'kondisi' => 'WHERE id_bank = '.$id.' ',
+				);
 
-				$data[] = $dataRow;
+				$dataMutasi = $this->Mutasi_bankModel->getAllDataTable($config_dataTable);
+
+				$data = array();
+				$no_urut = $_POST['start'];
+				foreach($dataMutasi as $row){
+					$no_urut++;
+					
+					$dataRow = array();
+					$dataRow[] = $no_urut;
+					$dataRow[] = $row['tgl'];
+					$dataRow[] = $this->helper->cetakRupiah($row['uang_masuk']);
+					$dataRow[] = $this->helper->cetakRupiah($row['uang_keluar']);
+					$dataRow[] = $this->helper->cetakRupiah($row['saldo']);
+					$dataRow[] = $row['ket'];
+
+					$data[] = $dataRow;
+				}
+
+				$output = array(
+					'draw' => $_POST['draw'],
+					'recordsTotal' => $this->Mutasi_bankModel->recordTotal(),
+					'recordsFiltered' => $this->Mutasi_bankModel->recordFilter(),
+					'data' => $data,
+				);
+
+				echo json_encode($output);
+
 			}
-
-			$output = array(
-				'draw' => $_POST['draw'],
-				'recordsTotal' => $this->Mutasi_bankModel->recordTotal(),
-				'recordsFiltered' => $this->Mutasi_bankModel->recordFilter(),
-				'data' => $data,
-			);
-
-			echo json_encode($output);
+			else $this->redirect();
+				
 		}
 
 		/**
