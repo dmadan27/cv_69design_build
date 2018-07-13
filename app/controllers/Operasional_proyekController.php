@@ -1,7 +1,7 @@
 <?php
 Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 
-class Operasional_Proyek extends CrudAbstract{
+class Operasional_proyek extends CrudAbstract{
 
 	protected $token;
 	private $status = false;
