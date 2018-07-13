@@ -42,7 +42,7 @@
 					<div class="box-body">
 						<div class="row">
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-								<input type="hidden" id="token_list" value="<?= $this->data['token_list']; ?>">
+								<input type="hidden" id="token" value="">
 								<table id="bankTable" class="table table-bordered table-hover">
 									<thead>
 										<tr>

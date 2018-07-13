@@ -4,16 +4,14 @@ $(document).ready(function(){
 
 	// button tambah
 	$('#tambah').on('click', function(){
-		if(this.value.trim() != ""){
-			resetForm();
-			$('.field-saldo').css('display', 'block');
-			$('#submit_bank').prop('value', 'action-add');
-			$('#submit_bank').prop('disabled', false);
-			$('#submit_bank').html('Simpan Data');
-			$('#token_form').val(this.value);
-			$('#modalBank').modal();
-		}
-		else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+		
+		resetForm();
+		$('.field-saldo').css('display', 'block');
+		$('#submit_bank').prop('value', 'action-add');
+		$('#submit_bank').prop('disabled', false);
+		$('#submit_bank').html('Simpan Data');
+		$('#modalBank').modal();
+		
 	});
 
 	// submit bank
@@ -67,7 +65,6 @@ function getDataForm(){
 		
 	if($('#submit_bank').val().trim().toLowerCase() == "action-edit") data.append('id', $('#id').val().trim());
 
-	data.append('token', $('#token_form').val().trim());
 	data.append('nama', $('#nama').val().trim()); // nama bank
 	data.append('saldo', saldo); // saldo awal
 	data.append('status', $('#status').val().trim()); // status bank
@@ -125,36 +122,32 @@ function submit(edit_view){
 /**
 *
 */
-function getEdit(id, token){
-	if(token != ""){
-		resetForm();
-		$('.field-saldo').css('display', 'none');
-		$('#submit_bank').prop('value', 'action-edit');
-		$('#submit_bank').prop('disabled', false);
-		$('#submit_bank').html('Edit Data');
+function getEdit(id){
+	resetForm();
+	$('.field-saldo').css('display', 'none');
+	$('#submit_bank').prop('value', 'action-edit');
+	$('#submit_bank').prop('disabled', false);
+	$('#submit_bank').html('Edit Data');
 
-		$.ajax({
-			url: BASE_URL+'bank/edit/'+id.toLowerCase(),
-			type: 'post',
-			dataType: 'json',
-			data: {"token_edit": token},
-			beforeSend: function(){
-
-			},
-			success: function(output){
-				if(output){
-					$('#modalBank').modal();
-					$('#token_form').val(token);
-					setValue(output);
-				}	
-			},
-			error: function (jqXHR, textStatus, errorThrown){ // error handling
-	            console.log(jqXHR, textStatus, errorThrown);
-	            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
-	        }
-		})
-	}
-	else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+	$.ajax({
+		url: BASE_URL+'bank/edit/'+id.toLowerCase(),
+		type: 'post',
+		dataType: 'json',
+		data: {},
+		beforeSend: function(){
+		},
+		success: function(output){
+			if(output){
+				$('#modalBank').modal();
+				setValue(output);
+			}	
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+            console.log(jqXHR, textStatus, errorThrown);
+            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+        }
+	})
+	
 }
 
 /**

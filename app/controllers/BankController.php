@@ -343,9 +343,9 @@
 		*/
 		public function delete($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
-				$id = strtoupper($id);
-				
 				if(empty($id) || $id == "") $this->redirect(BASE_URL."bank/");
+				
+				$id = strtoupper($id);
 
 				if($this->BankModel->delete($id)) $status = true;
 				else $status = false;
