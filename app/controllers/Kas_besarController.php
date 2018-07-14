@@ -232,6 +232,8 @@
 		*/
 		public function edit($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				if(empty($id) || $id == "") $this->redirect(BASE_URL."kas-besar/");
+
 				$id = strtoupper($id);
 
 				$data = !empty($this->Kas_besarModel->getById($id)) ? $this->Kas_besarModel->getById($id) : false;
@@ -252,13 +254,12 @@
 		*/
 		public function action_edit(){
 			$data = isset($_POST) ? $_POST : false;
-			$this->auth->cekToken($_SESSION['token_kas_besar']['edit'], $data['token'], 'kas-besar');
 			
-			$status = false;
-			$error = "";
+			$error = $notif = array();
 
 			if(!$data){
 				$notif = array(
+					'type' => "error",
 					'title' => "Pesan Gagal",
 					'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
 				);
@@ -281,27 +282,25 @@
 					);
 
 					// update db
-
-					// transact
-
 					if($this->Kas_besarModel->update($data)) {
-						$status = true;
+						$this->status = true;
 						$notif = array(
+							'type' => "success",
 							'title' => "Pesan Berhasil",
 							'message' => "Edit Data Kas Besar Berhasil",
 						);
 					}
 					else {
 						$notif = array(
+							'type' => "error",
 							'title' => "Pesan Gagal",
 							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 						);
 					}
-
-					// commit
 				}
 				else {
 					$notif = array(
+						'type' => "warning",
 						'title' => "Pesan Pemberitahuan",
 						'message' => "Silahkan Cek Kembali Form Isian",
 					);
@@ -309,7 +308,7 @@
 			}
 
 			$output = array(
-				'status' => $status,
+				'status' => $this->status,
 				'notif' => $notif,
 				'error' => $error,
 				'data' => $data
@@ -324,8 +323,9 @@
 		* param $id didapat dari url
 		*/
 		public function detail($id){
-			$id = strtoupper($id);
 			if(empty($id) || $id == "") $this->redirect(BASE_URL."kas-besar/");
+
+			$id = strtoupper($id);
 
 			$data_detail = !empty($this->Kas_besarModel->getById($id)) ? $this->Kas_besarModel->getById($id) : false;
 
@@ -352,17 +352,10 @@
 				'js' => $js,
 			);
 
-			$status = ($data_detail['status'] == "AKTIF") ? '<span class="label label-success">'.$data_detail['status'].'</span>' : '<span class="label label-danger">'.$data_detail['status'].'</span>';
+			$status = ($data_detail['status'] == "AKTIF") ? 
+				'<span class="label label-success">'.$data_detail['status'].'</span>' : 
+				'<span class="label label-danger">'.$data_detail['status'].'</span>';
 			
-			$_SESSION['token_kas_besar']['view'] = md5($this->auth->getToken());
-			$_SESSION['token_kas_besar']['edit'] = md5($this->auth->getToken());
-			$_SESSION['token_kas_besar']['delete'] = md5($this->auth->getToken());
-			
-			$this->token = array(
-				'view' => password_hash($_SESSION['token_kas_besar']['view'], PASSWORD_BCRYPT),
-				'edit' => password_hash($_SESSION['token_kas_besar']['edit'], PASSWORD_BCRYPT),
-				'delete' => password_hash($_SESSION['token_kas_besar']['delete'], PASSWORD_BCRYPT)
-			);
 
 			if(!empty($data_detail['foto'])){
 				// cek foto di storage
@@ -395,43 +388,49 @@
 		* return json
 		*/
 		public function delete($id){
-			$id = strtoupper($id);
-			$token = isset($_POST['token_delete']) ? $_POST['token_delete'] : false;
-			$this->auth->cekToken($_SESSION['token_kas_besar']['delete'], $token, 'kas_besar');
-			
-			if($this->Kas_besarModel->delete($id)) $status = true;
-			else $status = false;
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				if(empty($id) || $id == "") $this->redirect(BASE_URL."bank/");
 
-			echo json_encode($status);
+				$id = strtoupper($id);
+				
+				if($this->Kas_besarModel->delete($id)) $status = true;
+				else $status = false;
+
+				echo json_encode($status);
+			}
+			else $this->redirect();
+				
 		}
 
 		/**
 		*
 		*/
 		public function export(){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
 
+			}
+			else $this->redirect();
 		}
 
 		/**
 		*
 		*/
 		public function get_last_id(){
-			$token = isset($_POST['token']) ? $_POST['token'] : false;
-			$this->auth->cekToken($_SESSION['token_kas_besar']['add'], $token, 'kas_besar');
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$data = !empty($this->Kas_besarModel->getLastID()['id']) ? $this->Kas_besarModel->getLastID()['id'] : false;
 
-			$data = !empty($this->Kas_besarModel->getLastID()['id']) ? $this->Kas_besarModel->getLastID()['id'] : false;
+				if(!$data) $id = 'KB001';
+				else{
+					$kode = 'KB';
+					$noUrut = (int)substr($data, 2, 3);
+					$noUrut++;
 
-			if(!$data) $id = 'KB001';
-			else{
-				// $data = implode('', $data);
-				$kode = 'KB';
-				$noUrut = (int)substr($data, 2, 3);
-				$noUrut++;
+					$id = $kode.sprintf("%03s", $noUrut);
+				}
 
-				$id = $kode.sprintf("%03s", $noUrut);
+				echo json_encode($id);
 			}
-
-			echo $id;
+			else $this->redirect();
 		}
 
 			/**
@@ -441,7 +440,7 @@
 		* return berupa array, status hasil pengecekan dan error tiap validasi inputan
 		*/
 		private function set_validation($data){
-			$required = ($data['action'] =="action-edit") ? 'not_required' : 'required';
+			$required = ($data['action'] == "action-edit") ? 'not_required' : 'required';
 
 			// ID
 			$this->validation->set_rules($data['id'], 'ID Kas Kecil', 'id', 'string | 1 | 255 | required');
