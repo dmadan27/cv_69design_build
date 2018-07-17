@@ -196,12 +196,12 @@
 		public function action_add_laporan(){
 			$this->model('Pengajuan_sub_kas_kecilModel');
 
-			$id_pengajuan = isset($_POST['id_pengajuan']) ? 
+			$id_pengajuan = isset($_POST['id_pengajuan']) ?
 							$this->validation->validInput($_POST['id_pengajuan'], false) : false;
-			$detail_laporan = ((isset($_POST["detail_laporan"])) && !empty($_POST["detail_laporan"])) ? 
+			$detail_laporan = ((isset($_POST["detail_laporan"])) && !empty($_POST["detail_laporan"])) ?
 							json_decode($_POST["detail_laporan"]) : false;
 			$foto = isset($_FILES['foto']) ? $this->helper->reArrayFiles($_FILES['foto']) : false;
-			$jumlah_foto = isset($_POST['jumlah_foto']) ? 
+			$jumlah_foto = isset($_POST['jumlah_foto']) ?
 							$this->validation->validInput($_POST['jumlah_foto']) : false;
 
 			$status_valid_foto = $status_upload_foto = false;
@@ -258,7 +258,7 @@
 			$output = array();
 			$output['status'] = $this->status;
 
-			$id_pengajuan = ((isset($_POST['id_pengajuan'])) && !empty($_POST['id_pengajuan'])) ? 
+			$id_pengajuan = ((isset($_POST['id_pengajuan'])) && !empty($_POST['id_pengajuan'])) ?
 				$this->validation->validInput($_POST['id_pengajuan']) : false;
 
 			if ($this->status && $id_pengajuan) {
@@ -552,6 +552,32 @@
 			);
 
 			echo json_encode($output);
+		}
+
+		/**
+		*
+		*/
+		public function histori() {
+			$this->model("ProyekModel");
+
+			$input["id_sub_kas_kecil"] = isset($_POST["id"]) ? $_POST["id"] : false;
+			$input["cari"] = isset($_POST["cari"]) ? $_POST["cari"] : null;
+			$input["page"] = ($_POST["page"] != null) ? $_POST["page"] : 1;
+
+			$output["status"] = $this->status;
+
+			if ($this->status) {
+				$dataHistori = $this->ProyekModel->getAllByIdSubKasKecil_mobile($input);
+				$totalHistori = $this->ProyekModel->get_recordTotal_mobile();
+
+				$totalPage = ceil($totalHistori/10);
+				$next = ($input["page"] < $totalPage) ? ($page + 1) : null;
+
+				$output["list_histori"] = $dataHistori;
+				$output["next"] = $next;
+			}
+
+			echo json_encode($output, JSON_PRETTY_PRINT);
 		}
 
 		/**
