@@ -381,30 +381,6 @@
 			/**
 			*
 			*/
-			public function setQuery_mobile($page){
-				$id = isset($_POST['id']) ? $_POST['id'] : false;
-				$cari = isset($_POST['cari']) ? $_POST['cari'] : null;
-				$mulai = ($page > 1) ? ($page * 10) - 10 : 0;
-
-				$this->queryMobile = 'SELECT * FROM v_proyek_logistik ';
-
-				$qWhere = 'WHERE id_sub_kas_kecil = "'.$id.'"';
-				$i = 0;
-				foreach($this->kolomCari_mobile as $value){
-					if(!is_null($cari)){
-						if($i === 0) $qWhere .= ' AND ('.$value.' LIKE "%'.$cari.'%" ';
-						else $qWhere .= 'OR '.$value.' LIKE "%'.$cari.'%"';
-					}
-					$i++;
-				}
-				if(!is_null($cari)) $qWhere .= " )";
-
-				$this->queryMobile .= "$qWhere LIMIT $mulai, 10";
-			}
-
-			/**
-			*
-			*/
 			private function querySelectBuilder_mobile($queryKondisi, $kolomCari, $cari=null, $page=1) {
 				$mulai = ($page > 1) ? ($page * 10) - 10 : 0;
 
@@ -431,19 +407,6 @@
 			/**
 			*
 			*/
-			public function getAll_mobile($page){
-				$this->setQuery_mobile($page);
-
-				$statement = $this->koneksi->prepare($this->queryMobile);
-				$statement->execute();
-				$result = $statement->fetchAll();
-
-				return $result;
-			}
-
-			/**
-			*
-			*/
 			public function getAllByIdSubKasKecil_mobile($data) {
 				$id = $data["id_sub_kas_kecil"];
 				$cari = $data["cari"];
@@ -461,11 +424,26 @@
 			/**
 			*
 			*/
+			public function getAllStatusBerjalan_mobile($data) {
+				$id = $data["id_sub_kas_kecil"];
+				$cari = $data["cari"];
+				$page = $data["page"];
+
+				$queryKondisi = $queryKondisi = "WHERE (id_sub_kas_kecil='".$id."' AND status='BERJALAN')";
+				$kolomCari = array("pemilik","tgl","alamat","kota");
+				$query = $this->querySelectBuilder_mobile($queryKondisi, $kolomCari, $cari, $page);
+
+				$statement = $this->koneksi->prepare($query);
+				$statement->execute();
+				return $statement->fetchAll(PDO::FETCH_ASSOC);
+			}
+
+			/**
+			*
+			*/
 			public function get_recordTotal_mobile(){
 				$koneksi = $this->openConnection();
-
 				$statement = $koneksi->query("SELECT COUNT(*) FROM v_proyek_logistik")->fetchColumn();
-
 				return $statement;
 			}
 

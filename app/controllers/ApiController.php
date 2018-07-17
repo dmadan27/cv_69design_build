@@ -391,22 +391,23 @@
 		public function proyek(){
 			$this->model('ProyekModel');
 
-			$output = array();
+			$input["id_sub_kas_kecil"] = isset($_POST["id"]) ? $_POST["id"] : false;
+			$input["cari"] = isset($_POST['cari']) ? $_POST['cari'] : null;
+			$input["page"] = ($_POST["page"] != null) ? $this->validation->validInput($_POST['page']) : 1;
+
 			$output['status'] = $this->status;
 
 			if ($this->status) {
-				$page = (isset($_POST['page']) && !empty($_POST['page'])) ? $this->validation->validInput($_POST['page']) : 1;
-
-				$dataProyek = $this->ProyekModel->getAll_mobile($page);
+				$dataProyek = $this->ProyekModel->getAllStatusBerjalan_mobile($input);
 				$totalData = $this->ProyekModel->get_recordTotal_mobile();
 				$totalPage = ceil($totalData/10);
 
-				$next = ($page < $totalPage) ? ($page + 1) : null;
+				$next = ($input["page"] < $totalPage) ? ($input["page"] + 1) : null;
 
 				$output['list_proyek'] = $dataProyek;
 				$output['next'] = $next;
 			}
-			echo json_encode($output);
+			echo json_encode($output, JSON_PRETTY_PRINT);
 		}
 
 		/**
@@ -562,7 +563,7 @@
 
 			$input["id_sub_kas_kecil"] = isset($_POST["id"]) ? $_POST["id"] : false;
 			$input["cari"] = isset($_POST["cari"]) ? $_POST["cari"] : null;
-			$input["page"] = ($_POST["page"] != null) ? $_POST["page"] : 1;
+			$input["page"] = ($_POST["page"] != null) ? $this->validation->validInput($_POST['page']) : 1;
 
 			$output["status"] = $this->status;
 
@@ -571,7 +572,7 @@
 				$totalHistori = $this->ProyekModel->get_recordTotal_mobile();
 
 				$totalPage = ceil($totalHistori/10);
-				$next = ($input["page"] < $totalPage) ? ($page + 1) : null;
+				$next = ($input["page"] < $totalPage) ? ($input["page"] + 1) : null;
 
 				$output["list_histori"] = $dataHistori;
 				$output["next"] = $next;
