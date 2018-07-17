@@ -8,8 +8,8 @@
 
 		protected $koneksi;
 		protected $dataTable;
-		protected $kolomCari_mobile = array('id_proyek', 'tgl', 'kota', 'status');
-		public $queryMobile;
+
+		private $queryBeforeLimitMobile;
 
 		/**
 		*
@@ -400,7 +400,9 @@
 				if ($cari != null)
 					$queryKondisi .= ")";
 
-			 	$query .= "$queryKondisi LIMIT $mulai, 10";
+				$query .= "$queryKondisi ";
+				$this->queryBeforeLimitMobile = $query;
+				$query .= "LIMIT $mulai, 10";
 				return $query;
 			}
 
@@ -441,19 +443,9 @@
 			/**
 			*
 			*/
-			public function get_recordTotal_mobile(){
+			public function getRecordFilter_mobile(){
 				$koneksi = $this->openConnection();
-				$statement = $koneksi->query("SELECT COUNT(*) FROM v_proyek_logistik")->fetchColumn();
-				return $statement;
-			}
-
-			/**
-			*
-			*/
-			public function get_recordFilter_mobile(){
-				$koneksi = $this->openConnection();
-
-				$statement = $koneksi->prepare($this->queryMobile);
+				$statement = $koneksi->prepare($this->queryBeforeLimitMobile);
 				$statement->execute();
 
 				return $statement->rowCount();

@@ -399,7 +399,7 @@
 
 			if ($this->status) {
 				$dataProyek = $this->ProyekModel->getAllStatusBerjalan_mobile($input);
-				$totalData = $this->ProyekModel->get_recordTotal_mobile();
+				$totalData = $this->ProyekModel->getRecordFilter_mobile();
 				$totalPage = ceil($totalData/10);
 
 				$next = ($input["page"] < $totalPage) ? ($input["page"] + 1) : null;
@@ -569,7 +569,7 @@
 
 			if ($this->status) {
 				$dataHistori = $this->ProyekModel->getAllByIdSubKasKecil_mobile($input);
-				$totalHistori = $this->ProyekModel->get_recordTotal_mobile();
+				$totalHistori = $this->ProyekModel->getRecordFilter_mobile();
 
 				$totalPage = ceil($totalHistori/10);
 				$next = ($input["page"] < $totalPage) ? ($input["page"] + 1) : null;
