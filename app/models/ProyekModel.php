@@ -431,7 +431,7 @@
 				$cari = $data["cari"];
 				$page = $data["page"];
 
-				$queryKondisi = $queryKondisi = "WHERE (id_sub_kas_kecil='".$id."' AND status='BERJALAN')";
+				$queryKondisi = "WHERE (id_sub_kas_kecil='".$id."' AND status='BERJALAN')";
 				$kolomCari = array("pemilik","tgl","alamat","kota");
 				$query = $this->querySelectBuilder_mobile($queryKondisi, $kolomCari, $cari, $page);
 
