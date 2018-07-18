@@ -131,7 +131,12 @@
 					$cek = $validasi['cek'];
 					$error = $validasi['error'];
 
-
+					// cek password dan konf password
+					if($data['password'] != $data['konf_password']){
+						$cek = false;
+						$error['password'] = $error['konf_password'] = 'Password dan Konfirmasi Password Berbeda';
+					}
+					
 					if($foto){
 						$configFoto = array(
 							'jenis' => 'gambar',
@@ -146,7 +151,7 @@
 							$cek = false;
 							$error['foto'] = $validasiFoto['error'];
 						}
-						else $valueFoto = $validasiFoto['namaFile'];
+						else $valueFoto = md5($data['id']).$validasiFoto['namaFile'];
 					}
 					else $valueFoto = NULL;
 
@@ -165,7 +170,7 @@
 						);
 
 						if($foto){
-							$path = ROOT.DS.'assets'.DS.'images'.DS.$valueFoto;
+							$path = ROOT.DS.'assets'.DS.'images'.DS.'user'.$valueFoto;
 							if(!move_uploaded_file($foto['tmp_name'], $path)){
 								$error['foto'] = "Upload Foto Gagal";
 								$this->status = $cekFoto = false;
@@ -189,6 +194,8 @@
 										'title' => "Pesan Gagal",
 										'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 									);
+									$path = ROOT.DS.'assets'.DS.'images'.DS.'user'.$valueFoto;
+									$this->helper->rollback_file($path, false);
 								}
 							}
 							else {
@@ -323,13 +330,11 @@
 		* param $id didapat dari url
 		*/
 		public function detail($id){
-			if(empty($id) || $id == "") $this->redirect(BASE_URL."kas-besar/");
-
 			$id = strtoupper($id);
 
 			$data_detail = !empty($this->Kas_besarModel->getById($id)) ? $this->Kas_besarModel->getById($id) : false;
 
-			if(!$data_detail) $this->redirect(BASE_URL."kas-besar/");
+			if(!$data_detail || (empty($id) || $id == "")) $this->redirect(BASE_URL."kas-besar/");
 
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
@@ -356,7 +361,7 @@
 				'<span class="label label-success">'.$data_detail['status'].'</span>' : 
 				'<span class="label label-danger">'.$data_detail['status'].'</span>';
 			
-
+			// validasi foto
 			if(!empty($data_detail['foto'])){
 				// cek foto di storage
 				$filename = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$data_detail['foto'];
@@ -375,7 +380,6 @@
 				'email' => $data_detail['email'],
 				'foto' => $foto,
 				'status' => $status,
-				'token' => $this->token,
 			);
 
 			$this->layout('kas_besar/view', $config, $data);
@@ -393,10 +397,9 @@
 
 				$id = strtoupper($id);
 				
-				if($this->Kas_besarModel->delete($id)) $status = true;
-				else $status = false;
+				if($this->Kas_besarModel->delete($id)) $this->status = true;
 
-				echo json_encode($status);
+				echo json_encode($this->status);
 			}
 			else $this->redirect();
 				
@@ -458,6 +461,4 @@
 			return $this->validation->run();
 		}
 
-
-
-}
+	}
