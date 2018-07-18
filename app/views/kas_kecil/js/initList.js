@@ -23,21 +23,13 @@ $(document).ready(function(){
         ajax: {
             url: BASE_URL+"kas-kecil/get-list/",
             type: 'POST',
-            data: {
-                "token_list" : $('#token_list').val().trim(),
-            }
-
+            data: {}
            
         },
         
     });
         
 
-    // $('#tambah').on('click', function(){
-    //     if(this.value.trim() != ""){
-    //         window.location.href = BASE_URL+'proyek/form/';
-    //     }
-    // });
 });
 
 function getView(id){
@@ -47,8 +39,8 @@ function getView(id){
 /**
 *
 */
-function getDelete(id, token){
-    if(token.trim() != ""){
+function getDelete(id){
+    
         swal({
             title: "Pesan Konfirmasi",
             text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
@@ -63,7 +55,7 @@ function getDelete(id, token){
                 url: BASE_URL+'kas-kecil/delete/'+id.toLowerCase(),
                 type: 'post',
                 dataType: 'json',
-                data: {"token_delete": token},
+                data: {},
                 beforeSend: function(){
 
                 },
@@ -80,6 +72,5 @@ function getDelete(id, token){
                 }
             })
         });
-    }
-    else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+    
 }

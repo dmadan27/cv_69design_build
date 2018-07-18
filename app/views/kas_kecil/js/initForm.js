@@ -6,22 +6,21 @@ $(document).ready(function(){
 
 	// button tambah
 	$('#tambah').on('click', function(){
-		if(this.value.trim() != ""){
-			resetForm();
-			$('.field-saldo').css('display', 'block');
-			$('.field-password').css('display', 'block');
-			$('.field-email').css('display', 'block');
-			$('.field-password_confirm').css('display', 'block');
-			$('.field-foto').css('display', 'block');
-			$('#token_form').val(this.value);
-			generateID();
-			$('#submit_kas_kecil').prop('value', 'action-add');
-			$('#submit_kas_kecil').prop('disabled', false);
-			$('#submit_kas_kecil').html('Simpan Data');
-			
-			$('#modalKasKecil').modal();
-		}
-		else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+		
+		resetForm();
+		$('.field-saldo').css('display', 'block');
+		$('.field-password').css('display', 'block');
+		$('.field-email').css('display', 'block');
+		$('.field-password_confirm').css('display', 'block');
+		$('.field-foto').css('display', 'block');
+		
+		generateID();
+		$('#submit_kas_kecil').prop('value', 'action-add');
+		$('#submit_kas_kecil').prop('disabled', false);
+		$('#submit_kas_kecil').html('Simpan Data');
+		
+		$('#modalKasKecil').modal();
+		
 	});
 
 	// submit kas kecil
@@ -97,7 +96,7 @@ function getDataForm(){
 		data.append('saldo',saldo); //saldo awal
 	 } 
 	 
-	data.append('token', $('#token_form').val().trim());
+
 	data.append('id', $('#id').val().trim()); // id kas kecil
 	data.append('nama', $('#nama').val().trim()); // nama kas kecil
 	data.append('alamat', $('#alamat').val().trim()); // alamat kas kecil
@@ -156,39 +155,38 @@ function submit(edit_view){
 /**
 *
 */
-function getEdit(id, token){
-	if(token != ""){
-		resetForm();
-		$('.field-saldo').css('display', 'none');
-		$('.field-password').css('display', 'none');
-		$('.field-email').css('display', 'none');
-		$('.field-password_confirm').css('display', 'none');
-		$('.field-foto').css('display', 'none');
-		$('#submit_kas_kecil').prop('value', 'action-edit');
-		$('#submit_kas_kecil').prop('disabled', false);
-		$('#submit_kas_kecil').html('Edit Data');
+function getEdit(id){
 
-		$.ajax({
-			url: BASE_URL+'kas-kecil/edit/'+id.toLowerCase(),
-			type: 'post',
-			dataType: 'json',
-			data: {"token_edit": token},
-			beforeSend: function(){
+	resetForm();
+	$('.field-saldo').css('display', 'none');
+	$('.field-password').css('display', 'none');
+	$('.field-email').css('display', 'none');
+	$('.field-password_confirm').css('display', 'none');
+	$('.field-foto').css('display', 'none');
+	$('#submit_kas_kecil').prop('value', 'action-edit');
+	$('#submit_kas_kecil').prop('disabled', false);
+	$('#submit_kas_kecil').html('Edit Data');
 
-			},
-			success: function(output){
-				if(output){
-					$('#modalKasKecil').modal();
-					$('#token_form').val(token);
-					setValue(output);
-				}	
-			},
-			error: function (jqXHR, textStatus, errorThrown){ // error handling
-	            console.log(jqXHR, textStatus, errorThrown);
-	        }
-		})
-	}
-	else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+	$.ajax({
+		url: BASE_URL+'kas-kecil/edit/'+id.toLowerCase(),
+		type: 'post',
+		dataType: 'json',
+		data: {},
+		beforeSend: function(){
+		},
+		success: function(output){
+			if(output){
+				$('#modalKasKecil').modal();
+				setValue(output);
+			}	
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+            console.log(jqXHR, textStatus, errorThrown);
+            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+        }
+	})
+	
+	
 }
 
 /**
@@ -262,7 +260,8 @@ function generateID(){
 	$.ajax({
 		url: BASE_URL+'kas-kecil/get-last-id/',
 		type: 'post',
-		data: {token: $('#token_form').val().trim()},
+		dataType: 'json',
+		data: {},
 		beforeSend: function(){},
 		success: function(output){
 			$('#id').val(output);	

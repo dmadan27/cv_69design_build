@@ -12,7 +12,6 @@
       </div>
       <form id="form_kas_kecil" role="form" enctype="multipart/form-data">
 
-        <input type="hidden" id="token_form">
         <!-- body modal -->
         <div class="modal-body">
           <div class="row">
