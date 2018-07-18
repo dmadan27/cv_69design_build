@@ -126,4 +126,16 @@
 		    return $file_ary;
 		}
 
+		/**
+		*
+		*/
+		public function rollback_file($file, $array = false){
+			if(!$array) unlink($file);
+			else{
+				foreach($file as $value){
+					unlink($value);
+				}
+			}
+		}
+
 	}
