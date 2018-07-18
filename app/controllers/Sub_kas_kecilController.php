@@ -6,7 +6,8 @@
 	*/
 	class Sub_kas_kecil extends Crud_modalsAbstract{
 
-		protected $token;
+		private $token;
+		private $status = false;
 
 		/**
 		*
@@ -52,210 +53,205 @@
 				'css' => $css,
 				'js' => $js,
 			);
-			
-			// set token
-			$_SESSION['token_skc'] = array(
-				'list' => md5($this->auth->getToken()),
-				'add' => md5($this->auth->getToken()),
-			);
 
-			$this->token = array(
-				'list' => password_hash($_SESSION['token_skc']['list'], PASSWORD_BCRYPT),
-				'add' => password_hash($_SESSION['token_skc']['add'], PASSWORD_BCRYPT),	
-			);
-
-			$data = array(
-				'token_list' => $this->token['list'],
-				'token_add' => $this->token['add'],
-			);
-
-			$this->layout('sub_kas_kecil/list', $config, $data);
+			$this->layout('sub_kas_kecil/list', $config, $data = null);
 		}
 
 		/**
 		*
 		*/
 		public function get_list(){
-			$token = isset($_POST['token_list']) ? $_POST['token_list'] : false;
-			
-			// cek token
-			$this->auth->cekToken($_SESSION['token_skc']['list'], $token, 'bank');
-			
-			// config datatable
-			$config_dataTable = array(
-				'tabel' => 'sub_kas_kecil',
-				'kolomOrder' => array(null, 'id', 'nama', 'no_telp', 'email', 'saldo', 'status', null),
-				'kolomCari' => array('id', 'nama', 'alamat', 'no_telp', 'email', 'saldo', 'status'),
-				'orderBy' => array('status' => 'asc', 'id' => 'asc'),
-				'kondisi' => false,
-			);
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				// config datatable
+				$config_dataTable = array(
+					'tabel' => 'sub_kas_kecil',
+					'kolomOrder' => array(null, 'id', 'nama', 'no_telp', 'email', 'saldo', 'status', null),
+					'kolomCari' => array('id', 'nama', 'alamat', 'no_telp', 'email', 'saldo', 'status'),
+					'orderBy' => array('status' => 'asc', 'id' => 'asc'),
+					'kondisi' => false,
+				);
 
-			$dataBank = $this->Sub_kas_kecilModel->getAllDataTable($config_dataTable);
+				$dataBank = $this->Sub_kas_kecilModel->getAllDataTable($config_dataTable);
 
-			// set token
-			$_SESSION['token_skc']['edit'] = md5($this->auth->getToken());
-			$_SESSION['token_skc']['delete'] = md5($this->auth->getToken());
-			
-			$this->token = array(
-				'edit' => password_hash($_SESSION['token_skc']['edit'], PASSWORD_BCRYPT),
-				'delete' => password_hash($_SESSION['token_skc']['delete'], PASSWORD_BCRYPT),	
-			);
+				$data = array();
+				$no_urut = $_POST['start'];
+				foreach($dataBank as $row){
+					$no_urut++;
 
-			$data = array();
-			$no_urut = $_POST['start'];
-			foreach($dataBank as $row){
-				$no_urut++;
+					$status = ($row['status'] == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-danger">'.$row['status'].'</span>';
 
-				$status = ($row['status'] == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-danger">'.$row['status'].'</span>';
+					// button aksi
+					$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+					$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+					$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+					
+					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
+					
+					$dataRow = array();
+					$dataRow[] = $no_urut;
+					$dataRow[] = $row['id'];
+					$dataRow[] = $row['nama'];
+					$dataRow[] = $row['no_telp'];
+					$dataRow[] = $row['email'];
+					$dataRow[] = $this->helper->cetakRupiah($row['saldo']);
+					$dataRow[] = $status;
+					$dataRow[] = $aksi;
 
-				// button aksi
-				$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-				$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".', '."'".$this->token["edit"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-				$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
-				
-				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
-				
-				$dataRow = array();
-				$dataRow[] = $no_urut;
-				$dataRow[] = $row['id'];
-				$dataRow[] = $row['nama'];
-				$dataRow[] = $row['no_telp'];
-				$dataRow[] = $row['email'];
-				$dataRow[] = $this->helper->cetakRupiah($row['saldo']);
-				$dataRow[] = $status;
-				$dataRow[] = $aksi;
+					$data[] = $dataRow;
+				}
 
-				$data[] = $dataRow;
+				$output = array(
+					'draw' => $_POST['draw'],
+					'recordsTotal' => $this->Sub_kas_kecilModel->recordTotal(),
+					'recordsFiltered' => $this->Sub_kas_kecilModel->recordFilter(),
+					'data' => $data,
+				);
+
+				echo json_encode($output);
 			}
-
-			$output = array(
-				'draw' => $_POST['draw'],
-				'recordsTotal' => $this->Sub_kas_kecilModel->recordTotal(),
-				'recordsFiltered' => $this->Sub_kas_kecilModel->recordFilter(),
-				'data' => $data,
-			);
-
-			echo json_encode($output);
+			else $this->redirect();
+				
 		}
 
 		/**
 		*
 		*/
 		public function action_add(){
-			$data = isset($_POST) ? $_POST : false;
-			$foto = isset($_FILES['foto']) ? $_FILES['foto'] : false;
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$data = isset($_POST) ? $_POST : false;
+				$foto = isset($_FILES['foto']) ? $_FILES['foto'] : false;
 
-			$this->auth->cekToken($_SESSION['token_skc']['add'], $data['token'], 'sub-kas-kecil');
+				$cekFoto = true;
+				$error = $notif = array();
 
-			$cekFoto = true;
-			$status = false;
-			$error = "";
-
-			if(!$data){
-				$notif = array(
-					'title' => "Pesan Gagal",
-					'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
-				);
-			}
-			else{
-				$validasi = $this->set_validation($data);
-				$cek = $validasi['cek'];
-				$error = $validasi['error'];
-
-				// cek password dan konf password
-				if($data['password'] != $data['konf_password']){
-					$cek = false;
-					$error['password'] = $error['konf_password'] = 'Password dan Konfirmasi Password Berbeda';
-				}
-
-				if($foto){
-					$configFoto = array(
-						'jenis' => 'gambar',
-						'error' => $foto['error'],
-						'size' => $foto['size'],
-						'name' => $foto['name'],
-						'tmp_name' => $foto['tmp_name'],
-						'max' => 2*1048576,
+				if(!$data){
+					$notif = array(
+						'type' => "error",
+						'title' => "Pesan Gagal",
+						'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
 					);
-					$validasiFoto = $this->validation->validFile($configFoto);
-					if(!$validasiFoto['cek']){
-						$cek = false;
-						$error['foto'] = $validasiFoto['error'];
-					}
-					else $valueFoto = md5($data['id']).$validasiFoto['namaFile'];
-				}
-				else $valueFoto = NULL;
-
-				if($cek){
-					// validasi inputan
-					$data = array(
-						'id' =>  $this->validation->validInput($data['id']),
-						'nama' =>  $this->validation->validInput($data['nama']),
-						'alamat' =>  $this->validation->validInput($data['alamat']),
-						'no_telp' =>  $this->validation->validInput($data['no_telp']),
-						'foto' =>  $this->validation->validInput($valueFoto, false),
-						'email' =>  $this->validation->validInput($data['email'], false),
-						'password' =>  password_hash($this->validation->validInput($data['password'], false), PASSWORD_BCRYPT),
-						'saldo' =>  $this->validation->validInput($data['saldo']),
-						'status' =>  $this->validation->validInput($data['status']),
-					);
-
-					if($foto){
-						$path = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$valueFoto;
-						if(!move_uploaded_file($foto['tmp_name'], $path)){
-							$error['foto'] = "Upload Foto Gagal";
-							$status = $cekFoto = false;
-						}
-					}
-
-					if($cekFoto){
-						// insert db
-
-						if($this->Sub_kas_kecilModel->insert($data)) {
-							$status = true;
-							$notif = array(
-								'title' => "Pesan Berhasil",
-								'message' => "Tambah Data Sub Kas Kecil Baru Berhasil",
-							);
-						}
-						else {
-							$notif = array(
-								'title' => "Pesan Gagal",
-								'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
-							);
-						}
-
-					}
 				}
 				else{
-					$notif = array(
-						'title' => "Pesan Pemberitahuan",
-						'message' => "Silahkan Cek Kembali Form Isian",
-					);
+					$validasi = $this->set_validation($data);
+					$cek = $validasi['cek'];
+					$error = $validasi['error'];
+
+					// cek password dan konf password
+					if($data['password'] != $data['konf_password']){
+						$cek = false;
+						$error['password'] = $error['konf_password'] = 'Password dan Konfirmasi Password Berbeda';
+					}
+
+					if($foto){
+						$configFoto = array(
+							'jenis' => 'gambar',
+							'error' => $foto['error'],
+							'size' => $foto['size'],
+							'name' => $foto['name'],
+							'tmp_name' => $foto['tmp_name'],
+							'max' => 2*1048576,
+						);
+						$validasiFoto = $this->validation->validFile($configFoto);
+						if(!$validasiFoto['cek']){
+							$cek = false;
+							$error['foto'] = $validasiFoto['error'];
+						}
+						else $valueFoto = md5($data['id']).$validasiFoto['namaFile'];
+					}
+					else $valueFoto = NULL;
+
+					if($cek){
+						// validasi inputan
+						$data = array(
+							'id' =>  $this->validation->validInput($data['id']),
+							'nama' =>  $this->validation->validInput($data['nama']),
+							'alamat' =>  $this->validation->validInput($data['alamat']),
+							'no_telp' =>  $this->validation->validInput($data['no_telp']),
+							'foto' =>  $this->validation->validInput($valueFoto, false),
+							'email' =>  $this->validation->validInput($data['email'], false),
+							'password' =>  password_hash($this->validation->validInput($data['password'], false), PASSWORD_BCRYPT),
+							'saldo' =>  $this->validation->validInput($data['saldo']),
+							'status' =>  $this->validation->validInput($data['status']),
+						);
+
+						if($foto){
+							$path = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$valueFoto;
+							if(!move_uploaded_file($foto['tmp_name'], $path)){
+								$error['foto'] = "Upload Foto Gagal";
+								$status = $cekFoto = false;
+							}
+						}
+
+						if($cekFoto){
+							// cek email
+							if($this->Sub_kas_kecilModel->checkExistEmail($data['email'])){
+								// insert db
+								if($this->Sub_kas_kecilModel->insert($data)) {
+									$this->status = true;
+									$notif = array(
+										'type' => 'success',
+										'title' => "Pesan Berhasil",
+										'message' => "Tambah Data Sub Kas Kecil Baru Berhasil",
+									);
+								}
+								else {
+									$notif = array(
+										'type' => 'error',
+										'title' => "Pesan Gagal",
+										'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+									);
+									$path = ROOT.DS.'assets'.DS.'images'.DS.'user'.$valueFoto;
+									$this->helper->rollback_file($path, false);
+
+								}
+							}
+							else{
+								$notif = array(
+									'type' => 'warning',
+									'title' => "Pesan Pemberitahuan",
+									'message' => "Silahkan Cek Kembali Form Isian",
+								);
+								$error['email'] = "Email telah digunakan sebelumnya";
+							}
+
+						}
+					}
+					else{
+						$notif = array(
+							'type' => 'warning',
+							'title' => "Pesan Pemberitahuan",
+							'message' => "Silahkan Cek Kembali Form Isian",
+						);
+					}
 				}
+
+				$output = array(
+					'status' => $this->status,
+					'notif' => $notif,
+					'error' => $error,
+					'data' => $data,
+					'foto' => $foto
+				);
+
+				echo json_encode($output);
 			}
-
-			$output = array(
-				'status' => $status,
-				'notif' => $notif,
-				'error' => $error,
-				'data' => $data,
-				'foto' => $foto
-			);
-
-			echo json_encode($output);
+			else $this->redirect();
+				
 		}
 
 		/**
 		*
 		*/
 		public function edit($id){
-			$id = strtoupper($id);
-			$token = isset($_POST['token_edit']) ? $_POST['token_edit'] : false;
-			$this->auth->cekToken($_SESSION['token_skc']['edit'], $token, 'bank');
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$id = strtoupper($id);
 
-			$data = !empty($this->Sub_kas_kecilModel->getById(strtoupper($id))) ? $this->Sub_kas_kecilModel->getById(strtoupper($id)) : false;
-			echo json_encode($data);
+				$data = !empty($this->Sub_kas_kecilModel->getById(strtoupper($id))) ? $this->Sub_kas_kecilModel->getById(strtoupper($id)) : false;
+				echo json_encode($data);
+			}
+			else $this->redirect();
+
+				
 		}
 
 		/**
@@ -263,7 +259,6 @@
 		*/
 		public function action_edit(){
 			$data = isset($_POST) ? $_POST : false;
-			$this->auth->cekToken($_SESSION['token_skc']['edit'], $data['token'], 'sub-kas-kecil');
 			
 			$status = false;
 			$error = "";
