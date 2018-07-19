@@ -2,7 +2,7 @@
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 
 	/**
-	* 
+	*
 	*/
 	class Sub_kas_kecilModel extends Database implements ModelInterface{
 
@@ -10,7 +10,7 @@
 		protected $dataTable;
 
 		/**
-		* 
+		*
 		*/
 		public function __construct(){
 			$this->koneksi = $this->openConnection();
@@ -20,7 +20,7 @@
 		// ======================= dataTable ======================= //
 
 			/**
-			* 
+			*
 			*/
 			public function getAllDataTable($config){
 				$this->dataTable->set_config($config);
@@ -32,7 +32,7 @@
 			}
 
 			/**
-			* 
+			*
 			*/
 			public function recordFilter(){
 				return $this->dataTable->recordFilter();
@@ -40,7 +40,7 @@
 			}
 
 			/**
-			* 
+			*
 			*/
 			public function recordTotal(){
 				return $this->dataTable->recordTotal();
@@ -49,7 +49,7 @@
 		// ========================================================= //
 
 		/**
-		* 
+		*
 		*/
 		public function getAll(){
 			$query = "SELECT * FROM sub_kas_kecil";
@@ -62,7 +62,7 @@
 		}
 
 		/**
-		* 
+		*
 		*/
 		public function getById($id){
 			$query = "SELECT * FROM sub_kas_kecil WHERE id = :id;";
@@ -86,27 +86,28 @@
 			$statement->execute();
 			$result = $statement->fetch(PDO::FETCH_ASSOC);
 
-			return $result;	
+			return $result;
 		}
 
 		/**
 		*
 		*/
 		public function getSisaSaldoById($id){
-			$query = "SELECT skk.saldo, (skk.saldo - SUM(pskk.total)) sisa_saldo FROM sub_kas_kecil skk ";
+			$query = "SELECT skk.saldo, (skk.saldo - SUM(dpskk.subtotal)) sisa_saldo FROM sub_kas_kecil skk  ";
 			$query .= "JOIN pengajuan_sub_kas_kecil pskk ON skk.id=pskk.id_sub_kas_kecil ";
-			$query .= "WHERE skk.id = :id AND pskk.status = ('DISETUJUI' OR 'LANGSUNG') AND pskk.status_laporan IS NULL GROUP BY skk.id";
+			$query .= "JOIN detail_pengajuan_sub_kas_kecil dpskk ON pskk.id=dpskk.id_pengajuan ";
+			$query .= "WHERE skk.id = :id AND (pskk.status ='DISETUJUI' OR pskk.status='LANGSUNG') AND pskk.status_laporan IS NULL GROUP BY skk.id";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id', $id);
 			$statement->execute();
 			$result = $statement->fetch(PDO::FETCH_ASSOC);
 
-			return $result;	
+			return $result;
 		}
 
 		/**
-		* 
+		*
 		*/
 		public function insert($data){
 			try{
@@ -122,7 +123,7 @@
 				$this->koneksi->rollback();
 				die($e->getMessage());
 				// return false;
-			}	
+			}
 		}
 
 		/**
@@ -151,7 +152,7 @@
 		}
 
 		/**
-		* 
+		*
 		*/
 		public function update($data){
 			$query = "UPDATE sub_kas_kecil SET nama = :nama, alamat = :alamat, no_telp = :no_telp, email = :email, status = :status WHERE id = :id;";
@@ -224,7 +225,7 @@
 		}
 
 		/**
-		* 
+		*
 		*/
 		public function delete($id){
 
@@ -244,7 +245,7 @@
 		}
 
 		/**
-		* 
+		*
 		*/
 		public function getUser($username){
 			$query = "SELECT * FROM sub_kas_kecil WHERE BINARY email = :username";
@@ -259,7 +260,7 @@
 
 
 		/* ============================== mobile ===================================== */
-		
+
 		public function updateProfil_mobile($id, $telepon, $alamat) {
 			$query = "UPDATE sub_kas_kecil SET alamat = :alamat, no_telp = :no_telp WHERE id = :id;";
 
@@ -269,9 +270,9 @@
 				$statement = $this->koneksi->prepare($query);
 				$statement->execute(
 					array(
-						':alamat' => $alamat, 
-						':no_telp' => $telepon, 
-						':id' => $id, 
+						':alamat' => $alamat,
+						':no_telp' => $telepon,
+						':id' => $id,
 					)
 				);
 				$statement->closeCursor();
@@ -285,7 +286,7 @@
 		}
 
 		/**
-		* 
+		*
 		*/
 		public function __destruct(){
 			$this->closeConnection($this->koneksi);
