@@ -210,7 +210,7 @@ CREATE TABLE IF NOT EXISTS pengajuan_sub_kas_kecil(
 	id_sub_kas_kecil varchar(10), -- fk sub kecil
 	id_proyek varchar(50), -- fk proyek
 	tgl date, -- tgl dan jam
-	-- nama varchar(50),
+	nama varchar(50),
 	total double(12,2), -- total pengajuan
 	dana_disetujui double(12,2), -- dana yg disetujui, default 0 atau sama dengan total
 	status enum('DISETUJUI', 'PERBAIKI', 'DITOLAK', 'PENDING', 'LANGSUNG'), -- status pengajuan, default 'pending'

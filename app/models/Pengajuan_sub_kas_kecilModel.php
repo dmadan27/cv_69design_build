@@ -310,14 +310,15 @@
 			*
 			*/
 			private function insert_pengajuan($data) {
-				$query = "INSERT INTO pengajuan_sub_kas_kecil (id, id_sub_kas_kecil, id_proyek, tgl, total, dana_disetujui, status, status_laporan) VALUES ";
-				$query .= "(:id, :id_sub_kas_kecil, :id_proyek, :tgl, :total, :dana_disetujui, :status, :status_laporan);";
+				$query = "INSERT INTO pengajuan_sub_kas_kecil (id, id_sub_kas_kecil, id_proyek, tgl, nama, total, dana_disetujui, status, status_laporan) VALUES ";
+				$query .= "(:id, :id_sub_kas_kecil, :id_proyek, :tgl, :nama, :total, :dana_disetujui, :status, :status_laporan);";
 				$statment = $this->koneksi->prepare($query);
 				$statment->execute(
 					array(
 						':id' => $data->id,
 						':id_sub_kas_kecil' => $data->id_sub_kas_kecil,
 						':id_proyek' => $data->id_proyek,
+						':nama' => $data->nama,
 						':tgl' => date('Y-m-d'),
 						':total' => $data->total,
 						':dana_disetujui' => null,
