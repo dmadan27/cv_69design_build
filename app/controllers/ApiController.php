@@ -138,6 +138,34 @@
 		}
 
 		/**
+		* BELUM FIX (selalu hasil true walau data tidak ada)
+		*/
+		public function delete_pengajuan() {
+			$this->model('Pengajuan_sub_kas_kecilModel');
+
+			$output["status"] = $this->status;
+			$output["status_aksi"] = $this->status_aksi;
+			$output["error"] = "";
+
+			$id_pengajuan = ($_POST['id_pengajuan'] != null) ? $_POST['id_pengajuan'] : false;
+			$id_sub_kas_kecil = ($_POST['id'] != null) ? $_POST['id'] : false;
+
+			if ($output["status"] && ($id_pengajuan != false) && ($id_sub_kas_kecil != false)) {
+
+				$result = $this->Pengajuan_sub_kas_kecilModel->deletePengajuan($id_pengajuan, $id_sub_kas_kecil);
+
+				if ($result === true) {
+					$output["status_aksi"] = true;
+				} else {
+					$output["status_aksi"] = false;
+					$output["error"] = $result;
+				}
+			}
+
+			echo json_encode($output, JSON_PRETTY_PRINT);
+		}
+
+		/**
 		*
 		*/
 		public function laporan() {

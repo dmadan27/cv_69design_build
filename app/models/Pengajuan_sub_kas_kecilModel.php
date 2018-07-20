@@ -440,6 +440,45 @@
 				$statement->closeCursor();
 			}
 
+			/**
+			*
+			*/
+			public function deletePengajuan($id_pengajuan, $id_sub_kas_kecil) {
+
+				try {
+					$this->koneksi->beginTransaction();
+
+					// hapus detail pengajuan
+					$query = "DELETE dpskk FROM detail_pengajuan_sub_kas_kecil dpskk JOIN pengajuan_sub_kas_kecil pskk ON dpskk.id_pengajuan=pskk.id ";
+					$query .= "WHERE dpskk.id_pengajuan=:id_pengajuan AND pskk.id_sub_kas_kecil=:id_sub_kas_kecil AND pskk.status='PENDING'";
+					$statement = $this->koneksi->prepare($query);
+					$statement->execute(array(
+							":id_pengajuan" => $id_pengajuan,
+							":id_sub_kas_kecil" => $id_sub_kas_kecil
+						)
+					);
+					$statement->closeCursor();
+
+					// hapus pengajuan
+					$query = "DELETE FROM pengajuan_sub_kas_kecil WHERE id=:id_pengajuan AND id_sub_kas_kecil=:id_sub_kas_kecil AND status='PENDING'";
+					$statement = $this->koneksi->prepare($query);
+					$statement->execute(array(
+							":id_pengajuan" => $id_pengajuan,
+							":id_sub_kas_kecil" => $id_sub_kas_kecil
+						)
+					);
+					$statement->closeCursor();
+
+					$this->koneksi->commit();
+
+					return true;
+				} catch (Exception $e) {
+					$this->koneksi->rollback();
+					return $e->getMessage();
+				}
+
+			}
+
 		// ========================================================= //
 
 		/**
