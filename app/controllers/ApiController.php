@@ -171,23 +171,25 @@
 		public function laporan() {
 			$this->model('Laporan_pengajuan_sub_kas_kecilModel');
 
-			$output = array();
+			$input["id_sub_kas_kecil"] = isset($_POST["id"]) ? $_POST["id"] : false;
+			$input["cari"] = isset($_POST["cari"]) ? $_POST["cari"] : null;
+			$input["page"] = ($_POST["page"] != null) ? $this->validation->validInput($_POST["page"]) : 1;
+
 			$output['status'] = $this->status;
 
 			if ($this->status) {
-				$page = (isset($_POST['page']) && !empty($_POST['page'])) ? $this->validation->validInput($_POST['page']) : 1;
 
-				$dataLaporan = $this->Laporan_pengajuan_sub_kas_kecilModel->getAll_mobile($page);
-				$totalData = $this->Laporan_pengajuan_sub_kas_kecilModel->get_recordTotal_mobile();
+				$dataLaporan = $this->Laporan_pengajuan_sub_kas_kecilModel->getAllByIdSubKasKecil_mobile($input);
+				$totalData = $this->Laporan_pengajuan_sub_kas_kecilModel->getRecordFilter_mobile();
 				$totalPage = ceil($totalData/10);
 
-				$next = ($page < $totalPage) ? ($page + 1) : null;
+				$next = ($input["page"] < $totalPage) ? ($input["page"] + 1) : null;
 
 				$output['list_laporan'] = $dataLaporan;
 				$output['next'] = $next;
 			}
 
-			echo json_encode($output);
+			echo json_encode($output, JSON_PRETTY_PRINT);
 		}
 
 		/**

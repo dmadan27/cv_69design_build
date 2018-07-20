@@ -11,6 +11,8 @@
 		protected $kolomCari_mobile = array('id', 'id_proyek', 'tgl', 'total', 'dana_disetujui', 'status');
 		public $queryMobile;
 
+		private $queryBeforeLimitMobile;
+
 		/**
 		*
 		*/
@@ -72,50 +74,59 @@
 
 		// ======================== mobile ========================= //
 
-		public function setQuery_mobile($page) {
-			$id = isset($_POST['id']) ? $_POST['id'] : false;
-			$cari = isset($_POST['cari']) ? $_POST['cari'] : null;
+		private function querySelectBuilder_mobile($queryKondisi, $kolomCari, $cari=null, $page=1) {
 			$mulai = ($page > 1) ? ($page * 10) - 10 : 0;
 
-			$this->queryMobile = 'SELECT * FROM pengajuan_sub_kas_kecil ';
+			$query = "SELECT * FROM pengajuan_sub_kas_kecil ";
 
-			$qWhere = 'WHERE id_sub_kas_kecil = "'.$id.'" AND (status = "LANGSUNG" OR status = "DISETUJUI")';
 			$i = 0;
-			foreach($this->kolomCari_mobile as $value){
-				if(!is_null($cari)){
-					if($i === 0) $qWhere .= ' AND ('.$value.' LIKE "%'.$cari.'%" ';
-					else $qWhere .= 'OR '.$value.' LIKE "%'.$cari.'%"';
+			foreach($kolomCari as $value){
+				if($cari != null){
+					if($i === 0)
+						$queryKondisi .= ' AND ('.$value.' LIKE "%'.$cari.'%" ';
+					else
+						$queryKondisi .= 'OR '.$value.' LIKE "%'.$cari.'%"';
 				}
 				$i++;
 			}
-			if(!is_null($cari)) $qWhere .= " )";
 
-			$this->queryMobile .= "$qWhere ORDER BY id DESC LIMIT $mulai, 10";
+			if($cari != null)
+				$queryKondisi .= " )";
+
+			$query .= "$queryKondisi ";
+			$this->queryBeforeLimitMobile = $query;
+			$query .= "LIMIT $mulai, 10";
+			return $query;
 		}
 
 
 		/**
 		*
 		*/
-		public function getAll_mobile($page){
-			$this->setQuery_mobile($page);
+		public function getAllByIdSubKasKecil_mobile($data){
+			$id = $data["id_sub_kas_kecil"];
+			$cari = $data["cari"];
+			$page = $data["page"];
 
-			$statement = $this->koneksi->prepare($this->queryMobile);
+			$queryKondisi = "WHERE id_sub_kas_kecil='".$id."' AND (status='DISETUJUI' OR status='LANGSUNG')";
+			$kolomCari = array("id","nama","id_proyek","tgl","status_laporan");
+
+			$query = $this->querySelectBuilder_mobile($queryKondisi, $kolomCari, $cari, $page);
+
+			$statement = $this->koneksi->prepare($query);
 			$statement->execute();
-			$result = $statement->fetchAll();
-
-			return $result;
+			return $statement->fetchAll(PDO::FETCH_ASSOC);
 		}
 
 		/**
 		*
 		*/
-		public function get_recordTotal_mobile(){
+		public function getRecordFilter_mobile(){
 			$koneksi = $this->openConnection();
+			$statement = $koneksi->prepare($this->queryBeforeLimitMobile);
+			$statement->execute();
 
-			$statement = $koneksi->query("SELECT COUNT(*) FROM pengajuan_sub_kas_kecil")->fetchColumn();
-
-			return $statement;
+			return $statement->rowCount();
 		}
 
 		/**

@@ -198,7 +198,7 @@
 				$query = "SELECT * FROM pengajuan_sub_kas_kecil ";
 
 				$i = 0;
-				foreach($this->kolomCari_mobile as $value){
+				foreach($kolomCari as $value){
 					if($cari != null){
 						if($i === 0)
 							$queryKondisi .= ' AND ('.$value.' LIKE "%'.$cari.'%" ';
@@ -226,7 +226,7 @@
 				$page = $data["page"];
 
 				$queryKondisi = "WHERE id_sub_kas_kecil='".$id."' AND (status='PENDING' OR status='PERBAIKI')";
-				$kolomCari = array("id","id_proyek","tgl","status");
+				$kolomCari = array("id","id_proyek","nama","tgl","status");
 				$query = $this->querySelectBuilder_mobile($queryKondisi, $kolomCari, $cari, $page);
 
 				$statement = $this->koneksi->prepare($query);
