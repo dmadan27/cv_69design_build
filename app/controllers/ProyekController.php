@@ -2,7 +2,7 @@
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 
 	/**
-	* 
+	* Class Proyek extend ke Abstract Crud
 	*/
 	class Proyek extends CrudAbstract{
 		
@@ -10,7 +10,7 @@
 		private $status = false;
 
 		/**
-		* 
+		* Default load saat pertama kali controller di akses
 		*/
 		public function __construct(){
 			$this->auth();
@@ -21,14 +21,16 @@
 		}
 
 		/**
-		* 
+		* Method pertama kali yang di akses
 		*/
 		public function index(){
 			$this->list();
 		}
 
 		/**
-		* 
+		* Method List
+		* Menampilkan list semua data proyek
+		* Passing data css dan js yang dibutuhkan di list proyek
 		*/
 		protected function list(){
 			$css = array('assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css');
@@ -51,7 +53,9 @@
 		}
 
 		/**
-		* 
+		* Method get list
+		* Get data semua list proyek yang akan di passing ke dataTable
+		* Request berupa POST dan output berupa JSON
 		*/
 		public function get_list(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
@@ -117,7 +121,9 @@
 		}
 
 		/**
-		* 
+		* Method Form
+		* Menampilkan form tambah atau edit
+		* Parameter id sebagai pembeda form tambah dengan form edit
 		*/
 		public function form($id){
 			if($id)	$this->edit(strtoupper($id));
@@ -125,7 +131,9 @@
 		}
 
 		/**
-		* 
+		* Method add
+		* Menampilkan form tambah
+		* Set value field secara default
 		*/
 		protected function add(){
 			$css = array(
@@ -171,7 +179,9 @@
 		}
 
 		/**
-		* 
+		* Method action add
+		* Get data dari client yang akan diolah dan disimpan ke db
+		* Request berupa POST dan output berupa JSON
 		*/
 		public function action_add(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
@@ -294,15 +304,18 @@
 		}
 
 		/**
-		* 
+		* Method edit
+		* Menampilkan form edit yang fieldnya sudah terisi sesuai dengan id
+		* Parameter id => id proyek
 		*/
 		protected function edit($id){
-			if(empty($id) || $id == "") $this->redirect(BASE_URL."proyek/");
-
+			$id = strtoupper($id);
 			// get data proyek
 			$dataProyek = !empty($this->ProyekModel->getById($id)) ? $this->ProyekModel->getById($id) : false;
 
-			if(!$dataProyek) $this->redirect(BASE_URL."proyek/");
+			if((empty($id) || $id == "") || !$dataProyek) $this->redirect(BASE_URL."proyek/");
+
+			// if(!$dataProyek) $this->redirect(BASE_URL."proyek/");
 
 			$css = array(
   				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
@@ -347,7 +360,10 @@
 		}
 
 		/**
-		*
+		* Method get edit
+		* Get data detail proyek dan detail skk
+		* Request berupa POST dan output berupa JSON
+		* Parameter id => id proyek
 		*/
 		public function get_edit($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
@@ -369,6 +385,9 @@
 		}
 
 		/**
+		* Method action edit
+		* Get data dari client yang akan diolah dan disimpan ke db
+		* Request berupa POST dan output berupa JSON
 		* 
 		*/
 		public function action_edit(){
@@ -489,19 +508,18 @@
 				echo json_encode($output);
 			}
 			else $this->redirect();
-				
 		}
 
 		/**
-		*
+		* Method detail
+		* Menampilkan detail data proyek sesuai dengan id proyek yang dipilih
+		* Paramtere id => id proyek
 		*/
 		public function detail($id){
 			$id = strtoupper($id);
-			if(empty($id) || $id == "") $this->redirect(BASE_URL."proyek/");
-
 			$dataProyek = !empty($this->ProyekModel->getById($id)) ? $this->ProyekModel->getById($id) : false;
-			
-			if(!$dataProyek) $this->redirect(BASE_URL."proyek/");
+
+			if((empty($id) || $id == "") || !$dataProyek) $this->redirect(BASE_URL."proyek/");
 
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css'
@@ -597,7 +615,11 @@
 		}
 
 		/**
-		*
+		* Method get list pengajuan
+		* Get data semua list pengajuan sub kas kecil sesuai dengan proyek yang dipilih
+		* Data akan dipassing ke dataTable
+		* Request berupa POST dan output berupa JSON
+		* Parameter proyek => id proyek
 		*/
 		public function get_list_pengajuan($proyek){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
@@ -649,7 +671,11 @@
 		}
 
 		/**
-		*
+		* Method get list operasional
+		* Get data semua list operasional proyek kas besar sesuai dengan proyek yang dipilih
+		* Data akan dipassing ke dataTable
+		* Request berupa POST dan output berupa JSON
+		* Parameter proyek => id proyek
 		*/
 		public function get_list_operasional($proyek){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
@@ -701,23 +727,29 @@
 		}
 
 		/**
-		*
+		* Method delete
+		* Menghapus data proyek dari db
+		* Request berupa POST dan output berupa JSON
+		* Parameter id => id proyek
 		*/
 		public function delete($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST" && $id != ''){
+				$id = strtoupper($id);
+				if(empty($id) || $id == "") $this->redirect(BASE_URL."proyek/");
+
 				if($this->ProyekModel->delete($id)) $this->status = true;
 
 				echo json_encode($this->status);
 			}
-			else $this->redirect();
-			
+			else $this->redirect();	
 		}
 
 		/**
-		*
+		* Method get last id
+		* Get id proyek terbaru
+		* Request berupa POST dan output berupa JSON
 		*/
 		public function get_last_id(){
-
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$tahun = isset($_POST['get_tahun']) ? $this->validation->validInput($_POST['get_tahun']) : false;
 
@@ -736,14 +768,14 @@
 				echo json_encode($id);				
 			}
 			else $this->redirect();	
-	
 		}
 
 		/**
-		*
+		* Method get skk
+		* Get list data skk yang aktif
+		* Request berupa POST dan output berupa JSON
 		*/
 		public function get_skk(){
-
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$this->model('Sub_kas_kecilModel');
 
@@ -759,17 +791,14 @@
 				}
 
 				echo json_encode($data);
-
 			}
 			else $this->redirect();
-	
 		}
 
 		/**
 		*
 		*/
 		public function export(){
-
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 
 			}
@@ -777,10 +806,9 @@
 		}
 
 		/**
-		*
+		* Method action add detail
 		*/
 		public function action_add_detail(){
-			
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
 				$error = array();

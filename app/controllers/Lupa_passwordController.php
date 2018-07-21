@@ -229,7 +229,7 @@
 			$error = '';
 
 			$username = 'ramadan@lordraze.com';
-			$password = 'VixyBlack27';
+			$password = 'VixyBlack27'; 
 			$cc = 'rarasta27@gmail.com';
 			$nama_pengirim = 'ADMIN 69 DESIGN BUILD';
 			$subjek = 'Reset Password';

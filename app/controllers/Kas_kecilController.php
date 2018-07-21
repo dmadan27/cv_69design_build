@@ -1,112 +1,117 @@
 <?php
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	
+	/**
+	*
+	*/
 	class Kas_kecil extends Crud_modalsAbstract{
 
-	private $token;
-	private $status = false;
+		private $token;
+		private $status = false;
 
-	public function __construct(){
-		$this->auth();
-		$this->auth->cekAuth();
-		$this->model('Kas_kecilModel');
-		$this->helper();	
-		$this->validation();
-	}	
-
-
-	public function index(){
-		$this->list();
-		}
-
-
-	protected function list(){
-		$css = array(
-			'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
-			'assets/bower_components/dropify/dist/css/dropify.min.css'
-
-		);
-
-		$js = array(
-			'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
-			'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
-			'assets/bower_components/dropify/dist/js/dropify.min.js',
-			'assets/plugins/input-mask/jquery.inputmask.bundle.js',
-			'app/views/kas_kecil/js/initList.js',
-			'app/views/kas_kecil/js/initForm.js',
-				
-		);
-
-		$config = array(
-			'title' => array(
-				'main' => 'Data Kas Kecil',
-				'sub' => 'List Semua Data Kas Kecil',
-			),
-			'css' => $css,
-			'js' => $js,
-		);
-
-		$this->layout('kas_kecil/list', $config, $data = null);
-	}	
-
-
-	public function get_list(){
-		if($_SERVER['REQUEST_METHOD'] == "POST"){
-			// config datatable
-			$config_dataTable = array(
-				'tabel' => 'kas_kecil',
-				'kolomOrder' => array(null, 'id', 'nama', 'alamat', 'no_telp',  'saldo', 'status',null),
-				'kolomCari' => array('id','nama', 'alamat', 'no_telp',  'saldo', 'status'),
-				'orderBy' => array('id' => 'asc'),
-				'kondisi' => false,
-			);
-
-			$datakaskecil = $this->Kas_kecilModel->getAllDataTable($config_dataTable);
-
-			
-
-			$data = array();
-			$no_urut = $_POST['start'];
-			foreach($datakaskecil as $row){
-				$no_urut++;
-
-				$status = (strtolower($row['status']) == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-primary">'.$row['status'].'</span>';
-
-				//button aksi
-				$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-				$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-				$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
-				
-				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
-				
-				$dataRow = array();
-				$dataRow[] = $no_urut;
-				$dataRow[] = $row['id'];
-				$dataRow[] = $row['nama'];
-				$dataRow[] = $row['alamat'];
-				$dataRow[] = $row['no_telp'];
-				$dataRow[] = $row['saldo'];
-				$dataRow[] = $row['status'];
-				
-				$dataRow[] = $aksi;
-				$data[] = $dataRow;
-			}
-
-			$output = array(
-				'draw' => $_POST['draw'],
-				'recordsTotal' => $this->Kas_kecilModel->recordTotal(),
-				'recordsFiltered' => $this->Kas_kecilModel->recordFilter(),
-				'data' => $data,
-			);
-
-			echo json_encode($output);
-
-		}
-		else{
-			$this->redirect();
+		/**
+		*
+		*/
+		public function __construct(){
+			$this->auth();
+			$this->auth->cekAuth();
+			$this->model('Kas_kecilModel');
+			$this->helper();	
+			$this->validation();
 		}	
-	}
 
-		
+		/**
+		*
+		*/
+		public function index(){
+			$this->list();
+		}
+
+		/**
+		*
+		*/
+		protected function list(){
+			$css = array(
+				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+				'assets/bower_components/dropify/dist/css/dropify.min.css'
+
+			);
+			$js = array(
+				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
+				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/bower_components/dropify/dist/js/dropify.min.js',
+				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
+				'app/views/kas_kecil/js/initList.js',
+				'app/views/kas_kecil/js/initForm.js',
+					
+			);
+
+			$config = array(
+				'title' => array(
+					'main' => 'Data Kas Kecil',
+					'sub' => 'List Semua Data Kas Kecil',
+				),
+				'css' => $css,
+				'js' => $js,
+			);
+
+			$this->layout('kas_kecil/list', $config, $data = null);
+		}	
+
+		/**
+		*
+		*/
+		public function get_list(){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				// config datatable
+				$config_dataTable = array(
+					'tabel' => 'kas_kecil',
+					'kolomOrder' => array(null, 'id', 'nama', 'alamat', 'no_telp',  'saldo', 'status',null),
+					'kolomCari' => array('id','nama', 'alamat', 'no_telp',  'saldo', 'status'),
+					'orderBy' => array('id' => 'asc'),
+					'kondisi' => false,
+				);
+
+				$datakaskecil = $this->Kas_kecilModel->getAllDataTable($config_dataTable);
+
+				$data = array();
+				$no_urut = $_POST['start'];
+				foreach($datakaskecil as $row){
+					$no_urut++;
+
+					$status = (strtolower($row['status']) == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-primary">'.$row['status'].'</span>';
+
+					//button aksi
+					$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+					$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+					$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+					
+					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
+					
+					$dataRow = array();
+					$dataRow[] = $no_urut;
+					$dataRow[] = $row['id'];
+					$dataRow[] = $row['nama'];
+					$dataRow[] = $row['alamat'];
+					$dataRow[] = $row['no_telp'];
+					$dataRow[] = $row['saldo'];
+					$dataRow[] = $row['status'];
+					
+					$dataRow[] = $aksi;
+					$data[] = $dataRow;
+				}
+
+				$output = array(
+					'draw' => $_POST['draw'],
+					'recordsTotal' => $this->Kas_kecilModel->recordTotal(),
+					'recordsFiltered' => $this->Kas_kecilModel->recordFilter(),
+					'data' => $data,
+				);
+
+				echo json_encode($output);
+			}
+			else $this->redirect();
+		}
 
 		/**
 		* 
@@ -117,7 +122,7 @@
 				$foto = isset($_FILES['foto']) ? $_FILES['foto'] : false;
 
 				$cekFoto = true;
-				$error = "";
+				$error = $notif = array();
 
 				if(!$data){
 					$notif = array(
@@ -131,7 +136,13 @@
 					$cek = $validasi['cek'];
 					$error = $validasi['error'];
 
+					// cek password dan konf password
+					if($data['password'] != $data['konf_password']){
+						$cek = false;
+						$error['password'] = $error['konf_password'] = 'Password dan Konfirmasi Password Berbeda';
+					}
 
+					// jika upload foto
 					if($foto){
 						$configFoto = array(
 							'jenis' => 'gambar',
@@ -146,7 +157,7 @@
 							$cek = false;
 							$error['foto'] = $validasiFoto['error'];
 						}
-						else $valueFoto = $validasiFoto['namaFile'];
+						else $valueFoto = md5($data['id']).$validasiFoto['namaFile'];
 					}
 					else $valueFoto = NULL;
 
@@ -162,22 +173,23 @@
 							'saldo' => $this->validation->validInput($data['saldo']),
 							'status' => $this->validation->validInput($data['status']),
 							'password' =>  password_hash($this->validation->validInput($data['password'], false), PASSWORD_BCRYPT),
-								
 						);
 
+						// jika upload foto
 						if($foto){
-							$path = ROOT.DS.'assets'.DS.'images'.DS.$valueFoto;
+							$path = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$valueFoto;
 							if(!move_uploaded_file($foto['tmp_name'], $path)){
 								$error['foto'] = "Upload Foto Gagal";
-								$status = $cekFoto = false;
+								$this->status = $cekFoto = false;
 							}
 						}
 
 						if($cekFoto){
-
+							// cek email
 							if($this->Kas_kecilModel->checkExistEmail($data['email'])){
+								// insert data
 								if($this->Kas_kecilModel->insert($data)) {
-									$status = true;
+									$this->status = true;
 									$notif = array(
 										'type' => "success",
 										'title' => "Pesan Berhasil",
@@ -190,6 +202,8 @@
 										'title' => "Pesan Gagal",
 										'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 									);
+									$path = ROOT.DS.'assets'.DS.'images'.DS.'user'.$valueFoto;
+									$this->helper->rollback_file($path, false);
 								}
 							}
 							else {
@@ -213,6 +227,7 @@
 
 				$output = array(
 					'status' => $this->status,
+					'status_foto' => $cekFoto,
 					'notif' => $notif,
 					'error' => $error,
 					'data' => $data,
@@ -222,11 +237,7 @@
 				echo json_encode($output);
 
 			}
-			else{
-				$this->redirect();
-			}
-				
-	
+			else $this->redirect();
 		}
 
 		/**
@@ -236,15 +247,15 @@
 		* return berupa json
 		*/
 		public function edit($id){
-			$id = strtoupper($id);
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$id = strtoupper($id);
 				$data = !empty($this->Kas_kecilModel->getById($id)) ? $this->Kas_kecilModel->getById($id) : false;
+
+				if((empty($id) || $id == "") || !$data) $this->redirect(BASE_URL."kas-kecil/");
+
 				echo json_encode($data);
 			}
-			else{
-				$this->redirect();
-			}
-				
+			else $this->redirect();
 		}
 
 		/**
@@ -253,8 +264,7 @@
 		public function action_edit(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
-				$status = false;
-				$error =$notif = array();
+				$error = $notif = array();
 
 				if(!$data){
 					$notif = array(
@@ -281,11 +291,8 @@
 						);
 
 						// update db
-
-						// transact
-
 						if($this->Kas_kecilModel->update($data)) {
-							$status = true;
+							$this->status = true;
 							$notif = array(
 								'type' => "success",
 								'title' => "Pesan Berhasil",
@@ -299,8 +306,6 @@
 								'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 							);
 						}
-
-						// commit
 					}
 					else {
 						$notif = array(
@@ -320,13 +325,23 @@
 
 				echo json_encode($output);
 			}
-			else{
-				$this->redirect();
-			}
-				
+			else $this->redirect();
+		}
+
+		/**
+		*
+		*/
+		public function update_foto($id){
 
 		}
 
+		/**
+		*
+		*/
+		public function hapus_foto($id){
+			
+		}
+		
 		/**
 		* Function detail
 		* method untuk get data detail dan setting layouting detail
@@ -334,11 +349,9 @@
 		*/
 		public function detail($id){
 			$id = strtoupper($id);
-			if(empty($id) || $id == "") $this->redirect(BASE_URL."kas-kecil/");
-
 			$data_detail = !empty($this->Kas_kecilModel->getById($id)) ? $this->Kas_kecilModel->getById($id) : false;
 
-			if(!$data_detail) $this->redirect(BASE_URL."kas-kecil/");
+			if((empty($id) || $id == "") || !$data_detail) $this->redirect(BASE_URL."kas-kecil/");
 
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
@@ -349,7 +362,6 @@
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 				'assets/bower_components/dropify/dist/js/dropify.min.js',
 				'app/views/kas_kecil/js/initView.js',
-				// 'app/views/kas_kecil/js/initForm.js',
 			);
 
 			$config = array(
@@ -362,17 +374,8 @@
 			);
 
 			$status = ($data_detail['status'] == "AKTIF") ? '<span class="label label-success">'.$data_detail['status'].'</span>' : '<span class="label label-danger">'.$data_detail['status'].'</span>';
-			
-			// $_SESSION['token_kas_kecil']['view'] = md5($this->auth->getToken());
-			// $_SESSION['token_kas_kecil']['edit'] = md5($this->auth->getToken());
-			// $_SESSION['token_kas_kecil']['delete'] = md5($this->auth->getToken());
-			
-			// $this->token = array(
-			// 	'view' => password_hash($_SESSION['token_kas_kecil']['view'], PASSWORD_BCRYPT),
-			// 	'edit' => password_hash($_SESSION['token_kas_kecil']['edit'], PASSWORD_BCRYPT),
-			// 	'delete' => password_hash($_SESSION['token_kas_kecil']['delete'], PASSWORD_BCRYPT)
-			// );
 
+			// validasi foto
 			if(!empty($data_detail['foto'])){
 				// cek foto di storage
 				$filename = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$data_detail['foto'];
@@ -392,7 +395,6 @@
 				'foto' => $foto,
 				'saldo' => $data_detail['saldo'],
 				'status' => $status,
-				// 'token' => $this->token,
 			);
 
 			$this->layout('kas_kecil/view', $config, $data);
@@ -403,11 +405,10 @@
 		*/
 		public function delete($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
-				if(empty($id) || $id == "") $this->redirect(BASE_URL."kas-kecil/");
 				$id = strtoupper($id);
+				if(empty($id) || $id == "") $this->redirect(BASE_URL."kas-kecil/");
 
-				if($this->Kas_kecilModel->delete($id)) $status = true;
-				else $status = false;
+				if($this->Kas_kecilModel->delete($id)) $this->status = true;
 
 				echo json_encode($status);
 			}
@@ -423,7 +424,6 @@
 
 				if(!$data) $id = 'KK001';
 				else{
-					// $data = implode('', $data);
 					$kode = 'KK';
 					$noUrut = (int)substr($data, 2, 3);
 					$noUrut++;
@@ -433,17 +433,17 @@
 
 				echo json_encode($id);			
 			}
-			else{
-				$this->redirect();
-			}
-				
+			else $this->redirect();
 		}
 
 		/**
 		*
 		*/
 		public function export(){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
 
+			}
+			else $this->redirect();
 		}
 
 		/**
@@ -452,91 +452,87 @@
 		* dipakai di detail data
 		*/
 		public function get_mutasi($id){
-			// $data = isset($_POST) ? $_POST : false;
-			// cek token
-			// $this->auth->cekToken($_SESSION['token_kas_kecil']['view'], $data['token_view'], 'kas-kecil');
-			$id = strtoupper($id);
-			$this->model('Mutasi_saldo_kas_kecilModel');
-			
-			// config datatable
-			$config_dataTable = array(
-				'tabel' => 'mutasi_saldo_kas_kecil',
-				'kolomOrder' => array(null, 'tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
-				'kolomCari' => array('tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
-				'orderBy' => array('id' => 'desc'),
-				'kondisi' => 'WHERE id_kas_kecil = "'.$id.'"',
-				// 'kondisi' => false,
-			);
-
-			$dataMutasi = $this->Mutasi_saldo_kas_kecilModel->getAllDataTable($config_dataTable);
-			// var_dump($dataMutasi);
-			$data = array();
-			$no_urut = $_POST['start'];
-			foreach($dataMutasi as $row){
-				$no_urut++;
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$this->model('Mutasi_saldo_kas_kecilModel');
 				
-				$dataRow = array();
-				$dataRow[] = $no_urut;
-				$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
-				$dataRow[] = $this->helper->cetakRupiah($row['uang_masuk']);
-				$dataRow[] = $this->helper->cetakRupiah($row['uang_keluar']);
-				$dataRow[] = $this->helper->cetakRupiah($row['saldo']);
-				$dataRow[] = $row['ket'];
+				// config datatable
+				$config_dataTable = array(
+					'tabel' => 'mutasi_saldo_kas_kecil',
+					'kolomOrder' => array(null, 'tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
+					'kolomCari' => array('tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
+					'orderBy' => array('id' => 'desc'),
+					'kondisi' => 'WHERE id_kas_kecil = "'.$id.'"',
+				);
 
-				$data[] = $dataRow;
+				$dataMutasi = $this->Mutasi_saldo_kas_kecilModel->getAllDataTable($config_dataTable);
+
+				$data = array();
+				$no_urut = $_POST['start'];
+				foreach($dataMutasi as $row){
+					$no_urut++;
+					
+					$dataRow = array();
+					$dataRow[] = $no_urut;
+					$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
+					$dataRow[] = $this->helper->cetakRupiah($row['uang_masuk']);
+					$dataRow[] = $this->helper->cetakRupiah($row['uang_keluar']);
+					$dataRow[] = $this->helper->cetakRupiah($row['saldo']);
+					$dataRow[] = $row['ket'];
+
+					$data[] = $dataRow;
+				}
+
+				$output = array(
+					'draw' => $_POST['draw'],
+					'recordsTotal' => $this->Mutasi_saldo_kas_kecilModel->recordTotal(),
+					'recordsFiltered' => $this->Mutasi_saldo_kas_kecilModel->recordFilter(),
+					'data' => $data,
+				);
+
+				echo json_encode($output);
 			}
-
-			$output = array(
-				'draw' => $_POST['draw'],
-				'recordsTotal' => $this->Mutasi_saldo_kas_kecilModel->recordTotal(),
-				'recordsFiltered' => $this->Mutasi_saldo_kas_kecilModel->recordFilter(),
-				'data' => $data,
-			);
-
-			echo json_encode($output);
+			else $this->redirect();
 		}
 
 		public function get_history_pengajuan($id){
-			$id = strtoupper($id);
-			$this->model('Pengajuan_kasKecilModel');
-			
-			// config datatable
-			$config_dataTable = array(
-				'tabel' => 'pengajuan_kas_kecil',
-				'kolomOrder' => array(null, 'tgl', 'nama', 'total', 'status'),
-				'kolomCari' => array('tgl', 'nama', 'total', 'status'),
-				'orderBy' => array('id' => 'desc'),
-				'kondisi' => 'WHERE id_kas_kecil = "'.$id.'"',
-				// 'kondisi' => false,
-			);
-
-			$dataMutasi = $this->Pengajuan_kasKecilModel->getAllDataTable($config_dataTable);
-			// var_dump($dataMutasi);
-			$data = array();
-			$no_urut = $_POST['start'];
-			foreach($dataMutasi as $row){
-				$no_urut++;
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$this->model('Pengajuan_kasKecilModel');
 				
-				$dataRow = array();
-				$dataRow[] = $no_urut;
-				$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
-				$dataRow[] = $row['nama'];
-				$dataRow[] = $this->helper->cetakRupiah($row['total']);
-				$dataRow[] = $row['status'];
+				// config datatable
+				$config_dataTable = array(
+					'tabel' => 'pengajuan_kas_kecil',
+					'kolomOrder' => array(null, 'tgl', 'nama', 'total', 'status'),
+					'kolomCari' => array('tgl', 'nama', 'total', 'status'),
+					'orderBy' => array('id' => 'desc'),
+					'kondisi' => 'WHERE id_kas_kecil = "'.$id.'"',
+				);
 
-				$data[] = $dataRow;
+				$dataMutasi = $this->Pengajuan_kasKecilModel->getAllDataTable($config_dataTable);
+				$data = array();
+				$no_urut = $_POST['start'];
+				foreach($dataMutasi as $row){
+					$no_urut++;
+					
+					$dataRow = array();
+					$dataRow[] = $no_urut;
+					$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
+					$dataRow[] = $row['nama'];
+					$dataRow[] = $this->helper->cetakRupiah($row['total']);
+					$dataRow[] = $row['status'];
+
+					$data[] = $dataRow;
+				}
+
+				$output = array(
+					'draw' => $_POST['draw'],
+					'recordsTotal' => $this->Pengajuan_kasKecilModel->recordTotal(),
+					'recordsFiltered' => $this->Pengajuan_kasKecilModel->recordFilter(),
+					'data' => $data,
+				);
+
+				echo json_encode($output);
 			}
-
-			$output = array(
-				'draw' => $_POST['draw'],
-				'recordsTotal' => $this->Pengajuan_kasKecilModel->recordTotal(),
-				'recordsFiltered' => $this->Pengajuan_kasKecilModel->recordFilter(),
-				'data' => $data,
-			);
-
-			echo json_encode($output);
-
-
+			else $this->redirect();
 		}
 
 		private function set_validation($data){

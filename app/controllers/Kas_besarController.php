@@ -39,6 +39,7 @@
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 				'assets/bower_components/dropify/dist/js/dropify.min.js',
+				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
 				'app/views/kas_besar/js/initList.js',
 				'app/views/kas_besar/js/initForm.js',
 			);
@@ -137,6 +138,7 @@
 						$error['password'] = $error['konf_password'] = 'Password dan Konfirmasi Password Berbeda';
 					}
 					
+					// jika upload foto
 					if($foto){
 						$configFoto = array(
 							'jenis' => 'gambar',
@@ -156,7 +158,6 @@
 					else $valueFoto = NULL;
 
 					if($cek){
-						// validasi inputan
 						$data = array(
 							'id' => $this->validation->validInput($data['id']),
 							'nama' => $this->validation->validInput($data['nama']),
@@ -169,6 +170,7 @@
 								
 						);
 
+						// jika upload foto
 						if($foto){
 							$path = ROOT.DS.'assets'.DS.'images'.DS.'user'.$valueFoto;
 							if(!move_uploaded_file($foto['tmp_name'], $path)){
@@ -178,8 +180,9 @@
 						}
 
 						if($cekFoto){
-
+							// cek email
 							if($this->Kas_besarModel->checkExistEmail($data['email'])){
+								// insert data
 								if($this->Kas_besarModel->insert($data)) {
 									$this->status = true;
 									$notif = array(
@@ -219,6 +222,7 @@
 
 				$output = array(
 					'status' => $this->status,
+					'status_foto' => $cekFoto,
 					'notif' => $notif,
 					'error' => $error,
 					'data' => $data,
@@ -228,7 +232,6 @@
 				echo json_encode($output);
 			}
 			else $this->redirect();
-				
 		}
 
 		/**
@@ -239,16 +242,14 @@
 		*/
 		public function edit($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
-				if(empty($id) || $id == "") $this->redirect(BASE_URL."kas-besar/");
-
 				$id = strtoupper($id);
-
 				$data = !empty($this->Kas_besarModel->getById($id)) ? $this->Kas_besarModel->getById($id) : false;
+
+				if((empty($id) || $id == "") || !$data) $this->redirect(BASE_URL."kas-besar/");
 				
 				echo json_encode($data);
 			}
 			else $this->redirect();
-				
 		}
 
 		/**
@@ -260,68 +261,86 @@
 		* error => error apa saja yang ada dari hasil validasi
 		*/
 		public function action_edit(){
-			$data = isset($_POST) ? $_POST : false;
-			
-			$error = $notif = array();
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$data = isset($_POST) ? $_POST : false;
+				
+				$error = $notif = array();
 
-			if(!$data){
-				$notif = array(
-					'type' => "error",
-					'title' => "Pesan Gagal",
-					'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
-				);
-			}
-			else{
-				// validasi data
-				$validasi = $this->set_validation($data);
-				$cek = $validasi['cek'];
-				$error = $validasi['error'];
-
-				if($cek){
-					// validasi inputan
-					$data = array(
-						'id' =>  $this->validation->validInput($data['id']),
-						'nama' =>  $this->validation->validInput($data['nama']),
-						'alamat' =>  $this->validation->validInput($data['alamat']),
-						'no_telp' =>  $this->validation->validInput($data['no_telp']),
-						'email' =>  $this->validation->validInput($data['email'], false),
-						'status' =>  $this->validation->validInput($data['status']),
+				if(!$data){
+					$notif = array(
+						'type' => "error",
+						'title' => "Pesan Gagal",
+						'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
 					);
+				}
+				else{
+					// validasi data
+					$validasi = $this->set_validation($data);
+					$cek = $validasi['cek'];
+					$error = $validasi['error'];
 
-					// update db
-					if($this->Kas_besarModel->update($data)) {
-						$this->status = true;
-						$notif = array(
-							'type' => "success",
-							'title' => "Pesan Berhasil",
-							'message' => "Edit Data Kas Besar Berhasil",
+					if($cek){
+						// validasi inputan
+						$data = array(
+							'id' =>  $this->validation->validInput($data['id']),
+							'nama' =>  $this->validation->validInput($data['nama']),
+							'alamat' =>  $this->validation->validInput($data['alamat']),
+							'no_telp' =>  $this->validation->validInput($data['no_telp']),
+							'email' =>  $this->validation->validInput($data['email'], false),
+							'status' =>  $this->validation->validInput($data['status']),
 						);
+
+						// update db
+						if($this->Kas_besarModel->update($data)) {
+							$this->status = true;
+							$notif = array(
+								'type' => "success",
+								'title' => "Pesan Berhasil",
+								'message' => "Edit Data Kas Besar Berhasil",
+							);
+						}
+						else {
+							$notif = array(
+								'type' => "error",
+								'title' => "Pesan Gagal",
+								'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+							);
+						}
 					}
 					else {
 						$notif = array(
-							'type' => "error",
-							'title' => "Pesan Gagal",
-							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+							'type' => "warning",
+							'title' => "Pesan Pemberitahuan",
+							'message' => "Silahkan Cek Kembali Form Isian",
 						);
 					}
 				}
-				else {
-					$notif = array(
-						'type' => "warning",
-						'title' => "Pesan Pemberitahuan",
-						'message' => "Silahkan Cek Kembali Form Isian",
-					);
-				}
+
+				$output = array(
+					'status' => $this->status,
+					'notif' => $notif,
+					'error' => $error,
+					'data' => $data
+				);
+
+				echo json_encode($output);
 			}
+			else $this->redirect();
+				
+		}
 
-			$output = array(
-				'status' => $this->status,
-				'notif' => $notif,
-				'error' => $error,
-				'data' => $data
-			);
+		/**
+		*
+		*/
+		public function update_foto($id){
 
-			echo json_encode($output);
+		}
+
+		/**
+		*
+		*/
+		public function hapus_foto($id){
+			
 		}
 
 		/**
@@ -331,7 +350,6 @@
 		*/
 		public function detail($id){
 			$id = strtoupper($id);
-
 			$data_detail = !empty($this->Kas_besarModel->getById($id)) ? $this->Kas_besarModel->getById($id) : false;
 
 			if(!$data_detail || (empty($id) || $id == "")) $this->redirect(BASE_URL."kas-besar/");
@@ -393,16 +411,14 @@
 		*/
 		public function delete($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
-				if(empty($id) || $id == "") $this->redirect(BASE_URL."bank/");
-
 				$id = strtoupper($id);
+				if(empty($id) || $id == "") $this->redirect(BASE_URL."bank/");
 				
 				if($this->Kas_besarModel->delete($id)) $this->status = true;
 
 				echo json_encode($this->status);
 			}
 			else $this->redirect();
-				
 		}
 
 		/**
@@ -436,7 +452,7 @@
 			else $this->redirect();
 		}
 
-			/**
+		/**
 		* Fungsi set_validation
 		* method yang berfungsi untuk validasi inputan secara server side
 		* param $data didapat dari post yang dilakukan oleh user

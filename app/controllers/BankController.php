@@ -2,17 +2,15 @@
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 
 	/**
-	*
+	* Class Bank extend ke Abstract Crud Modals
 	*/
 	class Bank extends Crud_modalsAbstract{
 
 		private $token;
-		private $status;
+		private $status = false;
 
 		/**
-		* load auth, cekAuth
-		* load default model, BankModel
-		* load helper dan validation
+		* Default load saat pertama kali controller diakses
 		*/
 		public function __construct(){
 			$this->auth();
@@ -23,17 +21,16 @@
 		}	
 
 		/**
-		* Function index
-		* menjalankan method list
+		* Method pertama kali yang diakses
 		*/
 		public function index(){
 			$this->list();
 		}
 
 		/**
-		* Function list
-		* setting layouting list utama
-		* generate token list dan add
+		* Method List
+		* Menampilkan list semua data proyek
+		* Passing data css dan js yang dibutuhkan di list proyek
 		*/
 		protected function list(){
 			// set config untuk layouting
@@ -61,10 +58,9 @@
 		}	
 
 		/**
-		* Function get_list
-		* method khusus untuk datatable
-		* generate token edit dan delete
-		* return json
+		* Method get list
+		* Get data semua list bank yang akan di passing ke dataTable
+		* Request berupa POST dan output berupa JSON
 		*/
 		public function get_list(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
@@ -111,10 +107,8 @@
 				);
 
 				echo json_encode($output);
-
 			}
-			else $this->redirect();
-							
+			else $this->redirect();				
 		}
 
 		/**
@@ -152,6 +146,7 @@
 							'status' => $this->validation->validInput($data['status']),
 						);
 
+						// insert bank
 						if($this->BankModel->insert($data)) {
 							$this->status = true;
 							$notif = array(
@@ -178,7 +173,7 @@
 				}
 
 				$output = array(
-					'status' => $status,
+					'status' => $this->status,
 					'notif' => $notif,
 					'error' => $error,
 					// 'data' => $data
@@ -187,7 +182,6 @@
 				echo json_encode($output);	
 			}
 			else $this->redirect();
-			
 		}
 
 		/**
@@ -197,9 +191,8 @@
 		* return berupa json
 		*/
 		public function edit($id){
-			$id = strtoupper($id);
-
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$id = strtoupper($id);
 				$data = !empty($this->BankModel->getById($id)) ? $this->BankModel->getById($id) : false;
 
 				echo json_encode($data);
@@ -220,7 +213,6 @@
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
 				
-				$status = false;
 				$error = $notif = array();
 
 				if(!$data){
@@ -244,10 +236,7 @@
 							'status' => $this->validation->validInput($data['status'])
 						);
 
-						// update db
-
-						// transact
-
+						// update bank
 						if($this->BankModel->update($data)) {
 							$status = true;
 							$notif = array(
@@ -263,8 +252,6 @@
 								'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 							);
 						}
-
-						// commit
 					}
 					else {
 						$notif = array(
@@ -276,7 +263,7 @@
 				}
 
 				$output = array(
-					'status' => $status,
+					'status' => $this->status,
 					'notif' => $notif,
 					'error' => $error,
 					// 'data' => $data
@@ -285,7 +272,6 @@
 				echo json_encode($output);
 			}
 			else $this->redirect();
-				
 		}
 
 		/**
@@ -295,11 +281,9 @@
 		*/
 		public function detail($id){
 			$id = strtoupper($id);
-			if(empty($id) || $id == "") $this->redirect(BASE_URL."bank/");
-
 			$data_detail = !empty($this->BankModel->getById($id)) ? $this->BankModel->getById($id) : false;
 
-			if(!$data_detail) $this->redirect(BASE_URL."bank/");
+			if((empty($id) || $id == "") || !$data_detail) $this->redirect(BASE_URL."bank/");
 
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
@@ -343,17 +327,14 @@
 		*/
 		public function delete($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
-				if(empty($id) || $id == "") $this->redirect(BASE_URL."bank/");
-				
 				$id = strtoupper($id);
+				if(empty($id) || $id == "") $this->redirect(BASE_URL."bank/");
 
-				if($this->BankModel->delete($id)) $status = true;
-				else $status = false;
+				if($this->BankModel->delete($id)) $this->status = true;
 
-				echo json_encode($status);
+				echo json_encode($this->status);
 			}
-			else $this->redirect();
-				
+			else $this->redirect();	
 		}
 
 		/**
@@ -400,17 +381,18 @@
 				);
 
 				echo json_encode($output);
-
 			}
 			else $this->redirect();
-				
 		}
 
 		/**
 		*
 		*/
 		public function export(){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
 
+			}
+			else $this->redirect();
 		}
 
 		/**
