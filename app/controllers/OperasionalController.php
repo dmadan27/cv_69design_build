@@ -6,7 +6,8 @@
 	*/
 	class Operasional extends Crud_modalsAbstract{
 
-		protected $token;
+		private $token;
+		private $status = false;
 
 		/**
 		* load auth, cekAuth
@@ -61,23 +62,7 @@
 				'js' => $js,
 			);
 			
-			// set token
-			$_SESSION['token_operasional'] = array(
-				'list' => md5($this->auth->getToken()),
-				'add' => md5($this->auth->getToken()),
-			);
-
-			$this->token = array(
-				'list' => password_hash($_SESSION['token_operasional']['list'], PASSWORD_BCRYPT),
-				'add' => password_hash($_SESSION['token_operasional']['add'], PASSWORD_BCRYPT),	
-			);
-
-			$data = array(
-				'token_list' => $this->token['list'],
-				'token_add' => $this->token['add'],
-			);
-
-			$this->layout('operasional/list', $config, $data);
+			$this->layout('operasional/list', $config, $data = NULL);
 		}	
 
 		/**
@@ -87,12 +72,7 @@
 		* return json
 		*/
 		public function get_list(){
-			$token = isset($_POST['token_list']) ? $_POST['token_list'] : false;
-			
-			// // cek token
-			$this->auth->cekToken($_SESSION['token_operasional']['list'], $token, 'operasional');
-			
-			// // config datatable
+			// config datatable
 			$config_dataTable = array(
 				'tabel' => 'v_operasional',
 				'kolomOrder' => array(null, 'id', 'nama_bank', 'tgl', 'nama', 'nominal', null),
@@ -103,15 +83,6 @@
 
 			$dataOperasional = $this->OperasionalModel->getAllDataTable($config_dataTable);
 
-			// // set token
-			$_SESSION['token_operasional']['edit'] = md5($this->auth->getToken());
-			$_SESSION['token_operasional']['delete'] = md5($this->auth->getToken());
-			
-			$this->token = array(
-				'edit' => password_hash($_SESSION['token_operasional']['edit'], PASSWORD_BCRYPT),
-				'delete' => password_hash($_SESSION['token_operasional']['delete'], PASSWORD_BCRYPT),	
-			);
-
 			$data = array();
 			$no_urut = $_POST['start'];
 			foreach($dataOperasional as $row){
@@ -119,8 +90,8 @@
 
 				// button aksi
 				$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-				$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".', '."'".$this->token["edit"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-				$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+				$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+				$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 				
 				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
 				
@@ -157,13 +128,12 @@
 		*/
 		public function action_add(){
 			$data = isset($_POST) ? $_POST : false;
-			$this->auth->cekToken($_SESSION['token_operasional']['add'], $data['token'], 'operasional');
 			
-			$status = false;
-			$error = "";
+			$error = $notif = array();
 
 			if(!$data){
 				$notif = array(
+					'type' => "error",
 					'title' => "Pesan Gagal",
 					'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
 				);
@@ -193,15 +163,18 @@
 						'ket' => $this->validation->validInput($data['ket'])
 					);
 
+					// insert
 					if($this->OperasionalModel->insert($data)) {
-						$status = true;
+						$this->status = true;
 						$notif = array(
+							'type' => "success",
 							'title' => "Pesan Berhasil",
 							'message' => "Tambah Data Operasional Baru Berhasil",
 						);
 					}
 					else {
 						$notif = array(
+							'type' => "error",
 							'title' => "Pesan Gagal",
 							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 						);
@@ -209,6 +182,7 @@
 				}
 				else {
 					$notif = array(
+						'type' => "warning",
 						'title' => "Pesan Pemberitahuan",
 						'message' => "Silahkan Cek Kembali Form Isian",
 					);
@@ -233,10 +207,8 @@
 		*/
 		public function edit($id){
 			$id = strtoupper($id);
-			$token = isset($_POST['token_edit']) ? $_POST['token_edit'] : false;
-			$this->auth->cekToken($_SESSION['token_operasional']['edit'], $token, 'operasional');
-
 			$data = !empty($this->OperasionalModel->getById($id)) ? $this->OperasionalModel->getById($id) : false;
+			
 			echo json_encode($data);
 		}
 
@@ -250,13 +222,12 @@
 		// */
 		public function action_edit(){
 			$data = isset($_POST) ? $_POST : false;
-			$this->auth->cekToken($_SESSION['token_operasional']['edit'], $data['token'], 'operasional');
-			
-			$status = false;
-			$error = "";
+
+			$error = $notif = array();
 
 			if(!$data){
 				$notif = array(
+					'type' => "error",
 					'title' => "Pesan Gagal",
 					'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
 				);
@@ -287,14 +258,16 @@
 					// transact
 
 					if($this->OperasionalModel->update($data)) {
-						$status = true;
+						$this->status = true;
 						$notif = array(
+							'type' => "success",
 							'title' => "Pesan Berhasil",
 							'message' => "Edit Data Operasional Berhasil",
 						);
 					}
 					else {
 						$notif = array(
+							'type' => "error",
 							'title' => "Pesan Gagal",
 							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 						);
@@ -304,13 +277,12 @@
 				}
 				else {
 					$notif = array(
+						'type' => "warning",
 						'title' => "Pesan Pemberitahuan",
 						'message' => "Silahkan Cek Kembali Form Isian",
 					);
 				}
-				
-				
-
+			
 			}
 
 			$output = array(
@@ -355,18 +327,6 @@
 				'js' => $js,
 			);
 
-			// $status = ($data_detail['status'] == "AKTIF") ? '<span class="label label-success">'.$data_detail['status'].'</span>' : '<span class="label label-danger">'.$data_detail['status'].'</span>';
-			
-			$_SESSION['token_operasional']['view'] = md5($this->auth->getToken());
-			$_SESSION['token_operasional']['edit'] = md5($this->auth->getToken());
-			$_SESSION['token_operasional']['delete'] = md5($this->auth->getToken());
-			
-			$this->token = array(
-				'view' => password_hash($_SESSION['token_operasional']['view'], PASSWORD_BCRYPT),
-				'edit' => password_hash($_SESSION['token_operasional']['edit'], PASSWORD_BCRYPT),
-				'delete' => password_hash($_SESSION['token_operasional']['delete'], PASSWORD_BCRYPT)
-			);
-
 			$data = array(
 				'id' => $data_detail['id'],
 				'id_bank' => $data_detail['id_bank'],
@@ -375,14 +335,9 @@
 				'nama' => $data_detail['nama'],
 				'nominal' => $this->helper->cetakRupiah($data_detail['nominal']),
 				'ket' => $data_detail['ket'],
-				'token' => $this->token,
 			);
 
-			// echo "<pre>";
-			// print_r($this->token);
-			// echo "</pre>";
 			$this->layout('operasional/view', $config, $data);
-			
 		}
 
 		/**
@@ -393,23 +348,19 @@
 		*/
 		public function delete($id){
 			$id = strtoupper($id);
-			$token = isset($_POST['token_delete']) ? $_POST['token_delete'] : false;
-			$this->auth->cekToken($_SESSION['token_operasional']['delete'], $token, 'operasional');
 			
 			$getNamaOperasional = $this->OperasionalModel->getById($id)['nama'];
 			$ket = 'Data Operasional Bank '.$getNamaOperasional. 'telah Dihapus';
 
-			$data= array(
+			$data = array(
 				'id' => $id,
 				'tgl' => date('Y-m-d'),
-				'ket' => $ket,
-					
+				'ket' => $ket,	
 			);
 
-			if($this->OperasionalModel->delete($data)) $status = true;
-			else $status = false;
+			if($this->OperasionalModel->delete($data)) $this->status = true;
 
-			echo json_encode($status);
+			echo json_encode($this->status);
 		}
 
 		/**
@@ -426,6 +377,26 @@
 		*/
 		public function export(){
 
+		}
+
+		/**
+		*
+		*/
+		public function get_bank(){
+			$this->model('BankModel');
+
+			$data_bank = $this->BankModel->getAll();
+			$data = array();
+
+			foreach($data_bank as $row){
+				$dataRow = array();
+				$dataRow['id'] = $row['id'];
+				$dataRow['text'] = $row['nama'].' - '.$this->helper->cetakRupiah($row['saldo']);
+
+				$data[] = $dataRow;
+			}
+
+			echo json_encode($data);
 		}
 
 		/**
@@ -449,25 +420,4 @@
 
 			return $this->validation->run();
 		}
-
-		/**
-		*
-		*/
-		public function get_bank(){
-			$this->model('BankModel');
-
-			$data_bank = $this->BankModel->getAll();
-			$data = array();
-
-			foreach($data_bank as $row){
-				$dataRow = array();
-				$dataRow['id'] = $row['id'];
-				$dataRow['text'] = $row['nama'].' - '.$this->helper->cetakRupiah($row['saldo']);
-
-				$data[] = $dataRow;
-			}
-
-			echo json_encode($data);
-		}
-
 	}

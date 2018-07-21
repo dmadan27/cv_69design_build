@@ -6,7 +6,8 @@
 	*/
 	class Profil extends Controller{
 
-		protected $status = false;
+		private $token;
+		private $status = false;
 
 		/**
 		*
@@ -136,6 +137,7 @@
 
 			if(!$data){
 				$notif = array(
+					'type' => "error",
 					'title' => "Pesan Gagal",
 					'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
 				);
@@ -154,6 +156,7 @@
 						'no_telp' => $this->validation->validInput($data['no_telp']),
 					);
 
+					// update profil
 					if($model->updateProfil($data)){
 						$this->status = true;
 						
@@ -162,12 +165,14 @@
 						$_SESSION['sess_telp'] = $data['no_telp'];
 
 						$notif = array(
+							'type' => "success",
 							'title' => "Pesan Berhasil",
 							'message' => "Edit Data Profil Berhasil",
 						);
 					}
 					else{
 						$notif = array(
+							'type' => "error",
 							'title' => "Pesan Gagal",
 							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 						);
@@ -175,6 +180,7 @@
 				}
 				else{
 					$notif = array(
+						'type' => "warning",
 						'title' => "Pesan Pemberitahuan",
 						'message' => "Silahkan Cek Kembali Form Isian",
 					);
@@ -245,6 +251,7 @@
 					$cek = false;
 					$error['foto'] = $validasiFoto['error'];
 					$notif = array(
+						'type' => "warning",
 						'title' => "Pesan Pemberitahuan",
 						'message' => "Silahkan Cek Kembali Form Isian",
 					);
@@ -257,6 +264,7 @@
 			else{
 				$error['foto'] = 'Anda Belum Memilih Foto';
 				$notif = array(
+					'type' => "warning",
 					'title' => "Pesan Pemberitahuan",
 					'message' => "Silahkan Cek Kembali Form Isian",
 				);
@@ -275,7 +283,7 @@
 				if($status_upload){
 					// update db
 					if($model->updateFoto(array('id' => $id, 'foto' => $fotoBaru))) $status_hapus = true;
-					else unlink($path);
+					else $this->helper->rollback_file($path);
 				}
 
 				if($status_hapus){
@@ -283,6 +291,7 @@
 
 					$this->status = true;
 					$notif = array(
+						'type' => "success",
 						'title' => "Pesan Berhasil",
 						'message' => "Foto Profil Anda Berhasil Diganti",
 					);
@@ -395,7 +404,7 @@
 				$password_baru = isset($_POST['password_baru']) ? $this->validation->validInput($_POST['password_baru'], false) : false;
 				$password_konf = isset($_POST['password_konf']) ? $this->validation->validInput($_POST['password_konf'], false) : false;
 
-				$error = $notif = '';
+				$error = $notif = array();
 
 				$validasi = $this->set_validation_ganti_password(
 					$data = array(
@@ -426,12 +435,14 @@
 						if($this->UserModel->updatePassword($data)){
 							$this->status = true;
 							$notif = array(
+								'type' => "success",
 								'title' => "Pesan Berhasil",
 								'message' => "Password Anda Berhasil di Ganti",
 							);
 						}
 						else{
 							$notif = array(
+								'type' => "error",
 								'title' => "Pesan Gagal",
 								'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 							);
@@ -439,6 +450,7 @@
 					}
 					else{
 						$notif = array(
+							'type' => "warning",
 							'title' => "Pesan Pemberitahuan",
 							'message' => "Silahkan Cek Kembali Form Isian",
 						);
@@ -448,6 +460,7 @@
 				else{
 					$error['password_lama'] = 'Password Lama Anda Salah';
 					$notif = array(
+						'type' => "warning",
 						'title' => "Pesan Pemberitahuan",
 						'message' => "Silahkan Cek Kembali Form Isian",
 					);

@@ -6,7 +6,8 @@
 	*/
 	class Pengajuan_sub_kas_kecil extends CrudAbstract{
 
-		protected $token;
+		private $token;
+		private $status = false;
 
 		/**
 		* 
@@ -49,34 +50,14 @@
 				'css' => $css,
 				'js' => $js,
 			);
-
-			// set token
-			$_SESSION['token_pengajuan_skc'] = array(
-				'list' => md5($this->auth->getToken()),
-				// 'add' => md5($this->auth->getToken()),
-			);
-
-			$this->token = array(
-				'list' => password_hash($_SESSION['token_pengajuan_skc']['list'], PASSWORD_BCRYPT),
-				// 'add' => password_hash($_SESSION['token_pengajuan_skc']['add'], PASSWORD_BCRYPT),	
-			);
-
-			$data = array(
-				'token_list' => $this->token['list'],
-				// 'token_add' => $this->token['add'],
-			);
 			
-			$this->layout('pengajuan_sub_kas_kecil/list', $config, $data);
+			$this->layout('pengajuan_sub_kas_kecil/list', $config, $data = NULL);
 		}	
 
 		/**
 		* 
 		*/
 		public function get_list(){
-			// cek token
-			$token = isset($_POST['token_list']) ? $_POST['token_list'] : false;
-			$this->auth->cekToken($_SESSION['token_pengajuan_skc']['list'], $token, 'pengajuan-sub-kas-kecil');
-
 			// config datatable
 			$config_dataTable = array(
 				'tabel' => 'pengajuan_sub_kas_kecil',
@@ -88,26 +69,15 @@
 
 			$dataPengajuan = $this->Pengajuan_sub_kas_kecilModel->getAllDataTable($config_dataTable);
 
-			// set token
-			$_SESSION['token_pengajuan_skc']['view'] = md5($this->auth->getToken());
-			$_SESSION['token_pengajuan_skc']['edit_status'] = md5($this->auth->getToken());
-			$_SESSION['token_pengajuan_skc']['delete'] = md5($this->auth->getToken());
-			
-			$this->token = array(
-				'view' => password_hash($_SESSION['token_pengajuan_skc']['view'], PASSWORD_BCRYPT),
-				'edit_status' => password_hash($_SESSION['token_pengajuan_skc']['edit_status'], PASSWORD_BCRYPT),
-				'delete' => password_hash($_SESSION['token_pengajuan_skc']['delete'], PASSWORD_BCRYPT),	
-			);
-
 			$data = array();
 			$no_urut = $_POST['start'];
 			foreach($dataPengajuan as $row){
 				$no_urut++;
 
 				// button aksi
-				$aksiDetail = '<button onclick="getView('."'".strtolower($row["id"])."'".', '."'".$this->token["view"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-				$aksiEdit = '<button onclick="getEditStatus('."'".strtolower($row["id"])."'".', '."'".$this->token["edit_status"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Status Pengajuan"><i class="fa fa-pencil"></i></button>';
-				$aksiHapus = '<button onclick="getDelete('."'".strtolower($row["id"])."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+				$aksiDetail = '<button onclick="getView('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+				$aksiEdit = '<button onclick="getEditStatus('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Status Pengajuan"><i class="fa fa-pencil"></i></button>';
+				$aksiHapus = '<button onclick="getDelete('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
 
 				if(strtolower($row['status']) == "disetujui") {
@@ -218,13 +188,12 @@
 		*/
 		public function action_edit_status(){
 			$data = isset($_POST) ? $_POST : false;
-			$this->auth->cekToken($_SESSION['token_pengajuan_skc']['edit_status'], $data['token'], 'pengajuan-sub-kas-kecil');
 
-			$status = false;
-			$error = "";
+			$error = $notif = array();
 
 			if(!$data){
 				$notif = array(
+					'type' => "error",
 					'title' => "Pesan Gagal",
 					'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
 				);
@@ -238,8 +207,7 @@
 				if($cek){
 					// status disetujui
 					if($data['status'] == 'DISETUJUI'){
-						$ket_kas_kecil = '';
-						$ket_sub_kas_kecil = '';
+						$ket_kas_kecil = $ket_sub_kas_kecil = '';
 
 						$data = array(
 							'id' => $this->validation->validInput($data['id']),
@@ -260,17 +228,18 @@
 							$error['dana_disetujui'] = "Dana yang Disetujui terlalu besar dan melebihi saldo";
 						}
 						else{
-
 							// update status
 							if($this->Pengajuan_sub_kas_kecilModel->acc_pengajuan($data)){
-								$status = true;
+								$this->status = true;
 								$notif = array(
+									'type' => "success",
 									'title' => "Pesan Berhasil",
 									'message' => "Edit Status Pengajuan Sub Kas Kecil Berhasil",
 								);
 							}
 							else{
 								$notif = array(
+									'type' => "error",
 									'title' => "Pesan Gagal",
 									'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 								);
@@ -286,14 +255,16 @@
 
 						// update status
 						if($this->Pengajuan_sub_kas_kecilModel->update_status($data)){
-							$status = true;
+							$this->status = true;
 							$notif = array(
+								'type' => "success",
 								'title' => "Pesan Berhasil",
 								'message' => "Edit Status Pengajuan Sub Kas Kecil Berhasil",
 							);
 						}
 						else{
 							$notif = array(
+								'type' => "error",
 								'title' => "Pesan Gagal",
 								'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 							);
@@ -302,6 +273,7 @@
 				}
 				else{
 					$notif = array(
+						'type' => 'warning',
 						'title' => "Pesan Pemberitahuan",
 						'message' => "Silahkan Cek Kembali Form Isian",
 					);
@@ -361,9 +333,7 @@
 				'data' => $data_notif,
 				'view_all' => BASE_URL.'pengajuan-sub-kas-kecil/',
 			);
-
-			// echo "<pre>";
-			// echo json_encode(print_r($output));
+			
 			echo json_encode($output);
 		}
 

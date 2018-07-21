@@ -202,7 +202,6 @@
 									);
 									$path = ROOT.DS.'assets'.DS.'images'.DS.'user'.$valueFoto;
 									$this->helper->rollback_file($path, false);
-
 								}
 							}
 							else{

@@ -1,25 +1,37 @@
 <?php
-Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 
-class Operasional_proyek extends CrudAbstract{
+	/**
+	*
+	*/
+	class Operasional_proyek extends CrudAbstract{
 
-	protected $token;
-	private $status = false;
+		private $token;
+		private $status = false;
 
-	public function __construct(){
+		/**
+		*
+		*/
+		public function __construct(){
 			$this->auth();
 			$this->auth->cekAuth();
 			$this->model('Operasional_ProyekModel');
 			$this->helper();
 			$this->validation();
-	}
+		}
 
-	public function index(){
-		$this->list();
-	}
+		/**
+		*
+		*/
+		public function index(){
+			$this->list();
+		}
 
-	protected function list(){
-		// set config untuk layouting
+		/**
+		*
+		*/
+		protected function list(){
+			// set config untuk layouting
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
 			);
@@ -39,32 +51,14 @@ class Operasional_proyek extends CrudAbstract{
 				'css' => $css,
 				'js' => $js,
 			);
-			
-			// set token
-			$_SESSION['token_operasional_proyek'] = array(
-				'list' => md5($this->auth->getToken()),
-				'add' => md5($this->auth->getToken()),
-			);
 
-			$this->token = array(
-				'list' => password_hash($_SESSION['token_operasional_proyek']['list'], PASSWORD_BCRYPT),
-				'add' => password_hash($_SESSION['token_operasional_proyek']['add'], PASSWORD_BCRYPT),	
-			);
+			$this->layout('operasional_proyek/list', $config, $data = NULL);
+		}
 
-			$data = array(
-				'token_list' => $this->token['list'],
-				'token_add' => $this->token['add'],
-			);
-
-			$this->layout('operasional_proyek/list', $config, $data);
-	}
-
-	public function get_list(){
-		$token = isset($_POST['token_list']) ? $_POST['token_list'] : false;
-			
-			// cek token
-			$this->auth->cekToken($_SESSION['token_operasional_proyek']['list'], $token, 'operasional_proyek');
-			
+		/**
+		*
+		*/
+		public function get_list(){
 			// config datatable
 			$config_dataTable = array(
 				'tabel' => 'operasional_proyek',
@@ -76,14 +70,6 @@ class Operasional_proyek extends CrudAbstract{
 
 			$dataOperasionalProyek = $this->Operasional_ProyekModel->getAllDataTable($config_dataTable);
 
-			// // set token
-			$_SESSION['token_operasional_proyek']['edit'] = md5($this->auth->getToken());
-			$_SESSION['token_operasional_proyek']['delete'] = md5($this->auth->getToken());
-			
-			$this->token = array(
-				'edit' => password_hash($_SESSION['token_operasional_proyek']['edit'], PASSWORD_BCRYPT),
-				'delete' => password_hash($_SESSION['token_operasional_proyek']['delete'], PASSWORD_BCRYPT),	
-			);
 			$data = array();
 			$no_urut = $_POST['start'];
 			foreach($dataOperasionalProyek as $row){
@@ -93,8 +79,8 @@ class Operasional_proyek extends CrudAbstract{
 
 				//button aksi
 				$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-				$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".', '."'".$this->token["edit"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-				$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+				$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+				$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 				
 				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
 				
@@ -118,15 +104,21 @@ class Operasional_proyek extends CrudAbstract{
 			);
 
 			echo json_encode($output);	
-	}
+		}
 
-	public function form($id){
-		if($id)	$this->edit(strtoupper($id));
-		else $this->add();
+		/**
+		*
+		*/
+		public function form($id){
+			if($id)	$this->edit(strtoupper($id));
+			else $this->add();
 
-	}
+		}
 
-	protected function add(){
+		/**
+		*
+		*/
+		protected function add(){
 			$css = array(
   				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
 				'assets/bower_components/select2/dist/css/select2.min.css',
@@ -150,14 +142,7 @@ class Operasional_proyek extends CrudAbstract{
 				'js' => $js,
 			);
 
-			$_SESSION['token_operasional_proyek'] = array(
-				'add' => md5($this->auth->getToken()),
-			);
-			$this->token = array(
-				'add' => password_hash($_SESSION['token_operasional_proyek']['add'], PASSWORD_BCRYPT),	
-			);
 			$data = array(
-				'token_form' => $this->token['add'],
 				'action' => 'action-add',
 				'id' => '',
 				'id_proyek' => '',
@@ -169,6 +154,9 @@ class Operasional_proyek extends CrudAbstract{
 			$this->layout('operasional_proyek/form', $config, $data);
 		}
 
+		/**
+		*
+		*/
 		public function action_add(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
@@ -181,6 +169,7 @@ class Operasional_proyek extends CrudAbstract{
 
 				if(!$data){
 					$notif = array(
+						'type' => "error",
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
 					);
@@ -196,7 +185,6 @@ class Operasional_proyek extends CrudAbstract{
 						$cekDetail = false;
 					}
 					
-
 					if($cek){
 						$ket = 'OPERASIONAL PROYEK ['.$dataOperasionalProyek['id'].'] - '.strtoupper($dataOperasionalProyek['nama']);
 
@@ -269,107 +257,44 @@ class Operasional_proyek extends CrudAbstract{
 				echo json_encode($output);
 			}
 			else $this->redirect();
-
 		}
 
-	
-
-	
-
-
-
-	protected function edit($id){
+		/**
+		*
+		*/
+		protected function edit($id){
 			if(empty($id) || $id == "") $this->redirect(BASE_URL."operasional-proyek/");
 
-			// // // get data proyek
-			// // $dataProyek = !empty($this->ProyekModel->getById($id)) ? $this->ProyekModel->getById($id) : false;
-
-			// // if(!$dataProyek) $this->redirect(BASE_URL."proyek/");
-
-			// // $css = array(
-  	// // 			'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
-			// // 	'assets/bower_components/select2/dist/css/select2.min.css',
-  	// // 		);
-			// // $js = array(
-			// // 	'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
-			// // 	'assets/bower_components/select2/dist/js/select2.full.min.js',
-			// // 	'assets/plugins/input-mask/jquery.inputmask.bundle.js',
-			// // 	'app/views/proyek/js/initForm.js',	
-			// // );
-
-			// // $config = array(
-			// // 	'title' => array(
-			// // 		'main' => 'Data Proyek',
-			// // 		'sub' => 'Form Edit Data',
-			// // 	),
-			// // 	'css' => $css,
-			// // 	'js' => $js,
-			// // );
-
-			// // $_SESSION['token_proyek'] = array(
-			// // 	'edit' => md5($this->auth->getToken()),
-			// // );
-			// // $this->token = array(
-			// // 	'edit' => password_hash($_SESSION['token_proyek']['edit'], PASSWORD_BCRYPT),
-			// // );
-
-			// // $data = array(
-			// // 	'token_form' => $this->token['edit'],
-			// // 	'action' => 'action-edit',
-			// // 	'id' => $dataProyek['id'],
-			// // 	'pemilik' => $dataProyek['pemilik'],
-			// // 	'tgl' => $dataProyek['tgl'],
-			// // 	'pembangunan' => $dataProyek['pembangunan'],
-			// // 	'luas_area' => $dataProyek['luas_area'],
-			// // 	'alamat' => $dataProyek['alamat'],
-			// // 	'kota' => $dataProyek['kota'],
-			// // 	'estimasi' => $dataProyek['estimasi'],
-			// // 	'total' => $dataProyek['total'],
-			// // 	'dp' => $dataProyek['dp'],
-			// // 	'cco' => $dataProyek['cco'],
-			// // 	'status' => $dataProyek['status'],
-			// // );
-
-			// $this->layout('proyek/form', $config, $data);
+			
 		}
 
-	public function action_edit(){
-
-	}
-
-	public function detail($id){
-
-	}
-
-	public function delete($id){
-
-	}
-
-	public function export(){
-
-	}
-
-	/**
-		* Function validasi form utama
+		/**
+		*
 		*/
-		private function set_validation($data, $action){
-			
-			// id
-			$this->validation->set_rules($data['id'], 'ID Operasional Proyek', 'id', 'string | 1 | 255 | required');
-			// id_proyek
-			$this->validation->set_rules($data['id_proyek'], 'ID proyek', 'id_proyek', 'string | 1 | 255 | required');
-			// id_bank
-			$this->validation->set_rules($data['id_bank'], 'ID Bank', 'id_bank', 'string | 1 | 255 | required');
-			// tgl
-			$this->validation->set_rules($data['tgl'], 'Tanggal Operasional Proyek', 'tgl', 'string | 1 | 255 | required');
-			// nama
-			$this->validation->set_rules($data['nama'], 'Nama Pengajuan', 'nama', 'string | 1 | 255 | required');
-			// total
-			$this->validation->set_rules($data['total'], 'Total Pengajuan', 'total', 'nilai | 1 | 99999 | required');
-			
-			return $this->validation->run();
+		public function action_edit(){
+
 		}
 
+		/**
+		*
+		*/
+		public function detail($id){
+
+		}
+
+		/**
+		*
+		*/
+		public function delete($id){
+
+		}
+
+		/**
+		*
+		*/
+		public function export(){
+
+		}
 
 		/**
 		*
@@ -405,61 +330,91 @@ class Operasional_proyek extends CrudAbstract{
 
 		}
 
-	public function get_nama_proyek(){
-		$this->model('ProyekModel');
-		$data_nama_proyek = $this->ProyekModel->getAll();
-		$data = array();
+		/**
+		*
+		*/
+		public function get_nama_proyek(){
+			$this->model('ProyekModel');
+			$data_nama_proyek = $this->ProyekModel->getAll();
+			$data = array();
 
-		foreach($data_nama_proyek as $row){
-			$dataRow = array();
-			$dataRow['id'] = $row['id'];
-			$dataRow['text'] = $row['id'].' - '.$row['pembangunan'];
+			foreach($data_nama_proyek as $row){
+				$dataRow = array();
+				$dataRow['id'] = $row['id'];
+				$dataRow['text'] = $row['id'].' - '.$row['pembangunan'];
 
-			$data[] = $dataRow;
+				$data[] = $dataRow;
+			}
+
+			echo json_encode($data);
 		}
 
-		echo json_encode($data);
-	}
+		/**
+		*
+		*/
+		public function get_nama_bank(){
+			$this->model('BankModel');
+			$data_nama_bank = $this->BankModel->getAll();
+			$data = array();
 
-	public function get_nama_bank(){
-		$this->model('BankModel');
-		$data_nama_bank = $this->BankModel->getAll();
-		$data = array();
+			foreach($data_nama_bank as $row){
+				$dataRow = array();
+				$dataRow['id'] = $row['id'];
+				$dataRow['text'] = $row['nama']. ' - '.$row['saldo'];
 
-		foreach($data_nama_bank as $row){
-			$dataRow = array();
-			$dataRow['id'] = $row['id'];
-			$dataRow['text'] = $row['nama']. ' - '.$row['saldo'];
+				$data[] = $dataRow;
+			}
 
-			$data[] = $dataRow;
+			echo json_encode($data);
 		}
 
-		echo json_encode($data);
-	}
+		/**
+		*
+		*/
+		public function action_add_detail(){
+			$data = isset($_POST) ? $_POST : false;
+			
+			$status = false;
+			$error = "";
 
-	public function action_add_detail(){
-		$data = isset($_POST) ? $_POST : false;
-		
-		$status = false;
-		$error = "";
+			$validasi = $this->set_validation_detail($data);
+			$cek = $validasi['cek'];
+			$error = $validasi['error'];
 
-		$validasi = $this->set_validation_detail($data);
-		$cek = $validasi['cek'];
-		$error = $validasi['error'];
+			if($cek) $status = true;
 
-		if($cek) $status = true;
+			$output = array(
+				'status' => $status,
+				// 'notif' => $notif,
+				'error' => $error,
+				'data' => $data,
+			);
+			echo json_encode($output);
 
-		$output = array(
-			'status' => $status,
-			// 'notif' => $notif,
-			'error' => $error,
-			'data' => $data,
-		);
-		echo json_encode($output);
+		}
 
-	}
+		/**
+		* Function validasi form utama
+		*/
+		private function set_validation($data, $action){
+			
+			// id
+			$this->validation->set_rules($data['id'], 'ID Operasional Proyek', 'id', 'string | 1 | 255 | required');
+			// id_proyek
+			$this->validation->set_rules($data['id_proyek'], 'ID proyek', 'id_proyek', 'string | 1 | 255 | required');
+			// id_bank
+			$this->validation->set_rules($data['id_bank'], 'ID Bank', 'id_bank', 'string | 1 | 255 | required');
+			// tgl
+			$this->validation->set_rules($data['tgl'], 'Tanggal Operasional Proyek', 'tgl', 'string | 1 | 255 | required');
+			// nama
+			$this->validation->set_rules($data['nama'], 'Nama Pengajuan', 'nama', 'string | 1 | 255 | required');
+			// total
+			$this->validation->set_rules($data['total'], 'Total Pengajuan', 'total', 'nilai | 1 | 99999 | required');
+			
+			return $this->validation->run();
+		}
 
-	/**
+		/**
 		* Function validasi form detail
 		*/
 		private function set_validation_detail($data){
@@ -487,8 +442,4 @@ class Operasional_proyek extends CrudAbstract{
 			return $this->validation->run();
 		}
 
-
-
-	
-
-}
+	}
