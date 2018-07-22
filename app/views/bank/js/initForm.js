@@ -4,20 +4,18 @@ $(document).ready(function(){
 
 	// button tambah
 	$('#tambah').on('click', function(){
-		
 		resetForm();
 		$('.field-saldo').css('display', 'block');
 		$('#submit_bank').prop('value', 'action-add');
 		$('#submit_bank').prop('disabled', false);
 		$('#submit_bank').html('Simpan Data');
 		$('#modalBank').modal();
-		
 	});
 
 	// submit bank
 	$('#form_bank').submit(function(e){
 		e.preventDefault();
-		submit(edit_view);
+		submit();
 
 		return false;
 	});
@@ -33,7 +31,6 @@ $(document).ready(function(){
 			$(".pesan-"+this.id).text('');	
 		}
 	});
-
 
 	// input mask
 	$('.input-mask-uang').inputmask({ 
@@ -55,7 +52,6 @@ $(document).ready(function(){
 */
 function getDataForm(){
 	var data = new FormData();
-	// var saldo = parseFloat($('#saldo').val().trim()) ? parseFloat($('#saldo').val().trim()) : $('#saldo').val().trim();
 
 	var saldo = ($('#saldo').inputmask) ? 
 		( parseFloat($('#saldo').inputmask('unmaskedvalue')) ?
@@ -103,12 +99,7 @@ function submit(edit_view){
 				toastr.success(output.notif.message, output.notif.title);
 				resetForm();
 				$("#modalBank").modal('hide');
-				if(!edit_view) $("#bankTable").DataTable().ajax.reload();
-				else {
-					setTimeout(function(){ 
-						location.reload(); 
-					}, 1000);
-				}
+				$("#bankTable").DataTable().ajax.reload();
 			}
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling

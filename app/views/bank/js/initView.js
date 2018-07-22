@@ -43,6 +43,20 @@ $(document).ready(function(){
 /**
 *
 */
+function submit(){
+    
+}
+
+/**
+*
+*/
+function getEdit(id){
+
+}
+
+/**
+*
+*/
 function getDelete(id){
     swal({
         title: "Pesan Konfirmasi",

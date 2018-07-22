@@ -18,18 +18,14 @@
 	<!-- Main content -->
 	<section class="content container-fluid">
 		<div class="row">
+			<input type="hidden" id="token" value="">
 			<!-- panel info data bank -->
 			<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
 				<input type="hidden" id="id" value="<?=$this->data['id_bank']?>">
 				<div class="box box-widget widget-user-2">
 					<div class="widget-user-header bg-aqua">
-						<!-- <div class="widget-user-image">
-							<img class="img-circle" src="../dist/img/user7-128x128.jpg" alt="User Avatar">
-			  			</div> -->
-				 	 	<!-- /.widget-user-image -->
-					  	<!-- <h3 class="widget-user-username">BANK ANU</h3> -->
+				 	 	<!-- Nama Bank -->
 					  	<h3><?= $this->data['nama'] ?></h3>
-					  	<!-- <h5 class="widget-user-desc">Lead Developer</h5> -->
 					</div>
 					<div class="box-footer no-padding">
 						<ul class="nav nav-stacked">
@@ -40,9 +36,9 @@
 					<div class="box-footer text-center">
 						<div class="btn-group">
 							<!-- edit -->
-							<button onclick="getEdit('<?=$this->data["id_bank"]?>', '<?=$this->data["token"]["edit"]?>')" type="button" class="btn btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>
+							<button id="btn_edit" type="button" class="btn btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>
 							<!-- hapus -->
-							<button onclick="getDelete('<?=$this->data["id_bank"]?>', '<?=$this->data["token"]["delete"]?>')" type="button" class="btn btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>
+							<button id="btn_delete" type="button" class="btn btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>
 							<!-- kembali -->
 							<button onclick="back()" type="button" class="btn btn-info btn-flat" title="Kembali"><i class="fa fa-reply"></i></button>
 						</div>
@@ -62,7 +58,6 @@
 					<div class="box-body">
 						<div class="row">
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-								<input type="hidden" id="token" value="">
 								<table id="mutasiBankTable" class="table table-bordered table-hover">
 									<thead>
 										<tr>
@@ -88,7 +83,4 @@
 
 	<!-- load form -->
 	<?php include_once('form.php'); ?>
-	<script type="text/javascript">
-		var edit_view = true;
-	</script>
 </div>

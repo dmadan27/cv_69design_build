@@ -31,7 +31,7 @@
 							<div class="col-md-12 col-sm-12 col-xs-12">
 								<div class="btn-group">
 									<!-- tambah -->
-									<button type="button" class="btn btn-default btn-flat" id="tambah" value="<?= $this->data['token_add'] ?>"><i class="fa fa-plus"></i> Tambah</button>
+									<button type="button" class="btn btn-default btn-flat" id="tambah"><i class="fa fa-plus"></i> Tambah</button>
 									<!-- export -->
 									<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 								</div>
@@ -67,7 +67,4 @@
 
 	<!-- load form -->
 	<?php include_once('form.php'); ?>
-	<script type="text/javascript">
-		var edit_view = false;
-	</script>
 </div>

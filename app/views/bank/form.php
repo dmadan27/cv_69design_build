@@ -14,6 +14,7 @@
 				<input type="hidden" id="id">
 				<!-- body modal -->
 				<div class="modal-body">
+					
 					<!-- field nama -->
 					<div class="form-group field-nama has-feedback">
 						<label for="nama">Nama Bank</label>
