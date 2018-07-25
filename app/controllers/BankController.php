@@ -386,7 +386,7 @@
 		}
 
 		/**
-		*
+		*	Export data ke format Excel
 		*/
 		public function export(){
 			include ('app/library/export_phpexcel/koneksi.php');
@@ -397,7 +397,7 @@
 			$excel = new PHPExcel();
 
 			// Settingan awal fil excel
-			$excel->getProperties()->setCreator('Jaka Pratama')
+			$excel->getProperties()->setCreator('Jaka Pratama, Romadan Saputra, Fajar Cahyo')
 								   ->setLastModifiedBy('PC Personal')
 								   ->setTitle("Data Bank")
 								   ->setSubject("Bank")
@@ -473,7 +473,6 @@
 				$excel->setActiveSheetIndex(0)->setCellValue('E'.$numrow, $data['status']);
 					
 				
-				
 				// Apply style row yang telah kita buat tadi ke masing-masing baris (isi tabel)
 				$excel->getActiveSheet()->getStyle('A'.$numrow)->applyFromArray($style_row);
 				$excel->getActiveSheet()->getStyle('B'.$numrow)->applyFromArray($style_row);
@@ -510,9 +509,6 @@
 
 			$write = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
 			$write->save('php://output');
-
-
-			
 			
 		}
 

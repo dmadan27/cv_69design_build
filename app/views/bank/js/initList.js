@@ -39,7 +39,7 @@ $(document).ready(function(){
         }
     });
 
-      // btn Export
+    // btn Export
     $('#exportExcel').on('click', function(){
         // if(this.value.trim() != "") 
             window.location.href = BASE_URL+'bank/export/';
