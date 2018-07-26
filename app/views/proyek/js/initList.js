@@ -48,6 +48,13 @@ $(document).ready(function(){
         // else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
     });
 
+     // btn Export
+    $('#exportExcel').on('click', function(){
+        // if(this.value.trim() != "") 
+            window.location.href = BASE_URL+'proyek/export/';
+       
+    });
+
 });
 
 /**
