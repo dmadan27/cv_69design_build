@@ -42,6 +42,13 @@ $(document).ready(function(){
         }
     });
 
+    // btn Export
+    $('#exportExcel').on('click', function(){
+        // if(this.value.trim() != "") 
+            window.location.href = BASE_URL+'sub-kas-kecil/export/';
+       
+    });
+
 });
 
 /**
