@@ -4,18 +4,18 @@
 -- View User
 	-- view untuk semua user yang terdapat di sistem
 	CREATE OR REPLACE VIEW v_user AS
-		SELECT 
+		SELECT
 			u.username, kb.nama, u.status, u.level FROM user u JOIN kas_besar kb  ON u.username=kb.email
-		
-		UNION
-		
-		SELECT
-			u.username, kk.nama, u.status, u.level FROM user u JOIN kas_kecil kk  ON u.username=kk.email 
 
 		UNION
 
 		SELECT
-			u.username, skk.nama, u.status, u.level FROM user u JOIN sub_kas_kecil skk  ON u.username=skk.email;				
+			u.username, kk.nama, u.status, u.level FROM user u JOIN kas_kecil kk  ON u.username=kk.email
+
+		UNION
+
+		SELECT
+			u.username, skk.nama, u.status, u.level FROM user u JOIN sub_kas_kecil skk  ON u.username=skk.email;
 
 -- View Kas Besar
 
@@ -37,11 +37,11 @@
 -- View Logistik Proyek
 	-- skc -> skk belum
 CREATE OR REPLACE VIEW v_proyek_logistik AS
-	SELECT 
+	SELECT
     	p.id id_proyek, p.pemilik, p.tgl, p.pembangunan, p.luas_area, p.alamat, p.kota, p.estimasi, p.total, p.dp, p.cco, p.status,
         lp.id id_logistik_proyek, skk.id id_sub_kas_kecil, skk.nama, skk.alamat alamat_skk, skk.no_telp, skk.email, skk.foto, skk.saldo, skk.status status_skk
-    FROM proyek p 
-    	
+    FROM proyek p
+
     JOIN logistik_proyek lp ON lp.id_proyek=p.id
     JOIN sub_kas_kecil skk ON skk.id=lp.id_sub_kas_kecil;
 
@@ -66,8 +66,7 @@ CREATE OR REPLACE VIEW v_pengajuan_sub_kas_kecil_full AS
 		pskk.id id_pengajuan, pskk.id_sub_kas_kecil, pskk.id_proyek, pskk.tgl,
 		pskk.total, pskk.dana_disetujui, pskk.status, pskk.status_laporan,
 		dp.id id_detail, dp.nama, dp.jenis, dp.satuan, dp.qty, dp.harga, dp.subtotal,
-		dp.status status_detail, dp.harga_asli, dp.sisa, dp.status_lunas,
-		p.pemilik, p.pembangunan, p.kota
+		dp.harga_asli, dp.sisa, p.pemilik, p.pembangunan, p.kota
 	FROM pengajuan_sub_kas_kecil pskk
 	JOIN detail_pengajuan_sub_kas_kecil dp ON dp.id_pengajuan = pskk.id
 	JOIN proyek p ON p.id = pskk.id_proyek;
@@ -90,5 +89,4 @@ CREATE OR REPLACE VIEW v_pengajuan_kas_kecil AS
 
 -- View Detail Operasional Proyek
 
--- 
-
+--
