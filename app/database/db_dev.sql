@@ -213,7 +213,7 @@ CREATE TABLE IF NOT EXISTS pengajuan_sub_kas_kecil(
 	total double(12,2), -- total pengajuan
 	dana_disetujui double(12,2), -- dana yg disetujui, default 0 atau sama dengan total
 	status char(1), -- status pengajuan, default 1: 'pending'
-	-- 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI', 4: 'LANGSUNG', 5: 'DITOLAK'  
+	-- 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI', 4: 'LANGSUNG', 5: 'DITOLAK'
 	status_laporan char(1), -- status laporan, default set null
 	-- 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI',
 
@@ -308,7 +308,7 @@ CREATE TABLE IF NOT EXISTS operasional_proyek(
 		ON DELETE RESTRICT ON UPDATE CASCADE,
 	CONSTRAINT fk_operasional_proyek_id_bank FOREIGN KEY(id_bank) REFERENCES bank(id)
 		ON DELETE RESTRICT ON UPDATE CASCADE,
-	CONSTRAINT fk_operasional_proyek_id_kas_besar FOREIGN KEY(id_kas_besar) REFERENCES kas_besar(id_kas_besar)
+	CONSTRAINT fk_operasional_proyek_id_kas_besar FOREIGN KEY(id_kas_besar) REFERENCES kas_besar(id)
 		ON DELETE RESTRICT ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
