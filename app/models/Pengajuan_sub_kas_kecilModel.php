@@ -82,7 +82,7 @@
 		*
 		*/
 		public function getAll_pending(){
-			$status = "PENDING";
+			$status = "1";
 			$query = "SELECT pskc.id, skc.id id_skc, skc.nama nama_skc, pskc.total FROM pengajuan_sub_kas_kecil pskc ";
 			$query .= "JOIN sub_kas_kecil skc ON skc.id = pskc.id_sub_kas_kecil WHERE pskc.status = :status ORDER BY id DESC LIMIT 5";
 
@@ -225,7 +225,7 @@
 				$cari = $data["cari"];
 				$page = $data["page"];
 
-				$queryKondisi = "WHERE id_sub_kas_kecil='".$id."' AND (status='PENDING' OR status='PERBAIKI')";
+				$queryKondisi = "WHERE id_sub_kas_kecil='".$id."' AND (status='1' OR status='2')";
 				$kolomCari = array("id","id_proyek","nama","tgl","status");
 				$query = $this->querySelectBuilder_mobile($queryKondisi, $kolomCari, $cari, $page);
 
@@ -333,8 +333,11 @@
 			*
 			*/
 			private function insert_detail_pengajuan($data, $id_pengajuan) {
-				$query	= "INSERT INTO detail_pengajuan_sub_kas_kecil (id, id_pengajuan, nama, jenis, satuan, qty, harga, subtotal, status, harga_asli, sisa, status_lunas) VALUES";
-				$query .= "(null, :id_pengajuan, :nama, :jenis, :satuan, :qty, :harga, :subtotal, :status, :harga_asli, :sisa, :status_lunas)";
+				// $query	= "INSERT INTO detail_pengajuan_sub_kas_kecil (id, id_pengajuan, nama, jenis, satuan, qty, harga, subtotal, status, harga_asli, sisa, status_lunas) VALUES";
+				// $query .= "(null, :id_pengajuan, :nama, :jenis, :satuan, :qty, :harga, :subtotal, :status, :harga_asli, :sisa, :status_lunas)";
+
+				$query	= "INSERT INTO detail_pengajuan_sub_kas_kecil (id, id_pengajuan, nama, jenis, satuan, qty, harga, subtotal, harga_asli, sisa) VALUES";
+				$query .= "(null, :id_pengajuan, :nama, :jenis, :satuan, :qty, :harga, :subtotal, :harga_asli, :sisa)";
 
 				$statment = $this->koneksi->prepare($query);
 				$statment->execute(
@@ -346,10 +349,10 @@
 						':qty' => $data->qty,
 						':harga' => $data->harga,
 						':subtotal' => $data->subtotal,
-						':status' => null,
+						// ':status' => null,
 						':harga_asli' => null,
 						':sisa' => null,
-						':status_lunas' => null
+						// ':status_lunas' => null
 					)
 				);
 				$statment->closeCursor();
@@ -392,7 +395,7 @@
 			*
 			*/
 			private function update_status_laporan($id){
-				$status_laporan = 'PENDING';
+				$status_laporan = '1';
 				$query = "UPDATE pengajuan_sub_kas_kecil SET status_laporan = :status_laporan WHERE id = :id";
 
 				$statement = $this->koneksi->prepare($query);
@@ -408,18 +411,20 @@
 			*
 			*/
 			private function update_detail_laporan($data){
-				$status = 'TUNAI';
-				$status_lunas = 'LUNAS';
+				// $status = 'TUNAI';
+				// $status_lunas = 'LUNAS';
 
-				$query = "UPDATE detail_pengajuan_sub_kas_kecil SET status = :status, harga_asli = :harga_asli, sisa = :sisa, status_lunas = :status_lunas WHERE id = :id";
+				// $query = "UPDATE detail_pengajuan_sub_kas_kecil SET status = :status, harga_asli = :harga_asli, sisa = :sisa, status_lunas = :status_lunas WHERE id = :id";
+				$query = "UPDATE detail_pengajuan_sub_kas_kecil SET harga_asli = :harga_asli, sisa = :sisa WHERE id = :id";
+
 
 				$statement = $this->koneksi->prepare($query);
 				$statement->execute(array(
 						':id' => $data->id_detail,
-						':status' => $status, //
+						// ':status' => $status, //
 						':harga_asli' => $data->harga_asli,
 						':sisa' => $data->sisa,
-						':status_lunas' => $status_lunas, //
+						// ':status_lunas' => $status_lunas, //
 					)
 				);
 				$statement->closeCursor();
@@ -450,7 +455,7 @@
 
 					// hapus detail pengajuan
 					$query = "DELETE dpskk FROM detail_pengajuan_sub_kas_kecil dpskk JOIN pengajuan_sub_kas_kecil pskk ON dpskk.id_pengajuan=pskk.id ";
-					$query .= "WHERE dpskk.id_pengajuan=:id_pengajuan AND pskk.id_sub_kas_kecil=:id_sub_kas_kecil AND pskk.status='PENDING'";
+					$query .= "WHERE dpskk.id_pengajuan=:id_pengajuan AND pskk.id_sub_kas_kecil=:id_sub_kas_kecil AND pskk.status='1'";
 					$statement = $this->koneksi->prepare($query);
 					$statement->execute(array(
 							":id_pengajuan" => $id_pengajuan,
@@ -460,7 +465,7 @@
 					$statement->closeCursor();
 
 					// hapus pengajuan
-					$query = "DELETE FROM pengajuan_sub_kas_kecil WHERE id=:id_pengajuan AND id_sub_kas_kecil=:id_sub_kas_kecil AND status='PENDING'";
+					$query = "DELETE FROM pengajuan_sub_kas_kecil WHERE id=:id_pengajuan AND id_sub_kas_kecil=:id_sub_kas_kecil AND status='1'";
 					$statement = $this->koneksi->prepare($query);
 					$statement->execute(array(
 							":id_pengajuan" => $id_pengajuan,
