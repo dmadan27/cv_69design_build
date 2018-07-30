@@ -24,38 +24,42 @@ CALL tambah_sub_kas_kecil('LOG005', 'HENDRO', 'SUKABUMI', '081234567890', 'hendr
 
 -- Insert Proyek
 -- Proyek 1 - PRY2018001 (Berjalan)
-INSERT INTO proyek 
-	(id, pemilik, tgl, pembangunan, luas_area, alamat, kota, estimasi, total, dp, cco, status) 
-VALUES 
+INSERT INTO proyek
+	(id, pemilik, tgl, pembangunan, luas_area, alamat, kota, estimasi, total, dp, cco, status)
+VALUES
 	('PRY20180001', 'JAJANG', '2018-01-01', 'RUMAH 10 LANTAI', 1000, 'BANDUNG', 'BANDUNG', 12, 100000000, 50000000, 0, 'BERJALAN');
 
 -- Insert Detail Proyek - PRY2018001 (Berjalan)
-INSERT INTO detail_proyek 
-	(id, id_proyek, angsuran, persentase, total, status) 
-VALUES
-	(null,'PRY20180001', 'ANGSURAN KE-1', '20', 10000000, 'BELUM DIBAYAR'), 
-	(null,'PRY20180001', 'ANGSURAN KE-2', '50', 10000000, 'BELUM DIBAYAR'), 
-	(null,'PRY20180001', 'ANGSURAN KE-3', '100', 30000000, 'BELUM DIBAYAR');
+-- INSERT INTO detail_proyek
+-- 	(id, id_proyek, angsuran, persentase, total, status)
+-- VALUES
+-- 	(null,'PRY20180001', 'ANGSURAN KE-1', '20', 10000000, 'BELUM DIBAYAR'),
+-- 	(null,'PRY20180001', 'ANGSURAN KE-2', '50', 10000000, 'BELUM DIBAYAR'),
+-- 	(null,'PRY20180001', 'ANGSURAN KE-3', '100', 30000000, 'BELUM DIBAYAR');
 
 -- Insert logisitik proyek (logistik yang menagani proyek) - PRY2018001
 INSERT INTO logistik_proyek (id_proyek, id_sub_kas_kecil) VALUES ('PRY20180001', 'LOG001');
+INSERT INTO logistik_proyek (id_proyek, id_sub_kas_kecil) VALUES ('PRY20180001', 'LOG002');
+INSERT INTO logistik_proyek (id_proyek, id_sub_kas_kecil) VALUES ('PRY20180001', 'LOG004');
 
 -- Insert Proyek
 -- Proyek 2 - PRY2018002 (Berjalan)
-INSERT INTO proyek 
-	(id, pemilik, tgl, pembangunan, luas_area, alamat, kota, estimasi, total, dp, cco, status) 
-VALUES 
+INSERT INTO proyek
+	(id, pemilik, tgl, pembangunan, luas_area, alamat, kota, estimasi, total, dp, cco, status)
+VALUES
 	('PRY20180002', 'Asirwanda Mustofa', '2018-01-01', 'RUMAH 10 LANTAI', 1000, 'Jl. Laksmiwati', 'BANDUNG', 12, 100000000, 50000000, 0, 'BERJALAN');
 
 -- Insert Detail Proyek - PRY2018002 (Berjalan)
-INSERT INTO detail_proyek 
-	(id,id_proyek, angsuran, persentase, total, status) 
-VALUES
-	(null,'PRY20180002', 'ANGSURAN KE-1', '20', 10000000, 'BELUM DIBAYAR'), 
-	(null,'PRY20180002', 'ANGSURAN KE-2', '50', 10000000, 'BELUM DIBAYAR'); 
+-- INSERT INTO detail_proyek
+-- 	(id,id_proyek, angsuran, persentase, total, status)
+-- VALUES
+-- 	(null,'PRY20180002', 'ANGSURAN KE-1', '20', 10000000, 'BELUM DIBAYAR'),
+-- 	(null,'PRY20180002', 'ANGSURAN KE-2', '50', 10000000, 'BELUM DIBAYAR');
 
 -- Insert logisitik proyek (logistik yang menagani proyek) - PRY2018002
 INSERT INTO logistik_proyek (id_proyek, id_sub_kas_kecil) VALUES ('PRY20180002', 'LOG001');
+INSERT INTO logistik_proyek (id_proyek, id_sub_kas_kecil) VALUES ('PRY20180002', 'LOG003');
+INSERT INTO logistik_proyek (id_proyek, id_sub_kas_kecil) VALUES ('PRY20180002', 'LOG005');
 
 
 -- =======================================================================================
@@ -64,18 +68,18 @@ INSERT INTO logistik_proyek (id_proyek, id_sub_kas_kecil) VALUES ('PRY20180002',
 -- Insert Pengajuan Sub Kas Kecil
 -- PGSKK-PRY2018001-LOG001-0001
 INSERT INTO pengajuan_sub_kas_kecil
-	(id, id_sub_kas_kecil, id_proyek, tgl, total, dana_disetujui, status, status_laporan) 
-VALUES 
-	('PGSKK-PRY20180001-LOG001-0001', 'LOG001', 'PRY20180001', '2018-01-01', 15500, 0, 'PENDING', null);
+	(id, id_sub_kas_kecil, id_proyek, tgl, total, dana_disetujui, status, status_laporan)
+VALUES
+	('PGSKK-PRY20180001-LOG001-0001', 'LOG001', 'PRY20180001', '2018-07-31', 15500, 0, '1', null);
 
 -- Insert Detail Pengajuan
 -- PGSKK-PRY2018001-LOG001-0001
 INSERT INTO detail_pengajuan_sub_kas_kecil
-	(id_pengajuan, nama, jenis, satuan, qty, harga, subtotal, status) 
+	(id_pengajuan, nama, jenis, satuan, qty, harga, subtotal)
 VALUES
-	('PGSKK-PRY20180001-LOG001-0001', 'SEMEN', 'TEKNIS', 'KARUNG', 10, 1000, 10000, 'TUNAI'), 
-	('PGSKK-PRY20180001-LOG001-0001', 'BATU BATA', 'TEKNIS', 'PCS', 100, 500, 5000, 'TUNAI'), 
-	('PGSKK-PRY20180001-LOG001-0001', 'SEKOP', 'TEKNIS', 'PCS', 1, 500, 500, 'TUNAI');
+	('PGSKK-PRY20180001-LOG001-0001', 'SEMEN', 'T', 'KARUNG', 10, 1000, 10000),
+	('PGSKK-PRY20180001-LOG001-0001', 'BATU BATA', 'T', 'PCS', 100, 500, 5000),
+	('PGSKK-PRY20180001-LOG001-0001', 'SEKOP', 'T', 'PCS', 1, 500, 500);
 
 
 -- =======================================================================================
