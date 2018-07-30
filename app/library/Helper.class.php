@@ -5,11 +5,11 @@
 	* Class helper, berisi function-function pembantu
 	*/
 	class Helper{
-		
+
 		/**
 		* Fungsi cetak angka dengan format rupiah
 		* contoh: Rp. 1.590.850,00
-		*/	
+		*/
 		public function cetakRupiah($value){
 			$rupiah = 'Rp '.number_format($value, 2, ',', '.');
 			return $rupiah;
@@ -27,11 +27,11 @@
 		/**
 		* Fungsi cetak tgl sesuai dengan format yang di inginkan
 		* param $tgl harus berformat 'yyyy-mm-dd'
-		* param $format : 
-		* 'dd-mm-yyyy' (27-02-1995), 
-		* 'yyyy-mm-dd' (2018-01-01) format default, 
-		* 'd-m-y' (27 Februari 2018), 
-		* 'yyyymmdd' (20180101), 
+		* param $format :
+		* 'dd-mm-yyyy' (27-02-1995),
+		* 'yyyy-mm-dd' (2018-01-01) format default,
+		* 'd-m-y' (27 Februari 2018),
+		* 'yyyymmdd' (20180101),
 		* 'full (Senin, 27 Februari 1995)'
 		*/
 		public function cetakTgl($tgl, $format = 'yyyy-mm-dd'){
@@ -73,7 +73,7 @@
 				case 'dd-mm-yyyy':
 					$cetak = $getTgl.'-'.$getBulan.'-'.$getTahun;
 					break;
-				
+
 				case 'd-m-y':
 					$cetak = $getTgl.' '.$arrBulan[(int)$getBulan].'-'.$getTahun;
 					break;
@@ -106,7 +106,7 @@
 		*
 		*/
 		public function cekArray($data){
-			
+
 		}
 
 		/**
@@ -137,5 +137,152 @@
 				}
 			}
 		}
+
+		/**
+		*	mendapatkan nama status pengajuan sub kas kecil
+		*/
+	  public function getNamaStatusPengajuanSKK($id) {
+			switch ($id) {
+				case '1':
+					return "PENDING";
+					break;
+
+				case '2':
+					return "PERBAIKI";
+					break;
+
+				case '3':
+					return "DISETUJUI";
+					break;
+
+				case '4':
+					return "LANGSUNG";
+					break;
+
+				case '5':
+					return "DITOLAK";
+					break;
+
+				default:
+					# code...
+					break;
+			}
+		}
+
+		/**
+		*	mendapatkan id status pengajuan sub kas kecil
+		*/
+		public function getIdStatusPengajuanSKK($nama) {
+			switch ($nama) {
+				case 'PENDING':
+					return "1";
+					break;
+
+				case 'PERBAIKI':
+					return "2";
+					break;
+
+				case 'DISETUJUI':
+					return "3";
+					break;
+
+				case 'LANGSUNG':
+					return "4";
+					break;
+
+				case 'DITOLAK':
+					return "5";
+					break;
+
+				default:
+					# code...
+					break;
+			}
+		}
+
+		/**
+		*	mendapatkan nama status laporan pengajuan sub kas kecil
+		*/
+		public function getNamaStatusLaporanSKK($id) {
+			switch ($id) {
+				case '1':
+					return "PENDING";
+					break;
+
+				case '2':
+					return "PERBAIKI";
+					break;
+
+				case '3':
+					return "DISETUJUI";
+					break;
+
+				default:
+					# code...
+					break;
+			}
+		}
+
+		/**
+		*	mendapatkan id status laporan pengajuan sub kas kecil
+		*/
+		public function getIdStatusLaporanSKK($nama) {
+			switch ($nama) {
+				case 'PENDING':
+					return "1";
+					break;
+
+				case 'PERBAIKI':
+					return "2";
+					break;
+
+				case 'DISETUJUI':
+					return "3";
+					break;
+
+				default:
+					# code...
+					break;
+			}
+		}
+
+		/**
+		*	mendapatkan nama jenis detail pengajuan sub kas kecil
+		*/
+		public function getNamaJenisDetailPengajuanSKK($id) {
+			switch ($id) {
+				case 'T':
+					return "TEKNIS";
+					break;
+
+				case 'N':
+					return "NON-TEKNIS";
+					break;
+
+				default:
+					# code...
+					break;
+			}
+		}
+
+		/**
+		*	mendapatkan id jenis detail pengajuan sub kas kecil
+		*/
+		public function getIdJenisDetailPengajuanSKK($nama) {
+			switch ($nama) {
+				case 'TEKNIS':
+					return "T";
+					break;
+
+				case 'NON-TEKNIS':
+					return "N";
+					break;
+
+				default:
+					# code...
+					break;
+			}
+		}
+
 
 	}
