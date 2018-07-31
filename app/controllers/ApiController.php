@@ -258,6 +258,7 @@
     				$data_foto = $upload_foto['foto'];
 
     				$data = array(
+							'id_skk' => $_POST['id'],
     					'id_pengajuan' => $id_pengajuan,
     					'detail_laporan' => $detail_laporan,
     					'foto' => $data_foto,

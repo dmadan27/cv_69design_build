@@ -685,7 +685,6 @@
 	delimiter ;
 
 -- Procedure Pengajuan Laporan Sub Kas Kecil
--- belum fix
 	delimiter //
 	CREATE PROCEDURE pengajuan_laporan_sub_kas_kecil(
 		in id_pengajuan_param varchar(50),

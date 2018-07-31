@@ -91,12 +91,10 @@ CREATE OR REPLACE VIEW v_pengajuan_kas_kecil AS
 
 --
 
--- BELUM FIX
 -- VIEW SUB KAS KECIL -> digunakan untuk mendapatkan informasi detail sub kas kecil
 -- LEGEND : -> vp (VIEW PEMBANTU (tidak diakses oleh sistem, tapi diakses oleh view lain))
 
 -- untuk mendapatkan estimasi pengeluaran yang mungkin dilakukan oleh sub kas kecil
--- belum fix
 CREATE OR REPLACE VIEW vp_estimasi_pengeluaran_skk AS
 	SELECT
 		pskk.id_sub_kas_kecil, SUM(dpskk.subtotal) estimasi_pengeluaran_saldo

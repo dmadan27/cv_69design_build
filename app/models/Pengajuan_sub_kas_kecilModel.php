@@ -369,17 +369,33 @@
 					$this->koneksi->beginTransaction();
 
 					// update pengajuan - status laporan
-					$this->update_status_laporan($data['id_pengajuan']);
+					// $this->update_status_laporan($data['id_pengajuan']);
 
 					// update detail pengajuan
+					$total = 0;
 					foreach($data_detail_laporan as $key => $value){
 						$this->update_detail_laporan($value);
+						$total += $value->harga_asli;
 					}
 
 					// insert upload foto laporan
 					foreach($data_foto as $key => $value){
 						$this->insert_foto_laporan($value, $data['id_pengajuan']);
 					}
+
+					// 
+					$query = "CALL pengajuan_laporan_sub_kas_kecil(:id_pengajuan,:id_skk,:tgl,:total,:ket)";
+					$statement = $this->koneksi->prepare($query);
+					$statement->execute(
+						array(
+							':id_pengajuan' => $data['id_pengajuan'],
+							':id_skk' => $data['id_skk'],
+							':tgl' =>  date('Y-m-d'),
+							':total' => $total,
+							':ket' => "PENGAJUAN LAPORAN ".$data['id_pengajuan'],
+						)
+					);
+					$statement->closeCursor();
 
 					$this->koneksi->commit();
 
