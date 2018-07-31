@@ -19,16 +19,16 @@
 	BEGIN
 
 		-- 1. insert ke user
-		INSERT INTO user 
+		INSERT INTO user
 			(username, password, level, status)
 		VALUES
 			(email_param, password_param, level_param, 'AKTIF');
 
 		-- insert ke kas besar
-		INSERT INTO kas_besar 
+		INSERT INTO kas_besar
 			(id, nama, alamat, no_telp, email, foto, status)
 		VALUES
-			(id_param, nama_param, alamat_param, no_telp_param, 
+			(id_param, nama_param, alamat_param, no_telp_param,
 				email_param, foto_param, status_param);
 	END//
 	delimiter ;
@@ -36,7 +36,7 @@
 
 -- Procedure Edit Data Kas Besar
 	-- tanpa prosedur
-	
+
 
 -- Procedure Hapus Data Kas Besar
 	delimiter //
@@ -127,13 +127,13 @@
 	BEGIN
 
 		-- 1. insert ke user
-		INSERT INTO user 
+		INSERT INTO user
 			(username,password,level,status)
 		VALUES
 			(email_param,password_param,level_param, 'AKTIF');
 
 		-- insert ke kas kecil
-		INSERT INTO kas_kecil 
+		INSERT INTO kas_kecil
 			(id,nama,alamat,no_telp,email,foto,saldo,status)
 		VALUES
 			(id_param,nama_param,alamat_param,no_telp_param,
@@ -228,13 +228,13 @@
 	BEGIN
 
 		-- 1. insert ke user
-		INSERT INTO user 
+		INSERT INTO user
 			(username,password,level,status)
 		VALUES
 			(email_param,password_param,level_param,'AKTIF');
 
 		-- insert ke sub kas kecil
-		INSERT INTO sub_kas_kecil 
+		INSERT INTO sub_kas_kecil
 			(id,nama,alamat,no_telp,email,foto,saldo,status)
 		VALUES
 			(id_param,nama_param,alamat_param,no_telp_param,
@@ -244,7 +244,7 @@
 
 
 -- Procedure Edit Data Sub Kas Kecil
-	-- tanpa prosedur 
+	-- tanpa prosedur
 
 
 -- Procedure Hapus Data Sub Kas Kecil
@@ -310,7 +310,7 @@
 
 	END//
 
-	delimiter ;	
+	delimiter ;
 
 
 -- Procedure Tambah Data Proyek
@@ -401,7 +401,7 @@
 
 	END//
 	delimiter ;
-	
+
 
 -- Procedure Tambah Data Pengajuan Kas Kecil
 
@@ -480,7 +480,7 @@
 
 		-- get saldo kas kecil
 		SELECT saldo INTO get_saldo_kas_kecil FROM kas_kecil WHERE id = id_kas_kecil_param;
-		
+
 		-- get id sub kas kecil
 		SELECT id_sub_kas_kecil INTO id_sub_kas_kecil_param FROM pengajuan_sub_kas_kecil WHERE id = id_param;
 
@@ -489,34 +489,34 @@
 
 		-- 1. update tabel kas_kecil
 		-- update saldo
-		UPDATE kas_kecil 
-			SET saldo = get_saldo_kas_kecil-dana_disetujui_param 
+		UPDATE kas_kecil
+			SET saldo = get_saldo_kas_kecil-dana_disetujui_param
 			WHERE id = id_kas_kecil_param;
 
 		-- 2. insert tabel mutasi kas_kecil
-		INSERT INTO mutasi_saldo_kas_kecil 
-			(id_kas_kecil, tgl, uang_masuk, uang_keluar, saldo, ket) 
-		VALUES 
-			(id_kas_kecil_param, tgl_param, 0, dana_disetujui_param, 
+		INSERT INTO mutasi_saldo_kas_kecil
+			(id_kas_kecil, tgl, uang_masuk, uang_keluar, saldo, ket)
+		VALUES
+			(id_kas_kecil_param, tgl_param, 0, dana_disetujui_param,
 				(get_saldo_kas_kecil-dana_disetujui_param), ket_kas_kecil_param);
 
 		-- 3. update tabel pengajuan_sub_kas_kecil
 		-- update dana_disetujui dan status
-		UPDATE pengajuan_sub_kas_kecil 
-			SET dana_disetujui = dana_disetujui_param, status = status_param 
+		UPDATE pengajuan_sub_kas_kecil
+			SET dana_disetujui = dana_disetujui_param, status = status_param
 			WHERE id = id_param;
 
 		-- 4. update tabel sub_kas_kecil
 		-- update saldo
-		UPDATE sub_kas_kecil 
-			SET saldo = get_saldo_sub_kas_kecil+dana_disetujui_param 
+		UPDATE sub_kas_kecil
+			SET saldo = get_saldo_sub_kas_kecil+dana_disetujui_param
 			WHERE id = id_sub_kas_kecil_param;
 
 		-- 5. insert tabel mutasi_saldo_sub_kas_kecil
-		INSERT INTO mutasi_saldo_sub_kas_kecil 
-			(id_sub_kas_kecil, tgl, uang_masuk, uang_keluar, saldo, ket) 
-		VALUES 
-			(id_sub_kas_kecil_param, tgl_param, dana_disetujui_param, 0, 
+		INSERT INTO mutasi_saldo_sub_kas_kecil
+			(id_sub_kas_kecil, tgl, uang_masuk, uang_keluar, saldo, ket)
+		VALUES
+			(id_sub_kas_kecil_param, tgl_param, dana_disetujui_param, 0,
 				(get_saldo_sub_kas_kecil+dana_disetujui_param), ket_sub_kas_kecil_param);
 
 	END//
@@ -543,7 +543,7 @@
 		DECLARE get_saldo double(12,2);
 
 		-- get saldo sub kas kecil
-		SELECT saldo INTO get_saldo FROM sub_kas_kecil WHERE id = id_sub_kas_kecil_param; 
+		SELECT saldo INTO get_saldo FROM sub_kas_kecil WHERE id = id_sub_kas_kecil_param;
 
 		-- 1. update tabel pengajuan sub kas kecil
 		-- update status_laporan
@@ -555,7 +555,7 @@
 
 		-- 3. insert tabel mutasi saldo sub kas kecil
 		INSERT INTO mutasi_saldo_sub_kas_kecil
-			(id_sub_kas_kecil, tgl, uang_masuk, uang_keluar, saldo, ket) 
+			(id_sub_kas_kecil, tgl, uang_masuk, uang_keluar, saldo, ket)
 		VALUES
 			(id_sub_kas_kecil_param, tgl_param, 0, sum_pengajuan_laporan_param, (get_saldo-sum_pengajuan_laporan_param), ket_param);
 
@@ -576,28 +576,28 @@
 		IN total_param double(12,2),
 		IN ket_param text
 	)
-	BEGIN	
+	BEGIN
 		DECLARE get_saldo double(12,2);
 
 
 		-- 1. insert ke operasional proyek
-		INSERT INTO operasional_proyek 
+		INSERT INTO operasional_proyek
 			(id, id_proyek, id_bank, id_kas_besar, tgl, nama, total)
 			VALUES
 			(id_param, id_proyek_param, id_bank_param, id_kas_besar_param, tgl_param, nama_param, total_param );
-		
+
 		-- 2. ambil saldo terakhir
-		SELECT saldo INTO get_saldo FROM bank WHERE id = id_bank_param; 
+		SELECT saldo INTO get_saldo FROM bank WHERE id = id_bank_param;
 
 		-- 3. update saldo
 		UPDATE  bank SET saldo = ( get_saldo - total_param ) WHERE id = id_bank_param;
-		
+
 
 		-- 4. insert mutasi
-		INSERT INTO mutasi_bank 
+		INSERT INTO mutasi_bank
 			(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 			VALUES
-			(id_bank_param, tgl_param, 0, total_param, (get_saldo - total_param),  ket_param);	
+			(id_bank_param, tgl_param, 0, total_param, (get_saldo - total_param),  ket_param);
 
 	END //
 
@@ -670,7 +670,7 @@
 		-- get saldo
 		SELECT saldo INTO get_saldo FROM bank WHERE id = id_bank_param;
 
-		
+
 		-- 1. insert mutasi
 		INSERT INTO mutasi_bank (id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 		VALUES (id_bank_param, tgl_param, nominal_param, 0, (get_saldo + nominal_param), ket_param);
@@ -680,6 +680,39 @@
 
 		-- 3. hapus data operasional
 		DELETE FROM operasional WHERE id = id_param;
+
+	END//
+	delimiter ;
+
+-- Procedure Pengajuan Laporan Sub Kas Kecil
+-- belum fix
+	delimiter //
+	CREATE PROCEDURE pengajuan_laporan_sub_kas_kecil(
+		in id_pengajuan_param varchar(50),
+		in id_sub_kas_kecil_param varchar(10),
+		in tgl_param date,
+		in sum_pengajuan_laporan_param double(12,2), -- sum harga asli di laporan
+		in ket_param text
+	)
+	BEGIN
+		DECLARE get_saldo double(12,2);
+
+		-- get saldo sub kas kecil
+		SELECT saldo INTO get_saldo FROM sub_kas_kecil WHERE id = id_sub_kas_kecil_param;
+
+		-- 1. update tabel pengajuan sub kas kecil
+		-- update status_laporan
+		UPDATE pengajuan_sub_kas_kecil SET status_laporan = "1" WHERE id = id_pengajuan_param;
+
+		-- 2. update tabel sub kas kecil
+		-- update saldo
+		UPDATE sub_kas_kecil SET saldo = (get_saldo-sum_pengajuan_laporan_param) WHERE id = id_sub_kas_kecil_param;
+
+		-- 3. insert tabel mutasi saldo sub kas kecil
+		INSERT INTO mutasi_saldo_sub_kas_kecil
+			(id_sub_kas_kecil, tgl, uang_masuk, uang_keluar, saldo, ket)
+		VALUES
+			(id_sub_kas_kecil_param, tgl_param, 0, sum_pengajuan_laporan_param, (get_saldo-sum_pengajuan_laporan_param), ket_param);
 
 	END//
 	delimiter ;
