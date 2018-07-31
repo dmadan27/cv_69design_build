@@ -98,12 +98,12 @@ CREATE OR REPLACE VIEW v_pengajuan_kas_kecil AS
 -- untuk mendapatkan estimasi pengeluaran yang mungkin dilakukan oleh sub kas kecil
 -- belum fix
 CREATE OR REPLACE VIEW vp_estimasi_pengeluaran_skk AS
-  SELECT
-    pskk.id_sub_kas_kecil, SUM(dpskk.subtotal) estimasi_pengeluaran_saldo
-  FROM detail_pengajuan_sub_kas_kecil dpskk
-  RIGHT JOIN pengajuan_sub_kas_kecil pskk ON dpskk.id_pengajuan=pskk.id
-  WHERE (pskk.status='3' OR pskk.status='4') AND ((pskk.status_laporan IS NULL) OR (pskk.status_laporan!='3'))
-  GROUP BY pskk.id_sub_kas_kecil;
+	SELECT
+		pskk.id_sub_kas_kecil, SUM(dpskk.subtotal) estimasi_pengeluaran_saldo
+	FROM detail_pengajuan_sub_kas_kecil dpskk
+	RIGHT JOIN pengajuan_sub_kas_kecil pskk ON dpskk.id_pengajuan=pskk.id
+	WHERE (pskk.status='3' OR pskk.status='4') AND (pskk.status_laporan IS NULL)
+	GROUP BY pskk.id_sub_kas_kecil;
 
 -- untuk mendapatkan informasi detai sub kas kecil
 CREATE OR REPLACE VIEW v_sub_kas_kecil AS
