@@ -261,6 +261,22 @@
 
 		/* ============================== mobile ===================================== */
 
+		/**
+		*
+		*/
+		public function getByIdFromV($id_skk) {
+			$query = "SELECT * FROM v_sub_kas_kecil WHERE id=:id_skk;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id_skk' => $id_skk,
+				)
+			);
+
+			return $statement->fetch(PDO::FETCH_ASSOC);
+		}
+
 		public function updateProfil_mobile($id, $telepon, $alamat) {
 			$query = "UPDATE sub_kas_kecil SET alamat = :alamat, no_telp = :no_telp WHERE id = :id;";
 

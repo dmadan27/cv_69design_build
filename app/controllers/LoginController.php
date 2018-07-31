@@ -52,7 +52,7 @@
 
 			$errorUser = $errorPass = "";
 			$notif = '';
-			
+
 			// get username
 			$dataUser = $this->UserModel->getUser($this->username);
 
@@ -109,6 +109,7 @@
 		*/
 		private function loginMobile(){
 			$this->auth->mobileOnly();
+			$this->model('Sub_kas_kecilModel');
 
 			$status = false;
 			$token = null;
@@ -138,7 +139,7 @@
 					);
 
 					$this->model('TokenModel');
-					
+
 					if($this->TokenModel->setToken_mobile($dataToken)) $status = true;
 					else $token = null;
 
@@ -146,17 +147,23 @@
 					// $this->tokenModel->delete_mobile($dataUser['id']);
 
 					// // tambah token baru
-					// $this->tokenModel->insert_mobile($dataToken);	
+					// $this->tokenModel->insert_mobile($dataToken);
 				}
 			}
 
-			$output = array(
-				'id' => $id,
-				'token' => $token,
-				'status' => $status,
-			);
+			// $output = array(
+			// 	'id' => $id,
+			// 	'token' => $token,
+			// 	'status' => $status,
+			// );
 
-			echo json_encode($output);
+			$output = array(
+				'status' => $status,
+				'profil' => null,
+			);
+			if ($status) $output['profil'] = $this->Sub_kas_kecilModel->getByIdFromV($id);
+
+			echo json_encode($output, JSON_PRETTY_PRINT);
 		}
 
 		/**
@@ -179,7 +186,7 @@
 		*/
 		private function setSession($level){
 			// set data profil sesuai dgn jenis user
-			if(strtolower($level) == 'kas besar') 
+			if(strtolower($level) == 'kas besar')
 				$dataProfil = $this->UserModel->getKasBesar($this->username);
 			else if(strtolower($level) == 'kas kecil') {
 				$dataProfil = $this->UserModel->getKasKecil($this->username);
@@ -192,7 +199,7 @@
 			if(!empty($dataProfil['foto'])){
 				// cek foto di storage
 				$filename = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$dataProfil['foto'];
-				if(!file_exists($filename)) 
+				if(!file_exists($filename))
 					$foto = BASE_URL.'assets/images/user/default.jpg';
 				else
 					$foto = BASE_URL.'assets/images/user/'.$dataProfil['foto'];
