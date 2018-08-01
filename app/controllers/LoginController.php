@@ -164,6 +164,18 @@
 			if ($status) {
 				$output['profil'] = $this->Sub_kas_kecilModel->getByIdFromV($id);
 				$output['profil']['token'] = $token;
+
+				// cek kondisi foto
+				if(!empty($output['profil']['foto'])){
+					// cek foto di storage
+					$filename = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$output['profil']['foto'];
+					if(!file_exists($filename))
+						$foto = null;
+					else
+						$foto = BASE_URL.'assets/images/user/'.$output['profil']['foto'];
+				} else $foto = null;
+
+				$output['profil']['foto'] = $foto;
 			}
 
 			echo json_encode($output, JSON_PRETTY_PRINT);
