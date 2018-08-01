@@ -455,7 +455,7 @@
 			$output['status'] = $this->status;
 
 			if ($this->status) {
-				$dataProfil = $this->Sub_kas_kecilModel->getById($id);
+				$dataProfil = $this->Sub_kas_kecilModel->getByIdFromV($id);
 
 				if(($dataProfil['email'] != $username)) $output['status'] = false;
 				else{
@@ -470,19 +470,11 @@
 					}
 					else $foto = null;
 
-					$output['profil'] = array(
-						'id' => $dataProfil['id'],
-						'nama' => $dataProfil['nama'],
-						'alamat' => $dataProfil['alamat'],
-						'no_telp' => $dataProfil['no_telp'],
-						'email' => $dataProfil['email'],
-						'foto' => $foto,
-						'saldo' => $dataProfil['saldo'],
-						'status' => $dataProfil['status'],
-					);
+					$output['profil'] = $dataProfil;
+					$output['profil']['foto'] = $foto;
 				}
 			}
-			echo json_encode($output);
+			echo json_encode($output, JSON_PRETTY_PRINT);
 		}
 
 
