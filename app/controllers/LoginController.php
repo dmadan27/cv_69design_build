@@ -161,7 +161,10 @@
 				'status' => $status,
 				'profil' => null,
 			);
-			if ($status) $output['profil'] = $this->Sub_kas_kecilModel->getByIdFromV($id);
+			if ($status) {
+				$output['profil'] = $this->Sub_kas_kecilModel->getByIdFromV($id);
+				$output['profil']['token'] = $token;
+			}
 
 			echo json_encode($output, JSON_PRETTY_PRINT);
 		}
