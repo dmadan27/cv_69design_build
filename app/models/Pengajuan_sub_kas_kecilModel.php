@@ -247,7 +247,7 @@
 				$statement->bindParam(':id', $id);
 				$statement->bindParam(':id_pengajuan', $id_pengajuan);
 				$result = $statement->execute();
-				$result = $statement->fetchAll();
+				$result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 				return $result;
 			}

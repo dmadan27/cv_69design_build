@@ -223,17 +223,20 @@
 
 			if ($this->status && ($id_pengajuan != false) && ($id_skk != false)) {
 
-				$sisa_saldo = $this->Sub_kas_kecilModel->getSisaSaldoById($id_skk)['sisa_saldo'];
-				$sisa_saldo = ($sisa_saldo !== NULL) ? $sisa_saldo : $this->Sub_kas_kecilModel->getSaldoById($id_skk)['saldo'];
-
-				$output['id_pengajuan'] = $id_pengajuan;
-				$output['saldo'] = $this->Sub_kas_kecilModel->getSaldoById($id_skk)['saldo'];
-				$output['sisa_saldo'] = $sisa_saldo;
-				$output['pengajuan'] = $this->Pengajuan_sub_kas_kecilModel->getById_mobile(strtoupper($id_pengajuan));
-				$output['status_aksi'] = true;
+				$info_skk = $this->Sub_kas_kecilModel->getByIdFromV($id_skk);
+				
+				// mengecek integritas input
+				if ($info_skk['email'] == $_POST['username']) {
+					
+					$output['id_pengajuan'] = $id_pengajuan;
+					$output['saldo'] = $info_skk['saldo'];
+					$output['sisa_saldo'] = $info_skk['sisa_saldo'];
+					$output['pengajuan'] = $this->Pengajuan_sub_kas_kecilModel->getById_mobile(strtoupper($id_pengajuan));
+					$output['status_aksi'] = true;	
+				}
 			}
 
-			echo json_encode($output);
+			echo json_encode($output, JSON_PRETTY_PRINT);
 		}
 
 		/**
@@ -273,7 +276,7 @@
     				$data_foto = $upload_foto['foto'];
 
     				$data = array(
-							'id_skk' => $_POST['id'],
+						'id_skk' => $_POST['id'],
     					'id_pengajuan' => $id_pengajuan,
     					'detail_laporan' => $detail_laporan,
     					'foto' => $data_foto,
