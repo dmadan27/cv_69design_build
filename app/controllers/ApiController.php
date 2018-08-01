@@ -61,7 +61,6 @@
 		*/
 		public function add_pengajuan(){
 			$this->model('Sub_kas_kecilModel');
-			// $this->model('Pengajuan_sub_kas_kecilModel');
 
 			$output = array();
 			$output['status'] = $this->status;
@@ -72,16 +71,18 @@
 
 			if ($this->status && ($id_pengajuan != false) && ($id_skk != false)) {
 
-				$sisa_saldo = $this->Sub_kas_kecilModel->getSisaSaldoById($id_skk)['sisa_saldo'];
-				$sisa_saldo = ($sisa_saldo !== NULL) ? $sisa_saldo : $this->Sub_kas_kecilModel->getSaldoById($id_skk)['saldo'];
+				$info_skk = $this->Sub_kas_kecilModel->getByIdFromV($id_skk);
 
-				$output['id_pengajuan'] = $this->generate_id_pengajuan($id_pengajuan);
-				$output['saldo'] = $this->Sub_kas_kecilModel->getSaldoById($id_skk)['saldo'];
-				$output['sisa_saldo'] = $sisa_saldo;
-				$output['status_aksi'] = true;
+				// pengecekan integritas input
+				if ($info_skk['email'] == $_POST['username']) {
+					$output['id_pengajuan'] = $this->generate_id_pengajuan($id_pengajuan);
+					$output['saldo'] = $info_skk['saldo'];
+					$output['sisa_saldo'] = $info_skk['sisa_saldo'];
+					$output['status_aksi'] = true;
+				}				
 			}
 
-			echo json_encode($output);
+			echo json_encode($output, JSON_PRETTY_PRINT);
 		}
 
 		/**
