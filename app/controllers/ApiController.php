@@ -79,7 +79,7 @@
 					$output['saldo'] = $info_skk['saldo'];
 					$output['sisa_saldo'] = $info_skk['sisa_saldo'];
 					$output['status_aksi'] = true;
-				}				
+				}
 			}
 
 			echo json_encode($output, JSON_PRETTY_PRINT);
@@ -90,6 +90,7 @@
 		*/
 		public function action_add_pengajuan(){
 			$this->model('Pengajuan_sub_kas_kecilModel');
+			$this->model('Sub_kas_kecilModel');
 
 			$output = array();
 			$output['status'] = $this->status;
@@ -99,19 +100,32 @@
 			$detail_pengajuan = ((isset($_POST["detail_pengajuan"])) && !empty($_POST["detail_pengajuan"])) ? $_POST["detail_pengajuan"] : false;
 
     		if ($this->status && ($pengajuan != false) && ($detail_pengajuan != false)) {
+				$info_skk = $this->Sub_kas_kecilModel->getByIdFromV($_POST['id']);
 
-				$data = array(
-					'pengajuan' => json_decode($pengajuan),
-					'detail_pengajuan' => json_decode($detail_pengajuan)
-				);
+				// pengecekan integritas input
+				if ($info_skk['email'] == $_POST['username']) {
 
-				$resultQuery = $this->Pengajuan_sub_kas_kecilModel->insert($data);
+					$data = array(
+						'pengajuan' => json_decode($pengajuan),
+						'detail_pengajuan' => json_decode($detail_pengajuan)
+					);
 
-				if ($resultQuery === true) {
-					$output['status_aksi'] = true;
-				} else {
-					$output['error'] = $resultQuery;
-					$output['status_aksi'] = false;
+					if ($data['pengajuan']->total <= $info_skk['sisa_saldo']) {
+						$data['pengajuan']->dana_disetujui = 0;
+						$data['pengajuan']->status = "4"; // status : LANGSUNG
+					} else {
+						$data['pengajuan']->total -= $info_skk['sisa_saldo'];
+						$data['pengajuan']->status = "1"; // status : PENDING
+					}
+	
+					$resultQuery = $this->Pengajuan_sub_kas_kecilModel->insert($data);
+	
+					if ($resultQuery === true) {
+						$output['status_aksi'] = true;
+					} else {
+						$output['error'] = $resultQuery;
+						$output['status_aksi'] = false;
+					}
 				}
 			}
 
