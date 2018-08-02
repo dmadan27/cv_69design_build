@@ -32,13 +32,15 @@
 		}
 
 		/**
-		*
-		*/
+		 * Menampilkan list pengajuan yang belum disetujui berdasarkan sub kas kecil tertentu.
+		 * 
+		 * @return $output berisi status authentikasi dan list data pengajuan yang belum disetujui.
+		 */
 		public function pengajuan() {
 			$this->model('Pengajuan_sub_kas_kecilModel');
 
-			$input["id_sub_kas_kecil"] = isset($_POST["id"]) ? $_POST["id"] : false;
-			$input["cari"] = isset($_POST["cari"]) ? $_POST["cari"] : null;
+			$input["id_sub_kas_kecil"] = $_POST["id"] ?? false;
+			$input["cari"] = $_POST["cari"] ?? null;
 			$input["page"] = ($_POST["page"] != null) ? $this->validation->validInput($_POST["page"]) : 1;
 
 			$output['status'] = $this->status;
@@ -49,6 +51,10 @@
 				$totalPage = ceil($totalData/10);
 
 				$next = ($input["page"] < $totalPage) ? ($input["page"] + 1) : null;
+
+				foreach ($dataPengajuan as $key => $value) {
+					$dataPengajuan[$key]['status'] = $this->helper->getNamaStatusPengajuanSKK($dataPengajuan[$key]['status']);
+				}
 
 				$output['list_pengajuan'] = $dataPengajuan;
 				$output['next'] = $next;
@@ -149,7 +155,7 @@
 				$output['detail_pengajuan'] = $dataDetail;
 			}
 
-			echo json_encode($output);
+			echo json_encode($output, JSON_PRETTY_PRINT);
 		}
 
 		/**

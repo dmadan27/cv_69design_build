@@ -139,149 +139,91 @@
 		}
 
 		/**
-		*	mendapatkan nama status pengajuan sub kas kecil
-		*/
-	  public function getNamaStatusPengajuanSKK($id) {
-			switch ($id) {
-				case '1':
-					return "PENDING";
-					break;
-
-				case '2':
-					return "PERBAIKI";
-					break;
-
-				case '3':
-					return "DISETUJUI";
-					break;
-
-				case '4':
-					return "LANGSUNG";
-					break;
-
-				case '5':
-					return "DITOLAK";
-					break;
-
-				default:
-					# code...
-					break;
-			}
+		 * 
+		 */
+		private function setStatusPengajuanSKK() {
+			return array(
+				'1' => 'PENDING',
+				'2' => 'PERBAIKI', 
+				'3' => 'DISETUJUI', 
+				'4' => 'LANGSUNG', 
+				'5' => 'DITOLAK',  
+			);
 		}
 
 		/**
-		*	mendapatkan id status pengajuan sub kas kecil
-		*/
+		 * Mendapatkan Nama Status Pengajuan SKK ('PENDING','PERBAIKI',dll)
+		 * 
+		 * @param $id ('1','2','3',dll)
+		 * @return $nama ('PENDING','PERBAIKI',dll) 
+		 */
+		public function getNamaStatusPengajuanSKK($id) {
+			$status_pengajuan = $this->setStatusPengajuanSKK();
+			return $status_pengajuan[strtoupper(strval($id))] ?? null;
+		}
+
+		/**
+		 * Mendapatkan id Status Pengajuan SKK ('1','2','3',dll)
+		 * 
+		 * @param $nama ('PENDING','PERBAIKI',dll)
+		 * @return $id ('1','2','3',dll)
+		 */
 		public function getIdStatusPengajuanSKK($nama) {
-			switch ($nama) {
-				case 'PENDING':
-					return "1";
-					break;
+			$status_pengajuan = $this->setStatusPengajuanSKK();
+			return array_search(strtoupper($nama), $status_pengajuan) ?? null;
+		}
 
-				case 'PERBAIKI':
-					return "2";
-					break;
-
-				case 'DISETUJUI':
-					return "3";
-					break;
-
-				case 'LANGSUNG':
-					return "4";
-					break;
-
-				case 'DITOLAK':
-					return "5";
-					break;
-
-				default:
-					# code...
-					break;
-			}
+		/**
+		 * 
+		 */
+		private function setStatusLaporanSKK() {
+			return array(
+				'1' => 'PENDING',
+				'2' => 'PERBAIKI', 
+				'3' => 'DISETUJUI', 
+			);
 		}
 
 		/**
 		*	mendapatkan nama status laporan pengajuan sub kas kecil
 		*/
 		public function getNamaStatusLaporanSKK($id) {
-			switch ($id) {
-				case '1':
-					return "PENDING";
-					break;
-
-				case '2':
-					return "PERBAIKI";
-					break;
-
-				case '3':
-					return "DISETUJUI";
-					break;
-
-				default:
-					# code...
-					break;
-			}
+			$status_laporan = $this->setStatusLaporanSKK();
+			return $status_laporan[strtoupper(strval($id))] ?? null;
 		}
 
 		/**
 		*	mendapatkan id status laporan pengajuan sub kas kecil
 		*/
 		public function getIdStatusLaporanSKK($nama) {
-			switch ($nama) {
-				case 'PENDING':
-					return "1";
-					break;
+			$status_laporan = $this->setStatusLaporanSKK();
+			return array_search(strtoupper($nama), $status_laporan) ?? null;
+		}
 
-				case 'PERBAIKI':
-					return "2";
-					break;
-
-				case 'DISETUJUI':
-					return "3";
-					break;
-
-				default:
-					# code...
-					break;
-			}
+		/**
+		 * 
+		 */
+		private function setJenisDetailPengajuanSKK() {
+			return array(
+				'T' => "TEKNIS",
+				'N' => "NON-TEKNIS",
+			);
 		}
 
 		/**
 		*	mendapatkan nama jenis detail pengajuan sub kas kecil
 		*/
 		public function getNamaJenisDetailPengajuanSKK($id) {
-			switch ($id) {
-				case 'T':
-					return "TEKNIS";
-					break;
-
-				case 'N':
-					return "NON-TEKNIS";
-					break;
-
-				default:
-					# code...
-					break;
-			}
+			$jenis_detail = $this->setJenisDetailPengajuanSKK();
+			return $jenis_detail[strtoupper(strval($id))] ?? null;
 		}
 
 		/**
 		*	mendapatkan id jenis detail pengajuan sub kas kecil
 		*/
 		public function getIdJenisDetailPengajuanSKK($nama) {
-			switch ($nama) {
-				case 'TEKNIS':
-					return "T";
-					break;
-
-				case 'NON-TEKNIS':
-					return "N";
-					break;
-
-				default:
-					# code...
-					break;
-			}
+			$jenis_detail = $this->setJenisDetailPengajuanSKK();
+			return array_search(strtoupper($nama), $jenis_detail) ?? null; 
 		}
 
 
