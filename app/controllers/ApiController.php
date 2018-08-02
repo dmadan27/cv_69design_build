@@ -152,6 +152,10 @@
 			if ($this->status && ($id_pengajuan != false)) {
 				$dataDetail = $this->Pengajuan_sub_kas_kecilModel->getById_mobile(strtoupper($id_pengajuan));
 
+				foreach ($dataDetail as $key => $value) {
+					$dataDetail[$key]['jenis'] = $this->helper->getNamaJenisDetailPengajuanSKK($dataDetail[$key]['jenis']);
+				}
+
 				$output['detail_pengajuan'] = $dataDetail;
 			}
 
