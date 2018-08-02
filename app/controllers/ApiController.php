@@ -210,6 +210,11 @@
 
 				$next = ($input["page"] < $totalPage) ? ($input["page"] + 1) : null;
 
+				foreach ($dataLaporan as $key => $value) {
+					$dataLaporan[$key]['status'] = $this->helper->getNamaStatusPengajuanSKK($dataLaporan[$key]['status']);
+					$dataLaporan[$key]['status_laporan'] = $this->helper->getNamaStatusLaporanSKK($dataLaporan[$key]['status']);
+				}
+
 				$output['list_laporan'] = $dataLaporan;
 				$output['next'] = $next;
 			}
