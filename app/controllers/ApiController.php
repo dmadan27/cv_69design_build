@@ -505,6 +505,7 @@
 
 					$output['profil'] = $dataProfil;
 					$output['profil']['foto'] = $foto;
+					$output['profil']['token'] = "";
 				}
 			}
 			echo json_encode($output, JSON_PRETTY_PRINT);
