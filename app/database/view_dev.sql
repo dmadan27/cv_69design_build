@@ -105,14 +105,28 @@ CREATE OR REPLACE VIEW vp_estimasi_pengeluaran_skk AS
 
 -- untuk mendapatkan informasi detai sub kas kecil
 CREATE OR REPLACE VIEW v_sub_kas_kecil AS
-  SELECT
-    skk.id, skk.nama, skk.alamat, skk.no_telp, skk.email, skk.foto, skk.status,
-    COALESCE(skk.saldo,0) saldo,
-    COALESCE(veps.estimasi_pengeluaran_saldo,0) estimasi_pengeluaran_saldo,
-    (COALESCE(skk.saldo,0)-COALESCE(veps.estimasi_pengeluaran_saldo,0)) sisa_saldo,
-    tm.token
-  FROM sub_kas_kecil skk
-  LEFT JOIN vp_estimasi_pengeluaran_skk veps ON skk.id=veps.id_sub_kas_kecil
-  LEFT JOIN token_mobile tm ON skk.email=tm.username;
+	SELECT
+		skk.id, skk.nama, skk.alamat, skk.no_telp, skk.email, skk.foto, skk.status,
+		COALESCE(skk.saldo,0) saldo,
+		COALESCE(veps.estimasi_pengeluaran_saldo,0) estimasi_pengeluaran_saldo,
+		(COALESCE(skk.saldo,0)-COALESCE(veps.estimasi_pengeluaran_saldo,0)) sisa_saldo,
+		tm.token
+	FROM sub_kas_kecil skk
+	LEFT JOIN vp_estimasi_pengeluaran_skk veps ON skk.id=veps.id_sub_kas_kecil
+	LEFT JOIN token_mobile tm ON skk.email=tm.username;
 
+-- ========================================================================================
+
+-- VIEW PENGAJUAN SUB KAS KECIL -> digunakan untuk mendapatkan info pengajuan sub kas kecil
+CREATE OR REPLACE VIEW v_pengajuan_sub_kas_kecil AS
+	SELECT 
+		pskk.id, pskk.id_sub_kas_kecil, pskk.id_proyek, pskk.tgl, pskk.nama,
+		COALESCE(SUM(dpskk.subtotal),0) biaya_pengajuan,
+		COALESCE(pskk.dana_disetujui,0) dana_disetujui,
+		pskk.status status_pengajuan,
+		COALESCE(SUM(dpskk.harga_asli),0) biaya_laporan,
+		pskk.status_laporan
+	FROM pengajuan_sub_kas_kecil pskk
+	JOIN detail_pengajuan_sub_kas_kecil dpskk ON pskk.id=dpskk.id_pengajuan
+	GROUP BY pskk.id;
 -- ========================================================================================

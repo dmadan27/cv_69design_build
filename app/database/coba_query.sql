@@ -27,3 +27,16 @@ LEFT JOIN (
 -- mendapatkan token dari tabel token mobile
 LEFT JOIN token_mobile tm ON skk.email=tm.username;
 -- ==============================================================================================================
+
+-- MEMBUAT VIEW PENGAJUAN SUB KAS KECIL =========================================================================
+SELECT 
+	pskk.id, pskk.id_sub_kas_kecil, pskk.id_proyek, pskk.tgl, pskk.nama,
+    COALESCE(SUM(dpskk.subtotal),0) biaya_pengajuan,
+    COALESCE(pskk.dana_disetujui,0) dana_disetujui,
+    pskk.status status_pengajuan,
+    COALESCE(SUM(dpskk.harga_asli),0) biaya_laporan,
+    pskk.status_laporan
+FROM pengajuan_sub_kas_kecil pskk
+JOIN detail_pengajuan_sub_kas_kecil dpskk ON pskk.id=dpskk.id_pengajuan
+GROUP BY pskk.id
+-- ==============================================================================================================
