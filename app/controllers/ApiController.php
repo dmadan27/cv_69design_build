@@ -378,13 +378,13 @@
 			 * 		a. update kolom status_laporan ke '1' (PENDING)
 			 * 	4. Hapus foto pada tabel upload_laporan pengajuan_sub_kas_kecil berdasarkan $id_hapus_foto (JIKA ADA)
 			 * 	5. Tambah foto baru kedalam tabel upload_laporan pengajuan_sub_kas_kecil dengan $foto
-			 * 	5. Dapatkan saldo_sub_kas_kecil dari tabel sub_kas_kecil
-			 * 	6. Tambah mutasi_saldo_sub_kas_kecil
+			 * 	6. Dapatkan saldo_sub_kas_kecil dari tabel sub_kas_kecil
+			 * 	7. Tambah mutasi_saldo_sub_kas_kecil
 			 * 		a. jika selisih biaya laporan bernilai + maka insert biaya laporan di uang_masuk
 			 * 		b. jika selisih biaya laporan bernilao - maka kalikan dengan -1 dan simpan di uang keluar
 			 * 		c. beri keterangan 'PENGAJUAN PERBAIKAN LAPORAN [id_pengajuan]'
 			 * 		d. tambahkan saldo dengan menambahkan saldo lama (No.5) dengan selisih biaya laporan
-			 * 	7. Update saldo sub_kas_kecil dengan menambahkan saldo lama (No.5) dengan selisih biaya laporan
+			 * 	8. Update saldo sub_kas_kecil dengan menambahkan saldo lama (No.5) dengan selisih biaya laporan
 			 * 
 			 */
 		}
