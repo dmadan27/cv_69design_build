@@ -42,6 +42,13 @@ $(document).ready(function(){
         }
     });
 
+    // btn Export
+    $('#exportExcel').on('click', function(){
+        // if(this.value.trim() != "") 
+            window.location.href = BASE_URL+'pengajuan-sub-kas-kecil/export/';
+       
+    });
+
     // setInterval(function(){
     // 	pengajuan_sub_kas_kecilTable.ajax.reload(null, false);
     // }, 10000);
