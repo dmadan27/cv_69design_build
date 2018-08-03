@@ -103,7 +103,7 @@
 		 * 
 		 */
 		public function getPerbaikanById($id_pengajuan) {
-			$query = "SELECT * FROM v_pengajuan_sub_kas_kecil WHERE (status_laporan IS NULL) AND (id=:id_pengajuan)";
+			$query = "SELECT * FROM v_pengajuan_sub_kas_kecil WHERE (status_laporan='2') AND (id=:id_pengajuan)";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(

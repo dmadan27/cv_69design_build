@@ -334,12 +334,15 @@
 
 				if ($username == $info_skk['email'] && ($id_pengajuan != null)) {
 					$laporan = $this->Laporan_pengajuan_sub_kas_kecilModel->getPerbaikanById($id_pengajuan);
-					$output['status_aksi'] = true;
-					$output['id_pengajuan'] = $laporan['id'];
-					$output['tgl_pengajuan'] = $laporan['tgl'];
-					$output['biaya_laporan'] = $laporan['biaya_laporan'];
-					$output['jumlah_foto'] = $this->Laporan_pengajuan_sub_kas_kecilModel->getJumlahFotoById($id_pengajuan);
-					$output['detail_laporan'] = $this->Laporan_pengajuan_sub_kas_kecilModel->getDetailLaporanById($id_pengajuan);
+					if ($laporan != null) {
+						$output['status_aksi'] = true;
+						$output['id_pengajuan'] = $laporan['id'];
+						$output['tgl_pengajuan'] = $laporan['tgl'];
+						$output['biaya_laporan'] = $laporan['biaya_laporan'];
+						$output['jumlah_foto'] = $this->Laporan_pengajuan_sub_kas_kecilModel->getJumlahFotoById($id_pengajuan);
+						$output['detail_laporan'] = $this->Laporan_pengajuan_sub_kas_kecilModel->getDetailLaporanById($id_pengajuan);
+					}
+					
 				}
 			}
 
