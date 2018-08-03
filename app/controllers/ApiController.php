@@ -350,6 +350,46 @@
 		}
 
 		/**
+		 * 
+		 */
+		public function action_edit_laporan() {
+			$this->model("Laporan_pengajuan_sub_kas_kecilModel");
+
+			$id_pengajuan = isset($_POST['id_pengajuan']) ?
+							$this->validation->validInput($_POST['id_pengajuan'], false) : false;
+			$detail_laporan = ((isset($_POST["detail_laporan"])) && !empty($_POST["detail_laporan"])) ?
+							json_decode($_POST["detail_laporan"]) : false;
+			$id_hapus_foto = $_POST['id_hapus_foto'] ?? null;				
+			$foto = isset($_FILES['foto']) ? $this->helper->reArrayFiles($_FILES['foto']) : false;
+			$jumlah_foto = isset($_POST['jumlah_foto']) ?
+							$this->validation->validInput($_POST['jumlah_foto']) : false;
+
+			$status_valid_foto = $status_upload_foto = false;
+
+			/**
+			 * ALUR AKSI DATABASE ACTION UPDATE LAPORAN
+			 * 
+			 * 	1. Dapatkan selisih biaya laporan = biaya_laporan (lama) - biaya_laporan (baru)
+			 * 		a. ambil biaya laporan lama dari v_sub_kas_kecil
+			 * 		b. dapatkan biaya laporan baru dari jumlah isi kolom harga_asli $detail laporan
+			 * 	2. Update tabel detail_pengajuan_sub_kas_kecil dengan $detail_laporan
+			 * 		a. update kolom harga_asli, sisa
+			 * 	3. Update tabel pengajuan_sub_kas_kecil
+			 * 		a. update kolom status_laporan ke '1' (PENDING)
+			 * 	4. Hapus foto pada tabel upload_laporan pengajuan_sub_kas_kecil berdasarkan $id_hapus_foto (JIKA ADA)
+			 * 	5. Tambah foto baru kedalam tabel upload_laporan pengajuan_sub_kas_kecil dengan $foto
+			 * 	5. Dapatkan saldo_sub_kas_kecil dari tabel sub_kas_kecil
+			 * 	6. Tambah mutasi_saldo_sub_kas_kecil
+			 * 		a. jika selisih biaya laporan bernilai + maka insert biaya laporan di uang_masuk
+			 * 		b. jika selisih biaya laporan bernilao - maka kalikan dengan -1 dan simpan di uang keluar
+			 * 		c. beri keterangan 'PENGAJUAN PERBAIKAN LAPORAN [id_pengajuan]'
+			 * 		d. tambahkan saldo dengan menambahkan saldo lama (No.5) dengan selisih biaya laporan
+			 * 	7. Update saldo sub_kas_kecil dengan menambahkan saldo lama (No.5) dengan selisih biaya laporan
+			 * 
+			 */
+		}
+
+		/**
 		*
 		*/
 		public function detail_foto_laporan(){
