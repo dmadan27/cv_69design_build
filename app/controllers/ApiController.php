@@ -315,6 +315,38 @@
 		}
 
 		/**
+		 * 
+		 */
+		public function edit_laporan() {
+			$this->model('Laporan_pengajuan_sub_kas_kecilModel');
+			$this->model('Sub_kas_kecilModel');
+
+			$id_pengajuan = $_POST['id_pengajuan'] ?? null;
+			$id_skk = $_POST['id'] ?? null;
+			$username = $_POST['username'] ?? null;
+
+			$output = array();
+			$output['status'] = $this->status;
+			$output['status_aksi'] = $this->status_aksi;
+
+			if ($output['status']) {
+				$info_skk = $this->Sub_kas_kecilModel->getByIdFromV($id_skk);
+
+				if ($username == $info_skk['email'] && ($id_pengajuan != null)) {
+					$laporan = $this->Laporan_pengajuan_sub_kas_kecilModel->getPerbaikanById($id_pengajuan);
+					$output['status_aksi'] = true;
+					$output['id_pengajuan'] = $laporan['id'];
+					$output['tgl_pengajuan'] = $laporan['tgl'];
+					$output['biaya_laporan'] = $laporan['biaya_laporan'];
+					$output['jumlah_foto'] = $this->Laporan_pengajuan_sub_kas_kecilModel->getJumlahFotoById($id_pengajuan);
+					$output['detail_laporan'] = $this->Laporan_pengajuan_sub_kas_kecilModel->getDetailLaporanById($id_pengajuan);
+				}
+			}
+
+			echo json_encode($output, JSON_PRETTY_PRINT);
+		}
+
+		/**
 		*
 		*/
 		public function detail_foto_laporan(){
@@ -350,7 +382,7 @@
 				$output['foto'] = $data;
 			}
 
-			echo json_encode($output);
+			echo json_encode($output, JSON_PRETTY_PRINT);
 			// echo "<pre>";
 			// echo var_dump($dataFoto);
 		}

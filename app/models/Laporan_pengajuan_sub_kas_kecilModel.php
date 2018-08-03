@@ -99,6 +99,50 @@
 			return $query;
 		}
 
+		/**
+		 * 
+		 */
+		public function getPerbaikanById($id_pengajuan) {
+			$query = "SELECT * FROM v_pengajuan_sub_kas_kecil WHERE (status_laporan IS NULL) AND (id=:id_pengajuan)";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array (
+					':id_pengajuan' => $id_pengajuan
+				)
+			);
+			return $statement->fetch(PDO::FETCH_ASSOC);	
+		}
+
+		/**
+		 * 
+		 */
+		public function getDetailLaporanById($id_pengajuan) {
+			$query = "SELECT * FROM detail_pengajuan_sub_kas_kecil WHERE id_pengajuan=:id_pengajuan";
+			
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id_pengajuan' => $id_pengajuan,
+				)
+			);
+			return $statement->fetchAll(PDO::FETCH_ASSOC);
+		}
+
+		/**
+		 * 
+		 */
+		public function getJumlahFotoById($id_pengajuan) {
+			$query = "SELECT COUNT(id_pengajuan) jumlah FROM upload_laporan_pengajuan_sub_kas_kecil WHERE id_pengajuan=:id_pengajuan";
+			
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id_pengajuan' => $id_pengajuan,
+				)
+			);
+			return $statement->fetch(PDO::FETCH_ASSOC)['jumlah'];
+		}
 
 		/**
 		*
