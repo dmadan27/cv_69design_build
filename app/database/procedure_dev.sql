@@ -717,4 +717,71 @@
 	delimiter ;
 
 
+-- ===================================================================================
+-- Procedure edit_laporan_sub_kas_kecil
+-- belum fix
+delimeter //
+CREATE PROCEDURE edit_laporan_sub_kas_kecil (
+    IN id_pengajuan_param varchar(50),
+    IN id_sub_kas_kecil_param varchar(10),
+    IN biaya_laporan_baru_param double(19,2),
+    IN tgl_mutasi_param date
+)
+BEGIN
+    DECLARE get_selisih_biaya_laporan double(19,2);
+    DECLARE get_saldo_sub_kas_kecil double(12,2);
+    DECLARE get_uang_masuk double(12,2);
+    DECLARE get_uang_keluar double(12,2);
+    
+    -- mendapatkan selisih biaya laporan
+    SELECT 
+        (biaya_laporan - biaya_laporan_baru_param) 
+    INTO get_selisih_biaya_laporan 
+    FROM v_pengajuan_sub_kas_kecil WHERE id=id_pengajuan_param;
+
+    -- mendapatkan saldo sub_kas_kecil
+    SELECT
+        saldo
+    INTO get_saldo_sub_kas_kecil
+    FROM v_sub_kas_kecil WHERE id=id_sub_kas_kecil_param;
+
+    -- update status_laporan pengajuan (PENDING)
+    UPDATE pengajuan_sub_kas_kecil
+    SET 
+        status_laporan='1'
+    WHERE id=id_pengajuan_param;    
+
+    -- mendapatkan uang masuk
+    IF get_selisih_biaya_laporan>=0 THEN SET get_uang_masuk = get_selisih_biaya_laporan;
+    ELSE SET get_uang_masuk = 0;
+    END IF;
+
+    -- mendapatkan uang keluar
+    IF get_selisih_biaya_laporan<0 THEN SET get_uang_keluar = (get_selisih_biaya_laporan*(-1));
+    ELSE SET get_uang_keluar = 0;
+    END IF;
+
+    -- insert mutasi
+    INSERT INTO mutasi_saldo_sub_kas_kecil (
+        id_sub_kas_kecil, tgl, uang_masuk, uang_keluar, saldo, ket
+    ) VALUES (
+        id_sub_kas_kecil_param,
+        tgl_mutasi_param,
+        get_uang_masuk,
+        get_uang_keluar,
+        (get_saldo_sub_kas_kecil+get_selisih_biaya_laporan),
+        CONCAT('PENGAJUAN PERBAIKAN LAPORAN ', id_pengajuan_param)
+    );
+
+    -- update saldo sub kas kecil
+    UPDATE sub_kas_kecil
+    SET
+        saldo=(get_saldo_sub_kas_kecil + get_selisih_biaya_laporan)
+    WHERE id=id_sub_kas_kecil_param;
+
+
+END//
+delimeter; 
+
+
 # =================================================================== #
