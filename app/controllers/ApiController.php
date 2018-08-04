@@ -193,14 +193,15 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function laporan() {
 			$this->model('Laporan_pengajuan_sub_kas_kecilModel');
 
-			$input["id_sub_kas_kecil"] = isset($_POST["id"]) ? $_POST["id"] : false;
-			$input["cari"] = isset($_POST["cari"]) ? $_POST["cari"] : null;
+			$input["id_sub_kas_kecil"] = $_POST["id"] ?? false;
+			$input["cari"] = $_POST["cari"] ?? null;
 			$input["page"] = ($_POST["page"] != null) ? $this->validation->validInput($_POST["page"]) : 1;
+			$input["filter"] = $this->helper->getIdStatusLaporanSKK($_POST["filter"] ?? null);
 
 			$output['status'] = $this->status;
 

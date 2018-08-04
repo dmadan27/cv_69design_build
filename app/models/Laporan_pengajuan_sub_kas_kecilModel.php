@@ -152,8 +152,10 @@
 			$cari = $data["cari"];
 			$page = $data["page"];
 
-			$queryKondisi = "WHERE id_sub_kas_kecil='".$id."' AND (status='3' OR status='4')";
-			$kolomCari = array("id","nama","id_proyek","tgl","status_laporan");
+			$filter = ($data["filter"] != null) ? " AND status_laporan='".$data["filter"]."'" : "";
+
+			$queryKondisi = "WHERE id_sub_kas_kecil='".$id."' AND (status='3' OR status='4')".$filter;
+			$kolomCari = array("id","nama","id_proyek","tgl");
 
 			$query = $this->querySelectBuilder_mobile($queryKondisi, $kolomCari, $cari, $page);
 
