@@ -154,8 +154,8 @@
 		/**
 		 * Mendapatkan Nama Status Pengajuan SKK ('PENDING','PERBAIKI',dll)
 		 * 
-		 * @param $id ('1','2','3',dll)
-		 * @return $nama ('PENDING','PERBAIKI',dll) 
+		 * @param id ('1','2','3',dll)
+		 * @return nama_status ('PENDING','PERBAIKI',dll) 
 		 */
 		public function getNamaStatusPengajuanSKK($id) {
 			$status_pengajuan = $this->setStatusPengajuanSKK();
@@ -165,8 +165,8 @@
 		/**
 		 * Mendapatkan id Status Pengajuan SKK ('1','2','3',dll)
 		 * 
-		 * @param $nama ('PENDING','PERBAIKI',dll)
-		 * @return $id ('1','2','3',dll)
+		 * @param nama ('PENDING','PERBAIKI',dll)
+		 * @return id_status ('1','2','3',dll)
 		 */
 		public function getIdStatusPengajuanSKK($nama) {
 			$status_pengajuan = $this->setStatusPengajuanSKK();
@@ -185,16 +185,22 @@
 		}
 
 		/**
-		*	mendapatkan nama status laporan pengajuan sub kas kecil
-		*/
+		 * Mendapatkan nama status laporan pengajuan sub kas kecil
+		 * 
+		 * @param id ('1','2','3')
+		 * @return nama_status_laporan ('PENDING','PERBAIKI','DISETUJUI')
+		 */
 		public function getNamaStatusLaporanSKK($id) {
 			$status_laporan = $this->setStatusLaporanSKK();
 			return $status_laporan[strtoupper(strval($id))] ?? null;
 		}
 
 		/**
-		*	mendapatkan id status laporan pengajuan sub kas kecil
-		*/
+		 * mendapatkan id status laporan pengajuan sub kas kecil
+		 * 
+		 * @param nama ('PENDING','PERBAIKI','DISETUJUI')
+		 * @return id_status_laporan ('1','2','3')
+		 */
 		public function getIdStatusLaporanSKK($nama) {
 			$status_laporan = $this->setStatusLaporanSKK();
 			return array_search(strtoupper($nama), $status_laporan) ?? null;
@@ -211,19 +217,67 @@
 		}
 
 		/**
-		*	mendapatkan nama jenis detail pengajuan sub kas kecil
-		*/
+		 * Mendapatkan nama jenis detail pengajuan sub kas kecil
+		 * 
+		 * @param id ('T','N')
+		 * @return nama_jenis_detail ('TEKNIS','NON-TEKNIS')
+		 */
 		public function getNamaJenisDetailPengajuanSKK($id) {
 			$jenis_detail = $this->setJenisDetailPengajuanSKK();
 			return $jenis_detail[strtoupper(strval($id))] ?? null;
 		}
 
 		/**
-		*	mendapatkan id jenis detail pengajuan sub kas kecil
-		*/
+		 * Mendapatkan id jenis detail pengajuan sub kas kecil
+		 * 
+		 * @param nama ('TEKNIS','NON-TEKNIS')
+		 * @return id_jenis_detail ('T','N')
+		 */
 		public function getIdJenisDetailPengajuanSKK($nama) {
 			$jenis_detail = $this->setJenisDetailPengajuanSKK();
 			return array_search(strtoupper($nama), $jenis_detail) ?? null; 
+		}
+
+		/**
+		 * Mengirim notifikasi menggunakan firebase.
+		 * 
+		 * @param id_skk ID Sub Kas Kecil yang ingin dikirimkan notifikasi.
+		 * @param data Data kostum yang ingin dikirimkan dalam notifikasi (berbentuk array).
+		 * @param notif_data Berisi judul, dan isi yang akan ditampilkan pada notifikasi (berbentuk array).
+		 * @param priority Setting prioritas notifikasi ('HIGH' atau 'NORMAL').
+		 * @return message_id Merupakan kode unik pemberitahuan notifikasi pesan telah dikirim, 
+		 * 						Jika message_id tidak dikembalikan oleh firebase maka method akan menghasilkan nilai null.
+		 */
+		public function sendNotif($id_skk, $data, $notif_data, $priority) {
+			$url = "https://fcm.googleapis.com/fcm/send";
+
+			$headers = array(
+				"Authorization : ".KEY_FIREBASE_NOTIFICATION,
+				"Content-Type : application/json",
+			);
+
+			$post_data = array(
+				'to' => "/topics/".$id_skk,
+				'notification' => array(
+					'title' => $notif_data['judul'],
+					'body' => $notif_data['isi'],
+					'sound' => "default"
+				),
+				'data' => $data,
+				'priority' => $priority
+			);
+
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_data));
+			$result = curl_exec($ch);
+			curl_close($ch);
+			
+			return json_decode($result, true)['message_id'] ?? null;
 		}
 
 

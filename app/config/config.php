@@ -1,6 +1,12 @@
 <?php
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 	
+	// KEY FIREBASE NOTIFICATION
+	define(
+		'KEY_FIREBASE_NOTIFICATION',
+		'key=AAAAlOkhnSY:APA91bEqHj4gSO-lEqIeQz4g0ABtrhnSa6w8zDWMlXno50jkyJt5VwrfiC91uXv55yM560VyV4QaL9JG7XBktaX1IeMPJeNB7wDaFtI_Z3d2Qk6tnUeV0lYVxtvbF94fw_7rQqk8foLO'
+	);
+
 	if(STATUS_DEV == 'DEVELOPMENT'){
 		// config base url
 		define('BASE_URL', 'http://localhost/cv_69design_build/'); // isi path dari web
