@@ -165,8 +165,8 @@
 		}
 
 		/**
-		* BELUM FIX (selalu hasil true walau data tidak ada)
-		*/
+		 * 
+		 */
 		public function delete_pengajuan() {
 			$this->model('Pengajuan_sub_kas_kecilModel');
 
@@ -174,8 +174,8 @@
 			$output["status_aksi"] = $this->status_aksi;
 			$output["error"] = "";
 
-			$id_pengajuan = ($_POST['id_pengajuan'] != null) ? $_POST['id_pengajuan'] : false;
-			$id_sub_kas_kecil = ($_POST['id'] != null) ? $_POST['id'] : false;
+			$id_pengajuan = $_POST['id_pengajuan'] ?? false;
+			$id_sub_kas_kecil = $_POST['id'] ?? false;
 
 			if ($output["status"] && ($id_pengajuan != false) && ($id_sub_kas_kecil != false)) {
 
