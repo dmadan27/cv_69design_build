@@ -40,12 +40,14 @@
 			$this->model('Pengajuan_sub_kas_kecilModel');
 
 			$input["id_sub_kas_kecil"] = $_POST["id"] ?? false;
+			$input["filter"] = $this->helper->getIdStatusPengajuanSKK($_POST["filter"] ?? null);
 			$input["cari"] = $_POST["cari"] ?? null;
 			$input["page"] = ($_POST["page"] != null) ? $this->validation->validInput($_POST["page"]) : 1;
 
 			$output['status'] = $this->status;
 
 			if ($this->status) {
+
 				$dataPengajuan = $this->Pengajuan_sub_kas_kecilModel->getAllByIdSubKasKecil_mobile($input);
 				$totalData = $this->Pengajuan_sub_kas_kecilModel->getRecordFilter_mobile();
 				$totalPage = ceil($totalData/10);
@@ -370,7 +372,7 @@
 			 * ALUR AKSI DATABASE ACTION UPDATE LAPORAN
 			 * 
 			 * 	1. Dapatkan selisih biaya laporan = biaya_laporan (lama) - biaya_laporan (baru)
-			 * 		a. ambil biaya laporan lama dari v_sub_kas_kecil
+			 * 		a. ambil biaya laporan lama dari v_pengajuan_sub_kas_kecil
 			 * 		b. dapatkan biaya laporan baru dari jumlah isi kolom harga_asli $detail laporan
 			 * 	2. Update tabel detail_pengajuan_sub_kas_kecil dengan $detail_laporan
 			 * 		a. update kolom harga_asli, sisa
@@ -381,7 +383,7 @@
 			 * 	6. Dapatkan saldo_sub_kas_kecil dari tabel sub_kas_kecil
 			 * 	7. Tambah mutasi_saldo_sub_kas_kecil
 			 * 		a. jika selisih biaya laporan bernilai + maka insert biaya laporan di uang_masuk
-			 * 		b. jika selisih biaya laporan bernilao - maka kalikan dengan -1 dan simpan di uang keluar
+			 * 		b. jika selisih biaya laporan bernilai - maka kalikan dengan -1 dan simpan di uang keluar
 			 * 		c. beri keterangan 'PENGAJUAN PERBAIKAN LAPORAN [id_pengajuan]'
 			 * 		d. tambahkan saldo dengan menambahkan saldo lama (No.5) dengan selisih biaya laporan
 			 * 	8. Update saldo sub_kas_kecil dengan menambahkan saldo lama (No.5) dengan selisih biaya laporan

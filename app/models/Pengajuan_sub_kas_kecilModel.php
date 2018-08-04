@@ -225,13 +225,16 @@
 				$cari = $data["cari"];
 				$page = $data["page"];
 
-				$queryKondisi = "WHERE id_sub_kas_kecil='".$id."' AND (status='1' OR status='2')";
-				$kolomCari = array("id","id_proyek","nama","tgl","status");
+				$filter = ($data["filter"] != null) ? "AND status='".$data['filter']."'" : "";
+
+				$queryKondisi = "WHERE id_sub_kas_kecil='".$id."' AND (status='1' OR status='2') ".$filter;
+				$kolomCari = array("id","id_proyek","nama","tgl");
 				$query = $this->querySelectBuilder_mobile($queryKondisi, $kolomCari, $cari, $page);
 
 				$statement = $this->koneksi->prepare($query);
 				$statement->execute();
 				return $statement->fetchAll(PDO::FETCH_ASSOC);
+				// return $query;
 			}
 
 			/**
