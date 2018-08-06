@@ -24,15 +24,22 @@ $(document).ready(function(){
             url: BASE_URL+"pengajuan-kas-kecil/get-list/",
             type: 'POST',
             data: {
-                "token_list" : $('#token_list').val().trim(),
+                // "token_list" : $('#token_list').val().trim(),
             }
             
-        },
+        }});
+
+    // btn Export
+    $('#exportExcel').on('click', function(){
+        // if(this.value.trim() != "") 
+            window.location.href = BASE_URL+'pengajuan-kas-kecil/export/';
+       
+    });
         
         
 
-})
 });
+
 
 /**
 *
