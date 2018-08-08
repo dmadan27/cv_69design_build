@@ -427,12 +427,14 @@
 
 			// Buat header tabel nya pada baris ke 3
 			$excel->setActiveSheetIndex(0)->setCellValue('A3', "NO"); // Set kolom A3 dengan tulisan "NO"
-			$excel->setActiveSheetIndex(0)->setCellValue('B3', "TANGGAL"); // Set kolom B3 dengan tulisan "TANGGAL"
-			$excel->setActiveSheetIndex(0)->setCellValue('C3', "NAMA"); // Set kolom C3 dengan tulisan "NAMA"
-			$excel->setActiveSheetIndex(0)->setCellValue('D3', "NOMINAL"); // Set kolom D3 dengan tulisan "NOMINAL"
-			$excel->setActiveSheetIndex(0)->setCellValue('E3', "KET"); // Set kolom E3 dengan tulisan "KET"
-			$excel->setActiveSheetIndex(0)->setCellValue('F3', "ID BANK"); // Set kolom F3 dengan tulisan "ID BANK"
-			$excel->setActiveSheetIndex(0)->setCellValue('G3', "NAMA BANK"); // Set kolom G3 dengan tulisan "NAMA BANK"
+			$excel->setActiveSheetIndex(0)->setCellValue('B3', "ID"); // Set kolom B3 dengan tulisan "ID"
+			$excel->setActiveSheetIndex(0)->setCellValue('C3', "TANGGAL"); // Set kolom C3 dengan tulisan "TANGGAL"
+			$excel->setActiveSheetIndex(0)->setCellValue('D3', "NAMA"); // Set kolom D3 dengan tulisan "NAMA"
+			$excel->setActiveSheetIndex(0)->setCellValue('E3', "NOMINAL"); // Set kolom E3 dengan tulisan "NOMINAL"
+			$excel->setActiveSheetIndex(0)->setCellValue('F3', "KETERANGAN"); // Set kolom F3 dengan tulisan "KETERANGAN"
+			$excel->setActiveSheetIndex(0)->setCellValue('G3', "ID_BANK"); // Set kolom G3 dengan tulisan "NAMA BANK"
+			$excel->setActiveSheetIndex(0)->setCellValue('H3', "NAMA BANK"); // Set kolom H3 dengan tulisan "NAMA BANK"
+			
 
 
 
@@ -444,8 +446,8 @@
 			$excel->getActiveSheet()->getStyle('E3')->applyFromArray($style_col);
 			$excel->getActiveSheet()->getStyle('F3')->applyFromArray($style_col);
 			$excel->getActiveSheet()->getStyle('G3')->applyFromArray($style_col);
+			$excel->getActiveSheet()->getStyle('H3')->applyFromArray($style_col);
 			
-
 
 
 			// Set height baris ke 1, 2 dan 3
@@ -461,12 +463,13 @@
 			$numrow = 4; // Set baris pertama untuk isi tabel adalah baris ke 4
 			while($data = $sql->fetch()){ // Ambil semua data dari hasil eksekusi $sql
 				$excel->setActiveSheetIndex(0)->setCellValue('A'.$numrow, $no);
-				$excel->setActiveSheetIndex(0)->setCellValue('B'.$numrow, $data['tgl']);
-				$excel->setActiveSheetIndex(0)->setCellValue('C'.$numrow, $data['nama']);
-				$excel->setActiveSheetIndex(0)->setCellValue('D'.$numrow, $data['nominal']);
-				$excel->setActiveSheetIndex(0)->setCellValue('E'.$numrow, $data['ket']);
-				$excel->setActiveSheetIndex(0)->setCellValue('F'.$numrow, $data['id_bank']);
-				$excel->setActiveSheetIndex(0)->setCellValue('G'.$numrow, $data['nama_bank']);
+				$excel->setActiveSheetIndex(0)->setCellValue('B'.$numrow, $data['id']);
+				$excel->setActiveSheetIndex(0)->setCellValue('C'.$numrow, $data['tgl']);
+				$excel->setActiveSheetIndex(0)->setCellValue('D'.$numrow, $data['nama']);
+				$excel->setActiveSheetIndex(0)->setCellValue('E'.$numrow, $data['nominal']);
+				$excel->setActiveSheetIndex(0)->setCellValue('F'.$numrow, $data['ket']);
+				$excel->setActiveSheetIndex(0)->setCellValue('G'.$numrow, $data['id_bank']);
+				$excel->setActiveSheetIndex(0)->setCellValue('H'.$numrow, $data['nama_bank']);
 				
 					
 				
@@ -478,6 +481,8 @@
 				$excel->getActiveSheet()->getStyle('E'.$numrow)->applyFromArray($style_row);
 				$excel->getActiveSheet()->getStyle('F'.$numrow)->applyFromArray($style_row);
 				$excel->getActiveSheet()->getStyle('G'.$numrow)->applyFromArray($style_row);
+				$excel->getActiveSheet()->getStyle('H'.$numrow)->applyFromArray($style_row);
+
 
 
 				
@@ -495,6 +500,8 @@
 			$excel->getActiveSheet()->getColumnDimension('E')->setWidth(15); // Set width kolom E
 			$excel->getActiveSheet()->getColumnDimension('F')->setWidth(15); // Set width kolom F
 			$excel->getActiveSheet()->getColumnDimension('G')->setWidth(30); // Set width kolom G
+			$excel->getActiveSheet()->getColumnDimension('H')->setWidth(30); // Set width kolom H
+
 
 
 			// Set orientasi kertas jadi LANDSCAPE
