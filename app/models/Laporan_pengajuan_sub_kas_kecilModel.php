@@ -152,15 +152,12 @@
 			$cari = $data["cari"];
 			$page = $data["page"];
 
-			$filter = $data["filter"];
-
+			$filter = "";
 			if (strtoupper($data["filter"]) == "BELUM DIKERJAKAN") 
 				$filter = " AND ((status_laporan IS NULL) OR (status_laporan='2'))";
-			else
-				$filter = ($data["filter"] != null) ? " AND status_laporan='".$data["filter"]."'" : "";
-
-			
-
+			else if ($data["filter"] != NULL)
+				$filter = " AND status_laporan='".$data['filter']."'";
+				
 			$queryKondisi = "WHERE id_sub_kas_kecil='".$id."' AND (status='3' OR status='4')".$filter;
 			$kolomCari = array("id","nama","id_proyek","tgl");
 

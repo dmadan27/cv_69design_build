@@ -201,7 +201,10 @@
 			$input["id_sub_kas_kecil"] = $_POST["id"] ?? false;
 			$input["cari"] = $_POST["cari"] ?? null;
 			$input["page"] = ($_POST["page"] != null) ? $this->validation->validInput($_POST["page"]) : 1;
-			$input["filter"] = $this->helper->getIdStatusLaporanSKK($_POST["filter"] ?? null);
+			$input["filter"] = $_POST["filter"] ?? null;
+
+			if (strtoupper($input["filter"]) != "BELUM DIKERJAKAN") 
+				$input["filter"] = $this->helper->getIdStatusLaporanSKK($input["filter"]);
 
 			$output['status'] = $this->status;
 
@@ -215,7 +218,7 @@
 
 				foreach ($dataLaporan as $key => $value) {
 					$dataLaporan[$key]['status'] = $this->helper->getNamaStatusPengajuanSKK($dataLaporan[$key]['status']);
-					$dataLaporan[$key]['status_laporan'] = $this->helper->getNamaStatusLaporanSKK($dataLaporan[$key]['status']);
+					$dataLaporan[$key]['status_laporan'] = $this->helper->getNamaStatusLaporanSKK($dataLaporan[$key]['status_laporan']);
 				}
 
 				$output['list_laporan'] = $dataLaporan;
