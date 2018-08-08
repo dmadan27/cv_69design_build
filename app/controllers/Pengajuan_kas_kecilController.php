@@ -288,19 +288,23 @@
 			);
 
 			$excel->setActiveSheetIndex(0)->setCellValue('A1', "DATA PENGAJUAN KAS KECIL"); // Set kolom A1 dengan tulisan "DATA PENGAJUAN KAS KECIL"
-			$excel->getActiveSheet()->mergeCells('A1:G1'); // Set Merge Cell pada kolom A1 sampai G1
+			$excel->getActiveSheet()->mergeCells('A1:H1'); // Set Merge Cell pada kolom A1 sampai G1
 			$excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(TRUE); // Set bold kolom A1
 			$excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(15); // Set font size 15 untuk kolom A1
 			$excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER); // Set text center untuk kolom A1
 
 			// Buat header tabel nya pada baris ke 3
 			$excel->setActiveSheetIndex(0)->setCellValue('A3', "NO"); // Set kolom A3 dengan tulisan "NO"
-			$excel->setActiveSheetIndex(0)->setCellValue('B3', "ID"); // Set kolom B3 dengan tulisan "ID"
-			$excel->setActiveSheetIndex(0)->setCellValue('C3', "ID KAS KECIL"); // Set kolom C3 dengan tulisan "ID KAS KECIL"
+			$excel->setActiveSheetIndex(0)->setCellValue('B3', "ID"); // Set kolom B3 dengan tulisan "NO"
+			
+			$excel->setActiveSheetIndex(0)->setCellValue('C3', "NAMA"); // Set kolom C3 dengan tulisan "NAMA"
 			$excel->setActiveSheetIndex(0)->setCellValue('D3', "TANGGAL"); // Set kolom D3 dengan tulisan "TANGGAL"
-			$excel->setActiveSheetIndex(0)->setCellValue('E3', "NAMA"); // Set kolom E3 dengan tulisan "NAMA"
-			$excel->setActiveSheetIndex(0)->setCellValue('F3', "TOTAL"); // Set kolom F3 dengan tulisan "TOTAL"
-			$excel->setActiveSheetIndex(0)->setCellValue('G3', "STATUS"); // Set kolom G3 dengan tulisan "STATUS"
+			$excel->setActiveSheetIndex(0)->setCellValue('E3', "TOTAL"); // Set kolom E3 dengan tulisan "TOTAL"
+			$excel->setActiveSheetIndex(0)->setCellValue('F3', "STATUS"); // Set kolom F3 dengan tulisan "STATUS"
+			$excel->setActiveSheetIndex(0)->setCellValue('G3', "ID KAS KECIL"); // Set kolom G3 dengan tulisan "ID KAS KECIL"
+			$excel->setActiveSheetIndex(0)->setCellValue('H3', "NAMA KAS KECIL"); // Set kolom H3 dengan tulisan "NAMA KAS KECIL"
+			$excel->setActiveSheetIndex(0)->setCellValue('I3', "TANGGAL CETAK"); // Set kolom H3 dengan tulisan "NAMA KAS KECIL"
+			
 
 
 
@@ -313,15 +317,16 @@
 			$excel->getActiveSheet()->getStyle('E3')->applyFromArray($style_col);
 			$excel->getActiveSheet()->getStyle('F3')->applyFromArray($style_col);
 			$excel->getActiveSheet()->getStyle('G3')->applyFromArray($style_col);
+			$excel->getActiveSheet()->getStyle('H3')->applyFromArray($style_col);
+
 
 
 			// Set height baris ke 1, 2 dan 3
 			$excel->getActiveSheet()->getRowDimension('1')->setRowHeight(20);
 			$excel->getActiveSheet()->getRowDimension('2')->setRowHeight(20);
 			$excel->getActiveSheet()->getRowDimension('3')->setRowHeight(20);
-
 			// Buat query untuk menampilkan semua data siswa
-			$sql = $pdo->prepare("SELECT * FROM pengajuan_kas_kecil");
+			$sql = $pdo->prepare("SELECT * FROM v_pengajuan_kas_kecil");
 			$sql->execute(); // Eksekusi querynya
 
 			$no = 1; // Untuk penomoran tabel, di awal set dengan 1
@@ -329,11 +334,13 @@
 			while($data = $sql->fetch()){ // Ambil semua data dari hasil eksekusi $sql
 				$excel->setActiveSheetIndex(0)->setCellValue('A'.$numrow, $no);
 				$excel->setActiveSheetIndex(0)->setCellValue('B'.$numrow, $data['id']);
-				$excel->setActiveSheetIndex(0)->setCellValue('C'.$numrow, $data['id_kas_kecil']);
+				$excel->setActiveSheetIndex(0)->setCellValue('C'.$numrow, $data['nama']);
 				$excel->setActiveSheetIndex(0)->setCellValue('D'.$numrow, $data['tgl']);
-				$excel->setActiveSheetIndex(0)->setCellValue('E'.$numrow, $data['nama']);
-				$excel->setActiveSheetIndex(0)->setCellValue('F'.$numrow, $data['total']);
-				$excel->setActiveSheetIndex(0)->setCellValue('G'.$numrow, $data['status']);
+				$excel->setActiveSheetIndex(0)->setCellValue('E'.$numrow, $data['total']);
+				$excel->setActiveSheetIndex(0)->setCellValue('F'.$numrow, $data['status']);
+				$excel->setActiveSheetIndex(0)->setCellValue('G'.$numrow, $data['id_kas_kecil']);
+				$excel->setActiveSheetIndex(0)->setCellValue('H'.$numrow, $data['nama_kas_kecil']);
+				
 				
 				
 				// Apply style row yang telah kita buat tadi ke masing-masing baris (isi tabel)
@@ -344,6 +351,8 @@
 				$excel->getActiveSheet()->getStyle('E'.$numrow)->applyFromArray($style_row);
 				$excel->getActiveSheet()->getStyle('F'.$numrow)->applyFromArray($style_row);
 				$excel->getActiveSheet()->getStyle('G'.$numrow)->applyFromArray($style_row);
+				$excel->getActiveSheet()->getStyle('H'.$numrow)->applyFromArray($style_row);
+
 
 				
 
@@ -362,6 +371,8 @@
 			$excel->getActiveSheet()->getColumnDimension('E')->setWidth(15); // Set width kolom E
 			$excel->getActiveSheet()->getColumnDimension('F')->setWidth(15); // Set width kolom F
 			$excel->getActiveSheet()->getColumnDimension('G')->setWidth(15); // Set width kolom G
+			$excel->getActiveSheet()->getColumnDimension('H')->setWidth(15); // Set width kolom H
+
 
 
 
