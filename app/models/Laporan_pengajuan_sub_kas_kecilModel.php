@@ -153,7 +153,7 @@
 			$page = $data["page"];
 
 			$filter = "";
-			if (strtoupper($data["filter"]) == "BELUM DIKERJAKAN") 
+			if (strtoupper($data["filter"]) == "BELUM SELESAI") 
 				$filter = " AND ((status_laporan IS NULL) OR (status_laporan='2'))";
 			else if ($data["filter"] != NULL)
 				$filter = " AND status_laporan='".$data['filter']."'";

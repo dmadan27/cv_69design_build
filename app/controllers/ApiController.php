@@ -203,7 +203,7 @@
 			$input["page"] = ($_POST["page"] != null) ? $this->validation->validInput($_POST["page"]) : 1;
 			$input["filter"] = $_POST["filter"] ?? null;
 
-			if (strtoupper($input["filter"]) != "BELUM DIKERJAKAN") 
+			if (strtoupper($input["filter"]) != "BELUM SELESAI") 
 				$input["filter"] = $this->helper->getIdStatusLaporanSKK($input["filter"]);
 
 			$output['status'] = $this->status;
