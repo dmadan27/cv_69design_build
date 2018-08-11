@@ -126,7 +126,7 @@
 												<input type="hidden" id="id" value="<?= $this->data['id']?>">
 												<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 													<!-- <input type="hidden" id="token_view" value="<?= $this->data['token']['view']; ?>"> -->
-													<table id="mutasiSubKasKecilTable" class="table table-bordered table-hover">
+													<table id="mutasiSubKasKecilTable" class="table table-bordered table-hover" style="width: 100%;">
 														<thead>
 															<tr>
 																<th class="text-right">No</th>
@@ -165,7 +165,7 @@
 												<input type="hidden" id="id" value="<?= $this->data['id']?>">
 												<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 													<!-- <input type="hidden" id="token_view" value="<?= $this->data['token']['view']; ?>"> -->
-													<table id="pengajuanSubKasKecilTable" class="table table-bordered table-hover">
+													<table id="pengajuanSubKasKecilTable" class="table table-bordered table-hover" style="width: 100%;">
 														<thead>
 															<tr>
 																<th class="text-right">No</th>
