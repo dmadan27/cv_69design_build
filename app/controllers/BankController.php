@@ -18,6 +18,7 @@
 			$this->model('BankModel');
 			$this->helper();
 			$this->validation();
+			$this->excel();
 		}	
 
 		/**
@@ -509,6 +510,20 @@
 
 			$write = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
 			$write->save('php://output');
+			
+		}
+
+		/*
+		*/
+		public function export_v2(){
+			$row = $this->BankModel->export();
+			$header = array_keys($row[0]); 
+
+
+			$this->excel->setProperty('bank','bank','bank');
+			$this->excel->setData($header, $row);
+			$this->excel->getData('bank', 'bank', 4, 5 );
+			$this->excel->getExcel('bank');
 			
 		}
 

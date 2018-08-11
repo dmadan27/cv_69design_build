@@ -170,6 +170,17 @@
 			$statement->closeCursor();
 		}
 
+
+		public function export(){
+			$query = "SELECT id ID, nama NAMA, saldo SALDO, status STATUS FROM bank ";
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute();
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+			return $result;
+
+		}
+
 		/**
 		* 
 		*/
