@@ -306,7 +306,7 @@
 															<!-- export -->
 															<button type="button" class="btn btn-success btn-flat" id="exportExcel_operasional"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 														</div>
-														<table id="operasional_proyekTable" class="table table-bordered table-hover">
+														<table id="operasional_proyekTable" class="table table-bordered table-hover" style="width: 100%">
 															<thead>
 																<tr>
 																	<th class="text-right">No</th>
