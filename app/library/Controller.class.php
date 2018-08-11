@@ -25,6 +25,13 @@
 		}
 
 		/**
+		 * 
+		 */
+		final protected function excel($excel = 'excel') {					
+			$this->$excel = new Excel();
+		}
+
+		/**
 		* Fungsi untuk load library Auth.class.php
 		*/
 		final protected function auth($auth = 'auth'){
