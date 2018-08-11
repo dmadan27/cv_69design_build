@@ -5,8 +5,9 @@
      * 
      */
     class Excel {
+        
         protected $excel;
-        protected $data = array();
+        public $data = array();
         
         /**
          * 
@@ -50,7 +51,7 @@
             $this->excel->getActiveSheet(0)->setTitle($title);
 
             // set title header
-            $this->excel->setActiveSheetIndex(0)->setCellValue('A1', $judul);
+            $this->excel->setActiveSheetIndex(0)->setCellValue('A1', $title_header);
 			$this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(TRUE); // Set bold kolom A1
 			$this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(15); // Set font size 15 untuk kolom A1
             $this->excel->getActiveSheet()->getStyle('A1')->getAlignment()
@@ -65,7 +66,7 @@
             foreach ($this->data as $key => $value) {               
                 if($key == "header") {
                     // set header
-                    foreach($value['header'] as $header) {
+                    foreach($value as $header) {
                         $this->excel->setActiveSheetIndex(0)->setCellValue($column.$start_column_header, $header);
                         $column++;
               
@@ -75,9 +76,9 @@
                 // set data row
                 else if($key == "row") {
                     // set data
-                    foreach($value['row'] as $row) {
+                    foreach($value as $row) {
                     	foreach($row as $valueRow){
-                    		$this->excel->setActiveSheetIndex(0)->setCellValue($column.$numRow, $tempRow);
+                    		$this->excel->setActiveSheetIndex(0)->setCellValue($column.$numRow, $valueRow);
                     		$column++;	
                     	}
                     	$numRow++;
@@ -99,5 +100,6 @@
 
 			$write = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
 			$write->save('php://output');
+			exit;
         }
     }
