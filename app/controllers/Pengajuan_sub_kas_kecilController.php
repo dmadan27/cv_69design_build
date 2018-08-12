@@ -110,16 +110,16 @@
 				$aksiHapus = '<button onclick="getDelete('."'".strtolower($row["id"])."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
 
-				if(strtolower($row['status']) == "disetujui") {
+				if(strtolower($this->helper->getNamaStatusPengajuanSKK($row['status'])) == "disetujui") {
 					$status = '<span class="label label-success">';
 					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiHapus.'</div>';
 				}
-				else if(strtolower($row['status']) == "perbaiki") {
+				else if(strtolower($this->helper->getNamaStatusPengajuanSKK($row['status'])) == "perbaiki") {
 					$status = '<span class="label label-warning">';
 					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiHapus.'</div>';
 				}
-				else if(strtolower($row['status']) == "ditolak") $status = '<span class="label label-danger">';
-				else if(strtolower($row['status']) == "pending") $status = '<span class="label label-primary">';
+				else if(strtolower($this->helper->getNamaStatusPengajuanSKK($row['status'])) == "ditolak") $status = '<span class="label label-danger">';
+				else if(strtolower($this->helper->getNamaStatusPengajuanSKK($row['status'])) == "pending") $status = '<span class="label label-primary">';
 				else $status = '<span class="label label-success">';
 
 				$status .= $row['status'].'</span>';

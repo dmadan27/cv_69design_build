@@ -82,8 +82,6 @@
 				}
 			}
 
-			// cek jenis
-
 			// pesan error
 			$error = array(
 				'username' => $errorUser,
