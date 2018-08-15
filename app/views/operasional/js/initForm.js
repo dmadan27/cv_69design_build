@@ -13,16 +13,15 @@ $(document).ready(function(){
 	// button tambah
 	$('#tambah').on('click', function(){
 		setIdBank();
-		if(this.value.trim() != ""){
+		
 			resetForm();
 			$('#tgl').prop('disabled', false);
 			$('#submit_operasional').prop('value', 'action-add');
 			$('#submit_operasional').prop('disabled', false);
 			$('#submit_operasional').html('Simpan Data');
-			$('#token_form').val(this.value);
 			$('#modalOperasional').modal();
-		}
-		else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+		
+		
 	});
 
 	// submit operasional
@@ -92,7 +91,7 @@ function getDataForm(){
 		// data.append('ket', $('#ket').val().trim());
 	} 
 
-	data.append('token', $('#token_form').val().trim());
+	// data.append('token', $('#token_form').val().trim());
 	data.append('id_bank', $('#id_bank').val().trim()); // id_bank
 	data.append('tgl', $('#tgl').val().trim()); // tgl operasional
 	data.append('nama', $('#nama').val().trim()); // nama operasional
@@ -145,8 +144,7 @@ function submit(edit_view){
 /**
 *
 */
-function getEdit(id, token){
-	if(token != ""){
+function getEdit(id){
 		resetForm();
 		setIdBank();
 		$('.field-id').css('display', 'none');
@@ -161,14 +159,13 @@ function getEdit(id, token){
 			url: BASE_URL+'operasional/edit/'+id.toLowerCase(),
 			type: 'post',
 			dataType: 'json',
-			data: {"token_edit": token},
+			data: {},
 			beforeSend: function(){
 
 			},
 			success: function(output){
 				if(output){
 					$('#modalOperasional').modal();
-					$('#token_form').val(token);
 					setValue(output);
 				}	
 			},
@@ -176,8 +173,7 @@ function getEdit(id, token){
 	            console.log(jqXHR, textStatus, errorThrown);
 	        }
 		})
-	}
-	else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+	
 }
 
 /**

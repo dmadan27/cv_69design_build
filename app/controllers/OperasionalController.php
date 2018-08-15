@@ -20,6 +20,7 @@
 			$this->model('OperasionalModel');
 			$this->helper();
 			$this->validation();
+			$this->excel();
 		}	
 
 		/**
@@ -72,50 +73,56 @@
 		* return json
 		*/
 		public function get_list(){
-			// config datatable
-			$config_dataTable = array(
-				'tabel' => 'v_operasional',
-				'kolomOrder' => array(null, 'id', 'nama_bank', 'tgl', 'nama', 'nominal', null),
-				'kolomCari' => array('nama', 'tgl', 'nama', 'nama_bank', 'nominal', 'ket'),
-				'orderBy' => array('tgl' => 'desc'),
-				'kondisi' => false,
-			);
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				// config datatable
+				$config_dataTable = array(
+					'tabel' => 'v_operasional',
+					'kolomOrder' => array(null, 'id', 'nama_bank', 'tgl', 'nama', 'nominal', null),
+					'kolomCari' => array('nama', 'tgl', 'nama', 'nama_bank', 'nominal', 'ket'),
+					'orderBy' => array('tgl' => 'desc'),
+					'kondisi' => false,
+				);
 
-			$dataOperasional = $this->OperasionalModel->getAllDataTable($config_dataTable);
+				$dataOperasional = $this->OperasionalModel->getAllDataTable($config_dataTable);
 
-			$data = array();
-			$no_urut = $_POST['start'];
-			foreach($dataOperasional as $row){
-				$no_urut++;
+				$data = array();
+				$no_urut = $_POST['start'];
+				foreach($dataOperasional as $row){
+					$no_urut++;
 
-				// button aksi
-				$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-				$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-				$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
-				
-				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
-				
-				$dataRow = array();
-				$dataRow[] = $no_urut;
-				// $dataRow[] = $row['id'];
-				$dataRow[] = $row['nama_bank'];
-				$dataRow[] = $row['tgl'];
-				$dataRow[] = $row['nama'];
-				$dataRow[] = $row['nominal'];
-				$dataRow[] = $aksi;
-				
-				// $dataRow[] = $row['ket'];
-				$data[] = $dataRow;
+					// button aksi
+					$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+					$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+					$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+					
+					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
+					
+					$dataRow = array();
+					$dataRow[] = $no_urut;
+					// $dataRow[] = $row['id'];
+					$dataRow[] = $row['nama_bank'];
+					$dataRow[] = $row['tgl'];
+					$dataRow[] = $row['nama'];
+					$dataRow[] = $row['nominal'];
+					$dataRow[] = $aksi;
+					
+					// $dataRow[] = $row['ket'];
+					$data[] = $dataRow;
+				}
+
+				$output = array(
+					'draw' => $_POST['draw'],
+					'recordsTotal' => $this->OperasionalModel->recordTotal(),
+					'recordsFiltered' => $this->OperasionalModel->recordFilter(),
+					'data' => $data,
+				);
+
+				echo json_encode($output);
 			}
-
-			$output = array(
-				'draw' => $_POST['draw'],
-				'recordsTotal' => $this->OperasionalModel->recordTotal(),
-				'recordsFiltered' => $this->OperasionalModel->recordFilter(),
-				'data' => $data,
-			);
-
-			echo json_encode($output);		
+			else{
+				$this->redirect();
+			}
+						
 		}
 
 		/**
@@ -127,76 +134,82 @@
 		* error => error apa saja yang ada dari hasil validasi
 		*/
 		public function action_add(){
-			$data = isset($_POST) ? $_POST : false;
-			
-			$error = $notif = array();
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$data = isset($_POST) ? $_POST : false;
+				
+				$error = $notif = array();
 
-			if(!$data){
-				$notif = array(
-					'type' => "error",
-					'title' => "Pesan Gagal",
-					'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
-				);
-			}
-			else{
-				// validasi data
-				$validasi = $this->set_validation($data);
-				$cek = $validasi['cek'];
-				$error = $validasi['error'];
-
-				$this->model('BankModel');
-				$getSaldo = $this->BankModel->getById($data['id_bank'])['saldo'];
-
-				if($data['nominal'] > $getSaldo){
-					$cek = false;
-					$error['nominal'] = "Nominal terlalu besar dan melebihi saldo bank";
-				}
-
-				if($cek){
-					// validasi inputan
-					$data = array(
-						'id_bank' => $this->validation->validInput($data['id_bank']),
-						'id_kas_besar' => $_SESSION['sess_id'],
-						'tgl' => $this->validation->validInput($data['tgl']),
-						'nama' => $this->validation->validInput($data['nama']),
-						'nominal' => $this->validation->validInput($data['nominal']),
-						'ket' => $this->validation->validInput($data['ket'])
+				if(!$data){
+					$notif = array(
+						'type' => "error",
+						'title' => "Pesan Gagal",
+						'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
 					);
+				}
+				else{
+					// validasi data
+					$validasi = $this->set_validation($data);
+					$cek = $validasi['cek'];
+					$error = $validasi['error'];
 
-					// insert
-					if($this->OperasionalModel->insert($data)) {
-						$this->status = true;
-						$notif = array(
-							'type' => "success",
-							'title' => "Pesan Berhasil",
-							'message' => "Tambah Data Operasional Baru Berhasil",
+					$this->model('BankModel');
+					$getSaldo = $this->BankModel->getById($data['id_bank'])['saldo'];
+
+					if($data['nominal'] > $getSaldo){
+						$cek = false;
+						$error['nominal'] = "Nominal terlalu besar dan melebihi saldo bank";
+					}
+
+					if($cek){
+						// validasi inputan
+						$data = array(
+							'id_bank' => $this->validation->validInput($data['id_bank']),
+							'id_kas_besar' => $_SESSION['sess_id'],
+							'tgl' => $this->validation->validInput($data['tgl']),
+							'nama' => $this->validation->validInput($data['nama']),
+							'nominal' => $this->validation->validInput($data['nominal']),
+							'ket' => $this->validation->validInput($data['ket'])
 						);
+
+						// insert
+						if($this->OperasionalModel->insert($data)) {
+							$this->status = true;
+							$notif = array(
+								'type' => "success",
+								'title' => "Pesan Berhasil",
+								'message' => "Tambah Data Operasional Baru Berhasil",
+							);
+						}
+						else {
+							$notif = array(
+								'type' => "error",
+								'title' => "Pesan Gagal",
+								'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+							);
+						}
 					}
 					else {
 						$notif = array(
-							'type' => "error",
-							'title' => "Pesan Gagal",
-							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+							'type' => "warning",
+							'title' => "Pesan Pemberitahuan",
+							'message' => "Silahkan Cek Kembali Form Isian",
 						);
 					}
 				}
-				else {
-					$notif = array(
-						'type' => "warning",
-						'title' => "Pesan Pemberitahuan",
-						'message' => "Silahkan Cek Kembali Form Isian",
-					);
-				}
+
+				$output = array(
+					'status' => $this->status,
+					'notif' => $notif,
+					'error' => $error,
+					// 'data' => $data
+				);
+
+				echo json_encode($output);		
 			}
-
-			$output = array(
-				'status' => $status,
-				'notif' => $notif,
-				'error' => $error,
-				'data' => $data
-			);
-
-			echo json_encode($output);		
+			else{
+				$this->redirect();
+			}
+				
 		}
 
 		/**
@@ -206,10 +219,18 @@
 		* return berupa json
 		*/
 		public function edit($id){
-			$id = strtoupper($id);
-			$data = !empty($this->OperasionalModel->getById($id)) ? $this->OperasionalModel->getById($id) : false;
-			
-			echo json_encode($data);
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$id = strtoupper($id);
+				if(empty($id) || $id == "") $this->redirect(BASE_URL. "operasional/");
+
+				$data = !empty($this->OperasionalModel->getById($id)) ? $this->OperasionalModel->getById($id) : false;
+				
+				echo json_encode($data);
+			}
+			else{
+				$this->redirect();
+			}
+				
 		}
 
 		// /**
@@ -221,78 +242,84 @@
 		// * error => error apa saja yang ada dari hasil validasi
 		// */
 		public function action_edit(){
-			$data = isset($_POST) ? $_POST : false;
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$data = isset($_POST) ? $_POST : false;
 
-			$error = $notif = array();
+				$error = $notif = array();
 
-			if(!$data){
-				$notif = array(
-					'type' => "error",
-					'title' => "Pesan Gagal",
-					'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
-				);
-			}
-			else{
-				// validasi data
-				$validasi = $this->set_validation($data);
-				$cek = $validasi['cek'];
-				$error = $validasi['error'];
-
-				// $getDataBank = $this->BankModel->getById($id);
-				// $this->model('BankModel');
-
-				if($cek){
-					// validasi inputan
-					$data = array(
-						'id' =>  $this->validation->validInput($data['id']),
-						'id_bank' =>  $this->validation->validInput($data['id_bank']),
-						'nama' =>  $this->validation->validInput($data['nama']),
-						'nominal' =>  $this->validation->validInput($data['nominal']),
-						'ket' =>  $this->validation->validInput($data['ket']),
-						
-
+				if(!$data){
+					$notif = array(
+						'type' => "error",
+						'title' => "Pesan Gagal",
+						'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
 					);
+				}
+				else{
+					// validasi data
+					$validasi = $this->set_validation($data);
+					$cek = $validasi['cek'];
+					$error = $validasi['error'];
 
-					// update db
+					// $getDataBank = $this->BankModel->getById($id);
+					// $this->model('BankModel');
 
-					// transact
+					if($cek){
+						// validasi inputan
+						$data = array(
+							'id' =>  $this->validation->validInput($data['id']),
+							'id_bank' =>  $this->validation->validInput($data['id_bank']),
+							'nama' =>  $this->validation->validInput($data['nama']),
+							'nominal' =>  $this->validation->validInput($data['nominal']),
+							'ket' =>  $this->validation->validInput($data['ket']),
+							
 
-					if($this->OperasionalModel->update($data)) {
-						$this->status = true;
-						$notif = array(
-							'type' => "success",
-							'title' => "Pesan Berhasil",
-							'message' => "Edit Data Operasional Berhasil",
 						);
+
+						// update db
+
+						// transact
+
+						if($this->OperasionalModel->update($data)) {
+							$this->status = true;
+							$notif = array(
+								'type' => "success",
+								'title' => "Pesan Berhasil",
+								'message' => "Edit Data Operasional Berhasil",
+							);
+						}
+						else {
+							$notif = array(
+								'type' => "error",
+								'title' => "Pesan Gagal",
+								'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+							);
+						}
+
+						// commit
 					}
 					else {
 						$notif = array(
-							'type' => "error",
-							'title' => "Pesan Gagal",
-							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+							'type' => "warning",
+							'title' => "Pesan Pemberitahuan",
+							'message' => "Silahkan Cek Kembali Form Isian",
 						);
 					}
+				
+				}
 
-					// commit
-				}
-				else {
-					$notif = array(
-						'type' => "warning",
-						'title' => "Pesan Pemberitahuan",
-						'message' => "Silahkan Cek Kembali Form Isian",
-					);
-				}
-			
+				$output = array(
+					'status' => $this->status,
+					'notif' => $notif,
+					'error' => $error,
+					'data' => $data
+				);
+
+				echo json_encode($output);
 			}
-
-			$output = array(
-				'status' => $status,
-				'notif' => $notif,
-				'error' => $error,
-				'data' => $data
-			);
-
-			echo json_encode($output);
+			else{
+				$this->redirect();
+			}
+				
 		}
 
 		/**

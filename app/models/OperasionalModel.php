@@ -144,13 +144,7 @@
 			 }
 
 
-			// $query = "DELETE FROM operasional WHERE id = :id";
 			
-			// $statement = $this->koneksi->prepare($query);
-			// $statement->bindParam(':id', $id);
-			// $result = $statement->execute();
-
-			// return $result;
 		}
 
 		/**

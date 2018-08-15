@@ -23,9 +23,7 @@ $(document).ready(function(){
         ajax: {
             url: BASE_URL+"operasional/get-list/",
             type: 'POST',
-            data: {
-                "token_list" : $('#token_list').val().trim(),
-            }
+            data: {}
         },
         "columnDefs": [
             {
@@ -60,7 +58,7 @@ function getView(id){
 *
 */
 function getDelete(id, token){
-	if(token.trim() != ""){
+
 		swal({
 			title: "Pesan Konfirmasi",
 			text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
@@ -75,7 +73,7 @@ function getDelete(id, token){
 				url: BASE_URL+'operasional/delete/'+id.toLowerCase(),
 				type: 'post',
 				dataType: 'json',
-				data: {"token_delete": token},
+				data: {},
 				beforeSend: function(){
 
 				},
@@ -92,6 +90,6 @@ function getDelete(id, token){
 		        }
 			})
 		});
-	}
-    else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+	
+   
 }

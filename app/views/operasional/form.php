@@ -12,7 +12,6 @@
       </div>
       <form id="form_operasional" role="form">
         <input type="hidden" id="id">
-        <input type="hidden" id="token_form">
         <!-- body modal -->
         <div class="modal-body">
           <div class="row">
