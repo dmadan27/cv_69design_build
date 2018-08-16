@@ -118,11 +118,20 @@
 						'detail_pengajuan' => json_decode($detail_pengajuan)
 					);
 
-					if ($data['pengajuan']->total <= $info_skk['sisa_saldo']) {
-						$data['pengajuan']->dana_disetujui = 0;
-						$data['pengajuan']->status = "4"; // status : LANGSUNG
+					// menghitung total pengajuan
+					$total_pengajuan = 0.0;
+					foreach ($data["detail_pengajuan"] as $key => $value) {
+						$total_pengajuan += $value->subtotal;
+					}
+
+					// mendapatkan status dan total pengajuan yang sudah dihitung/dicek dengan sisa saldo
+					if ($total_pengajuan <= $info_skk["sisa_saldo"]) {
+						$data["pengajuan"]->dana_disetujui = 0;
+						$data["pengajuan"]->total = $total_pengajuan;
+						$data["pengajuan"]->status = "4"; // status : LANGSUNG
 					} else {
-						$data['pengajuan']->total -= $info_skk['sisa_saldo'];
+						$data["pengajuan"]->dana_disetujui = null;
+						$data['pengajuan']->total = $total_pengajuan - $info_skk['sisa_saldo'];
 						$data['pengajuan']->status = "1"; // status : PENDING
 					}
 	
@@ -134,6 +143,8 @@
 						$output['error'] = $resultQuery;
 						$output['status_aksi'] = false;
 					}
+
+					
 				}
 			}
 

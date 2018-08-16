@@ -324,7 +324,7 @@
 						':nama' => $data->nama,
 						':tgl' => date('Y-m-d'),
 						':total' => $data->total,
-						':dana_disetujui' => null,
+						':dana_disetujui' => $data->dana_disetujui,
 						':status' => $data->status,
 						':status_laporan' => null
 					)
