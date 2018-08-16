@@ -360,6 +360,81 @@
 				);
 				$statment->closeCursor();
 			}
+			
+			/**
+			 * Edit Pengajuan Sub Kas Kecil.
+			 * 
+			 * @param data Array yang berisi data pengajuan, detail_pengajuan, dan detail hapus.
+			 * @return string/boolean Jika berhasil dieksekusi akan mengembalikan nilai boolean true, 
+			 * 						   jika gagal akan mengembalikan string pesan error.
+			 */
+			public function edit_pengajuan($data) {
+				$pengajuan = $data['pengajuan'];
+				$detail = $data['detail_pengajuan'];
+				$hapus = $data['detail_hapus'];
+
+				try {
+
+					$this->koneksi->beginTransaction();
+
+					// hapus detail
+					if ($hapus != null) {
+						foreach ($hapus as $key => $id) {
+							$query = "DELETE FROM detail_pengajuan_sub_kas_kecil WHERE id=:id";
+							$statement = $this->koneksi->prepare($query);
+							$statement->execute(array(
+								':id' => strval($id)
+							));
+							$statement->closeCursor();
+						}
+					}			
+
+					// tambah/edit detail pengajuan
+					foreach ($detail as $key => $value) {
+						// update data
+						if ($value->no != null) {
+							$query = "UPDATE detail_pengajuan_sub_kas_kecil SET ";
+							$query .= "nama=:nama, jenis=:jenis, satuan=:satuan, qty=:qty, harga=:harga, subtotal=:subtotal ";
+							$query .= "WHERE id=:id ";
+							$statement = $this->koneksi->prepare($query);
+							$statement->execute(array(
+								':nama' => $value->nama,
+								':jenis' => $value->jenis,
+								':satuan' => $value->satuan,
+								':qty' => $value->qty,
+								':harga' => $value->harga,
+								':subtotal' => $value->subtotal,
+								':id' => $value->no,
+							));
+							$statement->closeCursor();
+						// tambah data	
+						} else {
+							$this->insert_detail_pengajuan($value, $pengajuan->id);
+						}
+					}
+
+					// edit pengajuan
+					$query = "UPDATE pengajuan_sub_kas_kecil SET ";
+					$query .= "tgl=:tgl, nama=:nama, total=:total, dana_disetujui=:dana_disetujui, status=:status ";
+					$query .= "WHERE id=:id"; 
+					$statement = $this->koneksi->prepare($query);
+					$statement->execute(array(
+						':tgl' => date('Y-m-d'),
+						':nama' => $pengajuan->nama,
+						':total' => $pengajuan->total,
+						':dana_disetujui' => $pengajuan->dana_disetujui,
+						':status' => $pengajuan->status,
+						':id' => $pengajuan->id,
+					));
+					$statement->closeCursor();
+
+					$this->koneksi->commit();
+					return true;
+				} catch(PDOException $e) {
+					$this->koneksi->rollback();
+					return $e->getMessage();
+				}
+			}
 
 			/**
 			*

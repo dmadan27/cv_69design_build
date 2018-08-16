@@ -152,6 +152,64 @@
 		}
 
 		/**
+		 * 
+		 */
+		public function action_edit_pengajuan() {
+			$this->model("Pengajuan_sub_kas_kecilModel");
+			$this->model("Sub_kas_kecilModel");
+
+			$output = array();
+			$output['status'] = $this->status;
+			$output['status_aksi'] = $this->status_aksi;
+			$output['error'] = null;
+
+			$pengajuan = $_POST['pengajuan'] ?? false;
+			$detail_pengajuan = $_POST['detail_pengajuan'] ?? false;
+			$detail_hapus = $_POST['hapus'] ?? null;
+
+			if ($output['status'] && ($pengajuan != false) && ($detail_pengajuan != false)) {
+				$info_skk = $this->Sub_kas_kecilModel->getByIdFromV($_POST['id']);
+
+				// pengecekan integritas input
+				if ($info_skk['email'] == $_POST['username']) {
+					
+					$data = array(
+						'pengajuan' => json_decode($pengajuan),
+						'detail_pengajuan' => json_decode($detail_pengajuan),
+						'detail_hapus' => $detail_hapus
+					);
+
+					// hitung total pengajuan
+					$total_pengajuan = 0.0;
+					foreach ($data["detail_pengajuan"] as $key => $value) {
+						$total_pengajuan += $value->subtotal;
+					}
+
+					// mendapatkan status dan total pengajuan yang sudah dihitung/dicek dengan sisa saldo
+					if ($total_pengajuan <= $info_skk["sisa_saldo"]) {
+						$data["pengajuan"]->dana_disetujui = 0;
+						$data["pengajuan"]->total = $total_pengajuan;
+						$data["pengajuan"]->status = "4"; // status : LANGSUNG
+					} else {
+						$data["pengajuan"]->dana_disetujui = null;
+						$data['pengajuan']->total = $total_pengajuan - $info_skk['sisa_saldo'];
+						$data['pengajuan']->status = "1"; // status : PENDING
+					}
+
+					// eksekusi query edit pengajuan
+					$result = $this->Pengajuan_sub_kas_kecilModel->edit_pengajuan($data);
+
+					if ($result === true)
+						$output['status_aksi'] = true;
+					else 
+						$output['error'] = $result;
+				}
+			}
+
+			echo json_encode($output, JSON_PRETTY_PRINT);
+ 		}
+
+		/**
 		*
 		*/
 		public function detail_pengajuan(){
