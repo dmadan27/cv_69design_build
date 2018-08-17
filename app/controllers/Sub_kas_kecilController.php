@@ -18,6 +18,7 @@
 			$this->model('Sub_kas_kecilModel');
 			$this->helper();
 			$this->validation();
+			$this->excel();
 		}
 
 		/**
@@ -399,7 +400,15 @@
 		*
 		*/
 		public function delete($id){
-			$id = strtoupper($id);
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$id = strtoupper($id);
+				if(empty($id) || $id == "") $this->redirect(BASE_URL."sub-kas-kecil/");
+
+				if($this->Sub_kas_kecilModel->delete($id)) $this->status = true;
+
+				echo json_encode($this->status);
+			}
+			else $this->redirect();	
 		}
 
 		/**

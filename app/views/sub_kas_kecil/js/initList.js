@@ -61,8 +61,8 @@ function getView(id){
 /**
 *
 */
-function getDelete(id, token){
-	if(token.trim() != ""){
+function getDelete(id){
+
 		swal({
 			title: "Pesan Konfirmasi",
 			text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
@@ -77,7 +77,7 @@ function getDelete(id, token){
 				url: BASE_URL+'sub-kas-kecil/delete/'+id.toLowerCase(),
 				type: 'post',
 				dataType: 'json',
-				data: {"token_delete": token},
+				data: {},
 				beforeSend: function(){
 
 				},
@@ -94,6 +94,5 @@ function getDelete(id, token){
 		        }
 			})
 		});
-	}
-    else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+	
 }

@@ -6,7 +6,6 @@ $(document).ready(function(){
 
 	// btn tambah
 	$('#tambah').on('click', function(){
-		if(this.value.trim() != ""){
 			resetForm();
 			$('.field-saldo').css('display', 'block');
 			$('#submit_skc').prop('value', 'action-add');
@@ -15,8 +14,6 @@ $(document).ready(function(){
 			$('#token_form').val(this.value);
 			generateID();
 			$('#modalSkc').modal();
-		}
-		else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
 	});
 
 	// submit skc

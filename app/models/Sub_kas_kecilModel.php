@@ -228,6 +228,13 @@
 		*
 		*/
 		public function delete($id){
+			$query = "DELETE FROM sub_kas_kecil WHERE id = :id";
+			
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$result = $statement->execute();
+
+			return $result;
 
 		}
 
