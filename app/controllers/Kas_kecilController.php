@@ -410,7 +410,7 @@
 
 				if($this->Kas_kecilModel->delete($id)) $this->status = true;
 
-				echo json_encode($status);
+				echo json_encode($this->status);
 			}
 			else $this->redirect();
 		}
