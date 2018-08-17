@@ -57,7 +57,7 @@ function getView(id){
 /**
 *
 */
-function getDelete(id, token){
+function getDelete(id){
 
 		swal({
 			title: "Pesan Konfirmasi",
