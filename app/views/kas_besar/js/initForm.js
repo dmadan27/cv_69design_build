@@ -6,7 +6,7 @@ $(document).ready(function(){
 
 	// button tambah
 	$('#tambah').on('click', function(){
-		if(this.value.trim() != ""){
+		
 			resetForm();
 			$('.field-saldo').css('display', 'block');
 			$('.field-password').css('display', 'block');
@@ -17,11 +17,10 @@ $(document).ready(function(){
 			generateID();
 			$('#submit_kas_besar').prop('value', 'action-add');
 			$('#submit_kas_besar').prop('disabled', false);
-			$('#submit_kas_besar').html('Simpan Data');
-			
+			$('#submit_kas_besar').html('Simpan Data');	
 			$('#modalKasBesar').modal();
-		}
-		else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+		
+		
 	});
 
 	// submit kas besar
@@ -139,7 +138,7 @@ function submit(edit_view){
 /**
 *
 */
-function getEdit(id, token){
+function getEdit(id){
 	if(token != ""){
 		resetForm();
 		// $('.field-saldo').css('display', 'none');
@@ -155,14 +154,13 @@ function getEdit(id, token){
 			url: BASE_URL+'kas-besar/edit/'+id.toLowerCase(),
 			type: 'post',
 			dataType: 'json',
-			data: {"token_edit": token},
+			data: {},
 			beforeSend: function(){
 
 			},
 			success: function(output){
 				if(output){
 					$('#modalKasBesar').modal();
-					$('#token_form').val(token);
 					setValue(output);
 				}	
 			},

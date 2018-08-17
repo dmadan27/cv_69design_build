@@ -18,6 +18,7 @@
 			$this->model('Kas_besarModel');
 			$this->helper();
 			$this->validation();
+			$this->excel();
 		}	
 
 		/**

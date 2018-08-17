@@ -23,9 +23,7 @@ $(document).ready(function(){
         ajax: {
             url: BASE_URL+"kas-besar/get-list/",
             type: 'POST',
-            data: {
-                "token_list" : $('#token_list').val().trim(),
-            }
+            data: {}
         },
         "columnDefs": [
             {
@@ -60,8 +58,8 @@ function getView(id){
 /**
 *
 */
-function getDelete(id, token){
-	if(token.trim() != ""){
+function getDelete(id){
+
 		swal({
 			title: "Pesan Konfirmasi",
 			text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
@@ -93,6 +91,5 @@ function getDelete(id, token){
 		        }
 			})
 		});
-	}
-    else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+	
 }
