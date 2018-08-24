@@ -285,7 +285,15 @@ CREATE TABLE IF NOT EXISTS detail_pengajuan_kas_kecil(
 
 -- Tabe Distributor / Toko / Supplier
 CREATE TABLE IF NOT EXISTS distributor(
+	id varchar(50) NOT NULL UNIQUE, -- primary key
+	nama varchar(50), -- nama distributor
+	alamat text, --alamat distributor
+	jenis varchar(50), -- jenis distributor
+	no_telp varchar(25), -- telpon 
+	pemilik varchar(50), -- pemilik
+	status enum('AKTIF','NONAKTIF'),
 
+	CONSTRAINT pk_id PRIMARY KEY(id)
 )ENGINE=InnoDb;
 
 -- Tabel Operasional Proyek (operasional proyek yang dilakukan langsung oleh kas besar)
@@ -309,6 +317,8 @@ CREATE TABLE IF NOT EXISTS operasional_proyek(
 	CONSTRAINT fk_operasional_proyek_id_bank FOREIGN KEY(id_bank) REFERENCES bank(id)
 		ON DELETE RESTRICT ON UPDATE CASCADE,
 	CONSTRAINT fk_operasional_proyek_id_kas_besar FOREIGN KEY(id_kas_besar) REFERENCES kas_besar(id)
+		ON DELETE RESTRICT ON UPDATE CASCADE,
+	CONSTRAINT fk_operasional_proyek_id_distributor FOREIGN KEY(id_distributor) REFERENCES distributor(id)
 		ON DELETE RESTRICT ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
