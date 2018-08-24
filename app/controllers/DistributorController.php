@@ -149,9 +149,10 @@
 							'nama' => $this->validation->validInput($data['nama']),
 							'alamat' => $this->validation->validInput($data['alamat']),
 							'jenis' => $this->validation->validInput($data['jenis']),
-							'jenis' => $this->validation->validInput($data['jenis']),
 							'no_telp' => $this->validation->validInput($data['no_telp']),
-							'pemilik' => $this->validation->validInput($data['pemilik']),		
+							'pemilik' => $this->validation->validInput($data['pemilik']),
+							'status' => $this->validation->validInput($data['status'])
+										
 						);
 
 						// insert bank
@@ -232,6 +233,15 @@
 		* return json
 		*/
 		public function delete($id){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$id = strtoupper($id);
+				if(empty($id) || $id == "") $this->redirect(BASE_URL."distributor/");
+
+				if($this->DistributorModel->delete($id)) $this->status = true;
+
+				echo json_encode($this->status);
+			}
+			else $this->redirect();	
 
 		}
 
@@ -270,6 +280,24 @@
 		* return berupa array, status hasil pengecekan dan error tiap validasi inputan
 		*/
 		private function set_validation($data){
+
+			// nama
+			$this->validation->set_rules($data['nama'], 'Nama Distributor', 'nama', 'string | 1 | 255 | required');
+			// alamat
+			$this->validation->set_rules($data['alamat'], 'Alamat Distributor', 'alamat', 'string | 1 | 255 | not_required');
+			// jenis
+			$this->validation->set_rules($data['jenis'], 'Jenis Distributor', 'jenis', 'string | 1 | 255 | required');
+			// no_telp
+			$this->validation->set_rules($data['no_telp'], 'No Telepon Distributor', 'no_telp', 'string | 1 | 255 | required');
+			// pemilik
+			$this->validation->set_rules($data['pemilik'], 'Pemilik Distributor', 'pemilik', 'string | 1 | 255 | required');
+			// status
+			$this->validation->set_rules($data['status'], 'Status Distributor', 'status', 'string | 1 | 255 | required');
+
+			return $this->validation->run();
+			
+			
+
 
 		}
 

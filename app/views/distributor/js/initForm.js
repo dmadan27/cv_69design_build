@@ -62,10 +62,15 @@ function getDataForm(){
 		
 	// if($('#submit_bank').val().trim().toLowerCase() == "action-edit") data.append('id', $('#id').val().trim());
 	data.append('id', $('#id').val().trim());
-	// data.append('nama', $('#nama').val().trim()); // nama bank
-	// data.append('saldo', saldo); // saldo awal
-	// data.append('status', $('#status').val().trim()); // status bank
-	// data.append('action', $('#submit_bank').val().trim()); // action
+	data.append('nama', $('#nama').val().trim()); // nama distributor
+	data.append('alamat', $('#alamat').val().trim()); // alamat distributor
+	data.append('jenis', $('#jenis').val().trim()); // jenis distributor
+	data.append('no_telp', $('#no_telp').val().trim()); // no_telp distributor
+	data.append('pemilik', $('#pemilik').val().trim()); // pemilik distributor
+	data.append('status', $('#status').val().trim()); // status distributor
+	data.append('action', $('#submit_distributor').val().trim()); // action
+
+	
 
 	return data;
 }
@@ -74,41 +79,41 @@ function getDataForm(){
 *
 */
 function submit(edit_view){
-	// var data = getDataForm();
+	var data = getDataForm();
 
-	// $.ajax({
-	// 	url: BASE_URL+'bank/'+$('#submit_bank').val().trim()+'/',
-	// 	type: 'POST',
-	// 	dataType: 'json',
-	// 	data: data,
-	// 	contentType: false,
-	// 	cache: false,
-	// 	processData: false,
-	// 	beforeSend: function(){
-	// 		$('#submit_bank').prop('disabled', true);
-	// 		$('#submit_bank').prepend('<i class="fa fa-spin fa-refresh"></i> ');
-	// 	},
-	// 	success: function(output){
-	// 		console.log(output);
-	// 		if(!output.status) {
-	// 			$('#submit_bank').prop('disabled', false);
-	// 			$('#submit_bank').html($('#submit_bank').text());
-	// 			setError(output.error);
-	// 			toastr.warning(output.notif.message, output.notif.title);
-	// 		}
-	// 		else{
-	// 			toastr.success(output.notif.message, output.notif.title);
-	// 			resetForm();
-	// 			$("#modalBank").modal('hide');
-	// 			$("#bankTable").DataTable().ajax.reload();
-	// 		}
-	// 	},
-	// 	error: function (jqXHR, textStatus, errorThrown){ // error handling
-	// 		$("#modalBank").modal('hide');
- //            console.log(jqXHR, textStatus, errorThrown);
- //            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
- //        }
-	// })
+	$.ajax({
+		url: BASE_URL+'distributor/'+$('#submit_distributor').val().trim()+'/',
+		type: 'POST',
+		dataType: 'json',
+		data: data,
+		contentType: false,
+		cache: false,
+		processData: false,
+		beforeSend: function(){
+			$('#submit_distributor').prop('disabled', true);
+			$('#submit_distributor').prepend('<i class="fa fa-spin fa-refresh"></i> ');
+		},
+		success: function(output){
+			console.log(output);
+			if(!output.status) {
+				$('#submit_distributor').prop('disabled', false);
+				$('#submit_distributor').html($('#submit_distributor').text());
+				setError(output.error);
+				toastr.warning(output.notif.message, output.notif.title);
+			}
+			else{
+				toastr.success(output.notif.message, output.notif.title);
+				resetForm();
+				$("#modalDistributor").modal('hide');
+				$("#distributorTable").DataTable().ajax.reload();
+			}
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+			$("#modalDistributor").modal('hide');
+            console.log(jqXHR, textStatus, errorThrown);
+            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+        }
+	})
 }
 
 /**

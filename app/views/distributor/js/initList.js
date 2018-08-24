@@ -73,7 +73,7 @@ function getDelete(id){
 			url: BASE_URL+'distributor/delete/'+id.toLowerCase(),
 			type: 'post',
 			dataType: 'json',
-			data: {"token_delete": token},
+			data: {},
 			beforeSend: function(){
 
 			},

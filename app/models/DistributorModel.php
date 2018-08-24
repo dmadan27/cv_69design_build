@@ -122,16 +122,16 @@
 		* 
 		*/
 		public function delete($id){
+			$query = "DELETE FROM distributor WHERE id = :id";
+			
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$result = $statement->execute();
+
+			return $result;
 			
 		}
-
-		/**
-		*
-		*/
-		private function deleteBank($id){
-			
-		}
-
+		
 
 		public function export(){
 		
