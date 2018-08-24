@@ -21,6 +21,11 @@ $(document).ready(function(){
 		case 'operasional-proyek':
 			$('.menu-operasional-proyek').addClass('active');
 			break;
+
+		// menu distributor
+		case 'distributor':
+			$('.menu-distributor').addClass('active');
+			break;
 		
 		// menu operasional
 		case 'operasional':

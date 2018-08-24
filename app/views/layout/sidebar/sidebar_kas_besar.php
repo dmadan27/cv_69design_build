@@ -10,6 +10,7 @@
 <li class="menu-pengajuan-kas-kecil"><a href="<?= BASE_URL."pengajuan-kas-kecil/"; ?>"><i class="fa fa-link"></i> <span>Data Pengajuan Kas Kecil</span></a></li>
 <!-- menu data operasional proyek -->
 <li class="menu-operasional-proyek"><a href="<?= BASE_URL."operasional-proyek/"; ?>"><i class="fa fa-link"></i> <span>Data Operasional Proyek</span></a></li>
+<li class="menu-distributor"><a href="<?= BASE_URL."distributor/"; ?>"><i class="fa fa-link"></i> <span>Data Distributor</span></a></li>
 <!-- menu data operasional -->
 <li class="menu-operasional"><a href="<?= BASE_URL."operasional/"; ?>"><i class="fa fa-link"></i> <span>Data Operasional</span></a></li>
 <!-- menu data kas besar -->
