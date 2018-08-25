@@ -114,6 +114,37 @@
 		* 
 		*/
 		public function update($data){
+			$query = "UPDATE distributor SET
+			 nama = :nama, alamat = :alamat, jenis = :jenis, no_telp = :no_telp, pemilik = :pemilik, status = :status WHERE id = :id;";
+
+			try{
+				$this->koneksi->beginTransaction();
+
+				$statement = $this->koneksi->prepare($query);
+				$statement->execute(
+					array(
+
+						':nama' => $data['nama'],
+						':alamat' => $data['alamat'],
+						':jenis' => $data['jenis'],
+						':no_telp' => $data['no_telp'],
+						':pemilik' => $data['pemilik'],
+						':status' => $data['status'],
+						':id' => $data['id'],
+					)
+				);
+				$statement->closeCursor();
+
+				$this->koneksi->commit();
+
+				return true;
+			}
+			catch(PDOException $e){
+				$this->koneksi->rollback();
+				die($e->getMessage());
+				// return false;
+			}
+
 			
 		}
 

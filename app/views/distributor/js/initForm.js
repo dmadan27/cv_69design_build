@@ -1,4 +1,9 @@
 $(document).ready(function(){
+	// set status
+	setStatus();
+	// set jenis HERE !!
+	setJenis();
+
 	
 	$('#id').prop('disabled', true);
 	// $('#nama').prop('disabled', true);
@@ -11,10 +16,7 @@ $(document).ready(function(){
 	// button tambah
 	$('#tambah').on('click', function(){
 		resetForm();
-		// set status
-		setStatus();
-		// set jenis HERE !!
-		setJenis();
+		
 		generateID();
 		$('#submit_distributor').prop('value', 'action-add');
 		$('#submit_distributor').prop('disabled', false);
@@ -54,11 +56,16 @@ $(document).ready(function(){
 function getDataForm(){
 	var data = new FormData();
 
-	// var saldo = ($('#saldo').inputmask) ? 
-	// 	( parseFloat($('#saldo').inputmask('unmaskedvalue')) ?
-	// 		parseFloat($('#saldo').inputmask('unmaskedvalue')) : 
-	// 		$('#saldo').inputmask('unmaskedvalue')
-	// 	) : $('#saldo').val().trim();
+	if($('#submit_distributor').val().trim().toLowerCase() == "action-edit"){
+		// data.append('id', $('#id').val().trim());
+		data.append('nama', $('#nama').val().trim()); // nama distributor
+		data.append('alamat', $('#alamat').val().trim()); // alamat distributor
+		data.append('jenis', $('#jenis').val().trim()); // jenis distributor
+		data.append('no_telp', $('#no_telp').val().trim()); // no_telp distributor
+		data.append('pemilik', $('#pemilik').val().trim()); // pemilik distributor
+		data.append('status', $('#status').val().trim()); // status distributor
+	} 
+	// data.append('id', $('#id').val().trim());
 		
 	// if($('#submit_bank').val().trim().toLowerCase() == "action-edit") data.append('id', $('#id').val().trim());
 	data.append('id', $('#id').val().trim());
@@ -120,30 +127,30 @@ function submit(edit_view){
 *
 */
 function getEdit(id){
-	// resetForm();
-	// $('.field-saldo').css('display', 'none');
-	// $('#submit_bank').prop('value', 'action-edit');
-	// $('#submit_bank').prop('disabled', false);
-	// $('#submit_bank').html('Edit Data');
+	resetForm();
+	
+	$('#submit_distributor').prop('value', 'action-edit');
+	$('#submit_distributor').prop('disabled', false);
+	$('#submit_distributor').html('Edit Data');
 
-	// $.ajax({
-	// 	url: BASE_URL+'bank/edit/'+id.toLowerCase(),
-	// 	type: 'post',
-	// 	dataType: 'json',
-	// 	data: {},
-	// 	beforeSend: function(){
-	// 	},
-	// 	success: function(output){
-	// 		if(output){
-	// 			$('#modalBank').modal();
-	// 			setValue(output);
-	// 		}	
-	// 	},
-	// 	error: function (jqXHR, textStatus, errorThrown){ // error handling
- //            console.log(jqXHR, textStatus, errorThrown);
- //            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
- //        }
-	// })
+	$.ajax({
+		url: BASE_URL+'distributor/edit/'+id.toLowerCase(),
+		type: 'post',
+		dataType: 'json',
+		data: {},
+		beforeSend: function(){
+		},
+		success: function(output){
+			if(output){
+				$('#modalDistributor').modal();
+				setValue(output);
+			}	
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+            console.log(jqXHR, textStatus, errorThrown);
+            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+        }
+	})
 	
 }
 

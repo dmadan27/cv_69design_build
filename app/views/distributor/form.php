@@ -45,7 +45,7 @@
 
 					<!-- No Telepon -->
 					<div class="form-group field-no_telp has-feedback">
-						<label for="no_telp">Jenis</label>
+						<label for="no_telp">No Telepon</label>
 						<input type="text" name="no_telp" id="no_telp" class="form-control field" placeholder="Masukkan Nomor Telepon">
 						<span class="help-block small pesan pesan-no_telp"></span>
 					</div>

@@ -202,6 +202,13 @@
 		* return berupa json
 		*/
 		public function edit($id){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$id = strtoupper($id);
+				$data = !empty($this->DistributorModel->getById($id)) ? $this->DistributorModel->getById($id) : false;
+
+				echo json_encode($data);
+			}
+			else $this->redirect();	
 
 		}
 
@@ -214,6 +221,72 @@
 		* error => error apa saja yang ada dari hasil validasi
 		*/
 		public function action_edit(){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$data = isset($_POST) ? $_POST : false;
+				
+				$error = $notif = array();
+
+				if(!$data){
+					$notif = array(
+						'type' => 'error',
+						'title' => "Pesan Gagal",
+						'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
+					);
+				}
+				else{
+					// validasi data
+					$validasi = $this->set_validation($data);
+					$cek = $validasi['cek'];
+					$error = $validasi['error'];
+
+					if($cek){
+						// validasi inputan
+						$data = array(
+							'id' => $this->validation->validInput($data['id']),
+							'nama' => $this->validation->validInput($data['nama']),
+							'alamat' => $this->validation->validInput($data['alamat']),
+							'jenis' => $this->validation->validInput($data['jenis']),
+							'no_telp' => $this->validation->validInput($data['no_telp']),
+							'pemilik' => $this->validation->validInput($data['pemilik']),
+							'status' => $this->validation->validInput($data['status'])
+						);
+
+						// update bank
+						if($this->DistributorModel->update($data)) {
+							$status = true;
+							$notif = array(
+								'type' => 'success',
+								'title' => "Pesan Berhasil",
+								'message' => "Edit Data Distributor Berhasil",
+							);
+						}
+						else {
+							$notif = array(
+								'type' => 'error',
+								'title' => "Pesan Gagal",
+								'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+							);
+						}
+					}
+					else {
+						$notif = array(
+							'type' => 'warning',
+							'title' => "Pesan Pemberitahuan",
+							'message' => "Silahkan Cek Kembali Form Isian",
+						);
+					}
+				}
+
+				$output = array(
+					'status' => $this->status,
+					'notif' => $notif,
+					'error' => $error,
+					// 'data' => $data
+				);
+
+				echo json_encode($output);
+			}
+			else $this->redirect();
 
 		}
 
@@ -280,7 +353,7 @@
 		* return berupa array, status hasil pengecekan dan error tiap validasi inputan
 		*/
 		private function set_validation($data){
-
+			
 			// nama
 			$this->validation->set_rules($data['nama'], 'Nama Distributor', 'nama', 'string | 1 | 255 | required');
 			// alamat
@@ -297,25 +370,7 @@
 			return $this->validation->run();
 			
 			
-
-
 		}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	}
