@@ -253,7 +253,8 @@
 
 						// update bank
 						if($this->DistributorModel->update($data)) {
-							$status = true;
+
+							$this->status = true;
 							$notif = array(
 								'type' => 'success',
 								'title' => "Pesan Berhasil",
@@ -353,7 +354,7 @@
 		* return berupa array, status hasil pengecekan dan error tiap validasi inputan
 		*/
 		private function set_validation($data){
-			
+
 			// nama
 			$this->validation->set_rules($data['nama'], 'Nama Distributor', 'nama', 'string | 1 | 255 | required');
 			// alamat
