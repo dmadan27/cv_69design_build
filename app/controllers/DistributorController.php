@@ -297,6 +297,58 @@
 		* param $id didapat dari url
 		*/
 		public function detail($id){
+			$id = strtoupper($id);
+			$data_detail = !empty($this->DistributorModel->getById($id)) ? $this->DistributorModel->getById($id) : false;
+
+			if(!$data_detail || (empty($id) || $id == "")) $this->redirect(BASE_URL."distributor/");
+
+			$css = array(
+				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+				'assets/bower_components/dropify/dist/css/dropify.min.css'
+			);
+			$js = array(
+				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
+				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/bower_components/dropify/dist/js/dropify.min.js',
+				'app/views/distributor/js/initView.js',
+				'app/views/distributor/js/initForm.js',
+			);
+
+			$config = array(
+				'title' => array(
+					'main' => 'Data Distributorr',
+					'sub' => 'Detail Data Distributor',
+				),
+				'css' => $css,
+				'js' => $js,
+			);
+
+			$status = ($data_detail['status'] == "AKTIF") ? 
+				'<span class="label label-success">'.$data_detail['status'].'</span>' : 
+				'<span class="label label-danger">'.$data_detail['status'].'</span>';
+			
+			// // validasi foto
+			// if(!empty($data_detail['foto'])){
+			// 	// cek foto di storage
+			// 	$filename = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$data_detail['foto'];
+			// 	if(!file_exists($filename)) 
+			// 		$foto = BASE_URL.'assets/images/user/default.jpg';
+			// 	else
+			// 		$foto = BASE_URL.'assets/images/user/'.$data_detail['foto'];
+			// }
+			// else $foto = BASE_URL.'assets/images/user/default.jpg';
+
+			$data = array(
+				'id' => $data_detail['id'],
+				'nama' => $data_detail['nama'],
+				'alamat' => $data_detail['alamat'],
+				'jenis' => $data_detail['jenis'],
+				'no_telp' => $data_detail['no_telp'],
+				'pemilik' => $data_detail['pemilik'],
+				'status' => $status
+			);
+
+			$this->layout('distributor/view', $config, $data);
 
 		}
 
