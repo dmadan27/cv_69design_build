@@ -42,8 +42,10 @@ $(document).ready(function(){
 
     // btn tambah
     $('#tambah').on('click', function(){
-        if(this.value.trim() != "") window.location.href = BASE_URL+'operasional-proyek/form/';
-        else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+        window.location.href = BASE_URL+'operasional-proyek/form/'
+
+        // if(this.value.trim() != "") window.location.href = BASE_URL+'operasional-proyek/form/';
+        // else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
     });
 
     // btn Export

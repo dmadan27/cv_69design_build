@@ -59,51 +59,60 @@
 		*
 		*/
 		public function get_list(){
-			// config datatable
-			$config_dataTable = array(
-				'tabel' => 'operasional_proyek',
-				'kolomOrder' => array(null, 'id', 'id_proyek', 'tgl', 'nama', 'total', null),
-				'kolomCari' => array('id','id_proyek', 'tgl', 'nama'),
-				'orderBy' => array('id' => 'asc'),
-				'kondisi' => false,
-			);
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				// config datatable
+				$config_dataTable = array(
+					'tabel' => 'operasional_proyek',
+					'kolomOrder' => array(null, 'id', 'id_proyek', 'id_kas_besar', 'id_distributor', 'tgl', 'nama', 'total', null),
+					'kolomCari' => array('id', 'id_proyek', 'id_kas_besar', 'id_distributor', 'tgl', 'nama', 'total'),
+					'orderBy' => array('id' => 'asc'),
+					'kondisi' => false,
+				);
 
-			$dataOperasionalProyek = $this->Operasional_ProyekModel->getAllDataTable($config_dataTable);
+				$dataOperasionalProyek = $this->Operasional_ProyekModel->getAllDataTable($config_dataTable);
 
-			$data = array();
-			$no_urut = $_POST['start'];
-			foreach($dataOperasionalProyek as $row){
-				$no_urut++;
+				$data = array();
+				$no_urut = $_POST['start'];
+				foreach($dataOperasionalProyek as $row){
+					$no_urut++;
 
-				// $status = ($row['status'] == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-danger">'.$row['status'].'</span>';
+					// $status = ($row['status'] == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-danger">'.$row['status'].'</span>';
 
-				//button aksi
-				$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-				$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-				$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
-				
-				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
-				
-				$dataRow = array();
-				$dataRow[] = $no_urut;
-				$dataRow[] = $row['id'];
-				$dataRow[] = $row['id_proyek'];
-				$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
-				$dataRow[] = $row['nama'];
-				$dataRow[] = $row['total'];
-				$dataRow[] = $aksi;
+					//button aksi
+					$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+					$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+					$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+					
+					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
+					
+					$dataRow = array();
+					$dataRow[] = $no_urut;
+					$dataRow[] = $row['id'];
+					$dataRow[] = $row['id_proyek'];
+					$dataRow[] = $row['id_kas_besar'];
+					$dataRow[] = $row['id_distributor'];
+					$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
+					$dataRow[] = $row['nama'];
+					$dataRow[] = $row['total'];
+					$dataRow[] = $aksi;
 
-				$data[] = $dataRow;
+					$data[] = $dataRow;
+				}
+
+				$output = array(
+					'draw' => $_POST['draw'],
+					'recordsTotal' => $this->Operasional_ProyekModel->recordTotal(),
+					'recordsFiltered' => $this->Operasional_ProyekModel->recordFilter(),
+					'data' => $data,
+				);
+
+				echo json_encode($output);	
+
 			}
+			else $this->redirect;
 
-			$output = array(
-				'draw' => $_POST['draw'],
-				'recordsTotal' => $this->Operasional_ProyekModel->recordTotal(),
-				'recordsFiltered' => $this->Operasional_ProyekModel->recordFilter(),
-				'data' => $data,
-			);
-
-			echo json_encode($output);	
+			
+				
 		}
 
 		/**
@@ -146,9 +155,17 @@
 				'action' => 'action-add',
 				'id' => '',
 				'id_proyek' => '',
+				'id_bank' => '',
+				'id_kas_besar' => '',
+				'id_distributor' => '',
 				'tgl' => '',
 				'nama' => '',
+				'jenis' => '',
 				'total' => '',
+				'sisa' => '',
+				'status' => '',
+				'status_lunas' => '',
+					
 			);
 
 			$this->layout('operasional_proyek/form', $config, $data);
@@ -555,29 +572,29 @@
 		/**
 		* Function validasi form detail
 		*/
-		private function set_validation_detail($data){
-			// nama
-			$this->validation->set_rules($data['nama_detail'], 'Nama Kebutuhan', 'nama_detail', 'string | 1 | 255 | required');
-			// jenis
-			$this->validation->set_rules($data['jenis_detail'], 'Jenis Kebutuhan', 'jenis_detail', 'string | 1 | 255 | required');
-			// satuan
-			$this->validation->set_rules($data['satuan_detail'], 'Satuan', 'satuan_detail', 'string | 1 | 255 | required');
-			// kuantiti
-			$this->validation->set_rules($data['qty_detail'], 'Kuantiti', 'qty_detail', 'angka | 1 | 255 | required');
-			// harga
-			$this->validation->set_rules($data['harga_detail'], 'Harga Kebutuhan', 'harga_detail', 'nilai | 1 | 9999999999 | required');
-			// sub_total
-			$this->validation->set_rules($data['sub_total_detail'], 'Sub Total', 'sub_total_detail', 'nilai | 1 | 9999999999 | required');
-			// status
-			$this->validation->set_rules($data['status_detail'], 'Status', 'status_detail', 'string | 1 | 255 | required');
-			// harga asli
-			$this->validation->set_rules($data['harga_asli_detail'], 'Harga Asli', 'harga_asli_detail', 'nilai | 1 | 9999999999 | required');
-			// sisa
-			$this->validation->set_rules($data['sisa_detail'], 'Sisa', 'sisa_detail', 'nilai | 1 | 9999999999 | required');
-			// status lunas
-			$this->validation->set_rules($data['status_lunas_detail'], 'Status Lunas', 'status_lunas_detail', 'string | 1 | 255 | required');
+		// private function set_validation_detail($data){
+		// 	// nama
+		// 	$this->validation->set_rules($data['nama_detail'], 'Nama Kebutuhan', 'nama_detail', 'string | 1 | 255 | required');
+		// 	// jenis
+		// 	$this->validation->set_rules($data['jenis_detail'], 'Jenis Kebutuhan', 'jenis_detail', 'string | 1 | 255 | required');
+		// 	// satuan
+		// 	$this->validation->set_rules($data['satuan_detail'], 'Satuan', 'satuan_detail', 'string | 1 | 255 | required');
+		// 	// kuantiti
+		// 	$this->validation->set_rules($data['qty_detail'], 'Kuantiti', 'qty_detail', 'angka | 1 | 255 | required');
+		// 	// harga
+		// 	$this->validation->set_rules($data['harga_detail'], 'Harga Kebutuhan', 'harga_detail', 'nilai | 1 | 9999999999 | required');
+		// 	// sub_total
+		// 	$this->validation->set_rules($data['sub_total_detail'], 'Sub Total', 'sub_total_detail', 'nilai | 1 | 9999999999 | required');
+		// 	// status
+		// 	$this->validation->set_rules($data['status_detail'], 'Status', 'status_detail', 'string | 1 | 255 | required');
+		// 	// harga asli
+		// 	$this->validation->set_rules($data['harga_asli_detail'], 'Harga Asli', 'harga_asli_detail', 'nilai | 1 | 9999999999 | required');
+		// 	// sisa
+		// 	$this->validation->set_rules($data['sisa_detail'], 'Sisa', 'sisa_detail', 'nilai | 1 | 9999999999 | required');
+		// 	// status lunas
+		// 	$this->validation->set_rules($data['status_lunas_detail'], 'Status Lunas', 'status_lunas_detail', 'string | 1 | 255 | required');
 
-			return $this->validation->run();
-		}
+		// 	return $this->validation->run();
+		// }
 
 	}

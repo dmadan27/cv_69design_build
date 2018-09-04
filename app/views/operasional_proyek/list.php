@@ -49,6 +49,8 @@
 											<th class="text-center" style="width: 35px">No</th>
 											<th class="text-center">ID</th>
 											<th class="text-center">ID Proyek</th>
+											<th class="text-center">ID Kas Besar</th>
+											<th class="text-center">ID Distributor</th>
 											<th class="text-center">Tanggal</th>
 											<th class="text-center">Nama</th>
 											<th class="text-center">Total</th>

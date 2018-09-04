@@ -54,9 +54,22 @@
                                         <select class="form-control select2" name="id_bank" id="id_bank"></select>
                                         <span class="help-block small pesan pesan-id_bank"></span>
                                     </div>
-                                    
 
-                                    <!-- Tgl -->
+                              <!-- ID Kas Besar -->
+                                    <div class="form-group field-id_kasbesar has-feedback">
+                                        <label for="id_kasbesar">ID Kas Besar</label>
+                                        <select class="form-control select2" name="id_kas_besar" id="id_kasbesar"></select>
+                                        <span class="help-block small pesan pesan-id_kasbesar"></span>
+                                    </div>
+
+                              <!-- ID Distributor -->
+                                    <div class="form-group field-id_distributor has-feedback">
+                                        <label for="id_distributor">ID Distributor</label>
+                                        <select class="form-control select2" name="id_distributor" id="id_distributor"></select>
+                                        <span class="help-block small pesan pesan-id_distributor"></span>
+                                    </div>
+                                    
+                              <!-- Tgl -->
                                     <div class="form-group field-tgl has-feedback">
                                         <label for="tgl">Tanggal</label>
                                         <div class="input-group date">
@@ -68,7 +81,7 @@
                                         <span class="help-block small pesan pesan-tgl"></span>
                                   </div>
 
-                                  <!-- Input Nama Pengajuan -->
+                              <!-- Input Nama Pengajuan -->
                                     <div class="form-group field-nama has-feedback">
                                         <label for="nama">Nama</label>
                                         <input type="text" class="form-control field" id="nama" name="nama" placeholder="Masukan Nama Kebutuhan Operasional" >
@@ -76,7 +89,7 @@
                                     </div>
 
 
-                                    <!-- Input Total -->
+                              <!-- Input Total -->
                                     <div class="form-group field-total has-feedback">
                                         <label for="total">Total</label>
                                         <div class="input-group" style="width: 100%">
@@ -96,8 +109,8 @@
             </div>
           </div>
             
-            <!-- Panel Detail dan sub kas kecil -->
-            <div class="row">
+         <!--    Panel Detail dan sub kas kecil -->
+            <!-- <div class="row">
             <div class="col-lg-12 col-md-12 col-xs-12">           
               <div class="box box-info"> 
                         <div class="box-header">
@@ -148,7 +161,7 @@
                     </div>
                         <div class="clearfix"></div>
                     </div>
-            </div>
+            <!-- </div>
           </div>
 
         <div class="row">
@@ -171,7 +184,7 @@
                         <div class="clearfix"></div>
                     </div>
             </div>
-          </div>
+          </div> -->
         </form>
   </section>
 </div>
