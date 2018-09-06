@@ -526,6 +526,43 @@
 		/**
 		*
 		*/
+		public function get_nama_kas_besar(){
+			$this->model('Kas_besarModel');
+			$data_kas_besar = $this->Kas_besarModel->getAll();
+			$data = array();
+
+			foreach ($data_kas_besar as $row) {
+				$dataRow = array();
+				$dataRow['id'] = $row['id'];
+				$dataRow['text'] = $row['id'].' - '.$row['nama'];
+
+				$data[] = $dataRow;
+			}
+
+			echo json_encode($data);
+		}
+		/**
+		*
+		*/
+		public function get_nama_distributor(){
+			$this->model('DistributorModel');
+			$data_distributor = $this->DistributorModel->getAll();
+			$data = array();
+
+			foreach ($data_distributor as $row) {
+				$dataRow = array();
+				$dataRow['id'] = $row['id'];
+				$dataRow['text'] = $row['id'].' - '.$row['nama'];
+
+				$data[] = $dataRow;
+			}
+
+			echo json_encode($data);
+		}
+
+		/**
+		*
+		*/
 		public function action_add_detail(){
 			$data = isset($_POST) ? $_POST : false;
 			

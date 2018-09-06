@@ -56,10 +56,10 @@
                                     </div>
 
                               <!-- ID Kas Besar -->
-                                    <div class="form-group field-id_kasbesar has-feedback">
-                                        <label for="id_kasbesar">ID Kas Besar</label>
-                                        <select class="form-control select2" name="id_kas_besar" id="id_kasbesar"></select>
-                                        <span class="help-block small pesan pesan-id_kasbesar"></span>
+                                    <div class="form-group field-id_kas_besar has-feedback">
+                                        <label for="id_kas_besar">ID Kas Besar</label>
+                                        <select class="form-control select2" name="id_kas_besar" id="id_kas_besar"></select>
+                                        <span class="help-block small pesan pesan-id_kas_besar"></span>
                                     </div>
 
                               <!-- ID Distributor -->

@@ -19,8 +19,24 @@ $(document).ready(function () {
 		allowClear: true
     });
 
+    $('#id_kas_besar').select2({
+    	placeholder: "Pilih Kas Besar",
+		allowClear: true
+    });
+
+    $('#id_distributor').select2({
+    	placeholder: "Pilih Distributor",
+		allowClear: true
+    });
+
+    
+    // Inisiasi Function
     setNamaProyek();
     setNamaBank();
+    setnamaKasBesar();
+	setnamaDistributor();
+
+
 
  	//Date picker
     $('.datepicker').datepicker({
@@ -384,6 +400,49 @@ function setNamaBank(){
             swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
         }
 	})		
+
+}
+
+function setnamaKasBesar(){
+	$.ajax({
+		url: BASE_URL+'operasional-proyek/get-nama-kas-besar',
+		dataType: 'json',
+		beforeSend: function(){},
+		success: function(data){
+			console.log(data);
+			$.each(data, function(index, item){
+				var newOption = new Option(item.text, item.id);
+				$('#id_kas_besar').append(newOption).trigger('change');
+			});
+			$('#id_kas_besar').val(null).trigger('change');
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+            console.log(jqXHR, textStatus, errorThrown);
+            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+        }
+	})		
+
+}
+
+function setnamaDistributor(){
+	$.ajax({
+		url: BASE_URL+'operasional-proyek/get-nama-distributor',
+		dataType: 'json',
+		beforeSend: function(){},
+		success: function(data){
+			console.log(data);
+			$.each(data, function(index, item){
+				var newOption = new Option(item.text, item.id);
+				$('#id_distributor').append(newOption).trigger('change');
+			});
+			$('#id_distributor').val(null).trigger('change');
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+            console.log(jqXHR, textStatus, errorThrown);
+            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+        }
+	})		
+
 
 }
 
