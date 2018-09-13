@@ -76,7 +76,7 @@
 																</tr>
 																<tr>
 																	<td><strong>Nama Bank</strong></td>
-																	<td></td>
+																	<td><?=  $this->data['nama_bank'] ?></td>
 																</tr>
 																
 															</table>
@@ -90,23 +90,19 @@
 															<table class="table table-hover">
 																<tr>
 																	<td><strong>ID Kas Besar</strong></td>
-																	<td></td>
+																	<td><?=  $this->data['id_kas_besar'] ?></td>
 																</tr>
 																<tr>
 																	<td><strong>Nama Kas Besar</strong></td>
-																	<td></td>
-																</tr>
-																<tr>
-																	<td><strong>Alamat</strong></td>
-																	<td></td>
+																	<td><?=  $this->data['nama_kas_besar'] ?></td>
 																</tr>
 																<tr>
 																	<td><strong>No Telepon</strong></td>
-																	<td></td>
+																	<td><?=  $this->data['no_telp'] ?></td>
 																</tr>
 																<tr>
 																	<td><strong>Email</strong></td>
-																	<td></td>
+																	<td><?=  $this->data['email'] ?></td>
 																</tr>
 															</table>
 													</fieldset>

@@ -331,7 +331,7 @@
 			$id = strtoupper($id);
 			if(empty($id) || $id == "") $this->redirect(BASE_URL."operasional/");
 
-			$data_detail = !empty($this->OperasionalModel->getById($id)) ? $this->OperasionalModel->getById($id) : false;
+			$data_detail = !empty($this->OperasionalModel->getByid_fromView($id)) ? $this->OperasionalModel->getByid_fromView($id) : false;
 
 			if(!$data_detail) $this->redirect(BASE_URL."operasional/");
 
@@ -356,12 +356,17 @@
 
 			$data = array(
 				'id' => $data_detail['id'],
-				'id_bank' => $data_detail['id_bank'],
-				'id_kas_besar' => $data_detail['id_kas_besar'],
 				'tgl' => $data_detail['tgl'],
 				'nama' => $data_detail['nama'],
-				'nominal' => $this->helper->cetakRupiah($data_detail['nominal']),
+				'nominal' => $data_detail['nominal'],
 				'ket' => $data_detail['ket'],
+				'id_bank' => $data_detail['id_bank'],
+				'nama_bank' => $data_detail['nama_bank'],
+				'id_kas_besar' => $data_detail['id_kas_besar'],
+				'nama_kas_besar' => $data_detail['nama_kas_besar'],
+				'no_telp' => $data_detail['no_telp'],
+				'email' => $data_detail['email'],
+					
 			);
 
 			$this->layout('operasional/view', $config, $data);

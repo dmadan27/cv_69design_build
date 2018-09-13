@@ -70,6 +70,21 @@
 		}
 
 		/**
+		*
+		*/
+		public function getByid_fromView($id){
+			$query = "SELECT * FROM v_operasional_new WHERE id = :id;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
+
+		}
+
+		/**
 		* 
 		*/
 		public function insert($data){
