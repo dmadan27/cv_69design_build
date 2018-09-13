@@ -54,6 +54,14 @@ CREATE OR REPLACE VIEW v_operasional AS
 	FROM operasional o
 	JOIN bank b ON b.id = o.id_bank;
 
+-- View Operasional (updated)
+CREATE OR REPLACE VIEW v_operasional_new AS
+	SELECT op.id, op.tgl, op.nama, op.nominal, op.ket, b.id id_bank, b.nama nama_bank,
+	   kb.id id_kas_besar, kb.nama nama_kas_besar, kb.no_telp no_telp,kb.email email
+	  		FROM operasional op
+	  			JOIN bank b ON b.id = op.id_bank
+	  				JOIN kas_besar kb ON kb.id = op.id_kas_besar;  
+
 -- View Mutasi Bank
 
 -- View Mutasi Saldo Kas Kecil
