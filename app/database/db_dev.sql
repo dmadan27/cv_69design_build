@@ -310,6 +310,7 @@ CREATE TABLE IF NOT EXISTS operasional_proyek(
 	sisa double(12,2), -- sisa jika bayar secara cicil, default 0
 	status enum('TUNAI', 'KREDIT'), -- T: Tunai, K: Kredit
 	status_lunas enum('LUNAS', 'BELUM LUNAS'), -- L: Lunas, B: Belum Lunas
+	ket text
 
 	CONSTRAINT pk_operasional_proyek_id PRIMARY KEY(id),
 	CONSTRAINT fk_operasional_proyek_id_proyek FOREIGN KEY(id_proyek) REFERENCES proyek(id)
