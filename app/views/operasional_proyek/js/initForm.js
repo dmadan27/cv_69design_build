@@ -1,5 +1,7 @@
 $(document).ready(function () {
-	// setStatusDetail();
+
+	// set select statyus
+	
 	
 	if($('#submit_operasional_proyek').val() == 'action-add') generateID();
 	// else if($('#submit_operasional_proyek').val() == 'action-edit') getEdit($('#id').val().trim());
@@ -35,7 +37,9 @@ $(document).ready(function () {
     setNamaBank();
     setnamaKasBesar();
 	setnamaDistributor();
-
+	setJenis();
+	setStatus();
+	setStatusLunas();
 
 
  	//Date picker
@@ -464,16 +468,25 @@ function getDataForm(){
 		id : $('#id').val().trim(),
 		id_proyek : $('#id_proyek').val().trim(),
 		id_bank : $('#id_bank').val().trim(),
+		id_kas_besar : $('#id_kas_besar').val().trim(),
+		id_distributor : $('#id_distributor').val().trim(),
 		tgl : $('#tgl').val().trim(),
 		nama : $('#nama').val().trim(),
-		total : total
+		jenis : $('#jenis').val().trim(),
+		total : total,
+		sisa : $('#sisa').val().trim(),
+		status : $('#status').val().trim(),
+		status_lunas : $('#status_lunas').val().trim(),
+		ket : $('#ket').val().trim()
+		
+		
 	}
 
 	// data.append('token', $('#token_form').val().trim());
 	// data.append('dataOperasionalProyek', JSON.stringify(dataOperasionalProyek));
 	data.append('id', $('#id').val().trim());
 	data.append('dataOperasionalProyek', JSON.stringify(dataOperasionalProyek));
-	data.append('dataDetail', JSON.stringify(listDetail));
+	// data.append('dataDetail', JSON.stringify(listDetail));
 	data.append('action', $('#submit_operasional_proyek').val().trim());
 
 	return data;
@@ -659,6 +672,50 @@ function generateID(proyek = null){
             swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
         }
 	})
+}
+
+/**
+*
+*/
+function setJenis(){
+	var jenis = [
+		{value: "TEKNIS", text: "TEKNIS"},
+		{value: "NON-TEKNIS", text: "NON-TEKNIS"},
+	];
+
+	$.each(jenis, function(index, item){
+		var option = new Option(item.text, item.value);
+		$("#jenis").append(option);
+	});
+}
+
+/**
+*
+*/
+function setStatus(){
+	var status = [
+		{value: "TUNAI", text: "TUNAI"},
+		{value: "KREDIT", text: "KREDIT"},
+	];
+
+	$.each(status, function(index, item){
+		var option = new Option(item.text, item.value);
+		$("#status").append(option);
+	});
+}
+/**
+*
+*/
+function setStatusLunas(){
+	var status_lunas = [
+		{value: "LUNAS", text: "LUNAS"},
+		{value: "BELUM LUNAS", text: "BELUM LUNAS"},
+	];
+
+	$.each(status_lunas, function(index, item){
+		var option = new Option(item.text, item.value);
+		$("#status_lunas").append(option);
+	});
 }
 
 /**

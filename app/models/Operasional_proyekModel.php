@@ -71,7 +71,7 @@
 		*/
 		public function insert($data){
 			$dataOperasionalProyek = $data['dataOperasionalProyek'];
-			$dataDetail = $data['dataDetail'];
+			// $dataDetail = $data['dataDetail'];
 			
 
 			try{
@@ -81,12 +81,12 @@
 				$this->insertOperasionalProyek($dataOperasionalProyek);
 
 				// insert data detail
-				foreach ($dataDetail as $index => $row) {
-					if(!$dataDetail[$index]['delete']){
-						array_map('strtoupper', $row);
-						$this->insertDetailOperasionalProyek($row, $dataOperasionalProyek['id']);
-					}
-				}
+				// foreach ($dataDetail as $index => $row) {
+				// 	if(!$dataDetail[$index]['delete']){
+				// 		array_map('strtoupper', $row);
+				// 		$this->insertDetailOperasionalProyek($row, $dataOperasionalProyek['id']);
+				// 	}
+				// }
 								
 				$this->koneksi->commit();
 
@@ -104,7 +104,7 @@
 		*/
 		private function insertOperasionalProyek($data){
 			// insert operasional_proyek
-			$query = "CALL tambah_operasional_proyek (:id, :id_proyek, :id_bank, :id_kas_besar, :tgl, :nama,  :total, :ket);";
+			$query = "CALL tambah_operasional_proyek_new (:id, :id_proyek, :id_bank, :id_kas_besar, :id_distributor, :tgl, :nama, :jenis,  :total, :sisa, :status, :status_lunas, :ket);";
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
 				array(
@@ -112,10 +112,18 @@
 					':id_proyek' => $data['id_proyek'],
 					':id_bank' => $data['id_bank'],
 					':id_kas_besar' => $data['id_kas_besar'],
+					':id_distributor' => $data['id_distributor'],
 					':tgl' => $data['tgl'],
 					':nama' => $data['nama'],
+					':jenis' => $data['jenis'],
 					':total' => $data['total'],
+					':sisa' => $data['sisa'],
+					':status' => $data['status'],
+					':status_lunas' => $data['status_lunas'],
 					':ket' => $data['ket']
+					
+
+
 				)
 			);
 			$statement->closeCursor();

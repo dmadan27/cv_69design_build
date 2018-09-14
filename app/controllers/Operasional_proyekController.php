@@ -165,6 +165,8 @@
 				'sisa' => '',
 				'status' => '',
 				'status_lunas' => '',
+				'ket' => '',
+				
 					
 			);
 
@@ -179,10 +181,11 @@
 				$data = isset($_POST) ? $_POST : false;
 				$dataOperasionalProyek = isset($_POST['dataOperasionalProyek']) ? json_decode($_POST['dataOperasionalProyek'], true) : false;
 				$dataDetail = isset($_POST['dataDetail']) ? json_decode($_POST['dataDetail'], true) : false;
-				// $dataSkk = isset($_POST['dataSkk']) ? json_decode($_POST['dataSkk'], true) : false;
+				
 				
 				$error = $notif = array();
-				$cekDetail = true;
+				
+				// $cekDetail = true;
 
 				if(!$data){
 					$notif = array(
@@ -197,13 +200,13 @@
 					$cek = $validasi['cek'];
 					$error = $validasi['error'];
 
-					if(empty($dataDetail)){
-						$cek = false;
-						$cekDetail = false;
-					}
+					// if(empty($dataDetail)){
+					// 	$cek = false;
+					// 	$cekDetail = false;
+					// }
 					
 					if($cek){
-						$ket = 'OPERASIONAL PROYEK ['.$dataOperasionalProyek['id'].'] - '.strtoupper($dataOperasionalProyek['nama']);
+						$keterangan = 'OPERASIONAL PROYEK ['.$dataOperasionalProyek['id'].'] - '.strtoupper($dataOperasionalProyek['nama']);
 
 						// validasi input
 						$dataOperasionalProyek = array(
@@ -211,15 +214,20 @@
 							'id_proyek' => $this->validation->validInput($dataOperasionalProyek['id_proyek']),
 							'id_bank' => $this->validation->validInput($dataOperasionalProyek['id_bank']),
 							'id_kas_besar' => $_SESSION['sess_id'],
+							'id_distributor' => $this->validation->validInput($dataOperasionalProyek['id_distributor']),
 							'tgl' => $this->validation->validInput($dataOperasionalProyek['tgl']),
 							'nama' => $this->validation->validInput($dataOperasionalProyek['nama']),
+							'jenis' => $this->validation->validInput($dataOperasionalProyek['jenis']),
 							'total' => $this->validation->validInput($dataOperasionalProyek['total']),
-							'ket' => $ket,
+							'sisa' => $this->validation->validInput($dataOperasionalProyek['sisa']),
+							'status' => $this->validation->validInput($dataOperasionalProyek['status']),
+							'status_lunas' => $this->validation->validInput($dataOperasionalProyek['status_lunas']),
+							'ket' => $this->validation->validInput($dataOperasionalProyek['ket']),
+							'keterangan' => $keterangan,
 						);
 
 						$dataInsert = array(
 							'dataOperasionalProyek' => $dataOperasionalProyek,
-							'dataDetail' => $dataDetail
 						);
 
 						// insert data proyek
@@ -240,21 +248,7 @@
 							);
 						}
 					}
-					else{
-						if(!$cekDetail){
-							$notif['data_detail'] = array(
-								'type' => 'warning',
-								'title' => "Pesan Pemberitahuan",
-								'message' => "Silahkan Cek Kembali Data Detail",
-							);
-						}
-
-						$notif['default'] = array(
-							'type' => 'warning',
-							'title' => "Pesan Pemberitahuan",
-							'message' => "Silahkan Cek Kembali Form Isian",
-						);
-					}
+					
 				}
 
 				$output = array(
@@ -263,13 +257,10 @@
 					'error' => $error,
 					'cek' => array(
 						'cek' => $cek,
-						'data_detail' => $cekDetail,
 						
 					),
 					'data' => $data,
 					'dataOperasionalProyek' => $dataOperasionalProyek,
-					'dataDetail' => $dataDetail,
-				
 				);
 				echo json_encode($output);
 			}
@@ -596,12 +587,27 @@
 			$this->validation->set_rules($data['id_proyek'], 'ID proyek', 'id_proyek', 'string | 1 | 255 | required');
 			// id_bank
 			$this->validation->set_rules($data['id_bank'], 'ID Bank', 'id_bank', 'string | 1 | 255 | required');
+			// id_kas_besar
+			$this->validation->set_rules($data['id_kas_besar'], 'ID Kas Besar', 'id_kas_besar', 'string | 1 | 255 | required');
+			// id_distributor
+			$this->validation->set_rules($data['id_distributor'], 'ID Distributor', 'id_distributor', 'string | 1 | 255 | required');
 			// tgl
 			$this->validation->set_rules($data['tgl'], 'Tanggal Operasional Proyek', 'tgl', 'string | 1 | 255 | required');
 			// nama
 			$this->validation->set_rules($data['nama'], 'Nama Pengajuan', 'nama', 'string | 1 | 255 | required');
+			// jenis
+			$this->validation->set_rules($data['jenis'], 'Jenis Pengajuan', 'jenis', 'string | 1 | 255 | required');
 			// total
 			$this->validation->set_rules($data['total'], 'Total Pengajuan', 'total', 'nilai | 1 | 99999 | required');
+			// sisa
+			$this->validation->set_rules($data['sisa'], 'Sisa Pengajuan', 'sisa', 'nilai | 1 | 99999 | required');
+			// status
+			$this->validation->set_rules($data['jenis'], 'Status Pengajuan', 'status', 'string | 1 | 255 | required');
+			// status lunas
+			$this->validation->set_rules($data['status_lunas'], 'Status Lunas Pengajuan', 'status_lunas', 'string | 1 | 255 | required');
+			// keterangan
+			$this->validation->set_rules($data['ket'], 'Keterangan Pengajuan', 'ket', 'string | 1 | 255 | required');
+			
 			
 			return $this->validation->run();
 		}
