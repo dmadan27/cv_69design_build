@@ -60,9 +60,8 @@ $(document).ready(function(){
 /**
 *
 */
-function getView(id, token){
-    if(token != "") window.location.href = BASE_URL+'operasional-/detail/'+id;
-    else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+function getView(id){
+    window.location.href = BASE_URL+'operasional-proyek/detail/'+id;   
 }
 
 /**

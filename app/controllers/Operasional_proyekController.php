@@ -287,6 +287,68 @@
 		*
 		*/
 		public function detail($id){
+			$id = strtoupper($id);
+			$dataOperasionalProyek = !empty($this->Operasional_ProyekModel->getById_fromView($id)) ? $this->Operasional_ProyekModel->getById_fromView($id) : false;
+			if((empty($id) || $id == "") || !$dataOperasionalProyek) $this->redirect(BASE_URL."operasional-proyek/");
+			$css = array(
+				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css'
+			);
+			$js = array(
+				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
+				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'app/views/operasional_proyek/js/initView.js',
+			);
+
+			$config = array(
+				'title' => array(
+					'main' => 'Data Operasional Proyek',
+					'sub' => 'Detail Data Operasional Proyek',
+				),
+				'css' => $css,
+				'js' => $js,
+			);
+
+			$dataOperasionalProyek = array(
+				// 'id' => $dataOperasionalProyek['id'],
+				// 'id_proyek' =>   $dataOperasionalProyek['id_proyek'],
+				// 'id_bank' =>  $dataOperasionalProyek['id_bank'],
+				// 'id_kas_besar' => $dataOperasionalProyek['id_kas_besar'],
+				// 'id_distributor' => $dataOperasionalProyek['id_distributor'],
+				// 'tgl' => $dataOperasionalProyek['tgl'],
+				// 'nama' => $dataOperasionalProyek['nama'],
+				// 'jenis' => $dataOperasionalProyek['jenis'],
+				// 'total' => $dataOperasionalProyek['total'],
+				// 'sisa' => $dataOperasionalProyek['sisa'],
+				// 'status' => $dataOperasionalProyek['status'],
+				// 'status_lunas' => $dataOperasionalProyek['status_lunas'],
+				// 'ket' => $dataOperasionalProyek['ket'],
+
+				'id' => $dataOperasionalProyek['id'],
+				'id_proyek' =>   $dataOperasionalProyek['id_proyek'],
+				'pemilik_proyek' =>   $dataOperasionalProyek['pemilik_proyek'],
+				'nama_pembangunan' =>   $dataOperasionalProyek['nama_pembangunan'],
+				'id_bank' =>  $dataOperasionalProyek['id_bank'],
+				'nama_bank' =>  $dataOperasionalProyek['nama_bank'],
+				'id_kas_besar' => $dataOperasionalProyek['id_kas_besar'],
+				'nama_kas_besar' => $dataOperasionalProyek['nama_kas_besar'],
+				'id_distributor' => $dataOperasionalProyek['id_distributor'],
+				'nama_distributor' => $dataOperasionalProyek['nama_distributor'],
+				'tgl_pengajuan' => $dataOperasionalProyek['tgl_pengajuan'],
+				'nama_pengajuan' => $dataOperasionalProyek['nama_pengajuan'],
+				'jenis_pengajuan' => $dataOperasionalProyek['jenis_pengajuan'],
+				'total_pengajuan' => $dataOperasionalProyek['total_pengajuan'],
+				'sisa_pengajuan' => $dataOperasionalProyek['sisa_pengajuan'],
+				'status_pengajuan' => $dataOperasionalProyek['status_pengajuan'],
+				'status_lunas' => $dataOperasionalProyek['status_lunas'],
+				'keterangan' => $dataOperasionalProyek['keterangan'],
+			);
+			
+			$data = array(
+				'dataOperasionalProyek' => $dataOperasionalProyek
+			);
+
+			$this->layout('operasional_proyek/view', $config, $data);
+
 
 		}
 
