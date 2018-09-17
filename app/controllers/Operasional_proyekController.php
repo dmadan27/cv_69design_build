@@ -356,6 +356,14 @@
 		*
 		*/
 		public function delete($id){
+			if($_SERVER['REQUEST_METHOD'] == "POST" && $id != ''){
+				$id = strtoupper($id);
+				if(empty($id) || $id == "") $this->redirect(BASE_URL."operasional-proyek");
+
+				if($this->Operasional_ProyekModel->delete($id)) $this->status =true;
+				echo json_encode($this->status);
+			}
+			else $this->redirect();
 
 		}
 

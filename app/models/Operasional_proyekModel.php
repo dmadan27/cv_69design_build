@@ -189,13 +189,13 @@
 		* 
 		*/
 		public function delete($id){
-			// $query = "DELETE FROM bank WHERE id = :id";
+			$query = "DELETE FROM operasional_proyek WHERE id = :id";
 			
-			// $statement = $this->koneksi->prepare($query);
-			// $statement->bindParam(':id', $id);
-			// $result = $statement->execute();
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$result = $statement->execute();
 
-			// return $result;
+			return $result;
 		}
 
 		public function getLastID($id){

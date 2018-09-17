@@ -75,8 +75,7 @@ function getEdit(id, token){
 /**
 *
 */
-function getDelete(id, token){
-	if(token.trim() != ""){
+function getDelete(id){
 		swal({
 			title: "Pesan Konfirmasi",
 			text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
@@ -91,7 +90,7 @@ function getDelete(id, token){
 				url: BASE_URL+'operasional-proyek/delete/'+id,
 				type: 'post',
 				dataType: 'json',
-				data: {"token_delete": token},
+				data: {},
 				beforeSend: function(){
 
 				},
@@ -99,7 +98,7 @@ function getDelete(id, token){
 					console.log(output);
 					if(output){
 						swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
-						$("#bankTable").DataTable().ajax.reload();
+						$("#operasionalProyekTable").DataTable().ajax.reload();
 					}
 				},
 				error: function (jqXHR, textStatus, errorThrown){ // error handling
@@ -108,6 +107,5 @@ function getDelete(id, token){
 		        }
 			})
 		});
-	}
-    else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+	
 }
