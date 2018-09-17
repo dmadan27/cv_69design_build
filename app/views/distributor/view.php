@@ -50,6 +50,7 @@
 					
 					<ul class="nav nav-tabs">
               			<li class="active"><a href="#data-profil" data-toggle="tab">Data Profil</a></li>
+                        <li class=""><a href="#data-historypembelian" data-toggle="tab">Data History Pembelian</a></li>
               			
             		</ul>
             		
@@ -106,6 +107,15 @@
                 				</div>
                 			</div>
               			</div>
+
+                        <!-- Data History Pembelian -->
+                        <div class="tab-pane" id="data-historypembelian">
+                            <div class="row">
+                                <div class="col-md-12">
+                                </div>
+                            </div>
+                        </div>
+
               			
 	              		<!-- /.tab-pane -->
 
