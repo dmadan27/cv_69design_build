@@ -400,6 +400,52 @@
 		}
 
 		/**
+		*	Fungsi history pembelian
+		*	di menu Distributor
+		*/
+		public function get_history_pembelian($id){
+			// if($_SERVER['REQUEST_METHOD'] == "POST"){
+			// 	$this->model('');
+				
+			// 	// config datatable
+			// 	$config_dataTable = array(
+			// 		'tabel' => 'pengajuan_kas_kecil',
+			// 		'kolomOrder' => array(null, 'tgl', 'nama', 'total', 'status'),
+			// 		'kolomCari' => array('tgl', 'nama', 'total', 'status'),
+			// 		'orderBy' => array('id' => 'desc'),
+			// 		'kondisi' => 'WHERE id_kas_kecil = "'.$id.'"',
+			// 	);
+
+			// 	$dataMutasi = $this->Pengajuan_kasKecilModel->getAllDataTable($config_dataTable);
+			// 	$data = array();
+			// 	$no_urut = $_POST['start'];
+			// 	foreach($dataMutasi as $row){
+			// 		$no_urut++;
+					
+			// 		$dataRow = array();
+			// 		$dataRow[] = $no_urut;
+			// 		$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
+			// 		$dataRow[] = $row['nama'];
+			// 		$dataRow[] = $this->helper->cetakRupiah($row['total']);
+			// 		$dataRow[] = $row['status'];
+
+			// 		$data[] = $dataRow;
+			// 	}
+
+			// 	$output = array(
+			// 		'draw' => $_POST['draw'],
+			// 		'recordsTotal' => $this->Pengajuan_kasKecilModel->recordTotal(),
+			// 		'recordsFiltered' => $this->Pengajuan_kasKecilModel->recordFilter(),
+			// 		'data' => $data,
+			// 	);
+
+			// 	echo json_encode($output);
+			// }
+			// else $this->redirect();
+
+		}
+
+		/**
 		* Fungsi set_validation
 		* method yang berfungsi untuk validasi inputan secara server side
 		* param $data didapat dari post yang dilakukan oleh user
