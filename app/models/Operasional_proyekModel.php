@@ -56,14 +56,13 @@
 		* 
 		*/
 		public function getById($id){
-			// $query = "SELECT * FROM bank WHERE id = :id;";
+			$query = "SELECT * FROM operasional_proyek WHERE id = :id;";
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
 
-			// $statement = $this->koneksi->prepare($query);
-			// $statement->bindParam(':id', $id);
-			// $statement->execute();
-			// $result = $statement->fetch(PDO::FETCH_ASSOC);
-
-			// return $result;
+			return $result;
 		}
 
 		/**

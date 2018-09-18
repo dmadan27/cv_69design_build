@@ -271,15 +271,171 @@
 		*
 		*/
 		protected function edit($id){
+			$id = strtoupper($id);
+
+			$dataOperasionalProyek = !empty($this->Operasional_ProyekModel->getById($id)) ? $this->Operasional_ProyekModel->getById($id) :false;
+
 			if(empty($id) || $id == "") $this->redirect(BASE_URL."operasional-proyek/");
 
-			
+			$css = array(
+  				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
+				'assets/bower_components/select2/dist/css/select2.min.css',
+				'assets/plugins/bootstrap-slider/slider.css',
+  			);
+			$js = array(
+				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
+				'assets/bower_components/select2/dist/js/select2.full.min.js',
+				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
+				'assets/plugins/bootstrap-slider/bootstrap-slider.js',
+				'app/views/operasional_proyek/js/initForm.js',	
+			);
+
+			$config = array(
+				'title' => array(
+					'main' => 'Data Operasional Proyek',
+					'sub' => 'Form Edit Data',
+				),
+				'css' => $css,
+				'js' => $js,
+			);
+
+			$data = array(
+				'action' => 'action-edit',
+				'id' => $dataOperasionalProyek['id'],
+				'id_proyek'=> $dataOperasionalProyek['id_proyek'],
+				'id_bank'=> $dataOperasionalProyek['id_bank'],
+				'id_kas_besar'=> $dataOperasionalProyek['id_kas_besar'],
+				'id_distributor'=> $dataOperasionalProyek['id_distributor'],
+				'tgl'=> $dataOperasionalProyek['tgl'],
+				'nama'=> $dataOperasionalProyek['nama'],
+				'jenis'=> $dataOperasionalProyek['jenis'],
+				'total'=> $dataOperasionalProyek['total'],
+				'sisa'=> $dataOperasionalProyek['sisa'],
+				'status'=> $dataOperasionalProyek['status'],
+				'status_lunas'=> $dataOperasionalProyek['status_lunas'],
+				'ket'=> $dataOperasionalProyek['ket'],
+			);
+			$this->layout('operasional_proyek/form', $config, $data);
+		}
+
+		/**
+		* Method get edit
+		* Get data detail proyek dan detail skk
+		* Request berupa POST dan output berupa JSON
+		* Parameter id => id proyek
+		*/
+		public function get_edit($id){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$id = strtoupper($id);
+				if(empty($id) || $id == "") $this->redirect(BASE_URL."operasional-proyek/");
+
+				// get data detail dan skk
+				// $dataDetail = $this->ProyekModel->getDetailById($id);
+				// $dataSkk = $this->ProyekModel->getSkkById($id);
+				$dataOperasionalProyek = $this->Operasional_ProyekModel->getById($id);
+
+				$output = array(
+					'dataOperasionalProyek' => $dataOperasionalProyek,
+				);
+
+				echo json_encode($output);
+			}
+			else $this->redirect();	
 		}
 
 		/**
 		*
 		*/
 		public function action_edit(){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$data = isset($_POST) ? $_POST :false;
+				$dataOperasionalProyek = isset($_POST['dataOperasionalProyek']) ?json_encode($_POST['dataOperasionalProyek'], true) :false;
+
+				$error = $notif = array();
+				if(!$data){
+					$notif = array(
+						'title' => "Pesan Gagal",
+						'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
+					);
+				}
+				else{
+					$validasi = $this->set_validation($dataOperasionalProyek, $data['action']);
+					$cek = $validasi['cek'];
+					$error = $validasi['error'];
+
+					if($cek){
+						$dataOperasionalProyek = array(
+							'id' => $this->validation->validInput($dataOperasionalProyek['id']),
+							'id_proyek' => $this->validation->validInput($dataOperasionalProyek['id_proyek']),
+							'id_bank' => $this->validation->validInput($dataOperasionalProyek['id_bank']),
+							'id_kas_besar' => $_SESSION['sess_id'],
+							'id_distributor' => $this->validation->validInput($dataOperasionalProyek['id_distributor']),
+							'tgl' => $this->validation->validInput($dataOperasionalProyek['tgl']),
+							'nama' => $this->validation->validInput($dataOperasionalProyek['nama']),
+							'jenis' => $this->validation->validInput($dataOperasionalProyek['jenis']),
+							'total' => $this->validation->validInput($dataOperasionalProyek['total']),
+							'sisa' => $this->validation->validInput($dataOperasionalProyek['sisa']),
+							'status' => $this->validation->validInput($dataOperasionalProyek['status']),
+							'status_lunas' => $this->validation->validInput($dataOperasionalProyek['status_lunas']),
+							'ket' => $this->validation->validInput($dataOperasionalProyek['ket']),
+							'keterangan' => $keterangan,
+						);
+
+					$dataUpdate = array(
+							'dataOperasionalProyek' => $dataOperasionalProyek,
+						);
+
+					// update data
+					if($this->Operasional_ProyekModel->update($dataUpdate)){
+						$this->status = true;
+							$_SESSION['notif'] = array(
+								'type' => "success",
+								'title' => "Pesan Berhasil",
+								'message' => "Edit Data Proyek Berhasil",
+							);
+							$notif['default'] = $_SESSION['notif'];
+
+					}
+					else{
+						$notif['default'] = array(
+								'type' => "error",
+								'title' => "Pesan Gagal",
+								'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
+							);
+
+					}
+
+
+
+
+					}
+
+					$notif['default'] = array(
+							'type' => "warning",
+							'title' => "Pesan Pemberitahuan",
+							'message' => "Silahkan Cek Kembali Form Isian ",
+						);
+
+				}
+
+				$output = array(
+					'status' => $this->status,
+					'notif' => $notif,
+					'error' => $error,
+					'cek' => array(
+						'cek' => $cek,
+						// 'data_detail' => $cekDetail,
+						// 'data_skk' => $cekSkk,
+					),
+					// 'data' => $data,
+					'dataOperasionalProyek' => $dataOperasionalProyek,
+					// 'dataDetail' => $dataDetail,
+					// 'dataSkk' => $dataSkk,
+				);
+
+				echo json_encode($output);			
+			}
+			else $this->redirect();
 
 		}
 
@@ -650,7 +806,7 @@
 		* Function validasi form utama
 		*/
 		private function set_validation($data, $action){
-			
+			$required = ($action =="action-add") ? 'not_required' : 'required';
 			// id
 			$this->validation->set_rules($data['id'], 'ID Operasional Proyek', 'id', 'string | 1 | 255 | required');
 			// id_proyek

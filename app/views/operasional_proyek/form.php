@@ -17,7 +17,7 @@
     </section>
     <section class="content container-fluid">
       <form id="form_operasional_proyek" role="form">
-        <input type="hidden" id="token_form" value="<?= $this->data['token_form']?>">
+        <!-- <input type="hidden" id="token_form" value="<?= $this->data['token_form']?>"> -->
         
         <!-- panel tambah data operasional proyek -->
         <div class="row">
@@ -46,6 +46,7 @@
 		                                    <div class="form-group field-id_proyek has-feedback">
 		                                        <label for="id_proyek">ID Proyek</label>
 		                                        <select class="form-control select2" name="id_proyek" id="id_proyek"></select>
+                                              <option value=""></option>
 		                                        <span class="help-block small pesan pesan-id_proyek"></span>
 		                                    </div>
 		                              <!-- ID Bank -->
@@ -76,17 +77,17 @@
 		                                          <div class="input-group-addon">
 		                                              <i class="fa fa-calendar"></i>
 		                                          </div>
-		                                            <input type="text" name="tgl" class="form-control datepicker field" id="tgl" placeholder="yyyy-mm-dd">
+		                                            <input type="text" name="tgl" class="form-control datepicker field" id="tgl" placeholder="yyyy-mm-dd" value="<?= $this->data['tgl']; ?>">
 		                                        </div>
 		                                        <span class="help-block small pesan pesan-tgl"></span>
 		                                  </div>
 		                        </div>
 
 		                        <div class="col-lg-6 col-md-6 col-xs-12">
-									<!-- Input Nama Pengajuan -->
+								                   <!-- Input Nama Pengajuan -->
 			                                    <div class="form-group field-nama has-feedback">
 			                                        <label for="nama">Nama</label>
-			                                        <input type="text" class="form-control field" id="nama" name="nama" placeholder="Masukan Nama Kebutuhan Operasional" >
+			                                        <input type="text" class="form-control field" id="nama" name="nama" placeholder="Masukan Nama Kebutuhan Operasional" value="<?= $this->data['nama'];?> ">
 			                                        <span class="help-block small pesan pesan-nama"></span>
 			                                    </div>
 
@@ -104,7 +105,7 @@
 			                                        <div class="input-group" style="width: 100%">
 			                                         <div class="input-group">
 			                                                <span class="input-group-addon">Rp.</span>
-			                                                <input type="text" class="form-control field input-mask-uang" id="total" name="total" placeholder="Masukan Total Pengajuan" >
+			                                                <input type="text" class="form-control field input-mask-uang" id="total" name="total" placeholder="Masukan Total Pengajuan" value="<?= $this->data['total']; ?>" >
 			                                                <span class="input-group-addon">,00-</span>
 			                                          </div>
 			                                        </div>
@@ -117,7 +118,7 @@
 			                                        <div class="input-group" style="width: 100%">
 			                                         <div class="input-group">
 			                                                <span class="input-group-addon">Rp.</span>
-			                                                <input type="text" class="form-control field input-mask-uang" id="sisa" name="sisa" placeholder="" >
+			                                                <input type="text" class="form-control field input-mask-uang" id="sisa" name="sisa" placeholder="" value="<?= $this->data['sisa']; ?>">
 			                                                <span class="input-group-addon">,00-</span>
 			                                          </div>
 			                                        </div>
@@ -141,7 +142,7 @@
                                   <!-- Input Keterangan -->
                                           <div class="form-group field-ket has-feedback">
                                               <label for="ket">keterangan</label>
-                                              <textarea class="form-control field" id="ket" name="ket" placeholder="Masukan Keterangan"></textarea>
+                                              <textarea class="form-control field" id="ket" name="ket" placeholder="Masukan Keterangan" value=""><?= $this->data['ket'];?></textarea>
                                               <span class="help-block small pesan pesan-ket"></span>
                                           </div>
 
@@ -233,10 +234,7 @@
   </section>
 </div>
 
-<?php include_once('modal.php'); ?>
-<script type="text/javascript">
-  var listDetail = [];
-  var indexDetail = 0;
+
 
 
 </script>

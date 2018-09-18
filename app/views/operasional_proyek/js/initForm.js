@@ -4,7 +4,7 @@ $(document).ready(function () {
 	
 	
 	if($('#submit_operasional_proyek').val() == 'action-add') generateID();
-	// else if($('#submit_operasional_proyek').val() == 'action-edit') getEdit($('#id').val().trim());
+	else if($('#submit_operasional_proyek').val() == 'action-edit') getEdit($('#id').val().trim());
 		
 	$('#id').prop('disabled', true);
     //Initialize Select2 Elements
@@ -63,10 +63,10 @@ $(document).ready(function () {
     });
 
     //Flat red color scheme for iCheck
-    $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
-      checkboxClass: 'icheckbox_flat-green',
-      radioClass   : 'iradio_flat-green'
-    });
+    // $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+    //   checkboxClass: 'icheckbox_flat-green',
+    //   radioClass   : 'iradio_flat-green'
+    // });
 
  	// ------------------------------------------------
 	// FUNGSI DETAIL OPERSIONAL PROYEK
@@ -463,6 +463,11 @@ function getDataForm(){
 			parseFloat($('#total').inputmask('unmaskedvalue')) : 
 			$('#total').inputmask('unmaskedvalue')
 		) : $('#total').val().trim();
+	var sisa = ($('#sisa').inputmask) ? 
+		( parseFloat($('#sisa').inputmask('unmaskedvalue')) ?
+			parseFloat($('#sisa').inputmask('unmaskedvalue')) : 
+			$('#sisa').inputmask('unmaskedvalue')
+		) : $('#sisa').val().trim();
 
 	var dataOperasionalProyek = {
 		id : $('#id').val().trim(),
@@ -474,7 +479,7 @@ function getDataForm(){
 		nama : $('#nama').val().trim(),
 		jenis : $('#jenis').val().trim(),
 		total : total,
-		sisa : $('#sisa').val().trim(),
+		sisa : sisa,
 		status : $('#status').val().trim(),
 		status_lunas : $('#status_lunas').val().trim(),
 		ket : $('#ket').val().trim()
@@ -535,99 +540,43 @@ function submit(){
 *
 */
 function getEdit(id){
-	// $.ajax({
-	// 	url: BASE_URL+'proyek/get-edit/'+id.toLowerCase(),
-	// 	type: 'post',
-	// 	dataType: 'json',
-	// 	data: {'token_edit': $('#token_form').val().trim()},
-	// 	beforeSend: function(){},
-	// 	success: function(output){
-	// 		console.log(output);
+	$.ajax({
+		url: BASE_URL+'operasional-proyek/get-edit/'+id.toLowerCase(),
+		type: 'post',
+		dataType: 'json',
+		data: {},
+		beforeSend: function(){},
+		success: function(output){
+			console.log(output);
 
-	// 		// each dataDetail
-	// 		$.each(output.dataDetail, function(i, data){
-	// 			var index = indexDetail++;
-	// 			var dataDetail = {
-	// 				index: index,
-	// 				id: data.id,
-	// 				id_proyek: data.id_proyek,
-	// 				angsuran: data.angsuran,
-	// 				persentase: data.persentase,
-	// 				total_detail: data.total_detail,
-	// 				status_detail: data.status_detail,
-	// 				aksi: 'edit',
-	// 				delete: false,
-	// 			}
-
-	// 			listDetail.push(dataDetail);
-
-	// 			var status = function(value){
-	// 				return (data.status_detail.toLowerCase() == value.toLowerCase()) ? 'selected' : ''
-	// 			};
-	// 			$('#detail_proyekTable > tbody:last-child').append(
-	// 				'<tr>'+
-	// 					'<td></td>'+ // no
-	// 					'<td>' // angsuran
-	// 						+'<input type="text" class="form-control input-sm" value="'+data.angsuran+'" '+
-	// 						'onchange="onChange_angsuran('+dataDetail.index+', this)"></td>'+
-	// 					'<td>'+
-	// 						'<div class="input-group">'+
-	// 							'<input type="number" min="0" max="100" step="any" onchange="onChange_persentase('+dataDetail.index+',this)" '+
-	// 							'class="form-control input-sm" value="'+data.persentase+'">'+
-	// 							'<span class="input-group-addon">%</span>'+
-	// 						'</div></td>'+ // persentase
-	// 					'<td>'+
-	// 						'<div class="input-group">'+
-	// 							'<span class="input-group-addon">Rp</span>'+
-	// 							'<input type="number" min="0" step="any" onchange="onChange_total('+dataDetail.index+',this)" '+
-	// 							'class="form-control input-sm" value="'+data.total_detail+'">'+
-	// 						'</div></td>'+ // total
-	// 					'<td>'+
-	// 						'<select onchange="onChange_status('+dataDetail.index+', this)" class="form-control input-sm">'+
-	// 							'<option '+status('BELUM DIBAYAR')+'>BELUM DIBAYAR</option>'+
-	// 							'<option '+status('LUNAS')+'>LUNAS</option>'+
-	// 						'</select>'+
-	// 					'</td>'+ // status
-	// 					'<td>'+btnAksi_detail(dataDetail.index)+'</td>'+ // aksi
-	// 				'</tr>'
-	// 			);
-	// 			numbering_listDetail();
-	// 		});	
-
-	// 		// each dataSkc
-	// 		$.each(output.dataSkc, function(i, data){
-	// 			var index = indexSkc++;
-	// 			var dataSkc = {
-	// 				index: index,
-	// 				id: data.id,
-	// 				id_proyek: data.id_proyek, 
-	// 				id_skc: data.id_skc,
-	// 				nama: data.nama,
-	// 				aksi: 'edit',
-	// 				delete: false, 
-	// 			}
-
-	// 			listSkc.push(dataSkc);
-
-	// 			var status = function(value){
-	// 				return (data.status_detail.toLowerCase() == value.toLowerCase()) ? 'selected' : ''
-	// 			};
-	// 			$('#sub_kas_kecilTable > tbody:last-child').append(
-	// 				'<tr>'+
-	// 					'<td></td>'+ // no
-	// 					'<td>'+data.id_skc+'</td>'+
-	// 					'<td>'+data.nama+'</td>'+
-	// 					'<td>'+btnAksi_skc(dataSkc.index)+'</td>'+ // aksi
-	// 				'</tr>'
-	// 			);
-	// 			numbering_listSkc();
-	// 		});
-	// 	},
-	// 	error: function (jqXHR, textStatus, errorThrown){ // error handling
- //            console.log(jqXHR, textStatus, errorThrown);
- //            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
- //        }
-	// })
+			// each dataOperasionalProyek
+			// $.each(output.dataOperasionalProyek, function(i, data)
+			// 		var dataOperasionalProyek = {
+			// 		index: index,
+			// 		id: data.id,
+			// 		// id_proyek: data.id_proyek,
+			// 		// id_bank: data.id_bank,
+			// 		// id_kas_besar: data.id_kas_besar,
+			// 		// id_distributor: data.id_distributor,
+			// 		// tgl: data.tgl,
+			// 		// nama: data.nama,
+			// 		// id_bank: data.id_bank,
+			// 		// id_bank: data.id_bank,
+			// 		// id_bank: data.id_bank,
+			// 		// id_bank: data.id_bank,
+			// 		// id_bank: data.id_bank,
+			// 		// id_bank: data.id_bank,
+			// 		aksi: 'edit',
+			// 		delete: false,
+			// 	}
+			// 	);
+			
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+            console.log(jqXHR, textStatus, errorThrown);
+            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+        }
+	})
 }
 
 /**

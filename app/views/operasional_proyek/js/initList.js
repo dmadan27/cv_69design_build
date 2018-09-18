@@ -67,9 +67,9 @@ function getView(id){
 /**
 *
 */
-function getEdit(id, token){
-    if(token != "") window.location.href = BASE_URL+'operasional-/form/'+id;
-    else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+function getEdit(id){
+    window.location.href = BASE_URL+'operasional-proyek/form/'+id;
+   
 }
 
 /**
