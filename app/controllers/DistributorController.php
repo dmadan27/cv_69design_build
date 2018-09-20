@@ -375,6 +375,15 @@
 		*	Export data ke format Excel
 		*/
 		public function export(){
+			$row = $this->DistributorModel->export();
+			$header = array_keys($row[0]); 
+
+			$this->excel->setProperty('distributor','distributor','distributor');
+			$this->excel->setData($header, $row);
+			$this->excel->getData('distributor', 'distributor', 4, 5 );
+
+			$this->excel->getExcel('distributor');
+
 
 		}
 

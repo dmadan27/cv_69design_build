@@ -165,6 +165,11 @@
 		
 
 		public function export(){
+			$query = "SELECT id ID, nama NAMA, alamat ALAMAT, jenis JENIS, no_telp NO_TELP, pemilik PEMILIK, status STATUS FROM distributor ";
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute();
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
 		
 
 		}
