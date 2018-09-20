@@ -433,146 +433,15 @@
 		*	Export data ke format Excel
 		*/
 		public function export(){
-			include ('app/library/export_phpexcel/koneksi.php');
-			
-			// Load plugin PHPExcel nya
-			require_once 'app/library/export_phpexcel/PHPExcel/PHPExcel.php';
+			$row = $this->Sub_kas_kecilModel->export();
+			$header = array_keys($row[0]); 
 
-			$excel = new PHPExcel();
+			$this->excel->setProperty('sub_kas_kecil','sub_kas_kecil','sub-kas-kecil');
+			$this->excel->setData($header, $row);
+			$this->excel->getData('sub_kas_kecil', 'sub_kas_kecil', 4, 5 );
 
-			// Settingan awal fil excel
-			$excel->getProperties()->setCreator('Jaka Pratama, Romadan Saputra, Fajar Cahyo')
-								   ->setLastModifiedBy('PC Personal')
-								   ->setTitle("Data Sub Kas Kecil")
-								   ->setSubject("Sub Kas Kecil")
-								   ->setDescription("Laporan Semua Data Sub Kas Kecil")
-								   ->setKeywords("Data Sub Kas Kecil");
+			$this->excel->getExcel('sub_kas_kecil');
 
-			// Buat sebuah variabel untuk menampung pengaturan style dari header tabel
-			$style_col = array(
-				'font' => array('bold' => true), // Set font nya jadi bold
-				'alignment' => array(
-					'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER, // Set text jadi ditengah secara horizontal (center)
-					'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER // Set text jadi di tengah secara vertical (middle)
-				),
-				'borders' => array(
-					'top' => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border top dengan garis tipis
-					'right' => array('style'  => PHPExcel_Style_Border::BORDER_THIN),  // Set border right dengan garis tipis
-					'bottom' => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border bottom dengan garis tipis
-					'left' => array('style'  => PHPExcel_Style_Border::BORDER_THIN) // Set border left dengan garis tipis
-				)
-			);
-
-			// Buat sebuah variabel untuk menampung pengaturan style dari isi tabel
-			$style_row = array(
-				'alignment' => array(
-					'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER // Set text jadi di tengah secara vertical (middle)
-				),
-				'borders' => array(
-					'top' => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border top dengan garis tipis
-					'right' => array('style'  => PHPExcel_Style_Border::BORDER_THIN),  // Set border right dengan garis tipis
-					'bottom' => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border bottom dengan garis tipis
-					'left' => array('style'  => PHPExcel_Style_Border::BORDER_THIN) // Set border left dengan garis tipis
-				)
-			);
-
-			$excel->setActiveSheetIndex(0)->setCellValue('A1', "DATA SUB KAS KECIL"); // Set kolom A1 dengan tulisan "DATA SUB KAS KECIL"
-			$excel->getActiveSheet()->mergeCells('A1:G1'); // Set Merge Cell pada kolom A1 sampai F1
-			$excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(TRUE); // Set bold kolom A1
-			$excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(15); // Set font size 15 untuk kolom A1
-			$excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER); // Set text center untuk kolom A1
-
-			// Buat header tabel nya pada baris ke 3
-			$excel->setActiveSheetIndex(0)->setCellValue('A3', "NO"); // Set kolom A3 dengan tulisan "NO"
-			$excel->setActiveSheetIndex(0)->setCellValue('B3', "ID"); // Set kolom B3 dengan tulisan "ID"
-			$excel->setActiveSheetIndex(0)->setCellValue('C3', "NAMA"); // Set kolom C3 dengan tulisan "NAMA"
-			$excel->setActiveSheetIndex(0)->setCellValue('D3', "ALAMAT"); // Set kolom D3 dengan tulisan "ALAMAT"
-			$excel->setActiveSheetIndex(0)->setCellValue('E3', "NO TELP"); // Set kolom E3 dengan tulisan "NO TELP"
-			$excel->setActiveSheetIndex(0)->setCellValue('F3', "EMAIL"); // Set kolom F3 dengan tulisan "EMAIL"
-			$excel->setActiveSheetIndex(0)->setCellValue('G3', "SALDO"); // Set kolom G3 dengan tulisan "SALDO"
-			$excel->setActiveSheetIndex(0)->setCellValue('H3', "STATUS"); // Set kolom H3 dengan tulisan "STATUS"
-
-
-
-			// Apply style header yang telah kita buat tadi ke masing-masing kolom header
-			$excel->getActiveSheet()->getStyle('A3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('B3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('C3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('D3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('E3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('F3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('G3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('H3')->applyFromArray($style_col);
-
-
-
-			// Set height baris ke 1, 2 dan 3
-			$excel->getActiveSheet()->getRowDimension('1')->setRowHeight(20);
-			$excel->getActiveSheet()->getRowDimension('2')->setRowHeight(20);
-			$excel->getActiveSheet()->getRowDimension('3')->setRowHeight(20);
-
-			// Buat query untuk menampilkan semua data siswa
-			$sql = $pdo->prepare("SELECT * FROM sub_kas_kecil");
-			$sql->execute(); // Eksekusi querynya
-
-			$no = 1; // Untuk penomoran tabel, di awal set dengan 1
-			$numrow = 4; // Set baris pertama untuk isi tabel adalah baris ke 4
-			while($data = $sql->fetch()){ // Ambil semua data dari hasil eksekusi $sql
-				$excel->setActiveSheetIndex(0)->setCellValue('A'.$numrow, $no);
-				$excel->setActiveSheetIndex(0)->setCellValue('B'.$numrow, $data['id']);
-				$excel->setActiveSheetIndex(0)->setCellValue('C'.$numrow, $data['nama']);
-				$excel->setActiveSheetIndex(0)->setCellValue('D'.$numrow, $data['alamat']);
-				$excel->setActiveSheetIndex(0)->setCellValue('E'.$numrow, $data['no_telp']);
-				$excel->setActiveSheetIndex(0)->setCellValue('F'.$numrow, $data['email']);
-				$excel->setActiveSheetIndex(0)->setCellValue('G'.$numrow, $data['saldo']);
-				$excel->setActiveSheetIndex(0)->setCellValue('H'.$numrow, $data['status']);
-				
-				
-					
-				
-				// Apply style row yang telah kita buat tadi ke masing-masing baris (isi tabel)
-				$excel->getActiveSheet()->getStyle('A'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('B'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('C'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('D'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('E'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('F'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('G'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('H'.$numrow)->applyFromArray($style_row);
-
-				
-				$excel->getActiveSheet()->getRowDimension($numrow)->setRowHeight(20);
-				
-				$no++; // Tambah 1 setiap kali looping
-				$numrow++; // Tambah 1 setiap kali looping
-			}
-
-			// Set width kolom
-			$excel->getActiveSheet()->getColumnDimension('A')->setWidth(5); // Set width kolom A
-			$excel->getActiveSheet()->getColumnDimension('B')->setWidth(15); // Set width kolom B
-			$excel->getActiveSheet()->getColumnDimension('C')->setWidth(25); // Set width kolom C
-			$excel->getActiveSheet()->getColumnDimension('D')->setWidth(20); // Set width kolom D
-			$excel->getActiveSheet()->getColumnDimension('E')->setWidth(15); // Set width kolom E
-			$excel->getActiveSheet()->getColumnDimension('F')->setWidth(15); // Set width kolom F
-			$excel->getActiveSheet()->getColumnDimension('G')->setWidth(15); // Set width kolom G
-			$excel->getActiveSheet()->getColumnDimension('H')->setWidth(15); // Set width kolom H
-			
-
-
-			// Set orientasi kertas jadi LANDSCAPE
-			$excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
-
-			// Set judul file excel nya
-			$excel->getActiveSheet(0)->setTitle("Laporan Data Sub Kas Kecil");
-			$excel->setActiveSheetIndex(0);
-
-			// Proses file excel
-			header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-			header('Content-Disposition: attachment; filename="Data Sub Kas Kecil.xlsx"'); // Set nama file excel nya
-			header('Cache-Control: max-age=0');
-
-			$write = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
-			$write->save('php://output');
 			
 		}
 

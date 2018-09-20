@@ -307,6 +307,16 @@
 				return $e->getMessage();
 			}
 		}
+		/**
+		*
+		*/
+		public function export(){
+			$query = "SELECT id ID, nama NAMA, alamat ALAMAT, no_telp NO_TELP, email EMAIL, saldo SALDO, status STATUS FROM sub_kas_kecil ";
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute();
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
 
 		/**
 		*
