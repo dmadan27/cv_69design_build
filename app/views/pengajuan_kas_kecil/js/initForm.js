@@ -1,19 +1,17 @@
 $(document).ready(function(){
 	setStatus();
 	$('#submit_pengajuan_kas_kecil').prop('disabled', true);
-	// // button tambah
-	// $('#tambah').on('click', function(){
-	// 	if(this.value.trim() != ""){
-	// 		resetForm();
-	// 		$('.field-saldo').css('display', 'block');
-	// 		$('#submit_bank').prop('value', 'action-add');
-	// 		$('#submit_bank').prop('disabled', false);
-	// 		$('#submit_bank').html('Simpan Data');
-	// 		$('#token_form').val(this.value);
-	// 		$('#modalBank').modal();
-	// 	}
-	// 	else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
-	// });
+	
+	// button tambah
+	$('#tambah').on('click', function(){
+			resetForm();
+			// $('.field-saldo').css('display', 'block');
+			// $('#submit_bank').prop('value', 'action-add');
+			// $('#submit_bank').prop('disabled', false);
+			// $('#submit_bank').html('Simpan Data');
+			// // $('#token_form').val(this.value);
+			$('#modalPengajuan_kasKecil').modal();	
+	});
 
 	// submit pengajuan kas kecil
 	$('#form_pengajuan_kas_kecil').submit(function(e){

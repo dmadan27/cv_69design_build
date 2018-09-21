@@ -12,7 +12,6 @@
 			</div>
 			<form id="form_pengajuan_kas_kecil" role="form">
 				<input type="hidden" id="id">
-				<input type="hidden" id="token_form">
 				<!-- body modal -->
 				<div class="modal-body">
 					<!-- field id pengajuan kas kecil -->
@@ -36,8 +35,9 @@
 				<!-- modal footer -->
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Kembali</button>
-	                <button type="submit" id="submit_pengajuan_kas_kecil" class="btn btn-primary" value="tambah">Edit Data</button>
+	                <button type="submit" id="submit_pengajuan_kas_kecil" class="btn btn-primary" value="tambah">Simpan Data</button>
 				</div>
+				
 			</form>
 		</div>
 	</div>
