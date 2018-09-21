@@ -13,7 +13,7 @@ $(document).ready(function(){
 			$('.field-email').css('display', 'block');
 			$('.field-password_confirm').css('display', 'block');
 			$('.field-foto').css('display', 'block');
-			$('#token_form').val(this.value);
+			// $('#token_form').val(this.value);
 			generateID();
 			$('#submit_kas_besar').prop('value', 'action-add');
 			$('#submit_kas_besar').prop('disabled', false);
@@ -79,7 +79,7 @@ function getDataForm(){
 		// data.append('saldo',saldo); //saldo awal
 	 } 
 	 
-	data.append('token', $('#token_form').val().trim());
+	// data.append('token', $('#token_form').val().trim());
 	data.append('id', $('#id').val().trim()); // id kas besar
 	data.append('nama', $('#nama').val().trim()); // nama kas besar
 	data.append('alamat', $('#alamat').val().trim()); // alamat kas besar
@@ -243,7 +243,8 @@ function generateID(){
 	$.ajax({
 		url: BASE_URL+'kas-besar/get-last-id/',
 		type: 'post',
-		data: {token: $('#token_form').val().trim()},
+		dataType: 'json',
+		data: {},
 		beforeSend: function(){},
 		success: function(output){
 			$('#id').val(output);	
