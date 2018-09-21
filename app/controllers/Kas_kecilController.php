@@ -138,10 +138,10 @@
 					$error = $validasi['error'];
 
 					// cek password dan konf password
-					if($data['password'] != $data['konf_password']){
-						$cek = false;
-						$error['password'] = $error['konf_password'] = 'Password dan Konfirmasi Password Berbeda';
-					}
+					// if($data['password'] != $data['konf_password']){
+					// 	$cek = false;
+					// 	$error['password'] = $error['konf_password'] = 'Password dan Konfirmasi Password Berbeda';
+					// }
 
 					// jika upload foto
 					if($foto){
