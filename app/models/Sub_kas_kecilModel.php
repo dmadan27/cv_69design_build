@@ -109,6 +109,21 @@
 		/**
 		*
 		*/
+		public function checkExistEmail($email){
+			$query = "SELECT COUNT(*) total FROM sub_kas_kecil WHERE email =:email";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':email', $email);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			if($result['total'] > 0) return false;
+			else return true;
+		}
+
+		/**
+		*
+		*/
 		public function insert($data){
 			try{
 				$this->koneksi->beginTransaction();
@@ -161,6 +176,7 @@
 			$statement->bindParam(':nama', $data['nama']);
 			$statement->bindParam(':alamat', $data['alamat']);
 			$statement->bindParam(':no_telp', $data['no_telp']);
+			$statement->bindParam(':email', $data['email']);
 			$statement->bindParam(':status', $data['status']);
 			$statement->bindParam(':id', $data['id']);
 			$result = $statement->execute();

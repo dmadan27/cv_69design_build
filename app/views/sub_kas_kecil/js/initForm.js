@@ -11,7 +11,7 @@ $(document).ready(function(){
 			$('#submit_skc').prop('value', 'action-add');
 			$('#submit_skc').prop('disabled', false);
 			$('#submit_skc').html('Simpan Data');
-			$('#token_form').val(this.value);
+			// $('#token_form').val(this.value);
 			generateID();
 			$('#modalSkc').modal();
 	});
@@ -74,12 +74,27 @@ function getDataForm(){
 		data.append('saldo', saldo); // saldo awal	
 	}
 
-	data.append('token', $('#token_form').val().trim());
+	if($('#submit_skc').val().trim().toLowerCase() == 'action-edit'){
+	data.append('nama', $('#nama').val().trim()); // nama
+	data.append('alamat', $('#alamat').val().trim()); // alamat
+	data.append('no_telp', $('#no_telp').val().trim()); // no_telp
+	data.append('email', $('#email').val().trim()); // email
+	data.append('saldo', saldo);
+	data.append('password', $('#password').val().trim()); // password
+	data.append('konf_password', $('#konf_password').val().trim()); // konf_password
+	data.append('status', $('#status').val().trim()); // status
+
+	}
+
+	// data.append('token', $('#token_form').val().trim());
 	data.append('id', $('#id').val().trim()); // id
 	data.append('nama', $('#nama').val().trim()); // nama
 	data.append('alamat', $('#alamat').val().trim()); // alamat
 	data.append('no_telp', $('#no_telp').val().trim()); // no_telp
 	data.append('email', $('#email').val().trim()); // email
+	// data.append('saldo', saldo);
+	// data.append('password', $('#password').val().trim()); // password
+	// data.append('konf_password', $('#konf_password').val().trim()); // konf_password
 	data.append('status', $('#status').val().trim()); // status
 	data.append('action', $('#submit_skc').val().trim()); // action
 
@@ -133,8 +148,8 @@ function submit(edit_view){
 /**
 *
 */
-function getEdit(id, token){
-	if(token != ""){
+function getEdit(id){
+	// if(token != ""){
 		resetForm();
 		$('.field-saldo').css('display', 'none');
 		$('.field-password').css('display', 'none');
@@ -148,14 +163,14 @@ function getEdit(id, token){
 			url: BASE_URL+'sub-kas-kecil/edit/'+id.toLowerCase(),
 			type: 'post',
 			dataType: 'json',
-			data: {"token_edit": token},
+			data: {},
 			beforeSend: function(){
 
 			},
 			success: function(output){
 				if(output){
 					$('#modalSkc').modal();
-					$('#token_form').val(token);
+					// $('#token_form').val(token);
 					setValue(output);
 				}	
 			},
@@ -163,8 +178,8 @@ function getEdit(id, token){
 	            console.log(jqXHR, textStatus, errorThrown);
 	        }
 		})
-	}
-	else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+	// }
+	// else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
 }
 
 /**
