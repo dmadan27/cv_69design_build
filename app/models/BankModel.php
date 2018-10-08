@@ -180,6 +180,14 @@
 
 		}
 
+		public function countBank(){
+			$query = "SELECT count(id) FROM bank";
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute();
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;			 
+		}
+
 		/**
 		* 
 		*/

@@ -248,6 +248,17 @@
 		}
 
 		/**
+		*
+		*/
+		public function countKasKecil(){
+			$query = "SELECT count(id) FROM kas_kecil";
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute();
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;			 
+		}
+
+		/**
 		* 
 		*/
 		public function __destruct(){
