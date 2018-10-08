@@ -47,13 +47,13 @@
 									<thead>
 										<tr>
 											<th class="text-center" style="width: 35px">No</th>
+											<th class="text-center">ID Pengajuan</th>
 											<th class="text-center">ID Kas Kecil</th>
 											<th class="text-center">Tanggal</th>
 											<th class="text-center">Nama</th>
 											<th class="text-center">Total</th>
 											<th class="text-center">Status Pengajuan</th>
 											<th class="text-center">Aksi</th>
-											
 										</tr>
 									</thead>
 									<tbody>

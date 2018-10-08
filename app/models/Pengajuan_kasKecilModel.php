@@ -104,15 +104,33 @@
 		* 
 		*/
 		public function insert($data){
-			// $query = "INSERT INTO bank (nama, saldo, status) VALUES (:nama, :saldo, :status);";
+			$query = "INSERT INTO pengajuan_kas_kecil (id, id_kas_kecil, tgl, nama, total, status) VALUES (:id, :id_kas_kecil, :tgl, :nama, :total,  :status);";
 
-			// $statement = $this->koneksi->prepare($query);
-			// $statement->bindParam(':nama', $data['nama']);
-			// $statement->bindParam(':saldo', $data['saldo']);
-			// $statement->bindParam(':status', $data['status']);
-			// $result = $statement->execute();
+			try{
+				$this->koneksi->beginTransaction();
 
-			// return $result;
+				$statement = $this->koneksi->prepare($query);
+				$result = $statement->execute(
+					array(
+						':id' => $data['id'],
+						':id_kas_kecil' => $data['id_kas_kecil'],
+						':tgl' => $data['tgl'],
+						':nama' => $data['nama'],
+						':total' => $data['total'],
+						':status' => $data['status']
+					)
+				);
+				$statement->closeCursor();
+
+				$this->koneksi->commit();
+
+				return true;
+			}
+			catch(PDOException $e){
+				$this->koneksi->rollback();
+				die($e->getMessage());
+				// return false;
+			}
 		}
 
 		/**

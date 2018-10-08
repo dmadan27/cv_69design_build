@@ -21,6 +21,15 @@ $(document).ready(function(){
 		return false;
 	});
 
+	//Date picker
+    $('.datepicker').datepicker({
+      autoclose: true,
+      format: "yyyy-mm-dd",
+      todayHighlight: true,
+      orientation:"bottom auto",
+      todayBtn: true,
+    });
+
 	// on change field
 	// $('.field').on('change', function(){
 	// 	if(this.value !== ""){
