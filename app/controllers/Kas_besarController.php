@@ -364,7 +364,7 @@
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 				'assets/bower_components/dropify/dist/js/dropify.min.js',
 				'app/views/kas_besar/js/initView.js',
-				'app/views/kas_besar/js/initForm.js',
+				// 'app/views/kas_besar/js/initForm.js',
 			);
 
 			$config = array(
