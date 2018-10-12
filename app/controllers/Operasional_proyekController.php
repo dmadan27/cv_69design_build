@@ -705,6 +705,36 @@
 		/**
 		*
 		*/
+		public function get_nama_proyek_lama($id = false){
+			$this->model('ProyekModel');
+			$data_nama_proyek = (!$id) ? $this->ProyekModel->getAll() : $this->ProyekModel->getById($id);
+			
+			$data = array();
+
+			if(!$id){
+				foreach($data_nama_proyek as $row){
+					$dataRow = array();
+					$dataRow['id'] = $row['id'];
+					$dataRow['text'] = $row['id'].' - '.$row['pembangunan'];
+
+					$data[] = $dataRow;
+				}
+			}
+			else{
+				$data[] = array(
+					'id' => $data_nama_proyek['id'],
+					 'text' => $data_nama_proyek['id'].' - '.$data_nama_proyek['pembangunan']
+					);
+			}
+
+			echo json_encode($data);
+
+			// var_dump($data);
+		}
+
+		/**
+		*
+		*/
 		public function get_nama_proyek(){
 			$this->model('ProyekModel');
 			$data_nama_proyek = $this->ProyekModel->getAll();
@@ -720,6 +750,33 @@
 
 			echo json_encode($data);
 		}
+
+
+
+		/**
+		*
+		*/
+		public function get_nama_bank_lama(){
+			$this->model('BankModel');
+			// kondisi jika id di parameter terisi maka (action edit) selain itu (action add)
+			$data_nama_bank =  $this->BankModel->getAll();
+
+			$data = array();
+
+			foreach($data_nama_bank as $row){
+					$dataRow = array();
+					$dataRow['id '] = $row['id'];
+					$dataRow['text'] = $row['nama']. ' - '.$row['saldo'];
+
+					$data[] = $dataRow;
+				}
+			
+			echo json_encode($data);
+			
+			// echo '<pre>';
+			// var_dump($data);
+			// echo '</pre>';
+			}
 
 		/**
 		*
@@ -739,22 +796,32 @@
 
 			echo json_encode($data);
 		}
+		
 
 		/**
 		*
 		*/
-		public function get_nama_kas_besar(){
+		public function get_nama_kas_besar($id = false){
 			$this->model('Kas_besarModel');
-			$data_kas_besar = $this->Kas_besarModel->getAll();
+			$data_kas_besar = (!$id) ? $this->Kas_besarModel->getAll() : $this->Kas_besarModel->getById($id);
 			$data = array();
 
-			foreach ($data_kas_besar as $row) {
-				$dataRow = array();
-				$dataRow['id'] = $row['id'];
-				$dataRow['text'] = $row['id'].' - '.$row['nama'];
+			if(!$id){
+				foreach ($data_kas_besar as $row) {
+					$dataRow = array();
+					$dataRow['id'] = $row['id'];
+					$dataRow['text'] = $row['id'].' - '.$row['nama'];
 
-				$data[] = $dataRow;
+					$data[] = $dataRow;
+				}
 			}
+			else{
+				$data[] = array(
+					'id' => $data_kas_besar['id'],
+					 'text' => $data_kas_besar['id'].' - '.$data_kas_besar['nama']
+					);
+			}
+				
 
 			echo json_encode($data);
 		}
