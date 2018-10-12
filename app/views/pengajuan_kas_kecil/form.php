@@ -11,14 +11,12 @@
                 <h4 class="modal-title">Form Data Pengajuan Kas Kecil</h4>
 			</div>
 			<form id="form_pengajuan_kas_kecil" role="form">
-				<input type="hidden" id="id">
 				<!-- body modal -->
 				<div class="modal-body">
 
 					<div class="row">
 						<div class="col-md-6">
 							  <fieldset>
-							  	<legend style="font-size: 18px">Data Pribadi</legend>
 				                   <!-- field id pengajuan-->
 				                      <div class="form-group field-id has-feedback">
 				                        <label for="id">ID Pengajuan Kas Kecil</label>
@@ -29,7 +27,8 @@
 				                     <!-- id kas kecil  -->
 				                      <div class="form-group field-id_kas_kecil has-feedback">
 				                        <label for="id_kas_kecil">ID Kas Kecil</label>
-				                        <input type="text" name="id_kas_kecil" id="id_kas_kecil" class="form-control field" placeholder="">
+				                        <select class="form-control select2" name="id_kas_kecil" id="id_kas_kecil" style="width: 100%" placeholder="">
+				                        </select>
 				                        <span class="help-block small pesan pesan-id_kas_kecil"></span>
 				                      </div>
 
@@ -44,10 +43,9 @@
 
 						<div class="col-md-6">
 							  <fieldset>
-							  	<legend style="font-size: 18px">Data Pribadi</legend>
 				                     <!-- field nama -->
 				                      <div class="form-group field-nama has-feedback">
-				                        <label for="nama">Nama</label>
+				                        <label for="nama">Nama Kebutuhan</label>
 				                         <input type="text" name="nama" id="nama" class="form-control field" placeholder="Masukan Nama">
 				                        <span class="help-block small pesan pesan-nama"></span>
 				                      </div>
@@ -55,7 +53,12 @@
 				                        <!-- field total -->
 				                      <div class="form-group field-total has-feedback">
 				                        <label for="total">Total</label>
-				                        <input type="text" name="total" id="total" class="form-control field" placeholder="Masukan Total">
+				                        <div class="input-group">
+				                        	<span class="input-group-addon">Rp.</span>
+				                        	<input type="text" name="total" id="total" class="form-control field input-mask-uang" placeholder="Masukan Total">
+				                        	<span class="input-group-addon">,00-</span>
+				                        </div>
+				                        
 				                        <span class="help-block small pesan pesan-total"></span>
 				                      </div>
 

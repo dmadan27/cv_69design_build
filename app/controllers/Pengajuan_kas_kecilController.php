@@ -40,11 +40,14 @@
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
 				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
+				'assets/bower_components/select2/dist/css/select2.min.css',
 			);
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
+				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
+				'assets/bower_components/select2/dist/js/select2.full.min.js',
 				'app/views/pengajuan_kas_kecil/js/initList.js',
 				'app/views/pengajuan_kas_kecil/js/initForm.js',
 			);
@@ -151,14 +154,14 @@
 						// validasi inputan
 						$data = array(
 							'id' => $this->validation->validInput($data['id']),
-							'id_kas_kecil' => $this->validation->validInput($data['id_kas_kecil']),
+							'id_kas_kecil' => $_SESSION['sess_id'],
 							'tgl' => $this->validation->validInput($data['tgl']),
 							'nama' => $this->validation->validInput($data['nama']),
 							'total' => $this->validation->validInput($data['total']),
 							'status' => $this->validation->validInput($data['status']),
 						);
 
-						// insert bank
+						// insert pengajuan kas kecil
 						if($this->Pengajuan_kasKecilModel->insert($data)) {
 							$this->status = true;
 							$notif = array(
@@ -472,6 +475,21 @@
 		* return berupa array, status hasil pengecekan dan error tiap validasi inputan
 		*/
 		private function set_validation($data){
+			// $required = ($action =="action-add") ? 'not_required' : 'required';
+			// id
+			$this->validation->set_rules($data['id'], 'ID Pengajuan Kas Kecil', 'id', 'string | 1 | 255 | required');
+			// id_kas_kecil
+			$this->validation->set_rules($data['id_kas_kecil'], 'ID Pengajuan Kas Kecil', 'id_kas_kecil', 'string | 1 | 255 | required');
+			// tgl
+			$this->validation->set_rules($data['tgl'], 'Tanggal Pengajuan Kas Kecil', 'tgl', 'string | 1 | 255 | required');
+			// nama pengajuan kas kecil
+			$this->validation->set_rules($data['nama'], 'Nama Pengajuan', 'nama', 'string | 1 | 255 | required');
+			// total
+			$this->validation->set_rules($data['total'], 'Total Pengajuan', 'total', 'nilai | 1 | 99999 | required');
+			// status
+			$this->validation->set_rules($data['status'], 'Status Pengajuan', 'status', 'string | 1 | 255 | required');
+			
+			return $this->validation->run();
 			
 		}
 
@@ -500,4 +518,49 @@
 
 			echo json_encode($output);
 		}
+		
+
+		/**
+		*
+		*/
+		public function get_nama_kas_kecil(){
+			$this->model('Kas_kecilModel');
+			$data_kas_kecil =  $this->Kas_kecilModel->getAll();
+			$data = array();
+
+
+				foreach ($data_kas_kecil as $row) {
+					$dataRow = array();
+					$dataRow['id'] = $row['id'];
+					$dataRow['text'] = $row['id'].' - '.$row['nama'];
+
+					$data[] = $dataRow;
+				}
+				
+
+			echo json_encode($data);
+		}
+
+		/**
+		*
+		*/
+		public function get_last_id(){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$data = !empty($this->Pengajuan_kasKecilModel->getLastID()['id']) ? $this->Pengajuan_kasKecilModel->getLastID()['id'] : false;
+
+				if(!$data) $id = 'PKK0001';
+				else{
+					$kode = 'PKK';
+					$noUrut = (int)substr($data, 3, 4);
+					$noUrut++;
+
+					$id = $kode.sprintf("%04s", $noUrut);
+				}
+
+				echo json_encode($id);
+			}
+			else $this->redirect();
+		}
+
+
 	}
