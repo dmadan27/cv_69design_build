@@ -51,7 +51,12 @@
 		* 
 		*/
 		public function getAll(){
-			
+			$query = "SELECT * FROM kas_kecil";
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute();
+			$result = $statement->fetchAll();
+
+			return $result;	
 		}
 
 		/**
