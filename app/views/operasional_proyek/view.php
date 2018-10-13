@@ -28,6 +28,8 @@
 								<div class="nav-tabs-custom">
 									<ul class="nav nav-tabs">
 										<li class="active"><a href="#tab_1" data-toggle="tab">Pengajuan Operasional Proyek</a></li>
+										<li class=""><a href="#tab_history_pembelian" data-toggle="tab">History Pembelian</a></li>
+										
 									</ul>
 									<!-- tab content -->
 									<div class="tab-content">
@@ -147,6 +149,8 @@
 												<a href="<?= BASE_URL.'operasional-proyek/'; ?>" class="btn btn-md btn-flat btn-success" role="button">Kembali</a>
 													
 												</div>
+										</div>
+										<div class="tab-pane" id="tab_history_pembelian">
 										</div>
 									</div>
 								</div>
