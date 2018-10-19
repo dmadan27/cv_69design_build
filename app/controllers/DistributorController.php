@@ -316,7 +316,7 @@
 
 			$config = array(
 				'title' => array(
-					'main' => 'Data Distributorr',
+					'main' => 'Data Distributor',
 					'sub' => 'Detail Data Distributor',
 				),
 				'css' => $css,
