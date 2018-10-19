@@ -101,6 +101,21 @@
 		}
 
 		/**
+		*
+		*/
+		public function getTotal_setujui(){
+			$status = "DISETUJUI";
+			$query = "SELECT COUNT(*) FROM pengajuan_kas_kecil WHERE status = :status";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':status', $status);
+			$statement->execute();
+			$result = $statement->fetchColumn();
+
+			return $result;	
+		}
+
+		/**
 		* 
 		*/
 		public function insert($data){
