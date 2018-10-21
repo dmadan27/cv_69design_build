@@ -288,7 +288,7 @@ CREATE TABLE IF NOT EXISTS distributor(
 	id varchar(50) NOT NULL UNIQUE, -- primary key
 	nama varchar(50), -- nama distributor
 	alamat text, --alamat distributor
-	jenis varchar(50), -- jenis distributor
+	--jenis varchar(50), -- jenis distributor
 	no_telp varchar(25), -- telpon 
 	pemilik varchar(50), -- pemilik
 	status enum('AKTIF','NONAKTIF'),
