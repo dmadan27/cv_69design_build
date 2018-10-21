@@ -40,7 +40,7 @@
 													<!-- kiri -->
 												<div class="col-md-4 col-xs-12">
 													<fieldset>
-														<legend style="font-size: 18px;">Data Pengajuan Operasional Proyek</legend>
+														<!-- <legend style="font-size: 18px;">Data Pengajuan Operasional Proyek</legend> -->
 															<table class="table table-hover">
 																<tr>
 																	<td><strong>ID Operasional Proyek</strong></td>

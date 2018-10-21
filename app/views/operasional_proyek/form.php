@@ -141,7 +141,7 @@
 
                                   <!-- Input Keterangan -->
                                           <div class="form-group field-ket has-feedback">
-                                              <label for="ket">keterangan</label>
+                                              <label for="ket">Keterangan</label>
                                               <textarea class="form-control field" id="ket" name="ket" placeholder="Masukan Keterangan" value=""><?= $this->data['ket'];?></textarea>
                                               <span class="help-block small pesan pesan-ket"></span>
                                           </div>
