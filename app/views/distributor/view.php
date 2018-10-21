@@ -79,13 +79,6 @@
                 							<td><?= $this->data['alamat']; ?></td>
                 						</tr>
 
-                						<!-- Jenis -->
-                						<tr>
-                							<td><strong>Jenis</strong></td>
-                							<td><?= $this->data['jenis']; ?></td>
-                						</tr>
-                						
-
                 						<!-- No. Telepon -->
                 						<tr>
                 							<td><strong>No. Telepon</strong></td>

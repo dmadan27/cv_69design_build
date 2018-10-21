@@ -36,12 +36,6 @@
 		                <span class="help-block small pesan pesan-alamat"></span>
 					</div>
 
-					<!-- jenis -->
-					<div class="form-group field-jenis has-feedback">
-						<label for="jenis">Jenis</label>
-						<select id="jenis" class="form-control field"></select>
-						<span class="help-block small pesan pesan-jenis"></span>
-					</div>
 
 					<!-- No Telepon -->
 					<div class="form-group field-no_telp has-feedback">

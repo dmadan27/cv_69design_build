@@ -2,7 +2,7 @@ $(document).ready(function(){
 	// set status
 	setStatus();
 	// set jenis HERE !!
-	setJenis();
+	//setJenis();
 
 	
 	$('#id').prop('disabled', true);
@@ -60,7 +60,6 @@ function getDataForm(){
 		// data.append('id', $('#id').val().trim());
 		data.append('nama', $('#nama').val().trim()); // nama distributor
 		data.append('alamat', $('#alamat').val().trim()); // alamat distributor
-		data.append('jenis', $('#jenis').val().trim()); // jenis distributor
 		data.append('no_telp', $('#no_telp').val().trim()); // no_telp distributor
 		data.append('pemilik', $('#pemilik').val().trim()); // pemilik distributor
 		data.append('status', $('#status').val().trim()); // status distributor
@@ -71,7 +70,6 @@ function getDataForm(){
 	data.append('id', $('#id').val().trim());
 	data.append('nama', $('#nama').val().trim()); // nama distributor
 	data.append('alamat', $('#alamat').val().trim()); // alamat distributor
-	data.append('jenis', $('#jenis').val().trim()); // jenis distributor
 	data.append('no_telp', $('#no_telp').val().trim()); // no_telp distributor
 	data.append('pemilik', $('#pemilik').val().trim()); // pemilik distributor
 	data.append('status', $('#status').val().trim()); // status distributor

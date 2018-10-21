@@ -70,7 +70,7 @@
 				$config_dataTable = array(
 					'tabel' => 'distributor',
 					'kolomOrder' => array(null, 'nama', 'alamat', 'pemilik', 'status', null),
-					'kolomCari' => array( 'nama','alamat', 'jenis', 'no_telp', 'pemilik', 'status',),
+					'kolomCari' => array( 'nama','alamat',  'no_telp', 'pemilik', 'status',),
 					'orderBy' => array('id' => 'asc'),
 					'kondisi' => false,
 				);
@@ -148,7 +148,6 @@
 							'id' => $this->validation->validInput($data['id']),
 							'nama' => $this->validation->validInput($data['nama']),
 							'alamat' => $this->validation->validInput($data['alamat']),
-							'jenis' => $this->validation->validInput($data['jenis']),
 							'no_telp' => $this->validation->validInput($data['no_telp']),
 							'pemilik' => $this->validation->validInput($data['pemilik']),
 							'status' => $this->validation->validInput($data['status'])
@@ -245,7 +244,6 @@
 							'id' => $this->validation->validInput($data['id']),
 							'nama' => $this->validation->validInput($data['nama']),
 							'alamat' => $this->validation->validInput($data['alamat']),
-							'jenis' => $this->validation->validInput($data['jenis']),
 							'no_telp' => $this->validation->validInput($data['no_telp']),
 							'pemilik' => $this->validation->validInput($data['pemilik']),
 							'status' => $this->validation->validInput($data['status'])
@@ -342,7 +340,6 @@
 				'id' => $data_detail['id'],
 				'nama' => $data_detail['nama'],
 				'alamat' => $data_detail['alamat'],
-				'jenis' => $data_detail['jenis'],
 				'no_telp' => $data_detail['no_telp'],
 				'pemilik' => $data_detail['pemilik'],
 				'status' => $status
@@ -466,8 +463,6 @@
 			$this->validation->set_rules($data['nama'], 'Nama Distributor', 'nama', 'string | 1 | 255 | required');
 			// alamat
 			$this->validation->set_rules($data['alamat'], 'Alamat Distributor', 'alamat', 'string | 1 | 255 | not_required');
-			// jenis
-			$this->validation->set_rules($data['jenis'], 'Jenis Distributor', 'jenis', 'string | 1 | 255 | required');
 			// no_telp
 			$this->validation->set_rules($data['no_telp'], 'No Telepon Distributor', 'no_telp', 'string | 1 | 255 | required');
 			// pemilik
