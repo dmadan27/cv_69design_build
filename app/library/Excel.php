@@ -39,13 +39,6 @@
         /**
          * 
          */
-        public function setTitle($title) {
-            
-        }
-
-        /**
-         * 
-         */
         public function getData($title, $title_header, $start_column_header, $start_row_data) {
             // set title file
             $this->excel->getActiveSheet(0)->setTitle($title);
@@ -58,7 +51,6 @@
                         ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER); // Set text center untuk kolom A1
             
             $column = 'A';
-            $start_column_header;
             $no = 1;
             $numRow = $start_row_data;
 
