@@ -264,9 +264,12 @@ CREATE TABLE IF NOT EXISTS pengajuan_kas_kecil(
 	total double(12,2), -- total pengajuan ke kas besar
 	status char(1), -- status pengajuan, default 'pending'
 	-- 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI', 4: 'DITOLAK'
+	id_bank int, -- fk bank
 
 	CONSTRAINT pk_pengajuan_kas_kecil_id PRIMARY KEY(id),
 	CONSTRAINT fk_pengajuan_kas_kecil_id_kas_kecil FOREIGN KEY(id_kas_kecil) REFERENCES kas_kecil(id)
+		ON DELETE RESTRICT ON UPDATE CASCADE,
+	CONSTRAINT fk_pengajuan_kas_kecil_id_bank FOREIGN KEY(id_bank) REFERENCES bank(id)
 		ON DELETE RESTRICT ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
