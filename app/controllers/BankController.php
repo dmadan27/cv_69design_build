@@ -2,16 +2,25 @@
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 
 	/**
-	* Class Bank extend ke Abstract Crud Modals
-	*/
+	 * Class Bank
+	 * Extend Abstract Crud Modals
+	 */
 	class Bank extends Crud_modalsAbstract{
 
 		private $token;
-		private $status = false;
+		// private $status = false;
+
+		/** Penambahan beberapa property baru */
+		private $success = false;
+		private $notif = array();
+		private $error = array();
+		private $message = NULL;
+		/** end penambahan */
 
 		/**
-		* Default load saat pertama kali controller diakses
-		*/
+		 * Method __construct
+		 * Default load saat pertama kali controller diakses
+		 */
 		public function __construct(){
 			$this->auth();
 			$this->auth->cekAuth();
@@ -22,17 +31,17 @@
 		}	
 
 		/**
-		* Method pertama kali yang diakses
-		*/
+		 * Method index
+		 * Render list bank
+		 */
 		public function index(){
 			$this->list();
 		}
 
 		/**
-		* Method List
-		* Menampilkan list semua data proyek
-		* Passing data css dan js yang dibutuhkan di list proyek
-		*/
+		 * Method list
+		 * Proses menampilkan list semua data proyek
+		 */
 		protected function list(){
 			// set config untuk layouting
 			$css = array(
@@ -59,10 +68,11 @@
 		}	
 
 		/**
-		* Method get list
-		* Get data semua list bank yang akan di passing ke dataTable
-		* Request berupa POST dan output berupa JSON
-		*/
+		 * Method get_list
+		 * Proses get data untuk list bank
+		 * Data akan di parsing dalam bentuk dataTable
+		 * @return output {object} array berupa json
+		 */
 		public function get_list(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				// config datatable
@@ -81,7 +91,8 @@
 				foreach($dataBank as $row){
 					$no_urut++;
 
-					$status = ($row['status'] == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-danger">'.$row['status'].'</span>';
+					$status = ($row['status'] == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : 
+															'<span class="label label-danger">'.$row['status'].'</span>';
 
 					// button aksi
 					$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
@@ -120,11 +131,15 @@
 		* notif => pesan yang akan ditampilkan disistem
 		* error => error apa saja yang ada dari hasil validasi
 		*/
+
+		/**
+		 * Method action_add
+		 * Proses penambahan data bank
+		 * @return output {object} array berupa json
+		 */
 		public function action_add(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
-						
-				$error = $notif = array();
 
 				if(!$data){
 					$notif = array(
@@ -137,7 +152,7 @@
 					// validasi data
 					$validasi = $this->set_validation($data);
 					$cek = $validasi['cek'];
-					$error = $validasi['error'];
+					$this->error = $validasi['error'];
 
 					if($cek){
 						// validasi inputan
@@ -148,20 +163,22 @@
 						);
 
 						// insert bank
-						if($this->BankModel->insert($data)) {
-							$this->status = true;
-							$notif = array(
+						$insert_bank = $this->BankModel->insert($data);
+						if($insert_bank['success']) {
+							$this->success = true;
+							$this->notif = array(
 								'type' => 'success',
 								'title' => "Pesan Berhasil",
 								'message' => "Tambah Data Bank Baru Berhasil",
 							);
 						}
 						else {
-							$notif = array(
+							$this->notif = array(
 								'type' => 'error',
 								'title' => "Pesan Gagal",
 								'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 							);
+							$this->message = $insert_bank['error'];
 						}
 					}
 					else {
@@ -174,9 +191,10 @@
 				}
 
 				$output = array(
-					'status' => $this->status,
-					'notif' => $notif,
-					'error' => $error,
+					'status' => $this->success,
+					'notif' => $this->notif,
+					'error' => $this->error,
+					'message' => $this->message
 					// 'data' => $data
 				);
 
@@ -191,6 +209,13 @@
 		* param $id didapat dari url
 		* return berupa json
 		*/
+
+		/**
+		 * Method edit
+		 * Proses get data bank untuk di edit
+		 * @param id {string}
+		 * @return data {object} array berupa json
+		 */
 		public function edit($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$id = strtoupper($id);
@@ -198,23 +223,18 @@
 
 				echo json_encode($data);
 			}
-			else $this->redirect();	
+			else $this->redirect();
 			
 		}
 
 		/**
-		* Function action_edit
-		* method untuk aksi edit data
-		* return berupa json
-		* status => status berhasil atau gagal proses edit
-		* notif => pesan yang akan ditampilkan disistem
-		* error => error apa saja yang ada dari hasil validasi
-		*/
+		 * Method action_edit
+		 * Proses pengeditan data bank
+		 * @return output {object} array berupa json
+		 */
 		public function action_edit(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
-				
-				$error = $notif = array();
 
 				if(!$data){
 					$notif = array(
@@ -227,7 +247,7 @@
 					// validasi data
 					$validasi = $this->set_validation($data);
 					$cek = $validasi['cek'];
-					$error = $validasi['error'];
+					$this->error = $validasi['error'];
 
 					if($cek){
 						// validasi inputan
@@ -238,20 +258,22 @@
 						);
 
 						// update bank
-						if($this->BankModel->update($data)) {
-							$status = true;
-							$notif = array(
+						$update_bank = $this->BankModel->update($data);
+						if($update_bank['success']) {
+							$this->success = true;
+							$this->notif = array(
 								'type' => 'success',
 								'title' => "Pesan Berhasil",
 								'message' => "Edit Data Bank Berhasil",
 							);
 						}
 						else {
-							$notif = array(
+							$this->notif = array(
 								'type' => 'error',
 								'title' => "Pesan Gagal",
 								'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 							);
+							$this->message = $update_bank['error'];
 						}
 					}
 					else {
@@ -264,9 +286,10 @@
 				}
 
 				$output = array(
-					'status' => $this->status,
-					'notif' => $notif,
-					'error' => $error,
+					'status' => $this->success,
+					'notif' => $this->notif,
+					'error' => $this->error,
+					'message' => $this->message
 					// 'data' => $data
 				);
 
@@ -276,15 +299,15 @@
 		}
 
 		/**
-		* Function detail
-		* method untuk get data detail dan setting layouting detail
-		* param $id didapat dari url
-		*/
+		 * Method detail
+		 * Proses get data detail bank dan di render langsung ke view
+		 * @param id {string}
+		 */
 		public function detail($id){
 			$id = strtoupper($id);
 			$data_detail = !empty($this->BankModel->getById($id)) ? $this->BankModel->getById($id) : false;
 
-			if((empty($id) || $id == "") || !$data_detail) $this->redirect(BASE_URL."bank/");
+			if((empty($id) || $id == "") || !$data_detail) { $this->redirect(BASE_URL."bank/"); }
 
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
@@ -326,14 +349,21 @@
 		* param $id didapat dari url
 		* return json
 		*/
+
+		/**
+		 * Method delete
+		 * Proses hapus data bank
+		 * @param id {string}
+		 * @return result 
+		 */
 		public function delete($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$id = strtoupper($id);
-				if(empty($id) || $id == "") $this->redirect(BASE_URL."bank/");
+				if(empty($id) || $id == "") { $this->redirect(BASE_URL."bank/"); }
 
-				if($this->BankModel->delete($id)) $this->status = true;
+				if($this->BankModel->delete($id)) { $this->success = true; }
 
-				echo json_encode($this->status);
+				echo json_encode($this->success);
 			}
 			else $this->redirect();	
 		}
@@ -343,6 +373,14 @@
 		* method yang berfungsi untuk get data mutasi bank sesuai dengan id
 		* dipakai di detail data
 		*/
+
+		/**
+		 * Method get_mutasi
+		 * Proses get data mutasi bank sesuai dengan id bank
+		 * Data akan di parsing dalam bentuk dataTable
+		 * @param id {string}
+		 * @return result {object} array berupa json
+		 */
 		public function get_mutasi($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$this->model('Mutasi_bankModel');
@@ -386,12 +424,9 @@
 			else $this->redirect();
 		}
 
-		
-
-		
 		/**
-		*	Export data ke format Excel
-		*/
+		 * Method export
+		 */
 		public function export(){
 			$row = $this->BankModel->export();
 			$header = array_keys($row[0]); 
@@ -405,11 +440,11 @@
 		}
 
 		/**
-		* Fungsi set_validation
-		* method yang berfungsi untuk validasi inputan secara server side
-		* param $data didapat dari post yang dilakukan oleh user
-		* return berupa array, status hasil pengecekan dan error tiap validasi inputan
-		*/
+		 * Method set_validation
+		 * Proses validasi inputan
+		 * @param data {array}
+		 * @return result {array}
+		 */
 		private function set_validation($data){
 			$required = ($data['action'] == "action-edit") ? 'not_required' : 'required';
 
