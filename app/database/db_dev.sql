@@ -287,8 +287,8 @@ CREATE TABLE IF NOT EXISTS detail_pengajuan_kas_kecil(
 CREATE TABLE IF NOT EXISTS distributor(
 	id varchar(50) NOT NULL UNIQUE, -- primary key
 	nama varchar(50), -- nama distributor
-	alamat text, --alamat distributor
-	--jenis varchar(50), -- jenis distributor
+	alamat text, -- alamat distributor
+	-- jenis varchar(50), -- jenis distributor
 	no_telp varchar(25), -- telpon 
 	pemilik varchar(50), -- pemilik
 	status enum('AKTIF','NONAKTIF'),
@@ -310,7 +310,7 @@ CREATE TABLE IF NOT EXISTS operasional_proyek(
 	sisa double(12,2), -- sisa jika bayar secara cicil, default 0
 	status enum('TUNAI', 'KREDIT'), -- T: Tunai, K: Kredit
 	status_lunas enum('LUNAS', 'BELUM LUNAS'), -- L: Lunas, B: Belum Lunas
-	ket text
+	ket text,
 
 	CONSTRAINT pk_operasional_proyek_id PRIMARY KEY(id),
 	CONSTRAINT fk_operasional_proyek_id_proyek FOREIGN KEY(id_proyek) REFERENCES proyek(id)
