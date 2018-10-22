@@ -18,6 +18,12 @@ CALL tambah_sub_kas_kecil('LOG003', 'JAKA', 'SUKABUMI', '081234567890', 'jaka@de
 CALL tambah_sub_kas_kecil('LOG004', 'FAJAR', 'SUKABUMI', '081234567890', 'fajar@designbuild.com', '', 100000, 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'SUB KAS KECIL');
 CALL tambah_sub_kas_kecil('LOG005', 'HENDRO', 'SUKABUMI', '081234567890', 'hendro@designbuild.com', '', 100000, 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'SUB KAS KECIL');
 
+-- Hapus Operasional Proyek
+-- ini testing data aja ya ikutin format ini aja  (perlu di revisi)
+CALL hapus_operasional_proyek(
+'OPRY-PRY20180001-0001','PRY20180001', 2 , 'KB001', 'DIS0002','2018-10-21','MASJAKA GANTENG','TEKNIS', 10.00, 10.00, 'TUNAI','LUNAS','HEHE');
+
+
 
 -- =======================================================================================
 -- ===============================VVV Tambah Proyek VVV===================================
