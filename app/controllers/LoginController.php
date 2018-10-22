@@ -3,8 +3,9 @@
 	// namespace app\controllers;
 
 	/**
-	* Class login. Untuk melakukan login ke sistem, lockscreen dan logout
-	*/
+	 * Class login
+	 * Untuk melakukan login ke sistem, lockscreen dan logout
+	 */
 	class Login extends Controller{
 
 		protected $username;
@@ -12,8 +13,9 @@
 		protected $token;
 
 		/**
-		* Construct. Load class Auth
-		*/
+		 * Construct
+		 * Load class Auth
+		 */
 		public function __construct(){
 			$this->auth();
 			$this->validation();
@@ -23,18 +25,23 @@
 		/**
 		* fungsi index untuk akses utama controller login
 		*/
+		/**
+		 * Method index
+		 * Default controller
+		 * Proses pengecekan sudah login atau belum
+		 */
 		public function index(){
 			$jenis = isset($_POST['jenis']) ? $this->validation->validInput($_POST['jenis'], false) : false;
 
 			// cek jenis login
 			if($jenis && $jenis == 'sub-kas-kecil') $this->loginMobile(); // jika mobile
 			else{ // jika sistem
-				if($this->auth->isLogin()) $this->redirect(BASE_URL); // jika sudah login, tidak bisa akses
+				if($this->auth->isLogin()) { $this->redirect(BASE_URL); } // jika sudah login, tidak bisa akses
 				else{ // jika belum login
 					$_SESSION['sess_lockscreen'] = false;
 
-					if($_SERVER['REQUEST_METHOD'] == "POST") $this->loginSistem(); // jika request post login
-					else $this->view('login'); // jika bukan, atau hanya menampilkan halaman login
+					if($_SERVER['REQUEST_METHOD'] == "POST") { $this->loginSistem(); } // jika request post login
+					else { $this->view('login'); } // jika bukan, atau hanya menampilkan halaman login
 				}
 			}
 		}
@@ -46,12 +53,21 @@
 		* set session default
 		* return berupa json
 		*/
+
+		/**
+		 * Method loginSistem
+		 * Proses login untuk sistem (web)
+		 * Pengecekan user dan password berdasarkan jenis user
+		 * Pemberian hak akses berdasarkan level
+		 * Set session
+		 * @param callback {string} default bool false - callback url saat lockscreen
+		 * @return output {object} array berupa json
+		 */
 		private function loginSistem($callback = false){
 			$this->username = isset($_POST['username']) ? $this->validation->validInput($_POST['username'], false) : false;
 			$this->password = isset($_POST['password']) ? $this->validation->validInput($_POST['password'], false) : false;
 
-			$errorUser = $errorPass = "";
-			$notif = '';
+			$errorUser = $errorPass = $notif = '';
 
 			// get username
 			$dataUser = $this->UserModel->getUser($this->username);
@@ -99,12 +115,13 @@
 		}
 
 		/**
-		* Fungsi login untuk mobile
-		* jika login baru, maka akan generate token baru dan disimpan ke db
-		* token baru yg sudah digenerate akan di hash md5 dan bycrpt ke db
-		* sedangkan yg dikirim ke mobile adalah hash md5
-		* return fungsi berupa json
-		*/
+		 * Method loginMobile
+		 * Proses pengecekan login untuk mobile app
+		 * Jika login baru, maka akan generate token baru dan disimpan ke db
+		 * Token baru yg sudah digenerate akan di hash md5 dan bycrpt ke db
+		 * Sedangkan yg dikirim ke mobile adalah hash md5
+		 * @return output {object} array berupa json
+		 */
 		private function loginMobile(){
 			$this->auth->mobileOnly();
 			$this->model('Sub_kas_kecilModel');
@@ -180,14 +197,14 @@
 		}
 
 		/**
-		* Fungsi lockscreen
-		* set ulang session login dan session lockscreen saja
-		*/
+		 * Method lockscreen
+		 * Proses set ulang session login dan session lockscreen
+		 */
 		public function lockscreen(){
 			$lockscreen = isset($_SESSION['sess_lockscreen']) ? $_SESSION['sess_lockscreen'] : false;
 			$callback = isset($_GET['callback']) ? $_GET['callback'] : false;
 
-			if(!$lockscreen) $this->redirect(BASE_URL);
+			if(!$lockscreen) { $this->redirect(BASE_URL); }
 			else{
 				if($_SERVER['REQUEST_METHOD'] == "POST") $this->loginSistem($callback); // jika request post login
 				else $this->view('lockscreen'); // jika bukan, atau hanya menampilkan halaman login
@@ -195,29 +212,27 @@
 		}
 
 		/**
-		*
-		*/
+		 * Method setSession
+		 * Proses set session user sistem sesuai dengan level
+		 * @param level {string}
+		 */
 		private function setSession($level){
 			// set data profil sesuai dgn jenis user
-			if(strtolower($level) == 'kas besar')
-				$dataProfil = $this->UserModel->getKasBesar($this->username);
+			if(strtolower($level) == 'kas besar') { $dataProfil = $this->UserModel->getKasBesar($this->username); }
 			else if(strtolower($level) == 'kas kecil') {
 				$dataProfil = $this->UserModel->getKasKecil($this->username);
 				$_SESSION['sess_saldo'] = $dataProfil['saldo'];
 			}
-			else if(strtolower($level) == 'owner')
-				$dataProfil = $this->UserModel->getOwner($this->username);
+			else if(strtolower($level) == 'owner') { $dataProfil = $this->UserModel->getOwner($this->username); }
 
 			// cek kondisi foto
 			if(!empty($dataProfil['foto'])){
 				// cek foto di storage
 				$filename = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$dataProfil['foto'];
-				if(!file_exists($filename))
-					$foto = BASE_URL.'assets/images/user/default.jpg';
-				else
-					$foto = BASE_URL.'assets/images/user/'.$dataProfil['foto'];
+				if(!file_exists($filename)){ $foto = BASE_URL.'assets/images/user/default.jpg'; }
+				else{ $foto = BASE_URL.'assets/images/user/'.$dataProfil['foto']; }
 			}
-			else $foto = BASE_URL.'assets/images/user/default.jpg';
+			else { $foto = BASE_URL.'assets/images/user/default.jpg'; }
 
 			$_SESSION['sess_login'] = true;
 			$_SESSION['sess_lockscreen'] = false;
@@ -235,16 +250,16 @@
 		}
 
 		/**
-		*
-		*/
+		 * Method setAkses
+		 */
 		private function setAkses($level){
 
 		}
 
 		/**
-		* Fungsi logout
-		* menghapus semua session yang ada
-		*/
+		 * Method logout
+		 * Proses logout dari sistem dan penghapusan semua session
+		 */
 		public function logout(){
 			session_unset();
 			session_destroy();

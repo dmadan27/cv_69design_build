@@ -1,9 +1,10 @@
 <?php
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
-	
+
 	/**
-	* Class Auth, Pengecekan Authentikasi yg masuk sistem
-	*/
+	 * Class Auth
+	 * Proses pengecekan Authentikasi yang masuk sistem
+	 */
 	class Auth{
 		
 		protected $login;
@@ -12,10 +13,10 @@
 		protected $token;
 
 		/**
-		* Fungsi cek auth sistem
-		* Untuk mengecek status user sudah login atau belum
-		* jika belum login maka akan diarahkan ke login
-		*/
+		 * Method cekAuth
+		 * Proses check auth sistem apakah status uses sudah login atau belum
+		 * Jika belum login maka akan diarahakan ke login
+		 */
 		public function cekAuth(){
 			if(!$this->isLogin()){
 				$this->lockscreen = isset($_SESSION['sess_lockscreen']) ? $_SESSION['sess_lockscreen'] : false;
@@ -37,8 +38,7 @@
 			// param khusus untuk notifikasi atau req dari ajax yg tidak reload halaman
 			$cekTimeout = isset($_POST['timeout']) ? $_POST['timeout'] : false;
 
-			if(!$cekTimeout) $_SESSION['sess_timeout'] = date('Y-m-d H:i:s', time()+(60*60));
-				
+			if(!$cekTimeout) { $_SESSION['sess_timeout'] = date('Y-m-d H:i:s', time()+(60*60)); }
 		}
 
 		/**
@@ -46,6 +46,13 @@
 		* untuk mengecek status user mobile sudah login atau belum
 		* mengecek expired token
 		*/
+
+		/**
+		 * Method cekAuthMobile
+		 * Proses untuk mengecek status user mobile sudah login atau belum
+		 * Pengecekan expired token
+		 * @return result {bool}
+		 */
 		public function cekAuthMobile(){
 			$this->mobileOnly();
 
@@ -53,8 +60,10 @@
 		}
 
 		/**
-		* pengecekan status login untuk sistem dan mobile
-		*/
+		 * Method isLogin
+		 * Proses pengecekan status login untuk sistem dan mobile
+		 * @return result {bool}
+		 */
 		public function isLogin(){
 			$this->jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
 			$this->login = isset($_SESSION['sess_login']) ? $_SESSION['sess_login'] : false;
@@ -98,9 +107,10 @@
 		}
 
 		/**
-		* Fungsi untuk mencegah sistem mengakses fungsi khusus mobile
-		* jika jenis false atau jenis bukan mobile maka akan dilempar ke home
-		*/
+		 * Method mobileOnly
+		 * Proses untuk mencegah sistem mengakses method-method khusus mobile
+		 * Jika jenis false atau jenis bukan mobile maka akan dilempar ke home
+		 */
 		public function mobileOnly(){
 			$this->jenis = isset($_POST['jenis']) ? $_POST['jenis'] : false;
 
@@ -111,9 +121,10 @@
 		}
 
 		/**
-		* Fungsi untuk mendapatkan token yang sudah di generate
-		* untuk token mobile, dan token crsf yang akan dipasang disetiap module
-		*/
+		 * Method getToken
+		 * Proses untuk mendapatkan token yang sudah di generate
+		 * @return token {string}
+		 */
 		public function getToken(){
 			$token = "";
 		    $codeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -129,8 +140,12 @@
 		}
 
 		/**
-		* Fungsi untuk generate random yang secure
-		*/
+		 * Method crypto_rand_secure
+		 * Proses generate secure random
+		 * @param min {int}
+		 * @param max {int}
+		 * @return result {int}
+		 */
 		private function crypto_rand_secure($min, $max){
 		    $range = $max - $min;
 		    if ($range < 1) return $min; // not so random...
