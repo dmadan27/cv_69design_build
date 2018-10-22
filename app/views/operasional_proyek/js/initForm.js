@@ -3,33 +3,40 @@ $(document).ready(function () {
 	// set select statyus
 	
 	
-	if($('#submit_operasional_proyek').val() == 'action-add') generateID();
-	else if($('#submit_operasional_proyek').val() == 'action-edit') getEdit($('#id').val().trim());
+	if($('#submit_operasional_proyek').val() == 'action-add') {
+		generateID();
+		$('#id').prop('disabled', true);
+	    //Initialize Select2 Elements
+	    $('#id_proyek').select2({
+	    	placeholder: "Pilih Proyek",
+			allowClear: true
+	    });
+
+	    // set format 
+	    // $('#id_bank').prop('', true);
+	    //Initialize Select2 Elements
+	    $('#id_bank').select2({
+	    	placeholder: "Pilih Bank",
+			allowClear: true
+	    });
+
+	    $('#id_kas_besar').select2({
+	    	placeholder: "Pilih Kas Besar",
+			allowClear: true
+	    });
+
+	    $('#id_distributor').select2({
+	    	placeholder: "Pilih Distributor",
+			allowClear: true
+	    });
+	}
+	else if($('#submit_operasional_proyek').val() == 'action-edit') {
+		getEdit($('#id').val().trim());
+		// $('#id_bank').val();		
+
+	}
 		
-	$('#id').prop('disabled', true);
-    //Initialize Select2 Elements
-    $('#id_proyek').select2({
-    	placeholder: "Pilih Proyek",
-		allowClear: true
-    });
-
-    // set format 
-    // $('#id_bank').prop('', true);
-    //Initialize Select2 Elements
-    $('#id_bank').select2({
-    	placeholder: "Pilih Bank",
-		allowClear: true
-    });
-
-    $('#id_kas_besar').select2({
-    	placeholder: "Pilih Kas Besar",
-		allowClear: true
-    });
-
-    $('#id_distributor').select2({
-    	placeholder: "Pilih Distributor",
-		allowClear: true
-    });
+	
 
     
     // Inisiasi Function
@@ -366,6 +373,30 @@ $(document).ready(function () {
 
 // ========================================================================= //
 
+function setNamaProyek_new($id = false){
+	var id = "";
+	if ($('#submit_operasional_proyek').val() == 'action-edit') id = $('#id').val().split('-')[1];
+
+	$.ajax({
+		url: BASE_URL+'operasional-proyek/get-nama-proyek/'+id,
+		dataType: 'json',
+		beforeSend: function(){},
+		success: function(data){
+			console.log("Response setNamaProyek: ", data);
+			$.each(data, function(index, item){
+				var newOption = new Option(item.text, item.id);
+				$('#id_proyek').append(newOption);
+			});
+
+			if(id == "") $('#id_proyek').val(null);
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+            console.log("Error Response from setNamaProyek: ",jqXHR, textStatus, errorThrown);
+            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+        }
+	})		
+}
+
 function setNamaProyek(){
 	$.ajax({
 		url: BASE_URL+'operasional-proyek/get-nama-proyek',
@@ -384,6 +415,7 @@ function setNamaProyek(){
             swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
         }
 	})		
+
 }
 
 function setNamaBank(){
@@ -403,25 +435,26 @@ function setNamaBank(){
             console.log(jqXHR, textStatus, errorThrown);
             swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
         }
-	})		
+	})			
 
 }
 
 function setnamaKasBesar(){
+	// if ($('#submit_operasional_proyek').val() == 'action-edit') id = $('#id_kas_besar').val().split('-')[1];
 	$.ajax({
 		url: BASE_URL+'operasional-proyek/get-nama-kas-besar',
 		dataType: 'json',
 		beforeSend: function(){},
 		success: function(data){
-			console.log(data);
+			console.log("Response setnamaKasBesar: ",data);
 			$.each(data, function(index, item){
 				var newOption = new Option(item.text, item.id);
-				$('#id_kas_besar').append(newOption).trigger('change');
+				$('#id_kas_besar').append(newOption);
 			});
-			$('#id_kas_besar').val(null).trigger('change');
+			$('#id_kas_besar').val(null);
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling
-            console.log(jqXHR, textStatus, errorThrown);
+            console.log("Error Response setnamaKasBesar : ",jqXHR, textStatus, errorThrown);
             swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
         }
 	})		
@@ -468,6 +501,22 @@ function getDataForm(){
 			parseFloat($('#sisa').inputmask('unmaskedvalue')) : 
 			$('#sisa').inputmask('unmaskedvalue')
 		) : $('#sisa').val().trim();
+
+	// if($('#submit_operasional_proyek').val().trim().toLowerCase() == 'action-edit'){
+	// 	id : $('#id').val().trim(),
+	// 	id_proyek : $('#id_proyek').val().trim(),
+	// 	id_bank : $('#id_bank').val().trim(),
+	// 	id_kas_besar : $('#id_kas_besar').val().trim(),
+	// 	id_distributor : $('#id_distributor').val().trim(),
+	// 	tgl : $('#tgl').val().trim(),
+	// 	nama : $('#nama').val().trim(),
+	// 	jenis : $('#jenis').val().trim(),
+	// 	total : total,
+	// 	sisa : sisa,
+	// 	status : $('#status').val().trim(),
+	// 	status_lunas : $('#status_lunas').val().trim(),
+	// 	ket : $('#ket').val().trim()
+	// }
 
 	var dataOperasionalProyek = {
 		id : $('#id').val().trim(),
@@ -540,6 +589,14 @@ function submit(){
 *
 */
 function getEdit(id){
+
+
+	// $('#id').prop('disabled', true);
+		// $('#id_proyek').prop('disabled', true);
+		// $('.field-id_bank').css('display', 'none');
+		// $('.field-id_kas_besar').css('display', 'none');
+		// $('.field-id_distributor').css('display', 'none');
+
 	$.ajax({
 		url: BASE_URL+'operasional-proyek/get-edit/'+id.toLowerCase(),
 		type: 'post',
@@ -551,25 +608,25 @@ function getEdit(id){
 
 			// each dataOperasionalProyek
 			// $.each(output.dataOperasionalProyek, function(i, data)
-			// 		var dataOperasionalProyek = {
-			// 		index: index,
-			// 		id: data.id,
-			// 		// id_proyek: data.id_proyek,
-			// 		// id_bank: data.id_bank,
-			// 		// id_kas_besar: data.id_kas_besar,
-			// 		// id_distributor: data.id_distributor,
-			// 		// tgl: data.tgl,
-			// 		// nama: data.nama,
-			// 		// id_bank: data.id_bank,
-			// 		// id_bank: data.id_bank,
-			// 		// id_bank: data.id_bank,
-			// 		// id_bank: data.id_bank,
-			// 		// id_bank: data.id_bank,
-			// 		// id_bank: data.id_bank,
-			// 		aksi: 'edit',
-			// 		delete: false,
-			// 	}
-			// 	);
+					// var dataOperasionalProyek = {
+					// index: index,
+					// id: data.id,
+					// id_proyek: data.id_proyek,
+					// id_bank: data.id_bank,
+					// id_kas_besar: data.id_kas_besar,
+					// id_distributor: data.id_distributor,
+					// tgl: data.tgl,
+					// nama: data.nama,
+					// id_bank: data.id_bank,
+					// id_bank: data.id_bank,
+					// id_bank: data.id_bank,
+					// id_bank: data.id_bank,
+					// id_bank: data.id_bank,
+					// id_bank: data.id_bank,
+				// 	aksi: 'edit',
+				// 	delete: false,
+				// };
+				
 			
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling

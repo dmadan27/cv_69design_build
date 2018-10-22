@@ -28,6 +28,8 @@
 								<div class="nav-tabs-custom">
 									<ul class="nav nav-tabs">
 										<li class="active"><a href="#tab_1" data-toggle="tab">Pengajuan Operasional Proyek</a></li>
+										<li class=""><a href="#tab_history_pembelian" data-toggle="tab">History Pembelian</a></li>
+										
 									</ul>
 									<!-- tab content -->
 									<div class="tab-content">
@@ -38,7 +40,7 @@
 													<!-- kiri -->
 												<div class="col-md-4 col-xs-12">
 													<fieldset>
-														<legend style="font-size: 18px;">Data Pengajuan Operasional Proyek</legend>
+														<!-- <legend style="font-size: 18px;">Data Pengajuan Operasional Proyek</legend> -->
 															<table class="table table-hover">
 																<tr>
 																	<td><strong>ID Operasional Proyek</strong></td>
@@ -147,6 +149,8 @@
 												<a href="<?= BASE_URL.'operasional-proyek/'; ?>" class="btn btn-md btn-flat btn-success" role="button">Kembali</a>
 													
 												</div>
+										</div>
+										<div class="tab-pane" id="tab_history_pembelian">
 										</div>
 									</div>
 								</div>

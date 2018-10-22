@@ -45,8 +45,8 @@
 		                              <!-- ID Proyek -->
 		                                    <div class="form-group field-id_proyek has-feedback">
 		                                        <label for="id_proyek">ID Proyek</label>
-		                                        <select class="form-control select2" name="id_proyek" id="id_proyek"></select>
-                                              <option value=""></option>
+                                            <select class="form-control select2" name="id_proyek" id="id_proyek">
+                                            </select>
 		                                        <span class="help-block small pesan pesan-id_proyek"></span>
 		                                    </div>
 		                              <!-- ID Bank -->
@@ -141,7 +141,7 @@
 
                                   <!-- Input Keterangan -->
                                           <div class="form-group field-ket has-feedback">
-                                              <label for="ket">keterangan</label>
+                                              <label for="ket">Keterangan</label>
                                               <textarea class="form-control field" id="ket" name="ket" placeholder="Masukan Keterangan" value=""><?= $this->data['ket'];?></textarea>
                                               <span class="help-block small pesan pesan-ket"></span>
                                           </div>

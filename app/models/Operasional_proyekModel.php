@@ -173,15 +173,23 @@
 		* 
 		*/
 		public function update($data){
-			// $query = "UPDATE bank SET nama = :nama, status = :status WHERE id = :id;";
+			$query = "UPDATE operasional_proyek SET tgl = :tgl, nama = :nama, jenis = :jenis, total = :total, sisa = :sisa, status = :status, status_lunas = :status_lunas, ket = :ket WHERE id = :id;";
 
-			// $statement = $this->koneksi->prepare($query);
-			// $statement->bindParam(':nama', $data['nama']);
-			// $statement->bindParam(':status', $data['status']);
-			// $statement->bindParam(':id', $data['id']);
-			// $result = $statement->execute();
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':tgl', $data['tgl']);
+			$statement->bindParam(':nama', $data['nama']);
+			$statement->bindParam(':jenis', $data['jenis']);
+			$statement->bindParam(':total', $data['total']);
+			$statement->bindParam(':sisa', $data['sisa']);
+			$statement->bindParam(':status', $data['status']);
+			$statement->bindParam(':status_lunas', $data['status_lunas']);
+			$statement->bindParam(':ket', $data['ket']);
+			
+			
+			$statement->bindParam(':id', $data['id']);
+			$result = $statement->execute();
 
-			// return $result;
+			return $result;
 		}
 
 		/**

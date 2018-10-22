@@ -39,10 +39,15 @@
 			// set config untuk layouting
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
+				'assets/bower_components/select2/dist/css/select2.min.css',
 			);
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
+				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
+				'assets/bower_components/select2/dist/js/select2.full.min.js',
 				'app/views/pengajuan_kas_kecil/js/initList.js',
 				'app/views/pengajuan_kas_kecil/js/initForm.js',
 			);
@@ -66,51 +71,56 @@
 		* return json
 		*/
 		public function get_list(){
-			// config datatable
-			$config_dataTable = array(
-				'tabel' => 'pengajuan_kas_kecil',
-				'kolomOrder' => array(null, 'id', 'tgl', 'nama',  'total', 'status',null),
-				'kolomCari' => array('id','nama',  'status'),
-				'orderBy' => array('id' => 'asc'),
-				'kondisi' => false,
-			);
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				// config datatable
+				$config_dataTable = array(
+					'tabel' => 'pengajuan_kas_kecil',
+					'kolomOrder' => array(null, 'id','id_kas_kecil', 'tgl', 'nama',  'total', 'status',null),
+					'kolomCari' => array('id','id_kas_kecil','nama',  'status'),
+					'orderBy' => array('id' => 'asc'),
+					'kondisi' => false,
+				);
 
-			$dataPengajuanKasKecil = $this->Pengajuan_kasKecilModel->getAllDataTable($config_dataTable);
+				$dataPengajuanKasKecil = $this->Pengajuan_kasKecilModel->getAllDataTable($config_dataTable);
 
-			$data = array();
-			$no_urut = $_POST['start'];
-			foreach($dataPengajuanKasKecil as $row){
-				$no_urut++;
+				$data = array();
+				$no_urut = $_POST['start'];
+				foreach($dataPengajuanKasKecil as $row){
+					$no_urut++;
 
-				$status = ($row['status'] == "PENDING") ? '<span class="label label-warning">'.$row['status'].'</span>' : '<span class="label label-danger">'.$row['status'].'</span>';
+					$status = ($row['status'] == "PENDING") ? '<span class="label label-warning">'.$row['status'].'</span>' : '<span class="label label-danger">'.$row['status'].'</span>';
 
-				// // button aksi
-				$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-				$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-				$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
-				
-				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
-				
-				$dataRow = array();
-				$dataRow[] = $no_urut;
-				$dataRow[] = $row['id'];
-				$dataRow[] = $row['tgl'];
-				$dataRow[] = $row['nama'];
-				$dataRow[] = $row['total'];
-				$dataRow[] = $row['status'];		
-				$dataRow[] = $aksi;
+					// // button aksi
+					$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+					$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+					$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+					
+					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
+					
+					$dataRow = array();
+					$dataRow[] = $no_urut;
+					$dataRow[] = $row['id'];
+					$dataRow[] = $row['id_kas_kecil'];
+					$dataRow[] = $row['tgl'];
+					$dataRow[] = $row['nama'];
+					$dataRow[] = $row['total'];
+					$dataRow[] = $row['status'];		
+					$dataRow[] = $aksi;
 
-				$data[] = $dataRow;
+					$data[] = $dataRow;
+				}
+
+				$output = array(
+					'draw' => $_POST['draw'],
+					'recordsTotal' => $this->Pengajuan_kasKecilModel->recordTotal(),
+					'recordsFiltered' => $this->Pengajuan_kasKecilModel->recordFilter(),
+					'data' => $data,
+				);
+
+				echo json_encode($output);	
 			}
-
-			$output = array(
-				'draw' => $_POST['draw'],
-				'recordsTotal' => $this->Pengajuan_kasKecilModel->recordTotal(),
-				'recordsFiltered' => $this->Pengajuan_kasKecilModel->recordFilter(),
-				'data' => $data,
-			);
-
-			echo json_encode($output);		
+			else $this->redirect();
+					
 		}
 
 		/**
@@ -122,7 +132,71 @@
 		* error => error apa saja yang ada dari hasil validasi
 		*/
 		public function action_add(){
-			
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$data = isset($_POST) ? $_POST : false;
+						
+				$error = $notif = array();
+
+				if(!$data){
+					$notif = array(
+						'type' => 'error',
+						'title' => "Pesan Gagal",
+						'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
+					);
+				}
+				else{
+					// validasi data
+					$validasi = $this->set_validation($data);
+					$cek = $validasi['cek'];
+					$error = $validasi['error'];
+
+					if($cek){
+						// validasi inputan
+						$data = array(
+							'id' => $this->validation->validInput($data['id']),
+							'id_kas_kecil' =>$this->validation->validInput($data['id_kas_kecil']),
+							'tgl' => $this->validation->validInput($data['tgl']),
+							'nama' => $this->validation->validInput($data['nama']),
+							'total' => $this->validation->validInput($data['total']),
+							'status' => $this->validation->validInput($data['status']),
+						);
+
+						// insert pengajuan kas kecil
+						if($this->Pengajuan_kasKecilModel->insert($data)) {
+							$this->status = true;
+							$notif = array(
+								'type' => 'success',
+								'title' => "Pesan Berhasil",
+								'message' => "Tambah Data Pengajuan Kas Kecil Berhasil",
+							);
+						}
+						else {
+							$notif = array(
+								'type' => 'error',
+								'title' => "Pesan Gagal",
+								'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+							);
+						}
+					}
+					else {
+						$notif = array(
+							'type' => 'warning',
+							'title' => "Pesan Pemberitahuan",
+							'message' => "Silahkan Cek Kembali Form Isian",
+						);
+					}
+				}
+
+				$output = array(
+					'status' => $this->status,
+					'notif' => $notif,
+					'error' => $error,
+					'data' => $data
+				);
+
+				echo json_encode($output);	
+			}
+			else $this->redirect();
 		}
 
 		/**
@@ -215,6 +289,48 @@
 		* param $id didapat dari url
 		*/
 		public function detail($id){
+			$id = strtoupper($id);
+			$data_detail = !empty($this->Pengajuan_kasKecilModel->getById($id)) ? $this->Pengajuan_kasKecilModel->getById($id) : false;
+
+			if((empty($id) || $id == "") || !$data_detail) $this->redirect(BASE_URL."pengajuan-kas-kecil/");
+
+			$css = array(
+				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+			);
+			$js = array(
+				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
+				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
+				'app/views/pengajuan_kas_kecil/js/initView.js',
+				'app/views/pengajuan_kas_kecil/js/initForm.js',
+			);
+
+			$config = array(
+				'title' => array(
+					'main' => 'Data Pengajuan Kas Kecil',
+					'sub' => 'Detail Data Pengajuan Kas Kecil',
+				),
+				'css' => $css,
+				'js' => $js,
+			);
+
+			// $status = ($data_detail['status'] == "AKTIF") ? 
+			// 	'<span class="label label-success">'.$data_detail['status'].'</span>' : 
+			// 	'<span class="label label-danger">'.$data_detail['status'].'</span>';
+
+
+
+			$data = array(
+				'id' => $data_detail['id'],
+				'id_kas_kecil' => $data_detail['id_kas_kecil'],
+				'tgl' => $data_detail['tgl'],
+				'nama' => $data_detail['nama'],
+				'total' => $data_detail['total'],
+				'status' => $data_detail['status'],
+			);
+
+			$this->layout('pengajuan_kas_kecil/view', $config, $data);
+
 			
 		}
 
@@ -225,10 +341,15 @@
 		* return json
 		*/
 		public function delete($id){			
-			if($this->Pengajuan_kasKecilModel->delete($id)) $status = '';
-			else $status = 'gagal';
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$id = strtoupper($id);
+				if(empty($id) || $id == "") $this->redirect(BASE_URL."pengajuan-kas-kecil/");
 
-			echo json_encode($status);
+				if($this->Pengajuan_kasKecilModel->delete($id)) $this->status = true;
+
+				echo json_encode($this->status);
+			}
+			else $this->redirect();	
 		}
 
 		/**
@@ -401,6 +522,21 @@
 		* return berupa array, status hasil pengecekan dan error tiap validasi inputan
 		*/
 		private function set_validation($data){
+			// $required = ($action =="action-add") ? 'not_required' : 'required';
+			// id
+			$this->validation->set_rules($data['id'], 'ID Pengajuan Kas Kecil', 'id', 'string | 1 | 255 | required');
+			// id_kas_kecil
+			$this->validation->set_rules($data['id_kas_kecil'], 'ID Pengajuan Kas Kecil', 'id_kas_kecil', 'string | 1 | 255 | required');
+			// tgl
+			$this->validation->set_rules($data['tgl'], 'Tanggal Pengajuan Kas Kecil', 'tgl', 'string | 1 | 255 | required');
+			// nama pengajuan kas kecil
+			$this->validation->set_rules($data['nama'], 'Nama Pengajuan', 'nama', 'string | 1 | 255 | required');
+			// total
+			$this->validation->set_rules($data['total'], 'Total Pengajuan', 'total', 'nilai | 1 | 99999999 | required');
+			// status
+			$this->validation->set_rules($data['status'], 'Status Pengajuan', 'status', 'string | 1 | 255 | required');
+			
+			return $this->validation->run();
 			
 		}
 
@@ -429,4 +565,64 @@
 
 			echo json_encode($output);
 		}
+		
+
+		/**
+		*
+		*/
+		public function get_nama_kas_kecil(){
+			$this->model('Kas_kecilModel');
+			$data_kas_kecil =  $this->Kas_kecilModel->getAll();
+			$data = array();
+
+
+				foreach ($data_kas_kecil as $row) {
+					$dataRow = array();
+					$dataRow['id'] = $row['id'];
+					$dataRow['text'] = $row['id'].' - '.$row['nama'];
+
+					$data[] = $dataRow;
+				}
+				
+
+			echo json_encode($data);
+		}
+
+		/**
+		*
+		*/
+		public function get_last_id(){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$data = !empty($this->Pengajuan_kasKecilModel->getLastID()['id']) ? $this->Pengajuan_kasKecilModel->getLastID()['id'] : false;
+
+				if(!$data) $id = 'PKK0001';
+				else{
+					$kode = 'PKK';
+					$noUrut = (int)substr($data, 3, 4);
+					$noUrut++;
+
+					$id = $kode.sprintf("%04s", $noUrut);
+				}
+
+				echo json_encode($id);
+			}
+			else $this->redirect();
+		}
+
+		/**
+		* 
+		*/
+		public function count_pengajuan_kas_kecil_disetujui(){
+			$this->model('Pengajuan_kasKecilModel');
+			$data_pkk_disetujui = $this->Pengajuan_kasKecilModel->getTotal_setujui();
+
+			// foreach($data_pkk_disetujui as $row){
+			// 	$data[] = $row;
+			// }
+			
+			echo json_encode($data_pkk_disetujui);
+
+		}
+
+
 	}

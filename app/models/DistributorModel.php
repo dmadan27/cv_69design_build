@@ -79,7 +79,7 @@
 		* 
 		*/
 		public function insert($data){
-			$query = "INSERT INTO distributor (id, nama, alamat, jenis, no_telp, pemilik, status) VALUES (:id, :nama, :alamat, :jenis, :no_telp, :pemilik, :status);";
+			$query = "INSERT INTO distributor (id, nama, alamat, no_telp, pemilik, status) VALUES (:id, :nama, :alamat,  :no_telp, :pemilik, :status);";
 
 			try{
 				$this->koneksi->beginTransaction();
@@ -90,7 +90,6 @@
 						':id' => $data['id'],
 						':nama' => $data['nama'],
 						':alamat' => $data['alamat'],
-						':jenis' => $data['jenis'],
 						':no_telp' => $data['no_telp'],
 						':pemilik' => $data['pemilik'],
 						':status' => $data['status']
@@ -115,7 +114,7 @@
 		*/
 		public function update($data){
 			$query = "UPDATE distributor SET
-			 nama = :nama, alamat = :alamat, jenis = :jenis, no_telp = :no_telp, pemilik = :pemilik, status = :status WHERE id = :id;";
+			 nama = :nama, alamat = :alamat,  no_telp = :no_telp, pemilik = :pemilik, status = :status WHERE id = :id;";
 
 			try{
 				$this->koneksi->beginTransaction();
@@ -126,7 +125,6 @@
 
 						':nama' => $data['nama'],
 						':alamat' => $data['alamat'],
-						':jenis' => $data['jenis'],
 						':no_telp' => $data['no_telp'],
 						':pemilik' => $data['pemilik'],
 						':status' => $data['status'],
@@ -165,7 +163,7 @@
 		
 
 		public function export(){
-			$query = "SELECT id ID, nama NAMA, alamat ALAMAT, jenis JENIS, no_telp NO_TELP, pemilik PEMILIK, status STATUS FROM distributor ";
+			$query = "SELECT id ID, nama NAMA, alamat ALAMAT,  no_telp NO_TELP, pemilik PEMILIK, status STATUS FROM distributor ";
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute();
 			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -182,6 +180,14 @@
 			$result = $statement->fetch(PDO::FETCH_ASSOC);
 
 			return $result;
+		}
+
+		public function countDistributor(){
+			$query = "SELECT count(id) FROM distributor";
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute();
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;			 
 		}
 
 		/**

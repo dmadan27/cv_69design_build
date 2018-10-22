@@ -651,6 +651,43 @@ C
 
 
 -- Procedure Hapus Data Operasional Proyek
+	delimeter //
+	CREATE PROCEDURE hapus_operasional_proyek(
+	IN id_param varchar(50),
+	IN id_proyek_param varchar(50),
+	IN id_bank_param int(11),
+	IN id_kas_besar_param varchar(10),
+	IN id_distributor_param varchar(10),
+	IN tgl_param date,
+	IN nama_param varchar(50),
+	IN jenis_param enum('TEKNIS','NON-TEKNIS'),
+	IN total_param double(12,2),
+	IN sisa_param double(12,2),
+	IN status_param enum('TUNAI','KREDIT'),
+	IN status_lunas_param  enum('LUNAS','BELUM LUNAS'),
+	IN ket_param text
+	)
+
+	BEGIN
+		-- deklarasi ambil saldo terakhir 
+		DECLARE get_saldo double(12,2);
+
+		-- ambil saldo terahir
+		SELECT saldo INTO get_saldo FROM bank WHERE id = id_bank_param;
+
+		-- update saldo ke semula
+		UPDATE bank SET saldo = (get_saldo + total_param) WHERE id = id_bank_param;
+
+		-- insert mutasi (setelah perubahan)
+		INSERT INTO mutasi_bank 
+			(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+		VALUES
+			(id_bank_param, tgl_param, total_param, 0, (get_saldo + total_param), ket_param);
+
+		-- hapus operasional proyek
+		DELETE  FROM operasional_proyek where id = id_param;
+	END//
+	delimeter ;
 
 
 -- Procedure Tambah Data Operasional

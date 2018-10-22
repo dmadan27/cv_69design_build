@@ -453,10 +453,21 @@
 
 		// ========================================================= //
 
-		/**
-		*
-		*/
-		public function __destruct(){
-			$this->closeConnection($this->koneksi);
-		}
+			/**
+			*
+			*/
+			public function countProyek(){
+				$query = "SELECT count(id) FROM proyek";
+				$statement = $this->koneksi->prepare($query);
+				$statement->execute();
+				$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+				return $result;			 
+			}
+
+			/**
+			*
+			*/
+			public function __destruct(){
+				$this->closeConnection($this->koneksi);
+			}
 	}
