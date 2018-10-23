@@ -48,7 +48,7 @@ $(document).ready(function(){
 
 /**
  * Function getExport
- * Proses get data untuk di export ke excel
+ * Proses request get data untuk di export ke excel
  */
 function getExport(){
     window.location.href = BASE_URL+'bank/export/';
@@ -56,6 +56,7 @@ function getExport(){
 
 /**
  * Function getView
+ * Proses request data detail bank
  * @param {string} id 
  */
 function getView(id){
@@ -64,7 +65,9 @@ function getView(id){
 
 /**
  * Function getDelete
- * @param {string} id 
+ * Proses request hapus data ke server
+ * @param {string} id
+ * @return {object} response
  */
 function getDelete(id){
 	swal({

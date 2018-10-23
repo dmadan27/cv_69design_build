@@ -182,7 +182,7 @@
 						}
 					}
 					else {
-						$notif = array(
+						$this->notif = array(
 							'type' => 'warning',
 							'title' => "Pesan Pemberitahuan",
 							'message' => "Silahkan Cek Kembali Form Isian",
@@ -202,13 +202,6 @@
 			}
 			else $this->redirect();
 		}
-
-		/**
-		* Function edit
-		* method untuk get data edit
-		* param $id didapat dari url
-		* return berupa json
-		*/
 
 		/**
 		 * Method edit

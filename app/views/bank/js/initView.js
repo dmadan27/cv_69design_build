@@ -27,7 +27,7 @@ $(document).ready(function(){
         },
         "columnDefs": [
             {
-                "targets":[0, 4], // disable order di kolom 1 dan 3
+                "targets":[0, 4],
                 "orderable":false,
             }
         ],
@@ -36,6 +36,18 @@ $(document).ready(function(){
         		if(i != 5) $('td:eq('+i+')', row).addClass('text-right');
         	}
         }
+    });
+
+    // on click button edit
+    $('#btn_edit').on('click', function(){
+        console.log('Button Edit Clicked...');
+        getEdit($('#id').val());
+    });
+
+    // on click button delete
+    $('#btn_delete').on('click', function(){
+        console.log('Button Delete Clicked...');
+        getDelete($('#id').val());
     });
 
 });
@@ -49,7 +61,7 @@ function submit(){
 
 /**
  * 
- * @param {*} id 
+ * @param {string} id 
  */
 function getEdit(id){
 
@@ -95,8 +107,8 @@ function getDelete(id){
 }
 
 /**
-*
-*/
+ * 
+ */
 function back(){
     window.location.href = BASE_URL+'bank/';
 }

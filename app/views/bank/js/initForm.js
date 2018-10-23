@@ -46,10 +46,10 @@ $(document).ready(function(){
 });
 
 /**
-* Fungsi getDataForm()
-* untuk mendapatkan semua value di field
-* return berupa object data
-*/
+ * Function getDataForm
+ * Proses mendapatkan semua value di field
+ * @return {FormData} data
+ */
 function getDataForm(){
 	var data = new FormData();
 
@@ -70,9 +70,11 @@ function getDataForm(){
 }
 
 /**
-*
-*/
-function submit(edit_view){
+ * Function submit
+ * Proses submit data ke server baik saat add / edit
+ * @return {object} response
+ */
+function submit(){
 	var data = getDataForm();
 
 	$.ajax({
@@ -87,16 +89,16 @@ function submit(edit_view){
 			$('#submit_bank').prop('disabled', true);
 			$('#submit_bank').prepend('<i class="fa fa-spin fa-refresh"></i> ');
 		},
-		success: function(output){
-			console.log(output);
-			if(!output.status) {
+		success: function(response){
+			console.log('Response submit Bank: ', response);
+			if(!response.status) {
 				$('#submit_bank').prop('disabled', false);
 				$('#submit_bank').html($('#submit_bank').text());
-				setError(output.error);
-				toastr.warning(output.notif.message, output.notif.title);
+				setError(response.error);
+				toastr.warning(response.notif.message, response.notif.title);
 			}
 			else{
-				toastr.success(output.notif.message, output.notif.title);
+				toastr.success(response.notif.message, response.notif.title);
 				resetForm();
 				$("#modalBank").modal('hide');
 				$("#bankTable").DataTable().ajax.reload();
@@ -104,15 +106,18 @@ function submit(edit_view){
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling
 			$("#modalBank").modal('hide');
-            console.log(jqXHR, textStatus, errorThrown);
+            console.log('Response Error submit Bank: ', jqXHR, textStatus, errorThrown);
             swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
         }
 	})
 }
 
 /**
-*
-*/
+ * Function getEdit
+ * Proses request get data bank untuk proses edit
+ * @param {string} id
+ * @return {object} response
+ */
 function getEdit(id){
 	resetForm();
 	$('.field-saldo').css('display', 'none');
@@ -127,14 +132,14 @@ function getEdit(id){
 		data: {},
 		beforeSend: function(){
 		},
-		success: function(output){
-			if(output){
+		success: function(response){
+			if('Response getEdit Bank: ', response){
 				$('#modalBank').modal();
-				setValue(output);
+				setValue(response);
 			}	
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling
-            console.log(jqXHR, textStatus, errorThrown);
+            console.log('Response Error getEdit Bank: ', jqXHR, textStatus, errorThrown);
             swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
         }
 	})
@@ -142,11 +147,13 @@ function getEdit(id){
 }
 
 /**
-*
-*/
+ * Function setError
+ * Proses menampilkan pesan error di field-field yang terdapat kesalahan 
+ * @param {object} error 
+ */
 function setError(error){
 	$.each(error, function(index, item){
-		console.log(index);
+		// console.log(index);
 
 		if(item != ""){
 			$('.field-'+index).removeClass('has-success').addClass('has-error');
@@ -160,8 +167,10 @@ function setError(error){
 }
 
 /**
-*
-*/
+ * Function setValue
+ * Proses menampilkan value ke field-field yang dibutuhkan
+ * @param {object} value 
+ */
 function setValue(value){
 	$.each(value, function(index, item){
 		item = (parseFloat(item)) ? (parseFloat(item)) : item;
@@ -170,8 +179,9 @@ function setValue(value){
 }
 
 /**
-*
-*/
+ * Function setStatus
+ * Proses pengisian value pada select status
+ */
 function setStatus(){
 	var status = [
 		{value: "AKTIF", text: "AKTIF"},
@@ -185,8 +195,9 @@ function setStatus(){
 }
 
 /**
-*
-*/
+ * Function resetForm
+ * Proses reset form
+ */
 function resetForm(){
 	// trigger reset form
 	$('#form_bank').trigger('reset');

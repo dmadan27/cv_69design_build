@@ -2,10 +2,6 @@
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 
 	/**
-	* Class BankModel, implementasi ke ModelInterface
-	*/
-
-	/**
 	 * Class BankModel
 	 * Implements ModelInterface
 	 */

@@ -42,8 +42,7 @@
 					<div class="box-body">
 						<div class="row">
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-								<input type="hidden" id="token" value="">
-								<table id="bankTable" class="table table-bordered table-hover">
+								<table id="bankTable" class="table table-bordered table-hover" style="width:100%">
 									<thead>
 										<tr>
 											<th class="text-right" style="width: 35px">No</th>
@@ -53,8 +52,7 @@
 											<th>Aksi</th>
 										</tr>
 									</thead>
-									<tbody>
-									</tbody>
+									<tbody></tbody>
 								</table>	
 							</div>
 						</div>

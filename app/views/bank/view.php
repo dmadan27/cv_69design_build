@@ -18,7 +18,6 @@
 	<!-- Main content -->
 	<section class="content container-fluid">
 		<div class="row">
-			<input type="hidden" id="token" value="">
 			<!-- panel info data bank -->
 			<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
 				<input type="hidden" id="id" value="<?=$this->data['id_bank']?>">
@@ -58,7 +57,7 @@
 					<div class="box-body">
 						<div class="row">
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-								<table id="mutasiBankTable" class="table table-bordered table-hover">
+								<table id="mutasiBankTable" class="table table-bordered table-hover" style="width:100%">
 									<thead>
 										<tr>
 											<th class="text-right">No</th>
