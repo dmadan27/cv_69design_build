@@ -155,7 +155,7 @@
         </div>
             
          <!--    Panel Detail dan sub kas kecil -->
-            <!-- <div class="row">
+             <div class="row">
             <div class="col-lg-12 col-md-12 col-xs-12">           
               <div class="box box-info"> 
                         <div class="box-header">
@@ -167,10 +167,10 @@
                     </div>
                         </div>
                         <div class="box-body">
-                          Tabel Detail Operasional Proyek -->
-                          <!-- <div class="row"> -->
+                          Tabel Detail Operasional Proyek 
+                           <div class="row"> 
                             <!-- panel 1 -->
-                            <!-- <div class="col-md-12">
+                             <div class="col-md-12">
                               <fieldset>
                                 <div class="form-group">
                                           <button type="button" class="btn btn-success btn-flat " id="btn_tambahDetail"><i class="fa fa-plus"></i> Tambah Detail</button>
@@ -206,8 +206,8 @@
                     </div>
                         <div class="clearfix"></div>
                     </div>
-             </div> -->
-          <!-- </div> -->
+             </div> 
+           </div> 
 
         <div class="row">
             <div class="col-lg-12 col-md-12 col-xs-12">
@@ -234,7 +234,9 @@
   </section>
 </div>
 
-
-
+<?php include_once('modal.php'); ?>
+<script type="text/javascript">
+  var listDetail = [];
+  var indexDetail = 0;
 
 </script>
