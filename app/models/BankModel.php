@@ -90,7 +90,7 @@
 		/**
 		 * Method insert
 		 * Proses insert data bank
-		 * @param data {arary}
+		 * @param data {array}
 		 * @return result {array}
 		 */
 		public function insert($data){
@@ -222,8 +222,9 @@
 		}
 
 		/**
-		* 
-		*/
+		 * Method __destruct
+		 * Close connection to DB
+		 */
 		public function __destruct(){
 			$this->closeConnection($this->koneksi);
 		}

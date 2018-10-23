@@ -3,7 +3,7 @@
 
 	/**
 	 * Class Bank
-	 * Extend Abstract Crud Modals
+	 * Extend Abstract Crud_modalsAbstract
 	 */
 	class Bank extends Crud_modalsAbstract{
 
@@ -40,7 +40,7 @@
 
 		/**
 		 * Method list
-		 * Proses menampilkan list semua data proyek
+		 * Proses menampilkan list semua data bank
 		 */
 		protected function list(){
 			// set config untuk layouting
@@ -120,17 +120,8 @@
 
 				echo json_encode($output);
 			}
-			else $this->redirect();				
+			else { $this->redirect(); }				
 		}
-
-		/**
-		* Function action_add
-		* method untuk aksi tambah data
-		* return berupa json
-		* status => status berhasil atau gagal proses tambah
-		* notif => pesan yang akan ditampilkan disistem
-		* error => error apa saja yang ada dari hasil validasi
-		*/
 
 		/**
 		 * Method action_add
@@ -156,14 +147,14 @@
 
 					if($cek){
 						// validasi inputan
-						$data = array(
+						$data_insert = array(
 							'nama' => $this->validation->validInput($data['nama']),
 							'saldo' => $this->validation->validInput($data['saldo']),
 							'status' => $this->validation->validInput($data['status']),
 						);
 
 						// insert bank
-						$insert_bank = $this->BankModel->insert($data);
+						$insert_bank = $this->BankModel->insert($data_insert);
 						if($insert_bank['success']) {
 							$this->success = true;
 							$this->notif = array(
@@ -200,7 +191,7 @@
 
 				echo json_encode($output);	
 			}
-			else $this->redirect();
+			else { $this->redirect(); }
 		}
 
 		/**
@@ -216,7 +207,7 @@
 
 				echo json_encode($data);
 			}
-			else $this->redirect();
+			else { $this->redirect(); }
 			
 		}
 
@@ -288,7 +279,7 @@
 
 				echo json_encode($output);
 			}
-			else $this->redirect();
+			else { $this->redirect(); }
 		}
 
 		/**
@@ -337,13 +328,6 @@
 		}
 
 		/**
-		* Function delete
-		* method yang berfungsi untuk menghapus data
-		* param $id didapat dari url
-		* return json
-		*/
-
-		/**
 		 * Method delete
 		 * Proses hapus data bank
 		 * @param id {string}
@@ -378,14 +362,8 @@
 					'notif' => $this->notif
 				));
 			}
-			else $this->redirect();	
+			else { $this->redirect(); }	
 		}
-
-		/**
-		* Function get_mutasi
-		* method yang berfungsi untuk get data mutasi bank sesuai dengan id
-		* dipakai di detail data
-		*/
 
 		/**
 		 * Method get_mutasi
@@ -434,7 +412,7 @@
 
 				echo json_encode($output);
 			}
-			else $this->redirect();
+			else { $this->redirect(); }
 		}
 
 		/**
