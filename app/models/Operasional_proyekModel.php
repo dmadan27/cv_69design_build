@@ -196,14 +196,41 @@
 		* 
 		*/
 		public function delete($id){
-			$query = "DELETE FROM operasional_proyek WHERE id = :id";
-			
-			$statement = $this->koneksi->prepare($query);
-			$statement->bindParam(':id', $id);
-			$result = $statement->execute();
+			try{
+				$this->koneksi->beginTransaction();
 
-			return $result;
+				$this->deleteOperasionalProyek($id);
+
+				$this->koneksi->commit();
+
+				return true;
+			}
+			catch(PDOException $e){
+				$this->koneksi->rollback();
+				die($e->getMessage());
+				// return false;
+			}
 		}
+
+		/**
+		* 
+		*/
+		private function deleteOperasionalProyek($id){
+			$query = "CALL hapus_operasional_proyek_revision (
+			:id, :total
+			);";
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id' => $id,
+					':total' => $total
+				)
+			);
+			$statement->closeCursor();
+
+		}
+
+
 
 		public function getLastID($id){
 			$id .= "%";
