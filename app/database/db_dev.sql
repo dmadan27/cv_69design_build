@@ -331,6 +331,20 @@ CREATE TABLE IF NOT EXISTS detail_operasional_proyek(
 
 )ENGINE=InnoDb;
 
+
+-- Tabel Detail Operasional Proyek_temp
+CREATE TABLE IF NOT EXISTS detail_operasional_proyek_temp(
+ 	id int NOT NULL AUTO_INCREMENT, -- pk
+ 	id_operasional_proyek varchar(50), -- fk operasional proyek
+ 	nama varchar(255), -- nama angsuran (angsuran ke-n)
+ 	tgl date, -- tanggl angsuran
+ 	total double(12,2), -- total angsuran
+
+ 	CONSTRAINT pk_detail_operasional_proyek PRIMARY KEY(id),
+ 	CONSTRAINT fk_detail_operasional_proyek_id_operasional FOREIGN KEY(id_operasional_proyek) REFERENCES operasional_proyek(id)
+		ON DELETE RESTRICT ON UPDATE CASCADE
+)ENGINE=InnoDb;
+
 -- Opsional (tergantung permintaan {apakah akan di data detail nya/ tidak})
 -- CREATE TABLE IF NOT EXISTS detail_operasional_proyek(
 -- 	id int NOT NULL AUTO_INCREMENT, -- pk
