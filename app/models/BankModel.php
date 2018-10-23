@@ -174,10 +174,18 @@
 		 * @return result {array}
 		 */
 		public function delete($id){
+			$query = "CALL hapus_bank (:id);";
+			
 			try{
 				$this->koneksi->beginTransaction();
 
-				$this->deleteBank($id);
+				$statement = $this->koneksi->prepare($query);
+				$statement->execute(
+					array(
+						':id' => $id
+					)
+				);
+				$statement->closeCursor();				
 
 				$this->koneksi->commit();
 
@@ -193,20 +201,6 @@
 					'error' => $e->getMessage()
 				);
 			}
-		}
-
-		/**
-		 * 
-		 */
-		private function deleteBank($id){
-			$query = "CALL hapus_bank (:id);";
-			$statement = $this->koneksi->prepare($query);
-			$statement->execute(
-				array(
-					':id' => $id
-				)
-			);
-			$statement->closeCursor();
 		}
 
 		/**

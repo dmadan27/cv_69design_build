@@ -41,57 +41,57 @@ $(document).ready(function(){
 });
 
 /**
-*
-*/
+ * 
+ */
 function submit(){
     
 }
 
 /**
-*
-*/
+ * 
+ * @param {*} id 
+ */
 function getEdit(id){
 
 }
 
 /**
-*
-*/
+ * Function getDelete
+ * @param {string} id 
+ */
 function getDelete(id){
     swal({
-        title: "Pesan Konfirmasi",
-        text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
-        type: "warning",
+		title: "Pesan Konfirmasi",
+		text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
+		type: "warning",
         showCancelButton: true,
         confirmButtonColor: "#DD6B55",
         confirmButtonText: "Ya, Hapus!",
         cancelButtonText: "Batal",
         closeOnConfirm: false,
-    }, function(){
-        $.ajax({
-            url: BASE_URL+'bank/delete/'+id,
-            type: 'post',
-            dataType: 'json',
-            data: {"token_delete": token},
-            beforeSend: function(){
-
-            },
-            success: function(output){
-                console.log(output);
-                if(output){
-                    swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
+	}, function(){
+		$.ajax({
+			url: BASE_URL+'bank/delete/'+id.toLowerCase(),
+			type: 'post',
+			dataType: 'json',
+			data: {},
+			beforeSend: function(){
+			},
+			success: function(response){
+				console.log('Response getDelete Bank: ', response);
+				if(response.success){
                     setTimeout(function(){ 
-                         window.location.href = BASE_URL+'bank/'; 
-                    }, 1500);
+                        window.location.href = BASE_URL+'bank/'; 
+                   }, 1500);
                 }
-            },
-            error: function (jqXHR, textStatus, errorThrown){ // error handling
-                console.log(jqXHR, textStatus, errorThrown);
+                swal(response.notif.title, response.notif.message, response.notif.type);
+			},
+			error: function (jqXHR, textStatus, errorThrown){ // error handling
+	            console.log('Response Error getDelete Bank', jqXHR, textStatus, errorThrown);
                 swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
-            }
-        })
-    });
-
+	        }
+		})
+	});
 }
 
 /**

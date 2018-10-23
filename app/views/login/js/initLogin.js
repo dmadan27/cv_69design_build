@@ -45,8 +45,9 @@ $(document).ready(function(){
 });
 
 /**
-*
-*/
+ * Function submit_login
+ * Proses login ke sistem
+ */
 function submit_login(){
 	$.ajax({
 		url: BASE_URL+'login/',
@@ -80,8 +81,9 @@ function submit_login(){
 }
 
 /**
-*
-*/
+ * Function submit_lupaPassword
+ * Proses lupa password sistem
+ */
 function submit_lupaPassword(){
 	$.ajax({
 		url: BASE_URL+'lupa-password/',
@@ -121,8 +123,9 @@ function submit_lupaPassword(){
 }
 
 /**
-*
-*/
+ * Function resetForm
+ * Proses reset semua form, form login dan lupa password
+ */
 function resetForm(){
 	// form login
 	$('#form_login').trigger('reset');
@@ -138,8 +141,10 @@ function resetForm(){
 }
 
 /**
-*
-*/
+ * Function setError
+ * Proses menampilkan pesan error di field-field yang terdapat kesalahan
+ * @param {object} error 
+ */
 function setError(error){
 	$.each(error, function(index, item){
 		console.log(index);

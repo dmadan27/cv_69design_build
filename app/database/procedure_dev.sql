@@ -378,27 +378,30 @@
 		in id_param int
 	)
 	BEGIN
-		DECLARE id_operasional_proyek_param varchar(50);
-		DECLARE id_operasional_param int;
+        -- hapus data operasional
+        DELETE FROM operasional WHERE id_bank = id_param;
 
-		-- get id operasional proyek
-		SELECT id INTO id_operasional_proyek_param FROM operasional_proyek WHERE id_bank = id_param;
+        -- hapus detail operasional proyek
+        DELETE FROM detail_operasional_proyek WHERE id_operasional_proyek IN (
+            SELECT id FROM operasional_proyek WHERE id_bank = id_param
+        );
 
-		-- get id operasional
-		SELECT id INTO id_operasional_param FROM operasional WHERE id_bank = id_param;
+        -- hapus operasional proyek
+        DELETE FROM operasional_proyek WHERE id_bank = id_param;
 
-		-- 1. hapus data detail operasional proyek
-		DELETE FROM detail_operasional_proyek WHERE id_operasional_proyek = id_operasional_proyek_param;
+        -- hapus detail pengajuan kas kecil
+        DELETE FROM detail_pengajuan_kas_kecil WHERE id_pengajuan IN (
+            SELECT id FROM pengajuan_kas_kecil WHERE id_bank = id_param
+        );
 
-		-- 2. hapus data operasional proyek
-		DELETE FROM operasional_proyek WHERE id = id_operasional_proyek_param;
+        -- hapus pengajuan kas kecil
+        DELETE FROM pengajuan_kas_kecil WHERE id_bank = id_param;
 
-		-- 3. hapus data operasional
-		DELETE FROM operasional WHERE id = id_operasional_param;
+        -- hapus mutasi bank
+        DELETE FROM mutasi_bank WHERE id_bank = id_param;
 
-		-- 4. hapus bank
-		DELETE FROM bank WHERE id = id_param;
-
+        -- hapus bank
+        DELETE FROM bank WHERE id = id_param;
 	END//
 	delimiter ;
 

@@ -47,14 +47,6 @@
 		}
 
 		/**
-		* fungsi login untuk sistem
-		* pengecekan user dan password berdasarkan jenis user
-		* pemberian hak akses berdasarkan level
-		* set session default
-		* return berupa json
-		*/
-
-		/**
 		 * Method loginSistem
 		 * Proses login untuk sistem (web)
 		 * Pengecekan user dan password berdasarkan jenis user

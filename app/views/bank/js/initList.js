@@ -27,7 +27,7 @@ $(document).ready(function(){
         },
         "columnDefs": [
             {
-                "targets":[0, 4], // disable order di kolom 1 dan 3
+                "targets":[0, 4],
                 "orderable":false,
             }
         ],
@@ -41,23 +41,31 @@ $(document).ready(function(){
 
     // btn Export
     $('#exportExcel').on('click', function(){
-        // if(this.value.trim() != "") 
-            window.location.href = BASE_URL+'bank/export/';
-       
+        getExport();
     });
 
 });
 
 /**
-*
-*/
+ * Function getExport
+ * Proses get data untuk di export ke excel
+ */
+function getExport(){
+    window.location.href = BASE_URL+'bank/export/';
+}
+
+/**
+ * Function getView
+ * @param {string} id 
+ */
 function getView(id){
 	window.location.href = BASE_URL+'bank/detail/'+id.toLowerCase();
 }
 
 /**
-*
-*/
+ * Function getDelete
+ * @param {string} id 
+ */
 function getDelete(id){
 	swal({
 		title: "Pesan Konfirmasi",
@@ -73,23 +81,19 @@ function getDelete(id){
 			url: BASE_URL+'bank/delete/'+id.toLowerCase(),
 			type: 'post',
 			dataType: 'json',
-			data: {"token_delete": token},
+			data: {},
 			beforeSend: function(){
-
 			},
-			success: function(output){
-				console.log(output);
-				if(output){
-					swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
-					$("#bankTable").DataTable().ajax.reload();
-				}
+			success: function(response){
+				console.log('Response getDelete Bank: ', response);
+				if(response.success){ $("#bankTable").DataTable().ajax.reload(); }
+                swal(response.notif.title, response.notif.message, response.notif.type);
 			},
 			error: function (jqXHR, textStatus, errorThrown){ // error handling
-	            console.log(jqXHR, textStatus, errorThrown);
+	            console.log('Response Error getDelete Bank', jqXHR, textStatus, errorThrown);
                 swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+                $("#bankTable").DataTable().ajax.reload();
 	        }
 		})
-	});
-	
+	});	
 }
-

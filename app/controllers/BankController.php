@@ -361,9 +361,29 @@
 				$id = strtoupper($id);
 				if(empty($id) || $id == "") { $this->redirect(BASE_URL."bank/"); }
 
-				if($this->BankModel->delete($id)) { $this->success = true; }
+				$delete_bank = $this->BankModel->delete($id);
+				if($delete_bank['success']){ 
+					$this->success = true;
+					$this->notif = array(
+						'type' => 'success',
+						'title' => 'Pesan Sukses',
+						'message' => 'Data Berhasil Dihapus',
+					);
+				}
+				else{
+					$this->message = $delete_bank['error'];
+					$this->notif = array(
+						'type' => 'error',
+						'title' => 'Pesan Error',
+						'message' => 'Terjadi Kesalahan Teknis, Silahkan Coba Kembali',
+					);
+				}
 
-				echo json_encode($this->success);
+				echo json_encode(array(
+					'success' => $this->success,
+					'message' => $this->message,
+					'notif' => $this->notif
+				));
 			}
 			else $this->redirect();	
 		}
