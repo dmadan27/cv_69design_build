@@ -2,36 +2,46 @@
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 
 	/**
-	* Class Proyek extend ke Abstract Crud
-	*/
+	 * Class Proyek extend ke Abstract Crud
+	 * Extend Abstract CrudAbstract
+	 */
 	class Proyek extends CrudAbstract{
 		
 		private $token;
-		private $status = false;
+		// private $status = false;
+
+		/** Penambahan beberapa property baru */
+		private $success = false;
+		private $notif = array();
+		private $error = array();
+		private $message = NULL;
+		/** end penambahan */
 
 		/**
-		* Default load saat pertama kali controller di akses
-		*/
+		 * Method __construct
+		 * Default load saat pertama kali controller diakses
+		 */
 		public function __construct(){
 			$this->auth();
 			$this->auth->cekAuth();
 			$this->model('ProyekModel');
 			$this->helper();
 			$this->validation();
+			$this->excel();
 		}
 
 		/**
-		* Method pertama kali yang di akses
-		*/
+		 * Method index
+		 * Render list proyek
+		 */
 		public function index(){
 			$this->list();
 		}
 
 		/**
-		* Method List
-		* Menampilkan list semua data proyek
-		* Passing data css dan js yang dibutuhkan di list proyek
-		*/
+		 * Method list
+		 * Proses menampilkan list semua data proyek
+		 */
 		protected function list(){
 			$css = array('assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css');
 			$js = array(
@@ -53,10 +63,11 @@
 		}
 
 		/**
-		* Method get list
-		* Get data semua list proyek yang akan di passing ke dataTable
-		* Request berupa POST dan output berupa JSON
-		*/
+		 * Method get_list
+		 * Proses get data untuk list proyek
+		 * Data akan di parsing dalam bentuk dataTable
+		 * @return output {object} array berupa json
+		 */
 		public function get_list(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				// config datatable
@@ -117,24 +128,23 @@
 
 				echo json_encode($output);
 			}
-			else $this->redirect();	
+			else { $this->redirect(); }	
 		}
 
 		/**
-		* Method Form
-		* Menampilkan form tambah atau edit
-		* Parameter id sebagai pembeda form tambah dengan form edit
-		*/
+		 * Method form
+		 * Proses render form proyek
+		 * @param id {string}
+		 */
 		public function form($id){
-			if($id)	$this->edit(strtoupper($id));
-			else $this->add();
+			if($id)	{ $this->edit(strtoupper($id)); }
+			else { $this->add(); }
 		}
 
 		/**
-		* Method add
-		* Menampilkan form tambah
-		* Set value field secara default
-		*/
+		 * Method add
+		 * Proses render form add proyek
+		 */
 		protected function add(){
 			$css = array(
   				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
@@ -160,29 +170,22 @@
 
 			$data = array(
 				'action' => 'action-add',
-				'id' => '',
-				'pemilik' => '',
-				'tgl' => '',
-				'pembangunan' => '',
-				'luas_area' => '',
-				'alamat' => '',
-				'kota' => '',
-				'estimasi' => '',
-				'total' => '',
-				'dp' => '',
-				'cco' => '',
-				'status' => '',
-				'progress' => 0,
+				// 'id' => '',
+				'id' => $this->get_last_id(),
+				'pemilik' => '', 'tgl' => '', 'pembangunan' => '',
+				'luas_area' => '', 'alamat' => '', 'kota' => '',
+				'estimasi' => '', 'total' => '', 'dp' => '',
+				'cco' => '', 'status' => '', 'progress' => 0,
 			);
 
 			$this->layout('proyek/form', $config, $data);
 		}
 
 		/**
-		* Method action add
-		* Get data dari client yang akan diolah dan disimpan ke db
-		* Request berupa POST dan output berupa JSON
-		*/
+		 * Method action_add
+		 * Proses penambahan data proyek
+		 * @return output {object} array berupa json
+		 */
 		public function action_add(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
@@ -190,11 +193,10 @@
 				$dataDetail = isset($_POST['dataDetail']) ? json_decode($_POST['dataDetail'], true) : false;
 				$dataSkk = isset($_POST['dataSkk']) ? json_decode($_POST['dataSkk'], true) : false;
 				
-				$error = $notif = array();
 				$cekDetail = $cekSkk = true;
 
 				if(!$data){
-					$notif['default'] = array(
+					$this->notif['default'] = array(
 						'type' => 'error',
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
@@ -204,20 +206,20 @@
 					// validasi data
 					$validasi = $this->set_validation($dataProyek, $data['action']);
 					$cek = $validasi['cek'];
-					$error = $validasi['error'];
+					$this->error = $validasi['error'];
 
 					if(empty($dataDetail)){
 						$cek = false;
 						$cekDetail = false;
 					}
-					if(empty($dataSkk)) {
+					if(empty($dataSkk)){
 						$cek = false;
 						$cekSkk = false;
 					}
 
 					if($cek){
 						// validasi input
-						$dataProyek = array(
+						$data_insertProyek = array(
 							'id' => $this->validation->validInput($dataProyek['id']),
 							'pemilik' => $this->validation->validInput($dataProyek['pemilik']),
 							'tgl' => $this->validation->validInput($dataProyek['tgl']),
@@ -234,32 +236,34 @@
 						);
 
 						$dataInsert = array(
-							'dataProyek' => $dataProyek,
+							'dataProyek' => $data_insertProyek,
 							'dataDetail' => $dataDetail,
 							'dataSkk' => $dataSkk,
 						);
 
 						// insert data proyek
-						if($this->ProyekModel->insert($dataInsert)){
-							$this->status = true;
+						$insert_proyek = $this->ProyekModel->insert($dataInsert);
+						if($insert_proyek['success']){
+							$this->success = true;
 							$_SESSION['notif'] = array(
 								'type' => "success",
 								'title' => "Pesan Berhasil",
 								'message' => "Tambah Data Proyek Baru Berhasil",
 							);
-							$notif['default'] = $_SESSION['notif'];
+							$this->notif['default'] = $_SESSION['notif'];
 						}
 						else{
-							$notif['default'] = array(
+							$this->notif['default'] = array(
 								'type' => "error",
 								'title' => "Pesan Gagal",
 								'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
 							);
+							$this->message = $insert_proyek['error'];
 						}
 					}
 					else{
 						if(!$cekDetail){
-							$notif['data_detail'] = array(
+							$this->notif['data_detail'] = array(
 								'type' => 'warning',
 								'title' => "Pesan Pemberitahuan",
 								'message' => "Silahkan Cek Kembali Data Detail",
@@ -267,14 +271,14 @@
 						}
 
 						if(!$cekSkk){
-							$notif['data_skk'] = array(
+							$this->notif['data_skk'] = array(
 								'type' => 'warning',
 								'title' => "Pesan Pemberitahuan",
 								'message' => "Silahkan Cek Kembali Data Logistik Proyek",
 							);
 						}
 
-						$notif['default'] = array(
+						$this->notif['default'] = array(
 							'type' => 'warning',
 							'title' => "Pesan Pemberitahuan",
 							'message' => "Silahkan Cek Kembali Form Isian",
@@ -283,9 +287,10 @@
 				}
 
 				$output = array(
-					'status' => $this->status,
-					'notif' => $notif,
-					'error' => $error,
+					'status' => $this->success,
+					'notif' => $this->notif,
+					'error' => $this->error,
+					'message' => $this->message,
 					'cek' => array(
 						'cek' => $cek,
 						'data_detail' => $cekDetail,
@@ -299,23 +304,20 @@
 				
 				echo json_encode($output);
 			}
-			else $this->redirect();
-				
+			else { $this->redirect(); }
 		}
 
 		/**
-		* Method edit
-		* Menampilkan form edit yang fieldnya sudah terisi sesuai dengan id
-		* Parameter id => id proyek
-		*/
+		 * Method edit
+		 * Proses render form edit proyek
+		 * @param id {string}
+		 */
 		protected function edit($id){
 			$id = strtoupper($id);
 			// get data proyek
 			$dataProyek = !empty($this->ProyekModel->getById($id)) ? $this->ProyekModel->getById($id) : false;
 
-			if((empty($id) || $id == "") || !$dataProyek) $this->redirect(BASE_URL."proyek/");
-
-			// if(!$dataProyek) $this->redirect(BASE_URL."proyek/");
+			if((empty($id) || $id == "") || !$dataProyek) { $this->redirect(BASE_URL."proyek/"); }
 
 			$css = array(
   				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
@@ -341,34 +343,25 @@
 
 			$data = array(
 				'action' => 'action-edit',
-				'id' => $dataProyek['id'],
-				'pemilik' => $dataProyek['pemilik'],
-				'tgl' => $dataProyek['tgl'],
-				'pembangunan' => $dataProyek['pembangunan'],
-				'luas_area' => $dataProyek['luas_area'],
-				'alamat' => $dataProyek['alamat'],
-				'kota' => $dataProyek['kota'],
-				'estimasi' => $dataProyek['estimasi'],
-				'total' => $dataProyek['total'],
-				'dp' => $dataProyek['dp'],
-				'cco' => $dataProyek['cco'],
-				'status' => $dataProyek['status'],
-				'progress' => $dataProyek['progress'],
+				'id' => $dataProyek['id'], 'pemilik' => $dataProyek['pemilik'], 'tgl' => $dataProyek['tgl'],
+				'pembangunan' => $dataProyek['pembangunan'], 'luas_area' => $dataProyek['luas_area'], 'alamat' => $dataProyek['alamat'],
+				'kota' => $dataProyek['kota'], 'estimasi' => $dataProyek['estimasi'], 'total' => $dataProyek['total'],
+				'dp' => $dataProyek['dp'], 'cco' => $dataProyek['cco'], 'status' => $dataProyek['status'], 'progress' => $dataProyek['progress'],
 			);
 
 			$this->layout('proyek/form', $config, $data);
 		}
 
 		/**
-		* Method get edit
-		* Get data detail proyek dan detail skk
-		* Request berupa POST dan output berupa JSON
-		* Parameter id => id proyek
-		*/
+		 * Method get_edit
+		 * Proses get data detail proyek dan detail skk untuk keperluan edit proyek
+		 * @param id {string}
+		 * @return output {object} array berupa json
+		 */
 		public function get_edit($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$id = strtoupper($id);
-				if(empty($id) || $id == "") $this->redirect(BASE_URL."proyek/");
+				if(empty($id) || $id == "") { $this->redirect(BASE_URL."proyek/"); }
 
 				// get data detail dan skk
 				$dataDetail = $this->ProyekModel->getDetailById($id);
@@ -381,23 +374,21 @@
 
 				echo json_encode($output);
 			}
-			else $this->redirect();	
+			else { $this->redirect(); }	
 		}
 
 		/**
-		* Method action edit
-		* Get data dari client yang akan diolah dan disimpan ke db
-		* Request berupa POST dan output berupa JSON
-		* 
-		*/
+		 * Method action_edit
+		 * Proses pengeditan data proyek
+		 * @return output {object} array berupa json
+		 */
 		public function action_edit(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
 				$dataProyek = isset($_POST['dataProyek']) ? json_decode($_POST['dataProyek'], true) : false;
 				$dataDetail = isset($_POST['dataDetail']) ? json_decode($_POST['dataDetail'], true) : false;
 				$dataSkk = isset($_POST['dataSkk']) ? json_decode($_POST['dataSkk'], true) : false;			
-				
-				$error = $notif = array();
+			
 				$cekDetail = $cekSkk = true;
 
 				if(!$data){
@@ -423,7 +414,7 @@
 					}
 
 					if($cek){
-						$dataProyek = array(
+						$data_updateProyek = array(
 							'id' => $this->validation->validInput($dataProyek['id']),
 							'pemilik' => $this->validation->validInput($dataProyek['pemilik']),
 							'tgl' => $this->validation->validInput($dataProyek['tgl']),
@@ -440,33 +431,35 @@
 						);
 
 						$dataUpdate = array(
-							'dataProyek' => $dataProyek,
+							'dataProyek' => $data_updateProyek,
 							'dataDetail' => $dataDetail,
 							'dataSkk' => $dataSkk,
 						);
 
-						// insert data proyek
-						if($this->ProyekModel->update($dataUpdate)){
-							$this->status = true;
+						// udpate data proyek
+						$update_proyek = $this->ProyekModel->update($dataUpdate);
+						if($update_proyek['success']){
+							$this->success = true;
 							$_SESSION['notif'] = array(
 								'type' => "success",
 								'title' => "Pesan Berhasil",
 								'message' => "Edit Data Proyek Berhasil",
 							);
-							$notif['default'] = $_SESSION['notif'];
+							$this->notif['default'] = $_SESSION['notif'];
 						}
 						else{
-							$notif['default'] = array(
+							$this->notif['default'] = array(
 								'type' => "error",
 								'title' => "Pesan Gagal",
 								'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
 							);
+							$this->message = $update_proyek['error'];
 						}
 
 					}
 					else{
 						if(!$cekDetail){
-							$notif['data_detail'] = array(
+							$this->notif['data_detail'] = array(
 								'type' => 'warning',
 								'title' => "Pesan Pemberitahuan",
 								'message' => "Silahkan Cek Kembali Data Detail",
@@ -474,14 +467,14 @@
 						}
 
 						if(!$cekSkk){
-							$notif['data_skk'] = array(
+							$this->notif['data_skk'] = array(
 								'type' => 'warning',
 								'title' => "Pesan Pemberitahuan",
 								'message' => "Silahkan Cek Kembali Data Logistik Proyek",
 							);
 						}
 
-						$notif['default'] = array(
+						$this->notif['default'] = array(
 							'type' => "warning",
 							'title' => "Pesan Pemberitahuan",
 							'message' => "Silahkan Cek Kembali Form Isian ",
@@ -491,9 +484,10 @@
 				}
 
 				$output = array(
-					'status' => $this->status,
-					'notif' => $notif,
-					'error' => $error,
+					'status' => $this->success,
+					'notif' => $this->notif,
+					'error' => $this->error,
+					'message' => $this->message,
 					'cek' => array(
 						'cek' => $cek,
 						'data_detail' => $cekDetail,
@@ -507,19 +501,19 @@
 
 				echo json_encode($output);
 			}
-			else $this->redirect();
+			else { $this->redirect(); }
 		}
 
 		/**
-		* Method detail
-		* Menampilkan detail data proyek sesuai dengan id proyek yang dipilih
-		* Paramtere id => id proyek
-		*/
+		 * Method detail
+		 * Proses render detail view proyek
+		 * @param id {string}
+		 */
 		public function detail($id){
 			$id = strtoupper($id);
 			$dataProyek = !empty($this->ProyekModel->getById($id)) ? $this->ProyekModel->getById($id) : false;
 
-			if((empty($id) || $id == "") || !$dataProyek) $this->redirect(BASE_URL."proyek/");
+			if((empty($id) || $id == "") || !$dataProyek) { $this->redirect(BASE_URL."proyek/"); }
 
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css'
@@ -615,13 +609,13 @@
 		}
 
 		/**
-		* Method get list pengajuan
-		* Get data semua list pengajuan sub kas kecil sesuai dengan proyek yang dipilih
-		* Data akan dipassing ke dataTable
-		* Request berupa POST dan output berupa JSON
-		* Parameter proyek => id proyek
-		*/
-		public function get_list_pengajuan($proyek){
+		 * Method get_list_pengajuan_sub_kas_kecil
+		 * Proses get data pengajuan sub kas kecil sesuai dengan id proyek
+		 * Data akan di parsing dalam bentuk dataTable
+		 * @param id {string}
+		 * @return result {object} array berupa json
+		 */
+		public function get_list_pengajuan_sub_kas_kecil($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				// config datatable
 				$config_dataTable = array(
@@ -629,7 +623,7 @@
 					'kolomOrder' => array(null, 'id', 'nama', 'id_sub_kas_kecil', 'tgl', null),
 					'kolomCari' => array('id', 'nama', 'id_sub_kas_kecil', 'tgl', 'total'),
 					'orderBy' => array('tgl' => 'desc'),
-					'kondisi' => 'WHERE id_proyek = "'.$proyek.'"',
+					'kondisi' => 'WHERE id_proyek = "'.$id.'"',
 				);
 
 				$this->model('Pengajuan_sub_kas_kecilModel');
@@ -667,17 +661,17 @@
 
 				echo json_encode($output);
 			}
-			else $this->redirect();
+			else { $this->redirect(); }
 		}
 
 		/**
-		* Method get list operasional
-		* Get data semua list operasional proyek kas besar sesuai dengan proyek yang dipilih
-		* Data akan dipassing ke dataTable
-		* Request berupa POST dan output berupa JSON
-		* Parameter proyek => id proyek
-		*/
-		public function get_list_operasional($proyek){
+		 * Method get_list_operasional_proyek
+		 * Proses get data operasional proyek sesuai dengan id proyek
+		 * Data akan di parsing dalam bentuk dataTable
+		 * @param id {string}
+		 * @return result {object} array berupa json
+		 */
+		public function get_list_operasional_proyek($proyek){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				// config datatable
 				$config_dataTable = array(
@@ -723,34 +717,62 @@
 
 				echo json_encode($output);
 			}
-			else $this->redirect();
+			else { $this->redirect(); }
 		}
 
 		/**
-		* Method delete
-		* Menghapus data proyek dari db
-		* Request berupa POST dan output berupa JSON
-		* Parameter id => id proyek
-		*/
+		 * Method delete
+		 * Proses hapus data proyek
+		 * @param id {string}
+		 * @return result 
+		 */
 		public function delete($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST" && $id != ''){
 				$id = strtoupper($id);
-				if(empty($id) || $id == "") $this->redirect(BASE_URL."proyek/");
+				if(empty($id) || $id == "") { $this->redirect(BASE_URL."proyek/"); }
 
-				if($this->ProyekModel->delete($id)) $this->status = true;
+				$delete_proyek = $this->ProyekModel->delete($id);
+				if($delete_proyek['success']){ 
+					$this->success = true;
+					$this->notif = array(
+						'type' => 'success',
+						'title' => 'Pesan Sukses',
+						'message' => 'Data Berhasil Dihapus',
+					);
+				}
+				else{
+					$this->message = $delete_proyek['error'];
+					$this->notif = array(
+						'type' => 'error',
+						'title' => 'Pesan Error',
+						'message' => 'Terjadi Kesalahan Teknis, Silahkan Coba Kembali',
+					);
+				}
 
-				echo json_encode($this->status);
+				echo json_encode(array(
+					'success' => $this->success,
+					'message' => $this->message,
+					'notif' => $this->notif
+				));
 			}
-			else $this->redirect();	
+			else { $this->redirect(); }	
 		}
 
+		
+
 		/**
-		* Method get last id
-		* Get id proyek terbaru
-		* Request berupa POST dan output berupa JSON
-		*/
-		public function get_last_id(){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+		 * Note: 
+		 * => Perubahan method name, yg awalnya get_last_id menjadi generate_id
+		 * => Modifikasi return data, menjadi ada 2 return, yaitu berupa json dan string
+		 * 
+		 * Method generate_id
+		 * Proses generate id proyek
+		 * @param request {bool} default true
+		 * @return result {object} jika $request true
+		 * @return result {string} jika $request false
+		 */
+		public function generate_id($request = true){
+			if($_SERVER['REQUEST_METHOD'] == "POST" && $request){
 				$tahun = isset($_POST['get_tahun']) ? $this->validation->validInput($_POST['get_tahun']) : false;
 
 				$id_temp = ($tahun) ? 'PRY'.$tahun : 'PRY'.date('Y');
@@ -767,7 +789,10 @@
 				
 				echo json_encode($id);				
 			}
-			else $this->redirect();	
+			else if(!$request){
+				
+			}
+			else { $this->redirect(); }	
 		}
 
 		/**
@@ -799,177 +824,7 @@
 		*	Export data ke format Excel
 		*/
 		public function export(){
-			include ('app/library/export_phpexcel/koneksi.php');
 			
-			// Load plugin PHPExcel nya
-			require_once 'app/library/export_phpexcel/PHPExcel/PHPExcel.php';
-
-			$excel = new PHPExcel();
-
-			// Settingan awal fil excel
-			$excel->getProperties()->setCreator('Jaka Pratama, Romadan Saputra, Fajar Cahyo')
-								   ->setLastModifiedBy('PC Personal')
-								   ->setTitle("Data Proyek")
-								   ->setSubject("Proyek")
-								   ->setDescription("Laporan Semua Data Proyek")
-								   ->setKeywords("Data Proyek");
-
-			// Buat sebuah variabel untuk menampung pengaturan style dari header tabel
-			$style_col = array(
-				'font' => array('bold' => true), // Set font nya jadi bold
-				'alignment' => array(
-					'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER, // Set text jadi ditengah secara horizontal (center)
-					'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER // Set text jadi di tengah secara vertical (middle)
-				),
-				'borders' => array(
-					'top' => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border top dengan garis tipis
-					'right' => array('style'  => PHPExcel_Style_Border::BORDER_THIN),  // Set border right dengan garis tipis
-					'bottom' => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border bottom dengan garis tipis
-					'left' => array('style'  => PHPExcel_Style_Border::BORDER_THIN) // Set border left dengan garis tipis
-				)
-			);
-
-			// Buat sebuah variabel untuk menampung pengaturan style dari isi tabel
-			$style_row = array(
-				'alignment' => array(
-					'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER // Set text jadi di tengah secara vertical (middle)
-				),
-				'borders' => array(
-					'top' => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border top dengan garis tipis
-					'right' => array('style'  => PHPExcel_Style_Border::BORDER_THIN),  // Set border right dengan garis tipis
-					'bottom' => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border bottom dengan garis tipis
-					'left' => array('style'  => PHPExcel_Style_Border::BORDER_THIN) // Set border left dengan garis tipis
-				)
-			);
-
-			$excel->setActiveSheetIndex(0)->setCellValue('A1', "DATA Proyek"); // Set kolom A1 dengan tulisan "DATA SISWA"
-			$excel->getActiveSheet()->mergeCells('A1:N1'); // Set Merge Cell pada kolom A1 sampai N1
-			$excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(TRUE); // Set bold kolom A1
-			$excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(15); // Set font size 15 untuk kolom A1
-			$excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER); // Set text center untuk kolom A1
-
-			// Buat header tabel nya pada baris ke 3
-			$excel->setActiveSheetIndex(0)->setCellValue('A3', "NO"); // Set kolom A3 dengan tulisan "NO"
-			$excel->setActiveSheetIndex(0)->setCellValue('B3', "ID"); // Set kolom B3 dengan tulisan "ID"
-			$excel->setActiveSheetIndex(0)->setCellValue('C3', "PEMILIK"); // Set kolom C3 dengan tulisan "PEMILIK"
-			$excel->setActiveSheetIndex(0)->setCellValue('D3', "TANGGAL"); // Set kolom D3 dengan tulisan "TANGGAL"
-			$excel->setActiveSheetIndex(0)->setCellValue('E3', "PEMBANGUNAN"); // Set kolom E3 dengan tulisan "PEMBANGUNAN"
-			$excel->setActiveSheetIndex(0)->setCellValue('F3', "LUAS_AREA"); // Set kolom F3 dengan tulisan "LUAS_AREA"
-			$excel->setActiveSheetIndex(0)->setCellValue('G3', "ALAMAT"); // Set kolom G3 dengan tulisan "ALAMAT"
-			$excel->setActiveSheetIndex(0)->setCellValue('H3', "KOTA"); // Set kolom H3 dengan tulisan "KOTA"
-			$excel->setActiveSheetIndex(0)->setCellValue('I3', "ESTIMASI (BULAN)"); // Set kolom I3 dengan tulisan "ESTIMASI"
-			$excel->setActiveSheetIndex(0)->setCellValue('J3', "TOTAL"); // Set kolom J3 dengan tulisan "TOTAL"
-			$excel->setActiveSheetIndex(0)->setCellValue('K3', "DP"); // Set kolom K3 dengan tulisan "DP"
-			$excel->setActiveSheetIndex(0)->setCellValue('L3', "CCO"); // Set kolom L3 dengan tulisan "CCO"
-			$excel->setActiveSheetIndex(0)->setCellValue('M3', "PROGRESS"); // Set kolom G3 dengan tulisan "PROGRESS"
-			$excel->setActiveSheetIndex(0)->setCellValue('N3', "STATUS"); // Set kolom N3 dengan tulisan "STATUS"
-			
-			
-
-
-			// Apply style header yang telah kita buat tadi ke masing-masing kolom header
-			$excel->getActiveSheet()->getStyle('A3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('B3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('C3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('D3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('E3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('F3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('G3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('H3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('I3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('J3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('K3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('L3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('M3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('N3')->applyFromArray($style_col);
-
-
-
-			// Set height baris ke 1, 2 dan 3
-			$excel->getActiveSheet()->getRowDimension('1')->setRowHeight(20);
-			$excel->getActiveSheet()->getRowDimension('2')->setRowHeight(20);
-			$excel->getActiveSheet()->getRowDimension('3')->setRowHeight(20);
-
-			// Buat query untuk menampilkan semua data siswa
-			$sql = $pdo->prepare("SELECT * FROM proyek");
-			$sql->execute(); // Eksekusi querynya
-
-			$no = 1; // Untuk penomoran tabel, di awal set dengan 1
-			$numrow = 4; // Set baris pertama untuk isi tabel adalah baris ke 4
-			while($data = $sql->fetch()){ // Ambil semua data dari hasil eksekusi $sql
-				$excel->setActiveSheetIndex(0)->setCellValue('A'.$numrow, $no);
-				$excel->setActiveSheetIndex(0)->setCellValue('B'.$numrow, $data['id']);
-				$excel->setActiveSheetIndex(0)->setCellValue('C'.$numrow, $data['pemilik']);
-				$excel->setActiveSheetIndex(0)->setCellValue('D'.$numrow, $data['tgl']);
-				$excel->setActiveSheetIndex(0)->setCellValue('E'.$numrow, $data['pembangunan']);
-				$excel->setActiveSheetIndex(0)->setCellValue('F'.$numrow, $data['luas_area']);
-				$excel->setActiveSheetIndex(0)->setCellValue('G'.$numrow, $data['alamat']);
-				$excel->setActiveSheetIndex(0)->setCellValue('H'.$numrow, $data['kota']);
-				$excel->setActiveSheetIndex(0)->setCellValue('I'.$numrow, $data['estimasi']);
-				$excel->setActiveSheetIndex(0)->setCellValue('J'.$numrow, $data['total']);
-				$excel->setActiveSheetIndex(0)->setCellValue('K'.$numrow, $data['dp']);
-				$excel->setActiveSheetIndex(0)->setCellValue('L'.$numrow, $data['cco']);
-				$excel->setActiveSheetIndex(0)->setCellValue('M'.$numrow, $data['progress']);
-				$excel->setActiveSheetIndex(0)->setCellValue('N'.$numrow, $data['status']);
-				
-					
-				
-				// Apply style row yang telah kita buat tadi ke masing-masing baris (isi tabel)
-				$excel->getActiveSheet()->getStyle('A'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('B'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('C'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('D'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('E'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('F'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('G'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('H'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('I'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('J'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('K'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('L'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('M'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('N'.$numrow)->applyFromArray($style_row);
-
-
-				
-				$excel->getActiveSheet()->getRowDimension($numrow)->setRowHeight(20);
-				
-				$no++; // Tambah 1 setiap kali looping
-				$numrow++; // Tambah 1 setiap kali looping
-			}
-
-			// Set width kolom
-			$excel->getActiveSheet()->getColumnDimension('A')->setWidth(5); // Set width kolom A
-			$excel->getActiveSheet()->getColumnDimension('B')->setWidth(15); // Set width kolom B
-			$excel->getActiveSheet()->getColumnDimension('C')->setWidth(25); // Set width kolom C
-			$excel->getActiveSheet()->getColumnDimension('D')->setWidth(20); // Set width kolom D
-			$excel->getActiveSheet()->getColumnDimension('E')->setWidth(25); // Set width kolom E
-			$excel->getActiveSheet()->getColumnDimension('F')->setWidth(15); // Set width kolom F
-			$excel->getActiveSheet()->getColumnDimension('G')->setWidth(25); // Set width kolom G
-			$excel->getActiveSheet()->getColumnDimension('H')->setWidth(15); // Set width kolom H
-			$excel->getActiveSheet()->getColumnDimension('I')->setWidth(15); // Set width kolom I
-			$excel->getActiveSheet()->getColumnDimension('J')->setWidth(15); // Set width kolom J
-			$excel->getActiveSheet()->getColumnDimension('K')->setWidth(15); // Set width kolom K
-			$excel->getActiveSheet()->getColumnDimension('L')->setWidth(15); // Set width kolom L
-			$excel->getActiveSheet()->getColumnDimension('M')->setWidth(15); // Set width kolom M
-			$excel->getActiveSheet()->getColumnDimension('N')->setWidth(15); // Set width kolom N
-
-
-
-			// Set orientasi kertas jadi LANDSCAPE
-			$excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
-
-			// Set judul file excel nya
-			$excel->getActiveSheet(0)->setTitle("Laporan Data Proyek");
-			$excel->setActiveSheetIndex(0);
-
-			// Proses file excel
-			header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-			header('Content-Disposition: attachment; filename="Data Proyek.xlsx"'); // Set nama file excel nya
-			header('Cache-Control: max-age=0');
-
-			$write = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
-			$write->save('php://output');
 		}
 
 		/**

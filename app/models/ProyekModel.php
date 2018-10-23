@@ -2,8 +2,9 @@
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 
 	/**
-	*
-	*/
+	 * Class ProyekModel
+	 * Implements ModelInterface
+	 */
 	class ProyekModel extends Database implements ModelInterface{
 
 		protected $koneksi;
@@ -12,8 +13,10 @@
 		private $queryBeforeLimitMobile;
 
 		/**
-		*
-		*/
+		 * Method __construct
+		 * Open connection to DB
+		 * Access library dataTable
+		 */
 		public function __construct(){
 			$this->koneksi = $this->openConnection();
 			$this->dataTable = new Datatable();
@@ -22,8 +25,10 @@
 		// ======================= dataTable ======================= //
 
 			/**
-			*
-			*/
+			 * Method getAllDataTable
+			 * @param config {array}
+			 * @return result {array}
+			 */
 			public function getAllDataTable($config){
 				$this->dataTable->set_config($config);
 				$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
@@ -34,25 +39,28 @@
 			}
 
 			/**
-			*
-			*/
+			 * Method recordFilter
+			 * @return result {int}
+			 */
 			public function recordFilter(){
 				return $this->dataTable->recordFilter();
 			}
 
 			/**
-			*
-			*/
+			 * Method recordTotal
+			 * @return result {int}
+			 */
 			public function recordTotal(){
 				return $this->dataTable->recordTotal();
 			}
 
 		// ========================================================= //
 
-
 		/**
-		*
-		*/
+		 * Method getAll
+		 * Proses get semua data proyek
+		 * @return result {array}
+		 */
 		public function getAll(){
 			$query = "SELECT * FROM proyek";
 
@@ -64,8 +72,11 @@
 		}
 
 		/**
-		*
-		*/
+		 * Method getById
+		 * Proses get data proyek berdasarkan id
+		 * @param id {string}
+		 * @return result {array}
+		 */
 		public function getById($id){
 			$query = "SELECT * FROM proyek WHERE id = :id;";
 			$statement = $this->koneksi->prepare($query);
@@ -77,8 +88,11 @@
 		}
 
 		/**
-		*
-		*/
+		 * Method getDetailById
+		 * Proses get data detail proyek berdasarkan id proyek
+		 * @param id {string}
+		 * @return result {array}
+		 */
 		public function getDetailById($id){
 			$query = "SELECT id, id_proyek, angsuran, persentase, total total_detail, status status_detail ";
 			$query .= "FROM detail_proyek WHERE id_proyek = :id;";
@@ -91,8 +105,11 @@
 		}
 
 		/**
-		*
-		*/
+		 * Method getSkkById
+		 * Proses get data detail SKK proyek berdasarkan id proyek
+		 * @param id {string}
+		 * @return result {array}
+		 */
 		public function getSkkById($id){
 			$query = "SELECT * FROM v_get_skk_proyek WHERE id_proyek = :id;";
 			$statement = $this->koneksi->prepare($query);
@@ -104,8 +121,30 @@
 		}
 
 		/**
-		*
-		*/
+		 * Method getLastID
+		 * Proses get data id proyek terakhir
+		 * @param id {string}
+		 * @return result {array}
+		 */
+		public function getLastID($id){
+			$id .= "%";
+			$query = "SELECT MAX(id) AS id FROM proyek WHERE id LIKE :id";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+
+		/**
+		 * Method insert
+		 * Proses insert data proyek secara menyeluruh
+		 * Insert proyek, insert detail proyek, dan insert detail skk proyek
+		 * @param data {array}
+		 * @return result {array}
+		 */
 		public function insert($data){
 			$dataProyek = $data['dataProyek'];
 			$dataDetail = $data['dataDetail'];
@@ -135,18 +174,26 @@
 
 				$this->koneksi->commit();
 
-				return true;
+				return array(
+					'success' => true,
+					'error' => NULL
+				);
 			}
 			catch(PDOException $e){
 				$this->koneksi->rollback();
-				die($e->getMessage());
-				// return false;
+				return array(
+					'success' => false,
+					'error' => $e->getMessage()
+				);
 			}
 		}
 
 		/**
-		*
-		*/
+		 * Method insertProyek
+		 * Proses insert data proyek
+		 * @param data {array}
+		 * @return result {array}
+		 */
 		private function insertProyek($data){
 			// insert proyek
 			$query = "INSERT INTO proyek (id, pemilik, tgl, pembangunan, luas_area, alamat, kota, estimasi, total, dp, cco, progress, status) ";
@@ -173,8 +220,11 @@
 		}
 
 		/**
-		*
-		*/
+		 * Method insertDetail
+		 * Proses insert data detail proyek
+		 * @param data {array}
+		 * @return result {array}
+		 */
 		private function insertDetail($data){
 			// insert detail_proyek
 			$query = 'INSERT INTO detail_proyek (id_proyek, angsuran, persentase, total, status) ';
@@ -194,8 +244,11 @@
 		}
 
 		/**
-		*
-		*/
+		 * Method insertSkk
+		 * Proses insert data detail skk
+		 * @param data {array}
+		 * @return result {array}
+		 */
 		private function insertSkk($data){
 			$query = 'INSERT INTO logistik_proyek (id_proyek, id_sub_kas_kecil) VALUES (:id_proyek, :id_sub_kas_kecil);';
 			$statement = $this->koneksi->prepare($query);
@@ -209,8 +262,12 @@
 		}
 
 		/**
-		*
-		*/
+		 * Method update
+		 * Proses update data proyek secara menyeluruh
+		 * Update proyek, udpate detail proyek, dan udpate detail skk proyek
+		 * @param data {array}
+		 * @return result {array}
+		 */
 		public function update($data){
 			$dataProyek = $data['dataProyek'];
 			$dataDetail = $data['dataDetail'];
@@ -218,7 +275,6 @@
 
 			try{
 				$this->koneksi->beginTransaction();
-
 
 				// update proyek
 				$this->updateProyek($dataProyek);
@@ -250,18 +306,26 @@
 
 				$this->koneksi->commit();
 
-				return true;
+				return array(
+					'success' => true,
+					'error' => NULL
+				);
 			}
 			catch(PDOException $e){
 				$this->koneksi->rollback();
-				die($e->getMessage());
-				// return false;
+				return array(
+					'success' => false,
+					'error' => $e->getMessage()
+				);
 			}
 		}
 
 		/**
-		*
-		*/
+		 * Method updateProyek
+		 * Proses update data proyek
+		 * @param data {array}
+		 * @return result {array}
+		 */
 		private function updateProyek($data){
 			$query = "UPDATE proyek SET pemilik = :pemilik, tgl = :tgl, pembangunan = :pembangunan, luas_area = :luas_area, ";
 			$query .= "alamat = :alamat, kota = :kota, estimasi = :estimasi, total = :total, ";
@@ -289,8 +353,11 @@
 		}
 
 		/**
-		*
-		*/
+		 * Method updateDetail
+		 * Proses update data detail proyek
+		 * @param data {array}
+		 * @return result {array}
+		 */
 		private function updateDetail($data){
 			$query = 'UPDATE detail_proyek SET angsuran = :angsuran, persentase = :persentase, total = :total, status = :status WHERE id = :id;';
 			$statement = $this->koneksi->prepare($query);
@@ -307,8 +374,43 @@
 		}
 
 		/**
-		*
-		*/
+		 * Method deleteDetail
+		 * Proses hapus data detail proyek
+		 * Kegunaan untuk di Method Update
+		 * @param id {string}
+		 */
+		private function deleteDetail($id){
+			$query = 'DELETE FROM detail_proyek WHERE id = :id';
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id' => $id,
+				)
+			);
+			$statement->closeCursor();
+		}
+
+		/**
+		 * Method deleteSkk
+		 * Proses hapus data detail skk
+		 * Kegunaan untuk di Method Update
+		 * @param id {string}
+		 */
+		private function deleteSkk($id){
+			$query = 'DELETE FROM logistik_proyek WHERE id=:id;';
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id' => $id,
+				)
+			);
+			$statement->closeCursor();
+		}
+
+		/**
+		 * Method delete
+		 * Proses penghapusan data proyek beserta data yang berelasi denganya
+		 */
 		public function delete($id){
 			try{
 				$query = 'CALL hapus_proyek (:id);';
@@ -323,64 +425,31 @@
 
 				$this->koneksi->commit();
 
-				return true;
+				return array(
+					'success' => true,
+					'error' => NULL
+				);
 			}
 			catch(PDOException $e){
 				$this->koneksi->rollback();
-				die($e->getMessage());
-				// return false;
+				return array(
+					'success' => false,
+					'error' => $e->getMessage()
+				);
 			}
-		}
-
-		/**
-		*
-		*/
-		private function deleteDetail($id){
-			$query = 'DELETE FROM detail_proyek WHERE id = :id';
-			$statement = $this->koneksi->prepare($query);
-			$statement->execute(
-				array(
-					':id' => $id,
-				)
-			);
-			$statement->closeCursor();
-		}
-
-		/**
-		*
-		*/
-		private function deleteSkk($id){
-			$query = 'DELETE FROM logistik_proyek WHERE id=:id;';
-			$statement = $this->koneksi->prepare($query);
-			$statement->execute(
-				array(
-					':id' => $id,
-				)
-			);
-			$statement->closeCursor();
-		}
-
-		/**
-		*
-		*/
-		public function getLastID($id){
-			// $query = "SELECT MAX(id) id FROM proyek;";
-			$id .= "%";
-			$query = "SELECT MAX(id) AS id FROM proyek WHERE id LIKE :id";
-
-			$statement = $this->koneksi->prepare($query);
-			$statement->bindParam(':id', $id);
-			$statement->execute();
-			$result = $statement->fetch(PDO::FETCH_ASSOC);
-
-			return $result;
 		}
 
 		// ======================== mobile = ======================= //
 
 			/**
-			*
-			*/
+			 * Method querySelectBuilder_mobile
+			 * 
+			 * @param queryKondisi {}
+			 * @param kolomCari {}
+			 * @param cari {} default NULL
+			 * @param page {int} default 1
+			 * @return query {string}
+			 */
 			private function querySelectBuilder_mobile($queryKondisi, $kolomCari, $cari=null, $page=1) {
 				$mulai = ($page > 1) ? ($page * 10) - 10 : 0;
 
@@ -407,8 +476,11 @@
 			}
 
 			/**
-			*
-			*/
+			 * Method getAllByIdSubKasKecil_mobile
+			 * 
+			 * @param data {array}
+			 * @return result {array}
+			 */
 			public function getAllByIdSubKasKecil_mobile($data) {
 				$id = $data["id_sub_kas_kecil"];
 				$cari = $data["cari"];
@@ -424,8 +496,11 @@
 			}
 
 			/**
-			*
-			*/
+			 * Method getAllStatusBerjalan_mobile
+			 * 
+			 * @param data {array}
+			 * @return result {array}
+			 */
 			public function getAllStatusBerjalan_mobile($data) {
 				$id = $data["id_sub_kas_kecil"];
 				$cari = $data["cari"];
@@ -441,8 +516,10 @@
 			}
 
 			/**
-			*
-			*/
+			 * Method getRecordFilter_mobile
+			 * 
+			 * @return result {int}
+			 */
 			public function getRecordFilter_mobile(){
 				$koneksi = $this->openConnection();
 				$statement = $koneksi->prepare($this->queryBeforeLimitMobile);
@@ -465,8 +542,9 @@
 			}
 
 			/**
-			*
-			*/
+			 * Method __destruct
+			 * Close connection to DB
+			 */
 			public function __destruct(){
 				$this->closeConnection($this->koneksi);
 			}
