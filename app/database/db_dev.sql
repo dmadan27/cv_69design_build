@@ -97,27 +97,33 @@ CREATE TABLE IF NOT EXISTS proyek(
 	estimasi smallint, -- estimasi waktu dalam bulan
 	total double(12,2), -- total nilai rab
 	dp double(12,2), -- dp
+	id_bank int, -- fk bank, khusus untuk pendataan uang dp
 	cco double(12,2), -- change contract order
 	progress int,
 	status enum('SELESAI', 'BERJALAN'), -- status proyek
 
-	CONSTRAINT pk_proyek_id PRIMARY KEY(id)
+	CONSTRAINT pk_proyek_id PRIMARY KEY(id),
+	CONSTRAINT fk_proyek_id_bank FOREIGN KEY(id_bank) REFERENCES bank(id)
+		ON DELETE RESTRICT ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
 -- Tabel Detail Proyek (angsuran)
 CREATE TABLE IF NOT EXISTS detail_proyek(
 	id int NOT NULL AUTO_INCREMENT, -- pk
 	id_proyek varchar(50), -- fk
+	tgl date,
 	nama varchar(255), -- nama angsuran / terment pembayaran
+	id_bank int, -- fk id bank
 	total double(12,2), -- total angsuran
-	-- status enum('LUNAS', 'BELUM DIBAYAR'), -- status angsuran
 
 	CONSTRAINT pk_detail_proyek_id PRIMARY KEY(id),
 	CONSTRAINT fk_detail_proyek_id_proyek FOREIGN KEY(id_proyek) REFERENCES proyek(id)
+		ON DELETE RESTRICT ON UPDATE CASCADE,
+	CONSTRAINT fk_detail_proyek_id_bank FOREIGN KEY(id_bank) REFERENCES bank(id)
 		ON DELETE RESTRICT ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
--- Tabel Logistik Proyek
+-- Tabel Logistik Proyek (Skk Proyek)
 CREATE TABLE IF NOT EXISTS logistik_proyek(
 	id int NOT NULL AUTO_INCREMENT, -- pk
 	id_proyek varchar(50), -- fk proyek
