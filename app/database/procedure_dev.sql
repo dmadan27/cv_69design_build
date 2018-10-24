@@ -653,40 +653,43 @@ C
 -- Procedure Edit Data Operasional Proyek
 
 
+
 -- Procedure Hapus Data Operasional Proyek
 	delimeter //
-	CREATE PROCEDURE hapus_operasional_proyek(
-	IN id_param varchar(50),
-	IN id_proyek_param varchar(50),
-	IN id_bank_param int(11),
-	IN id_kas_besar_param varchar(10),
-	IN id_distributor_param varchar(10),
-	IN tgl_param date,
-	IN nama_param varchar(50),
-	IN jenis_param enum('TEKNIS','NON-TEKNIS'),
-	IN total_param double(12,2),
-	IN sisa_param double(12,2),
-	IN status_param enum('TUNAI','KREDIT'),
-	IN status_lunas_param  enum('LUNAS','BELUM LUNAS'),
-	IN ket_param text
+	CREATE PROCEDURE hapus_operasional_proyek_versi2(
+		IN id_param varchar(50),
+		IN tgl_param date,
+		IN ket_param text
 	)
 
 	BEGIN
 		-- deklarasi ambil saldo terakhir 
 		DECLARE get_saldo double(12,2);
+		DECLARE get_id_bank int;
+		DECLARE get_total double(12,2);
+
+		-- get id_bank
+		SELECT id INTO get_id_bank FROM bank where id = get_id_bank;
+
+		-- get total
+		SELECT total INTO get_total FROM operasional_proyek where id = id_param;
 
 		-- ambil saldo terahir
-		SELECT saldo INTO get_saldo FROM bank WHERE id = id_bank_param;
+		SELECT saldo INTO get_saldo FROM bank WHERE id = get_id_bank;
 
 		-- update saldo ke semula
-		UPDATE bank SET saldo = (get_saldo + total_param) WHERE id = id_bank_param;
+		UPDATE bank SET saldo = (get_saldo + get_total) WHERE id = get_id_bank;
 
 		-- insert mutasi (setelah perubahan)
 		INSERT INTO mutasi_bank 
 			(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 		VALUES
-			(id_bank_param, tgl_param, total_param, 0, (get_saldo + total_param), ket_param);
+			(get_id_bank, tgl_param, get_total, 0, (get_saldo + get_total), ket_param);
 
+		-- hapus detail operasional proyek
+		DELETE FROM detail_operasional_proyek where id_operasional_proyek IN
+			(SELECT id FROM operasional_proyek where id = id_param);
+		
 		-- hapus operasional proyek
 		DELETE  FROM operasional_proyek where id = id_param;
 	END//
