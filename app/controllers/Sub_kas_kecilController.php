@@ -352,8 +352,8 @@
 
 			$config = array(
 				'title' => array(
-					'main' => 'Data Kas Kecil',
-					'sub' => 'Detail Data Kas Kecil',
+					'main' => 'Data Sub Kas Kecil',
+					'sub' => 'Detail Data Sub Kas Kecil',
 				),
 				'css' => $css,
 				'js' => $js,

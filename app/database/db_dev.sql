@@ -265,12 +265,13 @@ CREATE TABLE IF NOT EXISTS upload_laporan_pengajuan_sub_kas_kecil(
 CREATE TABLE IF NOT EXISTS pengajuan_kas_kecil(
 	id varchar(50) NOT NULL UNIQUE, -- pk
 	id_kas_kecil varchar(10), -- fk kas kecil
+	id_bank int, -- fk bank
 	tgl date,
 	nama varchar(50), -- nama pengajuan
 	total double(12,2), -- total pengajuan ke kas besar
 	status char(1), -- status pengajuan, default 'pending'
 	-- 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI', 4: 'DITOLAK'
-	id_bank int, -- fk bank
+	
 
 	CONSTRAINT pk_pengajuan_kas_kecil_id PRIMARY KEY(id),
 	CONSTRAINT fk_pengajuan_kas_kecil_id_kas_kecil FOREIGN KEY(id_kas_kecil) REFERENCES kas_kecil(id)
