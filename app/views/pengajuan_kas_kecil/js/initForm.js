@@ -31,6 +31,7 @@ $(document).ready(function(){
 
 	// Inisiasi Function
 	setnamaKasKecil();
+	setNamaBank();
 
 
 	

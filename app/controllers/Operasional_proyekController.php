@@ -512,15 +512,31 @@
 		*
 		*/
 		public function delete($id){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+			if($_SERVER['REQUEST_METHOD'] == "POST" && $id != ''){
 				$id = strtoupper($id);
-				if(empty($id) || $id == "") $this->redirect(BASE_URL."operasional-proyek");
+				
+				if(empty($id) || $id == "") { $this->redirect(BASE_URL."operasional-proyek/"); }
+
+				// $getNamaOperasionalProyek = $this->Operasional_ProyekModel->getById($id)['nama'];
+
+				// $ket = 'Data Operasional Proyek '.$getNamaOperasionalProyek. 'telah Dihapus';
+
+				// $data = array(
+				// 	'id' => $id,
+				// 	'tgl' => date('Y-m-d'),
+				// 	'ket' => $ket,	
+				// );
 
 				if($this->Operasional_ProyekModel->delete($id)) $this->status =true;
 
 				echo json_encode($this->status);
 			}
-			else $this->redirect();
+			else{
+				$this->redirect(); 	
+			}
+				
+			
+		
 
 		}
 
@@ -910,26 +926,36 @@
 		* Function validasi form detail
 		*/
 		private function set_validation_detail($data){
+			
+			//id_bank
+			$this->validation->set_rules($data['id_bank'], 'ID Bank', 'id_bank', 'string | 1 | 255 | required');
+
 			// nama
 			$this->validation->set_rules($data['nama_detail'], 'Nama Kebutuhan', 'nama_detail', 'string | 1 | 255 | required');
-			// jenis
-			$this->validation->set_rules($data['jenis_detail'], 'Jenis Kebutuhan', 'jenis_detail', 'string | 1 | 255 | required');
-			// satuan
-			$this->validation->set_rules($data['satuan_detail'], 'Satuan', 'satuan_detail', 'string | 1 | 255 | required');
-			// kuantiti
-			$this->validation->set_rules($data['qty_detail'], 'Kuantiti', 'qty_detail', 'angka | 1 | 255 | required');
-			// harga
-			$this->validation->set_rules($data['harga_detail'], 'Harga Kebutuhan', 'harga_detail', 'nilai | 1 | 9999999999 | required');
+
+			// tgl
+			$this->validation->set_rules($data['tgl_detail'], 'Tanggal Operasional', 'tgl_detail', 'string | 1 | 255 | required');
+			// total
+			$this->validation->set_rules($data['total_detail'], 'Total', 'total_detail', 'nilai | 1 | 9999999999 | required');
+			
+			// // jenis
+			// $this->validation->set_rules($data['jenis_detail'], 'Jenis Kebutuhan', 'jenis_detail', 'string | 1 | 255 | required');
+			// // satuan
+			// $this->validation->set_rules($data['satuan_detail'], 'Satuan', 'satuan_detail', 'string | 1 | 255 | required');
+			// // kuantiti
+			// $this->validation->set_rules($data['qty_detail'], 'Kuantiti', 'qty_detail', 'angka | 1 | 255 | required');
+			// // harga
+			// $this->validation->set_rules($data['harga_detail'], 'Harga Kebutuhan', 'harga_detail', 'nilai | 1 | 9999999999 | required');
 			// sub_total
-			$this->validation->set_rules($data['sub_total_detail'], 'Sub Total', 'sub_total_detail', 'nilai | 1 | 9999999999 | required');
-			// status
-			$this->validation->set_rules($data['status_detail'], 'Status', 'status_detail', 'string | 1 | 255 | required');
-			// harga asli
-			$this->validation->set_rules($data['harga_asli_detail'], 'Harga Asli', 'harga_asli_detail', 'nilai | 1 | 9999999999 | required');
-			// sisa
-			$this->validation->set_rules($data['sisa_detail'], 'Sisa', 'sisa_detail', 'nilai | 1 | 9999999999 | required');
-			// status lunas
-			$this->validation->set_rules($data['status_lunas_detail'], 'Status Lunas', 'status_lunas_detail', 'string | 1 | 255 | required');
+			// $this->validation->set_rules($data['sub_total_detail'], 'Sub Total', 'sub_total_detail', 'nilai | 1 | 9999999999 | required');
+			// // status
+			// $this->validation->set_rules($data['status_detail'], 'Status', 'status_detail', 'string | 1 | 255 | required');
+			// // harga asli
+			// $this->validation->set_rules($data['harga_asli_detail'], 'Harga Asli', 'harga_asli_detail', 'nilai | 1 | 9999999999 | required');
+			// // sisa
+			// $this->validation->set_rules($data['sisa_detail'], 'Sisa', 'sisa_detail', 'nilai | 1 | 9999999999 | required');
+			// // status lunas
+			// $this->validation->set_rules($data['status_lunas_detail'], 'Status Lunas', 'status_lunas_detail', 'string | 1 | 255 | required');
 
 			return $this->validation->run();
 		}

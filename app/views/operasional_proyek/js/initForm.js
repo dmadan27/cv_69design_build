@@ -136,37 +136,28 @@ $(document).ready(function () {
 	*
 	*/
 	function addDetail(){
+
+		 $('#id_bank').select2({
+	    	placeholder: "Pilih Bank",
+			allowClear: true
+	    });
+
 		var index = indexDetail++;
 
-		var qty_detail = parseFloat($('#qty_detail').val().trim()) ? 
-			parseFloat($('#qty_detail').val().trim()) : $('#qty_detail').val().trim();
+		var total_detail = parseFloat($('#total_detail').val().trim()) ? 
+			parseFloat($('#total_detail').val().trim()) : $('#total_detail').val().trim();
 
-		var harga_detail = parseFloat($('#harga_detail').val().trim()) ? 
-			parseFloat($('#harga_detail').val().trim()) : $('#harga_detail').val().trim();
-
-		var sub_total_detail = parseFloat($('#sub_total_detail').val().trim()) ? 
-			parseFloat($('#sub_total_detail').val().trim()) : $('#sub_total_detail').val().trim();
-
-		var harga_asli_detail = parseFloat($('#harga_asli_detail').val().trim()) ? 
-			parseFloat($('#harga_asli_detail').val().trim()) : $('#harga_asli_detail').val().trim();
 		
-		var sisa_detail = parseFloat($('#sisa_detail').val().trim()) ? 
-			parseFloat($('#sisa_detail').val().trim()) : $('#sisa_detail').val().trim();
 
 		var data = {
 			index: index,
 			id: '',
 			id_operasional_proyek : $('#id').val().trim(),
+			id_bank : $('#id_bank').val().trim(),
 			nama_detail : $('#nama_detail').val().trim(),
-			jenis_detail : $('#jenis_detail').val().trim(),
-			satuan_detail : $('#satuan_detail').val().trim(),
-			qty_detail : qty_detail,
-			harga_detail : harga_detail,
-			sub_total_detail : sub_total_detail,
-			status_detail : $('#status_detail').val().trim(),
-			harga_asli_detail : harga_asli_detail,
-			sisa_detail : sisa_detail,
-			status_lunas_detail : $('#status_lunas_detail').val().trim(),
+			tgl_detail : $('#tgl_detail').val().trim(),
+			total_detail : total_detail,
+			
 			aksi: 'tambah',
 			delete: false,
 		};
@@ -199,16 +190,10 @@ $(document).ready(function () {
 					$('#detail_OperasionalproyekTable > tbody:last-child').append(
 						'<tr>'+
 							'<td></td>'+
+							'<td>'+data.id_bank+'</td>'+
 							'<td>'+data.nama_detail+'</td>'+
-							'<td>'+data.jenis_detail+'</td>'+
-							'<td>'+data.satuan_detail+'</td>'+
-							'<td>'+data.qty_detail+'</td>'+
-							'<td>'+data.harga_detail+'</td>'+
-							'<td>'+data.sub_total_detail+'</td>'+
-							'<td>'+data.status_detail+'</td>'+
-							'<td>'+data.harga_asli_detail+'</td>'+
-							'<td>'+data.sisa_detail+'</td>'+
-							'<td>'+data.status_lunas_detail+'</td>'+
+							'<td>'+data.tgl_detail+'</td>'+
+							'<td>'+data.total_detail+'</td>'+
 							// '<td></td>'+
 							'<td>'+btnAksi_detail(data.index)+'</td>'+
 						'</tr>'
@@ -330,16 +315,19 @@ $(document).ready(function () {
 	*/
 	function setValueDetail(data,index){
 		$('#id_detail').val(index);
+		$('#id_bank').val(data[index].id_bank);
 		$('#nama_detail').val(data[index].nama_detail);
-		$('#jenis_detail').val(data[index].jenis_detail);
-		$('#satuan_detail').val(data[index].satuan_detail);
-		$('#qty_detail').val(data[index].qty_detail);
-		$('#harga_detail').val(data[index].harga_detail);
-		$('#sub_total_detail').val(data[index].sub_total_detail);
-		$('#status_detail').val(data[index].status_detail);
-		$('#harga_asli_detail').val(data[index].harga_asli_detail);
-		$('#sisa_detail').val(data[index].sisa_detail);
-		$('#status_lunas_detail').val(data[index].status_lunas_detail);
+		$('#tgl_detail').val(data[index].tgl_detail);
+		$('#total_detail').val(data[index].total_detail);
+		
+		// $('#satuan_detail').val(data[index].satuan_detail);
+		// $('#qty_detail').val(data[index].qty_detail);
+		// $('#harga_detail').val(data[index].harga_detail);
+		// $('#sub_total_detail').val(data[index].sub_total_detail);
+		// $('#status_detail').val(data[index].status_detail);
+		// $('#harga_asli_detail').val(data[index].harga_asli_detail);
+		// $('#sisa_detail').val(data[index].sisa_detail);
+		// $('#status_lunas_detail').val(data[index].status_lunas_detail);
 	}
 
 	/**
@@ -352,16 +340,17 @@ $(document).ready(function () {
 			$('#detail_OperasionalproyekTable > tbody:last-child').append(
 				'<tr>'+
 					'<td></td>'+
+					'<td>'+item.id_bank+'</td>'+
 					'<td>'+item.nama_detail+'</td>'+
-					'<td>'+item.jenis_detail+'</td>'+
-					'<td>'+item.satuan_detail+'</td>'+
-					'<td>'+item.qty_detail+'</td>'+
-					'<td>'+item.harga_detail+'</td>'+
-					'<td>'+item.sub_total_detail+'</td>'+
-					'<td>'+item.status_detail+'</td>'+
-					'<td>'+item.harga_asli_detail+'</td>'+
-					'<td>'+item.sisa_detail+'</td>'+
-					'<td>'+item.status_lunas_detail+'</td>'+
+					'<td>'+item.tgl_detail+'</td>'+
+					'<td>'+item.total_detail+'</td>'+
+					// '<td>'+item.qty_detail+'</td>'+
+					// '<td>'+item.harga_detail+'</td>'+
+					// '<td>'+item.sub_total_detail+'</td>'+
+					// '<td>'+item.status_detail+'</td>'+
+					// '<td>'+item.harga_asli_detail+'</td>'+
+					// '<td>'+item.sisa_detail+'</td>'+
+					// '<td>'+item.status_lunas_detail+'</td>'+
 					// '<td></td>'+
 					'<td>'+btnAksi_detail(item.index)+'</td>'+
 				'</tr>'

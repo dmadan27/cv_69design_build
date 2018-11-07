@@ -182,16 +182,11 @@
                                         <thead>
                                           <tr>
                                             <th class="" style="width: 15px">No</th>
+                                            <th>Bank</th>
                                             <th>Nama</th>
-                                            <th>Jenis</th>
+                                            <th>Tanggal</th>
                                             <th>Satuan</th>
-                                            <th>Qty</th>
-                                            <th>Harga</th>
-                                            <th>Sub Total</th>
-                                            <th>Status</th>
-                                            <th>Harga Asli</th>
-                                            <th>Sisa</th>
-                                            <th>Status Lunas</th>
+                                            <th>Total</th>
                                             <th>Aksi</th>
                                           </tr>
                                         </thead>
