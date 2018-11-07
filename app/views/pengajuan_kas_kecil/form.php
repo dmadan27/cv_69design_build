@@ -32,6 +32,14 @@
 				                        <span class="help-block small pesan pesan-id_kas_kecil"></span>
 				                      </div>
 
+				                      <!-- field ID Bank -->
+						                <div class="form-group field-id_bank has-feedback">
+						                  <label for="id">ID Bank</label>
+						                    <select class="form-control field select2" name="id_bank" id="id_bank" style="width: 100%;"> 
+						                    </select>
+						                  <span class="help-block small pesan pesan-id_bank"></span>
+						                </div>
+
 				                      <!-- field tgl -->
 				                      <div class="form-group field-tgl has-feedback">
 				                        <label for="tgl">Tanggal</label>

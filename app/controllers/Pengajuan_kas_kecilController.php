@@ -155,6 +155,7 @@
 						$data = array(
 							'id' => $this->validation->validInput($data['id']),
 							'id_kas_kecil' =>$this->validation->validInput($data['id_kas_kecil']),
+							'id_bank' =>$this->validation->validInput($data['id_bank']),
 							'tgl' => $this->validation->validInput($data['tgl']),
 							'nama' => $this->validation->validInput($data['nama']),
 							'total' => $this->validation->validInput($data['total']),
@@ -323,6 +324,7 @@
 			$data = array(
 				'id' => $data_detail['id'],
 				'id_kas_kecil' => $data_detail['id_kas_kecil'],
+				'id_bank' => $data_detail['id_bank'],
 				'tgl' => $data_detail['tgl'],
 				'nama' => $data_detail['nama'],
 				'total' => $data_detail['total'],
@@ -527,6 +529,8 @@
 			$this->validation->set_rules($data['id'], 'ID Pengajuan Kas Kecil', 'id', 'string | 1 | 255 | required');
 			// id_kas_kecil
 			$this->validation->set_rules($data['id_kas_kecil'], 'ID Pengajuan Kas Kecil', 'id_kas_kecil', 'string | 1 | 255 | required');
+			// id_bank
+			$this->validation->set_rules($data['id_bank'], 'ID Bank', 'id_bank', 'string | 1 | 255 | required');
 			// tgl
 			$this->validation->set_rules($data['tgl'], 'Tanggal Pengajuan Kas Kecil', 'tgl', 'string | 1 | 255 | required');
 			// nama pengajuan kas kecil
@@ -584,6 +588,25 @@
 					$data[] = $dataRow;
 				}
 				
+
+			echo json_encode($data);
+		}
+
+		/**
+		*
+		*/
+		public function get_nama_bank(){
+			$this->model('BankModel');
+			$data_nama_bank = $this->BankModel->getAll();
+			$data = array();
+
+			foreach($data_nama_bank as $row){
+				$dataRow = array();
+				$dataRow['id'] = $row['id'];
+				$dataRow['text'] = $row['nama']. ' - '.$row['saldo'];
+
+				$data[] = $dataRow;
+			}
 
 			echo json_encode($data);
 		}

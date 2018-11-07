@@ -14,6 +14,11 @@ $(document).ready(function(){
 				allowClear: true
 			});
 
+			$('#id_bank').select2({
+		    	placeholder: "Pilih Bank",
+				allowClear: true
+	    	});
+
 			$('#id').prop('disabled', true);
 			// $('.field-saldo').css('display', 'block');
 			// $('#submit_bank').prop('value', 'action-add');
@@ -100,6 +105,7 @@ function getDataForm(){
 	// data.append('token', $('#token_form').val().trim());
 	data.append('id', $('#id').val().trim()); // id
 	data.append('id_kas_kecil', $('#id_kas_kecil').val().trim()); // id kas kecil
+	data.append('id_bank', $('#id_bank').val().trim()); // id bank
 	data.append('tgl', $('#tgl').val().trim()); // tgl
 	data.append('nama', $('#nama').val().trim()); // nama pengajuan
 	data.append('total', total); // total
@@ -241,6 +247,27 @@ function setnamaKasKecil(){
 
 }
 
+function setNamaBank(){
+	$.ajax({
+		url: BASE_URL+'pengajuan-kas-kecil/get-nama-bank',
+		dataType: 'json',
+		beforeSend: function(){},
+		success: function(data){
+			console.log(data);
+			$.each(data, function(index, item){
+				var newOption = new Option(item.text, item.id);
+				$('#id_bank').append(newOption).trigger('change');
+			});
+			$('#id_bank').val(null).trigger('change');
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+            console.log(jqXHR, textStatus, errorThrown);
+            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+        }
+	})			
+
+}
+
 /**
 *
 */
@@ -267,7 +294,7 @@ function generateID(){
 function setStatus(){
 	var status = [
 		{value: "DISETUJUI", text: "DISETUJUI"},
-		{value: "DIPERBAIKI", text: "DIPERBAIKI"},
+		{value: "PERBAIKI", text: "PERBAIKI"},
 		{value: "DITOLAK", text: "DITOLAK"},
 		{value: "PENDING", text: "PENDING"},
 	];
