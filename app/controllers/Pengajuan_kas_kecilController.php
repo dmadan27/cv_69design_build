@@ -160,6 +160,8 @@
 							'nama' => $this->validation->validInput($data['nama']),
 							'total' => $this->validation->validInput($data['total']),
 							'status' => $this->validation->validInput($data['status']),
+							'id_pengajuan_sub_kas_kecil' => $this->validation->validInput($data['id_pengajuan_sub_kas_kecil'])
+								
 						);
 
 						// insert pengajuan kas kecil
@@ -539,6 +541,9 @@
 			$this->validation->set_rules($data['total'], 'Total Pengajuan', 'total', 'nilai | 1 | 99999999 | required');
 			// status
 			$this->validation->set_rules($data['status'], 'Status Pengajuan', 'status', 'string | 1 | 255 | required');
+			// ID PSKK
+			$this->validation->set_rules($data['id_pengajuan_sub_kas_kecil'], 'ID SKK', 'id_pengajuan_sub_kas_kecil', 'string | 1 | 255 | required');
+			
 			
 			return $this->validation->run();
 			
@@ -605,6 +610,22 @@
 				$dataRow['id'] = $row['id'];
 				$dataRow['text'] = $row['nama']. ' - '.$row['saldo'];
 
+				$data[] = $dataRow;
+			}
+
+			echo json_encode($data);
+		}
+
+		public function get_id_pengajuan(){
+			$this->model('Pengajuan_sub_kas_kecilModel');
+
+			$data_SKK = $this->Pengajuan_sub_kas_kecilModel->getAll();
+			$data = array();
+
+			foreach($data_SKK as $row){
+				$dataRow = array();
+				$dataRow['id'] = $row['id'];
+				$dataRow['text'] = $row['id'];
 				$data[] = $dataRow;
 			}
 
