@@ -81,6 +81,20 @@
 		}
 
 		/**
+		*
+		*/
+		public function getBYid_fromHistoryPembelian($id){
+			$query = "SELECT * FROM v_history_pembelian_operasionalproyek WHERE id = :id;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+
+		/**
 		* 
 		*/
 		public function insert($data){
