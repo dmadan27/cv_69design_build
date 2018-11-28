@@ -299,10 +299,12 @@
 
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
 			);
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',	
 				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
 				'app/views/pengajuan_kas_kecil/js/initView.js',
 				'app/views/pengajuan_kas_kecil/js/initForm.js',
