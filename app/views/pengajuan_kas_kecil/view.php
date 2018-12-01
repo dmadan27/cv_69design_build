@@ -83,6 +83,38 @@
                         <div class="tab-pane" id="data-detailPengajuanSKK">
                             <div class="row">
                                 <div class="col-md-12">
+                                        <div class="box">
+                                        <!-- box header -->
+                                        <div class="box-header with-border">
+                                            <h3 class="box-title">Data Pengajuan Sub Kas Kecil</h3>
+                                            <!-- export -->
+                                            <button type="button" class="pull-right btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button> 
+                                        </div>
+                                        <!-- box body -->
+                                        <div class="box-body">
+                                            <div class="row">
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    <table id="mutasiSKKTable" class="table table-bordered table-hover" style="width:100%">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="text-right">No</th>
+                                                                <th>ID Pengajuan SKK</th>
+                                                                <th class="text-right">ID SKK</th>
+                                                                <th class="text-right">ID PROYEK</th>
+                                                                <th class="text-right">Status Laporan</th>
+                                                                <th>Pemilik</th>
+                                                                <th>Pembangungan</th>
+                                                                <th>Kota</th>
+                                                                
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>      
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

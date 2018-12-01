@@ -308,6 +308,8 @@
 				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
 				'app/views/pengajuan_kas_kecil/js/initView.js',
 				'app/views/pengajuan_kas_kecil/js/initForm.js',
+				'app/views/pengajuan_kas_kecil/js/initView.js',
+					
 			);
 
 			$config = array(
@@ -322,6 +324,8 @@
 			// $status = ($data_detail['status'] == "AKTIF") ? 
 			// 	'<span class="label label-success">'.$data_detail['status'].'</span>' : 
 			// 	'<span class="label label-danger">'.$data_detail['status'].'</span>';
+
+
 
 
 
@@ -668,6 +672,51 @@
 			
 			echo json_encode($data_pkk_disetujui);
 
+		}
+
+		public function get_pengajuan_sub_kas_kecil(){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$this->model('Pengajuan_sub_kas_kecilModel');
+				
+				// config datatable
+				$config_dataTable = array(
+					'tabel' => 'v_pengajuan_sub_kas_kecil_full',
+					'kolomOrder' => array(null, 'id_pengajuan', 'id_sub_kas_kecil', 'id_proyek', 'status_laporan', 'pemilik', 'pembangunan', 'kota'),
+					'kolomCari' => array('id_pengajuan', 'id_sub_kas_kecil', 'id_proyek', 'status_laporan', 'pemilik', 'pembangunan', 'kota'),
+					'orderBy' => array('id_pengajuan' => 'desc'),
+					'kondisi' => false,
+				);
+
+				$dataPengajuanFull = $this->Pengajuan_sub_kas_kecilModel->getAllDataTable($config_dataTable);
+
+				$data = array();
+				$no_urut = $_POST['start'];
+				foreach($dataPengajuanFull as $row){
+					$no_urut++;
+					
+					$dataRow = array();
+					$dataRow[] = $no_urut;
+					$dataRow[] = $row['id_pengajuan'];
+					$dataRow[] = $row['id_sub_kas_kecil'];
+					$dataRow[] = $row['id_proyek'];
+					$dataRow[] = $row['status_laporan'];
+					$dataRow[] = $row['pemilik'];
+					$dataRow[] = $row['pembangunan'];
+					$dataRow[] = $row['kota'];
+
+					$data[] = $dataRow;
+				}
+
+				$output = array(
+					'draw' => $_POST['draw'],
+					'recordsTotal' => $this->Pengajuan_sub_kas_kecilModel->recordTotal(),
+					'recordsFiltered' => $this->Pengajuan_sub_kas_kecilModel->recordFilter(),
+					'data' => $data,
+				);
+
+				echo json_encode($output);
+			}
+			else { $this->redirect(); }
 		}
 
 
