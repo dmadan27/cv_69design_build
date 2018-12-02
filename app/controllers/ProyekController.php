@@ -169,9 +169,7 @@
 			);
 
 			$data = array(
-				'action' => 'action-add',
-				// 'id' => '',
-				'id' => $this->get_last_id(),
+				'action' => 'action-add', 'id' => '',
 				'pemilik' => '', 'tgl' => '', 'pembangunan' => '',
 				'luas_area' => '', 'alamat' => '', 'kota' => '',
 				'estimasi' => '', 'total' => '', 'dp' => '',
@@ -193,7 +191,7 @@
 				$dataDetail = isset($_POST['dataDetail']) ? json_decode($_POST['dataDetail'], true) : false;
 				$dataSkk = isset($_POST['dataSkk']) ? json_decode($_POST['dataSkk'], true) : false;
 				
-				$cekDetail = $cekSkk = true;
+				$cekSkk = true;
 
 				if(!$data){
 					$this->notif['default'] = array(
@@ -208,14 +206,7 @@
 					$cek = $validasi['cek'];
 					$this->error = $validasi['error'];
 
-					if(empty($dataDetail)){
-						$cek = false;
-						$cekDetail = false;
-					}
-					if(empty($dataSkk)){
-						$cek = false;
-						$cekSkk = false;
-					}
+					if(empty($dataSkk)){ $cek = false; }
 
 					if($cek){
 						// validasi input
@@ -262,14 +253,6 @@
 						}
 					}
 					else{
-						if(!$cekDetail){
-							$this->notif['data_detail'] = array(
-								'type' => 'warning',
-								'title' => "Pesan Pemberitahuan",
-								'message' => "Silahkan Cek Kembali Data Detail",
-							);
-						}
-
 						if(!$cekSkk){
 							$this->notif['data_skk'] = array(
 								'type' => 'warning',
@@ -293,7 +276,6 @@
 					'message' => $this->message,
 					'cek' => array(
 						'cek' => $cek,
-						'data_detail' => $cekDetail,
 						'data_skk' => $cekSkk,
 					),
 					// 'data' => $data,
@@ -305,6 +287,33 @@
 				echo json_encode($output);
 			}
 			else { $this->redirect(); }
+		}
+
+		/**
+		 * Method action_add_detail
+		 * Proses pengecekan validasi saat penambahan data detail
+		 * @return output {object} array berupa json
+		 */
+		public function action_add_detail(){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$data = isset($_POST) ? $_POST : false;
+
+				$validasi = $this->set_validation_detail($data);
+				$cek = $validasi['cek'];
+				$this->error = $validasi['error'];
+
+				if($cek) { $this->success = true; }
+
+				$output = array(
+					'status' => $this->success,
+					'error' => $this->error,
+					'data' => $data,
+				);
+
+				echo json_encode($output);
+			}
+			else { $this->redirect(); }
+				
 		}
 
 		/**
@@ -761,18 +770,12 @@
 		
 
 		/**
-		 * Note: 
-		 * => Perubahan method name, yg awalnya get_last_id menjadi generate_id
-		 * => Modifikasi return data, menjadi ada 2 return, yaitu berupa json dan string
-		 * 
 		 * Method generate_id
 		 * Proses generate id proyek
-		 * @param request {bool} default true
-		 * @return result {object} jika $request true
-		 * @return result {string} jika $request false
+		 * @return result {object} string berupa json
 		 */
-		public function generate_id($request = true){
-			if($_SERVER['REQUEST_METHOD'] == "POST" && $request){
+		public function generate_id(){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$tahun = isset($_POST['get_tahun']) ? $this->validation->validInput($_POST['get_tahun']) : false;
 
 				$id_temp = ($tahun) ? 'PRY'.$tahun : 'PRY'.date('Y');
@@ -789,22 +792,17 @@
 				
 				echo json_encode($id);				
 			}
-			else if(!$request){
-				
-			}
 			else { $this->redirect(); }	
 		}
 
 		/**
-		* Method get skk
-		* Get list data skk yang aktif
-		* Request berupa POST dan output berupa JSON
-		*/
+		 * Method get_skk
+		 * Proses get data skk yang aktif untuk keperluan select
+		 * @return data {object} array berupa json
+		 */
 		public function get_skk(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
-				$this->model('Sub_kas_kecilModel');
-
-				$data_skk = $this->Sub_kas_kecilModel->getAll();
+				$data_skk = $this->ProyekModel->get_selectSkk();
 				$data = array();
 
 				foreach($data_skk as $row){
@@ -817,46 +815,46 @@
 
 				echo json_encode($data);
 			}
-			else $this->redirect();
+			else { $this->redirect(); }
 		}
 
 		/**
-		*	Export data ke format Excel
-		*/
+		 * Method get_bank
+		 * Proses get data bank yang aktif untuk keperluan select
+		 * @return data {object} array berupa json
+		 */
+		public function get_bank(){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$data_bank = $this->ProyekModel->get_selectBank();
+				$data = array();
+
+				foreach($data_bank as $row){
+					$dataRow = array();
+					$dataRow['id'] = $row['id'];
+					$dataRow['text'] = $row['nama'];
+
+					$data[] = $dataRow;
+				}
+
+				echo json_encode($data);
+			}
+			else { $this->redirect(); }
+		}
+
+		/**
+		 * Method export
+		 */
 		public function export(){
 			
 		}
 
 		/**
-		* Method action add detail
-		*/
-		public function action_add_detail(){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
-				$data = isset($_POST) ? $_POST : false;
-				$error = array();
-
-				$validasi = $this->set_validation_detail($data);
-				$cek = $validasi['cek'];
-				$error = $validasi['error'];
-
-				if($cek) $this->status = true;
-
-				$output = array(
-					'status' => $this->status,
-					// 'notif' => $notif,
-					'error' => $error,
-					'data' => $data,
-				);
-
-				echo json_encode($output);
-			}
-			else $this->redirect();
-				
-		}
-
-		/**
-		* Function validasi form utama
-		*/
+		 * Method set_validation
+		 * Proses validasi inputan data proyek
+		 * @param data {array}
+		 * @param action {string}
+		 * @return result {array}
+		 */
 		private function set_validation($data, $action){
 			$required = ($action =="action-add") ? 'not_required' : 'required';
 
@@ -891,17 +889,21 @@
 		}
 
 		/**
-		* Function validasi form detail
-		*/
+		 * Method set_validation_detail
+		 * Proses validasi inputan data detail proyek
+		 * @param data {array}
+		 * @return result {array}
+		 */
 		private function set_validation_detail($data){
-			// angsuran
-			$this->validation->set_rules($data['angsuran'], 'Angsuran Proyek', 'angsuran', 'string | 1 | 255 | required');
-			// persentase
-			$this->validation->set_rules($data['persentase'], 'Persentase Angsuran', 'persentase', 'nilai | 1 | 100 | required');
+			// pembayaran
+			$this->validation->set_rules($data['nama_detail'], 'Pembayaran Proyek', 'nama_detail', 'string | 1 | 255 | required');
+			// tgl
+			$this->validation->set_rules($data['tgl_detail'], 'Tanggal Pembayaran Proyek', 'tgl_detail', 'string | 1 | 255 | required');
+			// id bank
+			$this->validation->set_rules($data['id_bank'], 'Bank', 'id_bank', 'string | 1 | 1 | required');
 			// total
 			$this->validation->set_rules($data['total_detail'], 'Total Angsuran', 'total_detail', 'nilai | 1 | 9999999999 | required');
-			// status
-			$this->validation->set_rules($data['status_detail'], 'Status Detail', 'status_detail', 'string | 1 | 255 | required');
+			
 
 			return $this->validation->run();
 		}

@@ -23,9 +23,7 @@ $(document).ready(function(){
         ajax: {
             url: BASE_URL+"proyek/get-list/",
             type: 'POST',
-            data: {
-                // "token" : $('#token').val().trim(),
-            }
+            data: {}
         },
         "columnDefs": [
             {
@@ -43,75 +41,81 @@ $(document).ready(function(){
 
     // btn tambah
     $('#tambah').on('click', function(){
-        // if(this.value.trim() != "") 
-            window.location.href = BASE_URL+'proyek/form/';
-        // else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+        console.log('Button Tambah Proyek clicked...');
+        window.location.href = BASE_URL+'proyek/form/';
     });
 
      // btn Export
     $('#exportExcel').on('click', function(){
-        // if(this.value.trim() != "") 
-            window.location.href = BASE_URL+'proyek/export/';
-       
+        console.log('Button Export Excel Proyek clicked...');
+        getExport();
     });
 
 });
 
 /**
-*
-*/
+ * Function getView
+ * @param {string} id
+ */
 function getView(id){
-    // if(token != "") window.location.href = BASE_URL+'proyek/detail/'+id;
-    // else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+    console.log('Button View Proyek clicked...');
+    
     window.location.href = BASE_URL+'proyek/detail/'+id;
 }
 
 /**
-*
-*/
+ * Function getEdit
+ * @param {string} id 
+ */
 function getEdit(id){
-    // if(token != "") window.location.href = BASE_URL+'proyek/form/'+id;
-    // else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+    console.log('Button Edit Proyek clicked...');
+
     window.location.href = BASE_URL+'proyek/form/'+id;
 }
 
 /**
-*
-*/
+ * Function getDelete
+ * Proses request hapus data proyek ke server
+ * @param {string} id
+ * @return {object} response
+ */
 function getDelete(id){
-    // if(token.trim() != ""){
-        swal({
-            title: "Pesan Konfirmasi",
-            text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Ya, Hapus!",
-            cancelButtonText: "Batal",
-            closeOnConfirm: false,
-        }, function(){
-            $.ajax({
-                url: BASE_URL+'proyek/delete/'+id,
-                type: 'post',
-                dataType: 'json',
-                data: {
-                    // "token_delete": token
-                },
-                beforeSend: function(){},
-                success: function(output){
-                    console.log(output);
-                    if(output){
-                        swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
-                        $("#proyekTable").DataTable().ajax.reload();
-                    }
-                    else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
-                },
-                error: function (jqXHR, textStatus, errorThrown){ // error handling
-                    console.log(jqXHR, textStatus, errorThrown);
-                    swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
-                }
-            })
-        });
-    // }
-    // else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+    console.log('Button Hapus Proyek clicked...');
+
+    swal({
+        title: "Pesan Konfirmasi",
+        text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Hapus!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: false,
+    }, function(){
+        $.ajax({
+            url: BASE_URL+'proyek/delete/'+id.toLowerCase(),
+            type: 'post',
+            dataType: 'json',
+            data: {},
+            beforeSend: function(){
+            },
+            success: function(response){
+                console.log('Response getDelete Proyek: ', response);
+                if(response.success){ $("#proyekTable").DataTable().ajax.reload(); }
+                swal(response.notif.title, response.notif.message, response.notif.type);
+            },
+            error: function (jqXHR, textStatus, errorThrown){ // error handling
+                console.log('Response Error getDelete Proyek', jqXHR, textStatus, errorThrown);
+                swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+                $("#proyekTable").DataTable().ajax.reload();
+            }
+        })
+    });
+}
+
+/**
+ * 
+ */
+function getExport(){
+    
 }

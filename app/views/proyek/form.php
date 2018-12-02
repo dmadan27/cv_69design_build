@@ -17,8 +17,6 @@
     </section>
     <section class="content container-fluid">
   		<form id="form_proyek" role="form">
-  			<!-- <input type="hidden" id="token" value="<?= $this->data['token']?>"> -->
-  	
   			<!-- panel tambah data proyek -->
   			<div class="row">
       			<div class="col-lg-12 col-md-12 col-xs-12">    				
@@ -172,42 +170,11 @@
           					</div>
                         </div>
                         <div class="box-body">
-                        	<div class="row">
+						<div class="row">
                         		<!-- panel 1 -->
                         		<div class="col-md-12">
-                        			<fieldset>
-			                        	<div class="form-group">
-	                                        <button type="button" class="btn btn-success btn-flat " id="tambah_detail"><i class="fa fa-plus"></i> Tambah Detail</button>
-	                                    </div>
-	                                    <div class="row">
-	                                    	<div class="col-md-12">
-	                                    		<div class="table-responsive">
-			                        				<table id="detail_proyekTable" class="table table-bordered table-hover small">
-				                        				<thead>
-				                        					<tr>
-				                        						<th class="text-right" style="width: 15px">No</th>
-				                        						<th>Angsuran</th>
-				                        						<th class="text-center" style="width: 150px;">%</th>
-				                        						<th class="text-right">Total</th>
-				                        						<th>Status</th>
-				                        						<th>Aksi</th>
-				                        					</tr>
-				                        				</thead>
-				                        				<tbody></tbody>
-				                        			</table>
-			                        			</div>
-	                                    	</div>	
-	                                    </div>
-			                        			
-			                        </fieldset>
-                        		</div>
-
-                        	</div>
-                        	<div class="row">
-                        		<!-- panel 2 -->
-                        		<div class="col-md-12">
 		                        	<fieldset>
-			                        	<legend style="font-size: 18px;">Pemilihan Sub Kas Kecil</legend>
+			                        	<legend style="font-size: 14px; font-weight: 700;">Pemilihan Sub Kas Kecil</legend>
 			                        	<div class="row">
 			                        		<div class="col-md-6">
 			                        			<div class="form-group field-skk has-feedback">
@@ -236,6 +203,36 @@
 	                        			</table>
 			                        </fieldset>
                         		</div>
+                        	</div>
+							<div class="row">
+                        		<!-- panel 2 -->
+                        		<div class="col-md-12">
+                        			<fieldset>
+									<legend style="font-size: 14px; font-weight: 700;">Pembayaran Proyek</legend>
+			                        	<div class="form-group">
+	                                        <button type="button" class="btn btn-success btn-flat " id="tambah_detail"><i class="fa fa-plus"></i> Tambah Detail Pembayaran</button>
+	                                    </div>
+	                                    <div class="row">
+	                                    	<div class="col-md-12">
+	                                    		<div class="table-responsive">
+			                        				<table id="detail_proyekTable" class="table table-bordered table-hover small">
+				                        				<thead>
+				                        					<tr>
+				                        						<th class="text-right" style="width: 15px">No</th>
+				                        						<th>Pembayaran</th>
+																<th>Bank</th>
+				                        						<th class="text-right">Total</th>
+				                        						<th>Aksi</th>
+				                        					</tr>
+				                        				</thead>
+				                        				<tbody></tbody>
+				                        			</table>
+			                        			</div>
+	                                    	</div>	
+	                                    </div>	
+			                        </fieldset>
+                        		</div>
+
                         	</div>
                         </div>
                         <div class="clearfix"></div>

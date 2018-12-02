@@ -1,9 +1,23 @@
 $(document).ready(function(){
 	setStatus();
+	
+	// input mask
+	$('.input-mask-uang').inputmask({ 
+    	alias : 'currency',
+    	prefix: '', 
+    	radixPoint: ',',
+    	digits: 0,
+    	groupSeparator: '.', 
+    	clearMaskOnLostFocus: true, 
+    	digitsOptional: false,
+	});
+	
 	$('#submit_bank').prop('disabled', true);
 
-	// button tambah
+	// event on click button tambah
 	$('#tambah').on('click', function(){
+		console.log('Button Tambah Bank Clicked...');
+
 		resetForm();
 		$('.field-saldo').css('display', 'block');
 		$('#submit_bank').prop('value', 'action-add');
@@ -12,15 +26,17 @@ $(document).ready(function(){
 		$('#modalBank').modal();
 	});
 
-	// submit bank
+	// event on submit form bank
 	$('#form_bank').submit(function(e){
+		console.log('Submit Bank Clicked...');
+		
 		e.preventDefault();
 		submit();
 
 		return false;
 	});
 
-	// on change field
+	// event on change field
 	$('.field').on('change', function(){
 		if(this.value !== ""){
 			$('.field-'+this.id).removeClass('has-error').addClass('has-success');
@@ -31,18 +47,6 @@ $(document).ready(function(){
 			$(".pesan-"+this.id).text('');	
 		}
 	});
-
-	// input mask
-	$('.input-mask-uang').inputmask({ 
-    	alias : 'currency',
-    	prefix: '', 
-    	radixPoint: ',',
-    	digits: 0,
-    	groupSeparator: '.', 
-    	clearMaskOnLostFocus: true, 
-    	digitsOptional: false,
-    });
-
 });
 
 /**
@@ -153,8 +157,6 @@ function getEdit(id){
  */
 function setError(error){
 	$.each(error, function(index, item){
-		// console.log(index);
-
 		if(item != ""){
 			$('.field-'+index).removeClass('has-success').addClass('has-error');
 			$('.pesan-'+index).text(item);

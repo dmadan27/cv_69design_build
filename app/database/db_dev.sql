@@ -107,13 +107,13 @@ CREATE TABLE IF NOT EXISTS proyek(
 		ON DELETE RESTRICT ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
--- Tabel Detail Proyek (angsuran)
+-- Tabel Detail Proyek (detail pembayaran)
 CREATE TABLE IF NOT EXISTS detail_proyek(
 	id int NOT NULL AUTO_INCREMENT, -- pk
-	id_proyek varchar(50), -- fk
+	id_proyek varchar(50), -- fk proyek
+	id_bank int, -- fk bank
 	tgl date,
-	nama varchar(255), -- nama angsuran / terment pembayaran
-	id_bank int, -- fk id bank
+	nama varchar(255), -- nama pembayaran
 	total double(12,2), -- total angsuran
 
 	CONSTRAINT pk_detail_proyek_id PRIMARY KEY(id),

@@ -1,9 +1,9 @@
 $(document).ready(function(){
-	load_notif();
+	// load_notif();
 
-	setInterval(function(){
-		load_notif();
-	}, 10000);
+	// setInterval(function(){
+	// 	load_notif();
+	// }, 10000);
 });
 
 /**

@@ -41,6 +41,8 @@ $(document).ready(function(){
 
     // btn Export
     $('#exportExcel').on('click', function(){
+        console.log('Button Export Excel Bank clicked...');
+        
         getExport();
     });
 
@@ -60,16 +62,20 @@ function getExport(){
  * @param {string} id 
  */
 function getView(id){
+    console.log('Button View Bank clicked...');
+
 	window.location.href = BASE_URL+'bank/detail/'+id.toLowerCase();
 }
 
 /**
  * Function getDelete
- * Proses request hapus data ke server
+ * Proses request hapus data bank ke server
  * @param {string} id
  * @return {object} response
  */
 function getDelete(id){
+    console.log('Button Hapus Bank clicked...');
+
 	swal({
 		title: "Pesan Konfirmasi",
 		text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
@@ -81,7 +87,7 @@ function getDelete(id){
         closeOnConfirm: false,
 	}, function(){
 		$.ajax({
-			url: BASE_URL+'bank/delete/'+id.toLowerCase(),
+			url: BASE_URL+'bank/delete/'+id,
 			type: 'post',
 			dataType: 'json',
 			data: {},

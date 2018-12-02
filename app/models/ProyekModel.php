@@ -121,6 +121,40 @@
 		}
 
 		/**
+		 * Method get_selectSkk
+		 * Proses get data skk yang aktif untuk keperluan select di proyek
+		 * @return result {array}
+		 */
+		public function get_selectSkk(){
+			$status = 'AKTIF';
+			$query = "SELECT * FROM sub_kas_kecil WHERE status = :status";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':status', $status);
+			$statement->execute();
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+
+		/**
+		 * Method get_selectBank
+		 * Proses get data bank yang aktif untuk keperluan select di proyek
+		 * @return result {array}
+		 */
+		public function get_selectBank(){
+			$status = 'AKTIF';
+			$query = "SELECT * FROM bank WHERE status = :status";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':status', $status);
+			$statement->execute();
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+
+		/**
 		 * Method getLastID
 		 * Proses get data id proyek terakhir
 		 * @param id {string}
@@ -227,17 +261,17 @@
 		 */
 		private function insertDetail($data){
 			// insert detail_proyek
-			$query = 'INSERT INTO detail_proyek (id_proyek, angsuran, persentase, total, status) ';
-			$query .= 'VALUES (:id_proyek, :angsuran, :persentase, :total, :status);';
+			$query = 'INSERT INTO detail_proyek (id_proyek, id_bank, tgl, nama, total) ';
+			$query .= 'VALUES (:id_proyek, :id_bank, :tgl_detail, :nama_detail, :total_detail);';
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
 				array(
 					':id_proyek' => $data['id_proyek'],
-					':angsuran' => $data['angsuran'],
-					':persentase' => $data['persentase'],
-					':total' => $data['total_detail'],
-					':status' => $data['status_detail'],
+					':id_bank' => $data['id_bank'],
+					':tgl_detail' => $data['tgl_detail'],
+					':nama_detail' => $data['nama_detail'],
+					':total_detail' => $data['total_detail'],
 				)
 			);
 			$statement->closeCursor();
@@ -359,15 +393,15 @@
 		 * @return result {array}
 		 */
 		private function updateDetail($data){
-			$query = 'UPDATE detail_proyek SET angsuran = :angsuran, persentase = :persentase, total = :total, status = :status WHERE id = :id;';
+			$query = 'UPDATE detail_proyek SET tgl = :tgl_detail, nama = :nama_detail, id_bank = :id_bank, total = :total_detail, status = :status WHERE id = :id;';
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
 				array(
 					':id' => $data['id'],
-					':angsuran' => $data['angsuran'],
-					':persentase' => $data['persentase'],
-					':total' => $data['total_detail'],
-					':status' => $data['status_detail'],
+					':id_bank' => $data['id_bank'],
+					':tgl_detail' => $data['tgl_detail'],
+					':nama_detail' => $data['nama_detail'],
+					':total_detail' => $data['total_detail'],
 				)
 			);
 			$statement->closeCursor();

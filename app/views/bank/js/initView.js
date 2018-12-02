@@ -40,13 +40,15 @@ $(document).ready(function(){
 
     // on click button edit
     $('#btn_edit').on('click', function(){
-        console.log('Button Edit Clicked...');
+        console.log('Button Edit Bank Clicked...');
+
         getEdit($('#id').val());
     });
 
     // on click button delete
     $('#btn_delete').on('click', function(){
-        console.log('Button Delete Clicked...');
+        console.log('Button Delete Bank Clicked...');
+
         getDelete($('#id').val());
     });
 
@@ -83,7 +85,7 @@ function getDelete(id){
         closeOnConfirm: false,
 	}, function(){
 		$.ajax({
-			url: BASE_URL+'bank/delete/'+id.toLowerCase(),
+			url: BASE_URL+'bank/delete/'+id,
 			type: 'post',
 			dataType: 'json',
 			data: {},
@@ -110,5 +112,7 @@ function getDelete(id){
  * 
  */
 function back(){
+    console.log('Button Back Bank Clicked...');
+
     window.location.href = BASE_URL+'bank/';
 }
