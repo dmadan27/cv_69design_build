@@ -32,6 +32,14 @@
 				                        <span class="help-block small pesan pesan-id_kas_kecil"></span>
 				                      </div>
 
+				                      <!-- field ID Bank -->
+						                <div class="form-group field-id_bank has-feedback">
+						                  <label for="id">ID Bank</label>
+						                    <select class="form-control field select2" name="id_bank" id="id_bank" style="width: 100%;"> 
+						                    </select>
+						                  <span class="help-block small pesan pesan-id_bank"></span>
+						                </div>
+
 				                      <!-- field tgl -->
 				                      <div class="form-group field-tgl has-feedback">
 				                        <label for="tgl">Tanggal</label>
@@ -71,7 +79,22 @@
 				                      </div>
 				              </fieldset>
 						</div>
-					</div>		
+					</div>	
+
+					<!-- Kolom Pemilihan Pengajuan Sub Kas Kecil   -->
+					<div class="row">
+						<div class="col-md-12">
+
+							 <!-- field ID Pengajuan Sub Kas Kecil -->
+		                      <div class="form-group field-id_pengajuan_sub_kas_kecil has-feedback">
+		                        <label for="id_pengajuan_sub_kas_kecil">Pengajuan Sub Kas Kecil</label>
+									<select class="form-control field select2" name="id_pengajuan_sub_kas_kecil" id="id_pengajuan_sub_kas_kecil" style="width: 100%;"> 
+									</select>
+		                        <span class="help-block small pesan pesan-id_pengajuan_sub_kas_kecil"></span>
+		                      </div>
+
+						</div>
+					</div>
 				
 					<!-- modal footer -->
 					<div class="modal-footer">

@@ -81,6 +81,20 @@
 		}
 
 		/**
+		*
+		*/
+		public function getBYid_fromHistoryPembelian($id){
+			$query = "SELECT * FROM v_history_pembelian_operasionalproyek WHERE id = :id;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+
+		/**
 		* 
 		*/
 		public function insert($data){
@@ -196,14 +210,29 @@
 		* 
 		*/
 		public function delete($id){
+			// TRANSACT
 			try{
+				$query = 'CALL hapus_operasional_proyek_versi2 (:id, :tgl, :ket);';
+
 				$this->koneksi->beginTransaction();
 
-				$this->deleteOperasionalProyek($id);
+				$statement = $this->koneksi->prepare($query);
+				$statement->execute(
+					array(
+						':id' => $id,
+						':tgl' => $tgl,
+						':ket' => $ket,
+							
+					)
+				);
+				$statement->closeCursor();
 
 				$this->koneksi->commit();
 
-				return true;
+				// return array(
+				// 	'success' => true,
+				// 	'error' => NULL
+				// );
 			}
 			catch(PDOException $e){
 				$this->koneksi->rollback();
@@ -215,15 +244,18 @@
 		/**
 		* 
 		*/
-		private function deleteOperasionalProyek($id){
-			$query = "CALL hapus_operasional_proyek_revision (
-			:id, :total
+		public function deleteOperasionalProyek($data){
+			$query = "CALL hapus_operasional_proyek_versi2 (
+			:id, 
+			:tgl,
+			:total
 			);";
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
 				array(
-					':id' => $id,
-					':total' => $total
+					':id' => $data['id'],
+					':tgl' => $data['tgl'],
+					':ket' => $data['ket']		
 				)
 			);
 			$statement->closeCursor();

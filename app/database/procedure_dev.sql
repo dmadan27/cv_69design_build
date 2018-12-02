@@ -323,7 +323,7 @@
 
 -- Procedure Hapus Data Proyek
 	delimiter //
-	CREATE PROCEDURE hapus_proyek(
+	CREATE PROCEDURE pengajuproyek(
 		in id_param varchar(50)
 	)
 	BEGIN
@@ -407,10 +407,42 @@
 
 
 -- Procedure Tambah Data Pengajuan Kas Kecil
+	
+	-- FROM JAKA
+	-- harus d review bersama yah ^_^
 
+	--FLOW
 	-- 1. insert ke tabel pengajuan kas kecil
 	-- 2. insert ke detail pengajuan kas_kecil
+	delimiter //
+	CREATE PROCEDURE tambah_pengajuan_kas_kecil(
+		IN id_param varchar(50),
+		IN id_kas_kecil_param varchar(10),
+		IN id_bank_param int,
+		IN tgl_param date,
+		IN nama_param varchar(50),
+		IN total_param double(12,2),
+		IN status_param enum('DISETUJUI','PERBAIKI','DITOLAK','PENDING'),
+		IN id_pengajuan_sub_kas_kecil_param varchar(50)
+	)
+	BEGIN
 
+		-- insert ke pengajuan kas kecil
+			
+			INSERT into pengajuan_kas_kecil 
+			(id, id_kas_kecil, id_bank, tgl, nama, total, status)
+				VALUES
+			(id_param, id_kas_kecil_param, id_bank_param, tgl_param, nama_param, total_param, status_param);
+
+		-- insert ke detail pengajuan kas kecil
+
+			INSERT INTO detail_pengajuan_kas_kecil
+			(id_pengajuan, id_pengajuan_sub_kas_kecil)
+				VALUES
+			(id_param, id_pengajuan_sub_kas_kecil_param);		
+			
+	END//
+	delimiter ;
 
 -- Procedure Edit Data Pengajuan Kas Kecil
 
@@ -424,6 +456,23 @@
 	-- 1. select data pengajuan kas kecil (mana yang mau di hapus)
 	-- 2. delete data pengajuan kas kecil
 	-- 3. delete data detail pengajuan kas kecil
+
+	-- FROM JAKA
+	-- need review bareng ^_^
+	delimiter //
+	CREATE PROCEDURE hapus_pengajuan_kas_kecil(
+		IN id_param varchar(50)
+	)
+	BEGIN
+
+		-- hapus detail pengajuan kas kecil
+		DELETE FROM detail_pengajuan_kas_kecil where id_pengajuan = id_param; 
+
+		-- hapus pengajuan kas kecil
+		DELETE FROM pengajuan_kas_kecil where id = id_param;
+
+	END//
+	delimiter ;
 
 
 -- Procedure Edit Status Data Pengajuan Kas Kecil

@@ -155,10 +155,13 @@
 						$data = array(
 							'id' => $this->validation->validInput($data['id']),
 							'id_kas_kecil' =>$this->validation->validInput($data['id_kas_kecil']),
+							'id_bank' =>$this->validation->validInput($data['id_bank']),
 							'tgl' => $this->validation->validInput($data['tgl']),
 							'nama' => $this->validation->validInput($data['nama']),
 							'total' => $this->validation->validInput($data['total']),
 							'status' => $this->validation->validInput($data['status']),
+							'id_pengajuan_sub_kas_kecil' => $this->validation->validInput($data['id_pengajuan_sub_kas_kecil'])
+								
 						);
 
 						// insert pengajuan kas kecil
@@ -296,13 +299,17 @@
 
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
 			);
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',	
 				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
 				'app/views/pengajuan_kas_kecil/js/initView.js',
 				'app/views/pengajuan_kas_kecil/js/initForm.js',
+				'app/views/pengajuan_kas_kecil/js/initView.js',
+					
 			);
 
 			$config = array(
@@ -320,9 +327,12 @@
 
 
 
+
+
 			$data = array(
 				'id' => $data_detail['id'],
 				'id_kas_kecil' => $data_detail['id_kas_kecil'],
+				'id_bank' => $data_detail['id_bank'],
 				'tgl' => $data_detail['tgl'],
 				'nama' => $data_detail['nama'],
 				'total' => $data_detail['total'],
@@ -527,6 +537,8 @@
 			$this->validation->set_rules($data['id'], 'ID Pengajuan Kas Kecil', 'id', 'string | 1 | 255 | required');
 			// id_kas_kecil
 			$this->validation->set_rules($data['id_kas_kecil'], 'ID Pengajuan Kas Kecil', 'id_kas_kecil', 'string | 1 | 255 | required');
+			// id_bank
+			$this->validation->set_rules($data['id_bank'], 'ID Bank', 'id_bank', 'string | 1 | 255 | required');
 			// tgl
 			$this->validation->set_rules($data['tgl'], 'Tanggal Pengajuan Kas Kecil', 'tgl', 'string | 1 | 255 | required');
 			// nama pengajuan kas kecil
@@ -535,6 +547,9 @@
 			$this->validation->set_rules($data['total'], 'Total Pengajuan', 'total', 'nilai | 1 | 99999999 | required');
 			// status
 			$this->validation->set_rules($data['status'], 'Status Pengajuan', 'status', 'string | 1 | 255 | required');
+			// ID PSKK
+			$this->validation->set_rules($data['id_pengajuan_sub_kas_kecil'], 'ID SKK', 'id_pengajuan_sub_kas_kecil', 'string | 1 | 255 | required');
+			
 			
 			return $this->validation->run();
 			
@@ -591,6 +606,41 @@
 		/**
 		*
 		*/
+		public function get_nama_bank(){
+			$this->model('BankModel');
+			$data_nama_bank = $this->BankModel->getAll();
+			$data = array();
+
+			foreach($data_nama_bank as $row){
+				$dataRow = array();
+				$dataRow['id'] = $row['id'];
+				$dataRow['text'] = $row['nama']. ' - '.$row['saldo'];
+
+				$data[] = $dataRow;
+			}
+
+			echo json_encode($data);
+		}
+
+		public function get_id_pengajuan(){
+			$this->model('Pengajuan_sub_kas_kecilModel');
+
+			$data_SKK = $this->Pengajuan_sub_kas_kecilModel->getAll();
+			$data = array();
+
+			foreach($data_SKK as $row){
+				$dataRow = array();
+				$dataRow['id'] = $row['id'];
+				$dataRow['text'] = $row['id'];
+				$data[] = $dataRow;
+			}
+
+			echo json_encode($data);
+		}
+
+		/**
+		*
+		*/
 		public function get_last_id(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = !empty($this->Pengajuan_kasKecilModel->getLastID()['id']) ? $this->Pengajuan_kasKecilModel->getLastID()['id'] : false;
@@ -622,6 +672,51 @@
 			
 			echo json_encode($data_pkk_disetujui);
 
+		}
+
+		public function get_pengajuan_sub_kas_kecil(){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$this->model('Pengajuan_sub_kas_kecilModel');
+				
+				// config datatable
+				$config_dataTable = array(
+					'tabel' => 'v_pengajuan_sub_kas_kecil_full',
+					'kolomOrder' => array(null, 'id_pengajuan', 'id_sub_kas_kecil', 'id_proyek', 'status_laporan', 'pemilik', 'pembangunan', 'kota'),
+					'kolomCari' => array('id_pengajuan', 'id_sub_kas_kecil', 'id_proyek', 'status_laporan', 'pemilik', 'pembangunan', 'kota'),
+					'orderBy' => array('id_pengajuan' => 'desc'),
+					'kondisi' => false,
+				);
+
+				$dataPengajuanFull = $this->Pengajuan_sub_kas_kecilModel->getAllDataTable($config_dataTable);
+
+				$data = array();
+				$no_urut = $_POST['start'];
+				foreach($dataPengajuanFull as $row){
+					$no_urut++;
+					
+					$dataRow = array();
+					$dataRow[] = $no_urut;
+					$dataRow[] = $row['id_pengajuan'];
+					$dataRow[] = $row['id_sub_kas_kecil'];
+					$dataRow[] = $row['id_proyek'];
+					$dataRow[] = $row['status_laporan'];
+					$dataRow[] = $row['pemilik'];
+					$dataRow[] = $row['pembangunan'];
+					$dataRow[] = $row['kota'];
+
+					$data[] = $dataRow;
+				}
+
+				$output = array(
+					'draw' => $_POST['draw'],
+					'recordsTotal' => $this->Pengajuan_sub_kas_kecilModel->recordTotal(),
+					'recordsFiltered' => $this->Pengajuan_sub_kas_kecilModel->recordFilter(),
+					'data' => $data,
+				);
+
+				echo json_encode($output);
+			}
+			else { $this->redirect(); }
 		}
 
 

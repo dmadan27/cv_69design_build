@@ -119,20 +119,33 @@
 		* 
 		*/
 		public function insert($data){
-			$query = "INSERT INTO pengajuan_kas_kecil (id, id_kas_kecil, tgl, nama, total, status) VALUES (:id, :id_kas_kecil, :tgl, :nama, :total,  :status);";
+			// $query = "INSERT INTO pengajuan_kas_kecil (id, id_kas_kecil, id_bank, tgl, nama, total, status) VALUES (:id, :id_kas_kecil, :id_bank,  :tgl, :nama, :total,  :status);";
 
 			try{
 				$this->koneksi->beginTransaction();
+
+				$query = "CALL tambah_pengajuan_kas_kecil 
+				(:id, :id_kas_kecil,
+				 :id_bank,
+				 :tgl,
+				 :nama,
+				 :total,
+				 :status,
+				 :id_pengajuan_sub_kas_kecil
+				)";
 
 				$statement = $this->koneksi->prepare($query);
 				$result = $statement->execute(
 					array(
 						':id' => $data['id'],
 						':id_kas_kecil' => $data['id_kas_kecil'],
+						':id_bank' => $data['id_bank'],
 						':tgl' => $data['tgl'],
 						':nama' => $data['nama'],
 						':total' => $data['total'],
-						':status' => $data['status']
+						':status' => $data['status'],
+						':id_pengajuan_sub_kas_kecil' => $data['id_pengajuan_sub_kas_kecil'],
+							
 					)
 				);
 				$statement->closeCursor();

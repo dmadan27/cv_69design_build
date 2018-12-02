@@ -1,5 +1,6 @@
 <?php Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung"); 
 		$o_proyek = $this->data['dataOperasionalProyek'];
+		$dataHistoryPembelanjaan = $this->data['dataHistoryPembelanjaan'];
 ?>
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
@@ -19,6 +20,8 @@
 	<!-- Main content -->
 	<section class="content container-fluid">
 		<input type="hidden" id="id" value="<?= strtolower($o_proyek['id']); ?>">
+		<input type="hidden" id="id" value="<?= strtolower($dataHistoryPembelanjaan['id']); ?>">
+
 		<div class="row">
 			<div class="col-lg-12 col-md-12 col-xs-12">
 				<div class="box">
@@ -151,6 +154,42 @@
 												</div>
 										</div>
 										<div class="tab-pane" id="tab_history_pembelian">
+											<!-- tabel history pembelian -->
+											<div class="panel box box-primary">
+												<div class="box-header with-border">
+													<h6 class="box-title">
+                      									<a data-toggle="collapse" data-parent="#accordion" href="#collapse_historyPembelian">
+								                        	Data History Pembelian
+								                      	</a>
+								                    </h6>
+												</div>
+												<div id="collapse_historyPembelian" class="panel-collapse collapse in">
+													<div class="box-body">
+														<div class="form-group">
+															<!-- export -->
+															<button type="button" class="btn btn-success btn-flat" id="exportExcel_pengajuan"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+														</div>
+														<table id="historyPembelian" class="table table-bordered table-hover" style="width: 100%;">
+															<thead>
+																<tr><!-- 
+																	<th class="text-right">No</th> -->
+																	<th>ID</th>
+																	<th>Tanggal</th>
+																	<th>Nama</th>
+																	<th>Total</th>
+																	<th>Status Lunas</th>
+																	<th>ID Distributor</th>
+																	<th>Nama Distributor</th>
+																	<th>Pemilik</th>
+																</tr>
+															</thead>
+															<tbody>
+															</tbody>
+														</table>
+													</div>
+												</div>
+											</div>
+
 										</div>
 									</div>
 								</div>

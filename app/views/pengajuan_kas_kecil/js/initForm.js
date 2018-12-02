@@ -1,5 +1,8 @@
 $(document).ready(function(){
 
+	setnamaKasKecil();
+	setNamaBank();
+	setIDPengajuanSubKasKecil();
 	setStatus();
 	$('#submit_pengajuan_kas_kecil').prop('disabled', true);
 	
@@ -13,6 +16,18 @@ $(document).ready(function(){
 				placeholder: "Pilih Kas Kecil",
 				allowClear: true
 			});
+
+			$('#id_bank').select2({
+		    	placeholder: "Pilih Bank",
+				allowClear: true
+	    	});
+
+	    	$('#id_pengajuan_sub_kas_kecil').select2({
+		    	placeholder: "Pilih ID SKK",
+				allowClear: true
+	    	});
+
+	    	
 
 			$('#id').prop('disabled', true);
 			// $('.field-saldo').css('display', 'block');
@@ -30,8 +45,7 @@ $(document).ready(function(){
 
 
 	// Inisiasi Function
-	setnamaKasKecil();
-
+	
 
 	
 
@@ -99,10 +113,12 @@ function getDataForm(){
 	// data.append('token', $('#token_form').val().trim());
 	data.append('id', $('#id').val().trim()); // id
 	data.append('id_kas_kecil', $('#id_kas_kecil').val().trim()); // id kas kecil
+	data.append('id_bank', $('#id_bank').val().trim()); // id bank
 	data.append('tgl', $('#tgl').val().trim()); // tgl
 	data.append('nama', $('#nama').val().trim()); // nama pengajuan
 	data.append('total', total); // total
 	data.append('status', $('#status').val().trim()); // status pengajuan kas kecil
+	data.append('id_pengajuan_sub_kas_kecil', $('#id_pengajuan_sub_kas_kecil').val().trim()); // ID Pengajuan sub kas kecil
 	data.append('action', $('#submit_pengajuan_kas_kecil').val().trim()); // action
 
 	return data;
@@ -240,6 +256,48 @@ function setnamaKasKecil(){
 
 }
 
+function setNamaBank(){
+	$.ajax({
+		url: BASE_URL+'pengajuan-kas-kecil/get-nama-bank',
+		dataType: 'json',
+		beforeSend: function(){},
+		success: function(data){
+			console.log(data);
+			$.each(data, function(index, item){
+				var newOption = new Option(item.text, item.id);
+				$('#id_bank').append(newOption).trigger('change');
+			});
+			$('#id_bank').val(null).trigger('change');
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+            console.log(jqXHR, textStatus, errorThrown);
+            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+        }
+	})			
+
+}
+
+function setIDPengajuanSubKasKecil(){
+	$.ajax({
+		url: BASE_URL+'pengajuan-kas-kecil/get-id-pengajuan',
+		dataType: 'json',
+		beforeSend: function(){},
+		success: function(data){
+			console.log(data);
+			$.each(data, function(index, item){
+				var newOption = new Option(item.text, item.id);
+				$('#id_pengajuan_sub_kas_kecil').append(newOption).trigger('change');
+			});
+			$('#id_pengajuan_sub_kas_kecil').val(null).trigger('change');
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+            console.log(jqXHR, textStatus, errorThrown);
+            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+        }
+	})			
+
+}
+
 /**
 *
 */
@@ -266,7 +324,7 @@ function generateID(){
 function setStatus(){
 	var status = [
 		{value: "DISETUJUI", text: "DISETUJUI"},
-		{value: "DIPERBAIKI", text: "DIPERBAIKI"},
+		{value: "PERBAIKI", text: "PERBAIKI"},
 		{value: "DITOLAK", text: "DITOLAK"},
 		{value: "PENDING", text: "PENDING"},
 	];
