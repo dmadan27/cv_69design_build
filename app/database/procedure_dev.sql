@@ -782,6 +782,10 @@ C
 
 
 -- Procedure Edit Data Operasional
+	-- 1. select id operasional 
+	-- 2. edit sesuai data yang baru
+	-- 3. insert ke mutasi kembali (keterangan : edit data operasional dengan id 'x' )
+
 
 
 -- Procedure Hapus Data Operasional
