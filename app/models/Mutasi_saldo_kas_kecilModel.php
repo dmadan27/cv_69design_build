@@ -28,7 +28,7 @@
 				$statement->execute();
 				$result = $statement->fetchAll();
 
-				return $statement;
+				return $result;
 			}
 
 			/**

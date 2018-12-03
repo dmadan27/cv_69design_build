@@ -9,10 +9,10 @@
 
 		private $token;
 		// private $status = false;
-		private $success = false;
-		private $notif = array();
-		private $error = array();
-		private $message = NULL;
+		// private $success = false;
+		// private $notif = array();
+		// private $error = array();
+		// private $message = NULL;
 
 
 		/**
@@ -66,7 +66,7 @@
 					'tabel' => 'mutasi_saldo_kas_kecil',
 					'kolomOrder' => array(null, 'id', 'id_kas_kecil', 'tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
 					'kolomCari' => array('id','id_kas_kecil', 'tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
-					'orderBy' => false,
+					'orderBy' => array('id' => 'desc'),
 					'kondisi' => false,
 				);
 
@@ -88,7 +88,7 @@
 					
 					$dataRow = array();
 					$dataRow[] = $no_urut;
-					$dataRow[] = $row['id'];
+					// $dataRow[] = $row['id'];
 					$dataRow[] = $row['id_kas_kecil'];
 					$dataRow[] = $row['tgl'];
 					$dataRow[] = $row['uang_masuk'];
