@@ -4,7 +4,7 @@
 	/**
 	* 
 	*/
-	class Mutasi_saldo_kas_kecilModel extends Database{
+	class Mutasi_saldo_kas_kecilModel extends Database implements ModelInterface{
 
 		protected $koneksi;
 		protected $dataTable;
@@ -52,6 +52,32 @@
 		* 
 		*/
 		public function getAll(){
+			$query = "SELECT * FROM mutasi_saldo_kas_kecil";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute();
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+
+		public function getById($id){
+
+		}
+
+		public function insert($data){
+
+		}
+
+		public function update($data){
+
+		}
+
+		public function delete($id){
+
+		}
+
+		public function export(){
 			
 		}
 

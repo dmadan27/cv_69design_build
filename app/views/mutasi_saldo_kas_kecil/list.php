@@ -41,28 +41,20 @@
 					</div>
 					<!-- box body -->
 					<div class="box-body">
-						<table id="mutasi_saldo_kas_kecilTable" class="table table-bordered table-hover">
+						<table id="mutasi_saldo_kas_kecilTable" class="table table-bordered table-hover" style="width:100%">
 							<thead>
 								<tr>
+									<th>No</th>
+									<th>ID</th>
 									<th>ID Kas Kecil</th>
 									<th>Tanggal</th>
 									<th>Uang Masuk</th>
 									<th>Uang Keluar</th>
 									<th>Saldo</th>
-									
+									<th>Ket</th>
 								</tr>
 							</thead>
-							<tbody>
-								<?php
-									foreach ($this->data as $key => $value) {
-										echo "<tr>";
-										foreach($value as $row){
-											echo "<td>".$row."</td>";
-										}
-										echo "</tr>";
-									}
-								?>
-							</tbody>
+							<tbody></tbody>
 						</table>
 					</div>
 				</div>
