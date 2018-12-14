@@ -2,7 +2,7 @@
     Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 
     /**
-     * 
+     * Masih tahap pengembangan
      */
     class Excel {
         

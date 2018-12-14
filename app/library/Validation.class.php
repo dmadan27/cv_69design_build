@@ -2,27 +2,27 @@
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 
 	/**
-	* Class validation untuk validasi field-field form yang dikirim ke server
-	* dari menentukan rule, jenis, max-min, dan filter input
-	*/
-	class Validation{
+	 * Class validation untuk validasi field-field form yang dikirim ke server
+	 * dari menentukan rule, jenis, max-min, dan filter input
+	 */
+	class Validation {
 		
 		private $rule = array();
 		private $error = array();
 		private $value = array();
 
 		/**
-		* Fungsi untuk menambahkan rules
-		* terdapat 4 parameter utama
-		* $field => yg menampung nilai dari variabel yg akan di cek
-		* $label => untuk pemberian nama untuk pesan error
-		* $var => untuk pemberian nama untuk get datanya
-		* $rule => setting rule yang akan diberikan
-		* contoh rule: 'jenis | min | max | required/not_required'
-		* jenis: string, huruf, angka, nilai, dan email
-		* min, max berupa int
-		* required: wajib diisi, not_required: tidak wajib
-		*/
+		 * Method set_rules 
+		 * Fungsi untuk menambahkan rules
+		 * @param field {string} menampung nilai dari variabel yg akan di cek
+		 * @param label {string} pemberian nama untuk pesan error
+		 * @param var {string} pemberian nama untuk get datanya
+		 * @param rule {string} setting rule yang akan diberikan 
+		 * 		contoh rule: 'jenis | min | max | required/not_required'
+		 * 			jenis: string, huruf, angka, nilai, dan email
+		 * 			min, max berupa int
+		 * 			required: wajib diisi, not_required: tidak wajib
+		 */
 		public function set_rules($field, $label, $var, $rule){
 			$this->rule[] = array(
 				'field' => $field,
@@ -33,8 +33,10 @@
 		}
 
 		/**
-		* Fungsi run, untuk menjalankan semua pengecekan validasi yang sebelumnya sudah di set
-		*/
+		 * Method run
+		 * Fungsi run, untuk menjalankan semua pengecekan validasi yang sebelumnya sudah di set
+		 * @return result {array}
+		 */
 		public function run(){
 			$cek = true;
 
@@ -82,12 +84,12 @@
 		}
 
 		/**
-		* Fungsi set_validasi
-		* fungsi pendukung untuk mengarahkan validasi sesuai dengan jenis yg di tentukan
-		* terdapat 2 param:
-		* $jenis => string, huruf, angka, nilai, dan email
-		* $data => berupa array yg isinya field, label, min, max, dan required
-		*/
+		 * Method set_validasi
+		 * fungsi pendukung untuk mengarahkan validasi sesuai dengan jenis yg di tentukan
+		 * @param jenis {string} string, huruf, angka, nilai, dan email
+		 * @param data {array} berupa array yg isinya field, label, min, max, dan required
+		 * @return result {array}
+		 */
 		public function set_validasi($jenis, $data){
 			// arahkan validasi sesuai dengan jenisnya
 			switch ($jenis) {
@@ -175,9 +177,12 @@
 		}
 
 		/**
-		* Fungsi validasi untuk string
-		* mengecek alphanumeric dan beberapa karakter yang diijinkan
-		*/
+		 * Method valid_string
+		 * Fungsi validasi untuk string
+		 * mengecek alphanumeric dan beberapa karakter yang diijinkan
+		 * @param data {array}
+		 * @return result {array}
+		 */
 		private function valid_string($data){
 			$cek = true;
 			$pattern = "/^[a-zA-Z0-9-_,.!?&' \/\r\n]*$/";
@@ -202,9 +207,12 @@
 		}
 
 		/**
-		* Fungsi validasi untuk huruf
-		* hanya mengecek huruf
-		*/
+		 * Method valid_huruf
+		 * Fungsi validasi untuk huruf
+		 * hanya mengecek huruf
+		 * @param data {array}
+		 * @return result {array}
+		 */
 		private function valid_huruf($data){
 			$cek = true;
 			$pattern = "/^[a-zA-Z\s]*$/";
@@ -226,13 +234,15 @@
 			}
 			
 			return $output = array('cek' => $cek, 'error' => $error);
-
 		}
 
 		/**
-		* Fungsi validasi untuk angka
-		* hanya mengecek angka, yang di cek hanya angkanya saja, bukan nilainya
-		*/
+		 * Method valid_angka
+		 * Fungsi validasi untuk angka
+		 * hanya mengecek angka, yang di cek hanya angkanya saja, bukan nilainya
+		 * @param data {array}
+		 * @return result {array}
+		 */
 		private function valid_angka($data){
 			$cek = true;
 			$pattern = "/^[0-9]*$/";
@@ -258,9 +268,12 @@
 		}
 
 		/**
-		* Fungsi validasi untuk nilai
-		* hanya mengecek angka, dan nilainya yg dicek
-		*/
+		 * Method valid_nilai
+		 * Fungsi validasi untuk nilai
+		 * hanya mengecek angka, dan nilainya yg dicek
+		 * @param data {array}
+		 * @return result {array}
+		 */
 		private function valid_nilai($data){
 			$cek = true;
 			$pattern = "/^[0-9.]*$/";
@@ -285,8 +298,11 @@
 		}
 
 		/**
-		* Fungsi validasi untuk email
-		*/
+		 * Method vaid_email
+		 * Fungsi validasi untuk email
+		 * @param data {array}
+		 * @return result {array}
+		 */
 		private function valid_email($data){
 			$cek = true;
 
@@ -310,16 +326,18 @@
 		}
 
 		/**
-		* Fungsi validasi untuk file
-		* parameter berupa array:
-		* $configFile = array(
-			'jenis' => (gambar, office, pdf, compress),
-			'error' => error,
-			'size' => size,
-			'tmp_name' => 'tmp_name',
-			'max' => max
-		);
-		*/
+		 * Method validFile
+		 * Fungsi validasi untuk file secara satuan
+		 * @param config {array}
+		 * 		$configFile = array(
+		 * 			'jenis' => (gambar, office, pdf, compress),
+		 * 			'error' => error,
+		 * 			'size' => size,
+		 * 			'tmp_name' => 'tmp_name',
+		 * 			'max' => max
+		 * 		);
+		 * @return result {array}
+		 */
 		public function validFile($configFile){
 			$jenisFile = $configFile['jenis'];
 			$errorFile = $configFile['error'];
@@ -429,8 +447,12 @@
 		}
 
 		/**
-		*
-		*/
+		 * Method validInput
+		 * Proses validasi inputan
+		 * @param data {string}
+		 * @param upper {boolean} default true
+		 * @return result {string}
+		 */
 		public function validInput($data, $upper = true){
 			$data = trim($data); // trim input
 			$data = stripslashes($data); // hilangkan strip slash

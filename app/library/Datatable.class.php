@@ -2,8 +2,8 @@
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 	
 	/**
-	* Class DataTable Server Side
-	*/
+	 * Class DataTable Server Side
+	 */
 	class Datatable extends Database{
 		
 		protected $tabel; // nama tabel
@@ -14,15 +14,18 @@
 		protected $query; // query
 
 		/**
-		* Hal pertama kali yang dijalankan adalah set property sesuai dengan $config yg dikirim
-		* format congig ada 5 poin penting
-		* tabel => berupa string, nama tabel atau view
-		* kolomOrder => berupa array, yang isinya harus disesuaikan dengan tabel yg dibuat di view
-		* kolomCari => berupa array, apa saja yang dapat dicari
-		* orderBy => berupa array dan memakai key, 
-		* key berupa apa yg di order, dan valuenya jenis order
-		* kondisi => berupa string, yaitu Where manual
-		*/
+		 * Method set_config
+		 * @param config {array}
+		 * 
+		 * Hal pertama kali yang dijalankan adalah set property sesuai dengan $config yg dikirim
+		 * format congig ada 5 poin penting
+		 * tabel => berupa string, nama tabel atau view
+		 * kolomOrder => berupa array, yang isinya harus disesuaikan dengan tabel yg dibuat di view
+		 * kolomCari => berupa array, apa saja yang dapat dicari
+		 * orderBy => berupa array dan memakai key, 
+		 * key berupa apa yg di order, dan valuenya jenis order
+		 * kondisi => berupa string, yaitu Where manual
+		 */
 		final public function set_config($config){
 			// set tabel
 			$this->tabel = $config['tabel'];
@@ -37,8 +40,10 @@
 		}
 
 		/**
-		* Fungsi set query awal default untuk datatable
-		*/
+		 * Method setDataTable
+		 * Proses set query awal default untuk datatable
+		 * @return query {string}
+		 */
 		final public function setDataTable(){
 			$search = isset($_POST['search']['value']) ? $_POST['search']['value'] : false;
 			$order = isset($_POST['order']) ? $_POST['order'] : false;
@@ -85,8 +90,10 @@
 		}
 
 		/**
-		* fungsi untuk get query datatable komplit
-		*/
+		 * Method getDataTable
+		 * Proses untuk get query datatable full
+		 * @return query {string}
+		 */
 		final public function getDataTable(){
 			// $this->setDataTable();
 			$this->query = $this->setDataTable();
@@ -100,9 +107,11 @@
 		}
 
 		/**
-		* untuk mendapatkan filter record
-		* sebagai pendukung dalam pagenation datatable
-		*/
+		 * Method recordFilter
+		 * untuk mendapatkan filter record
+		 * sebagai pendukung dalam pagenation datatable
+		 * @return rowCount {int}
+		 */
 		final public function recordFilter(){
 			$koneksi = $this->openConnection();
 
@@ -114,9 +123,11 @@
 		}
 
 		/**
-		* untuk mendapatkan semua jumlah data
-		* sebagai pendukung dalam pagenation datatable
-		*/
+		 * Method recordTotal
+		 * untuk mendapatkan semua jumlah data
+		 * sebagai pendukung dalam pagenation datatable
+		 * @return recordTotal {int}
+		 */
 		final public function recordTotal(){
 			$koneksi = $this->openConnection();
 

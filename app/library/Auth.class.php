@@ -42,12 +42,6 @@
 		}
 
 		/**
-		* Fungsi cek auth mobile
-		* untuk mengecek status user mobile sudah login atau belum
-		* mengecek expired token
-		*/
-
-		/**
 		 * Method cekAuthMobile
 		 * Proses untuk mengecek status user mobile sudah login atau belum
 		 * Pengecekan expired token
@@ -161,8 +155,11 @@
 		}
 
 		/**
-		* Fungsi untuk mengecek token yang dikirim ke client apakah sama dengan token yg di session
-		*/
+		 * Method cekToken
+		 * Fungsi untuk mengecek token yang dikirim ke client apakah sama dengan token yg di session
+		 * 
+		 * Masih tahap pengembangan
+		 */
 		public function cekToken($sess_token, $token, $modul){
 			if(!password_verify($sess_token, $token)){
 				header('Location: '.BASE_URL.$modul.'/');

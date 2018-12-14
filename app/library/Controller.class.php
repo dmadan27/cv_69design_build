@@ -2,14 +2,16 @@
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 	
 	/**
-	* Class Controller, Parent Class
-	* Method Method Utama
-	*/
+	 * Class Controller, Parent Class
+	 * Method Method Utama
+	 */
 	class Controller{
 
 		/**
-		* Fungsi untuk load Library Model.class.php
-		*/
+		 * Method model
+		 * Proses untuk load Library Model.class.php
+		 * @param modelName {string}
+		 */
 		final protected function model($modelName){
 			require_once ROOT.DS.'app'.DS.'models'.DS.ucfirst($modelName).'.php';
 			$class = ucfirst($modelName);
@@ -17,56 +19,65 @@
 		}
 
 		/**
-		* Fungsi untuk load library Page.class.php
-		*/
+		 * Method page
+		 * Proses untuk load library Page.class.php
+		 */
 		final protected function page(){
 			$view = new Page();
 			return $view;
 		}
 
 		/**
-		 * 
+		 * Method excel
+		 * Proses untuk load library Excel.class.php
+		 * @param excel {string} default excel
 		 */
 		final protected function excel($excel = 'excel') {					
 			$this->$excel = new Excel();
 		}
 
 		/**
-		* Fungsi untuk load library Auth.class.php
-		*/
+		 * Method auth
+		 * Proses untuk load library Auth.class.php
+		 * @param auth {string} default auth
+		 */
 		final protected function auth($auth = 'auth'){
 			$this->$auth = new Auth();
 		}
 
 		/**
-		* Fungsi untuk load library Helper.class.php
-		*/
+		 * Method helper
+		 * Proses untuk load library Helper.class.php
+		 * @param helper {string} default helper
+		 */
 		final protected function helper($helper = 'helper'){
 			$this->$helper = new Helper();
 		}
 
 		/**
-		* Fungsi untuk load library Validation.class.php
-		*/
+		 * Method validation
+		 * Proses untuk load library Validation.class.php
+		 * @param validation {string} default validation
+		 */
 		final protected function validation($validation = 'validation'){
 			$this->$validation = new Validation();
 		}
 
 		/**
-		* Fungsi untuk templating layout content, css, js, dan data
-		* terdapat 3 parameter
-		* $content => halaman/content yang ingin dipasang di template layout. contoh: list, test/list
-		* $config => default nilai berupa null, jika diisi harus berupa array
-		* $config = array(
-			'title' => array(
-				'main' => '',
-				'sub' => '',
-			),
-			'css' => array(),
-			'js' => array()
-		)
-		* $data => data yang ingin dilampirkan di layout, dapat berupa array ataupun var langsung
-		*/
+		 * Method layout
+		 * Proses untuk templating layout content, css, js, dan data
+		 * @param content {string} halaman/content yang ingin dipasang di template layout. contoh: list, test/list
+		 * @param config {array} default berupa null, jika diisi harus berupa array
+		 * 		$config = array(
+		 * 			'title' => array(
+		 * 				'main' => {string},
+		 * 				'sub' => {string}
+		 * 			),
+		 * 			'css' => array(),
+		 * 			'js' => array()
+		 * 		)
+		 * @param data {array} default null, data yang ingin diparsing ke template
+		 */
 		final protected function layout($content, $config = null, $data = null){
 			$view = $this->page();
 
@@ -99,21 +110,28 @@
 		}
 
 		/**
-		* Fungsi untuk load view secara langsung tanpa ada hubungan dengan layout
-		*/
+		 * Method view
+		 * Proses untuk load view secara langsung tanpa ada hubungan dengan layout
+		 * @param view {string}
+		 */
 		final protected function view($view){
 			$temp = explode('/', $view);
-			if (count($temp) > 1){
-				$view = $temp[0].DS.$temp[1];
+			
+			$newView = '';
+			for($i=0; $i<count($temp); $i++){
+				if((count($temp)-$i!=1)) $newView .= $temp[$i].DS;
+				else $newView .= $temp[$i];
 			}
 			
-			require_once ROOT.DS.'app'.DS.'views'.DS.$view.'.php';
+			require_once ROOT.DS.'app'.DS.'views'.DS.$newView.'.php';
 		}
 
 		/**
-		* Fungsi untuk redirect ke halaman tertentu
-		* jika diisi kosong secara default mengarah ke home
-		*/
+		 * Method redirect
+		 * Proses untuk redirect ke halaman tertentu
+		 * jika diisi kosong secara default mengarah ke home
+		 * @param url {string}
+		 */
 		final public function redirect($url = BASE_URL){
 			header("Location: ".$url);
 			die();

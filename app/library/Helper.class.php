@@ -2,38 +2,46 @@
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 
 	/**
-	* Class helper, berisi function-function pembantu
-	*/
+	 * Class helper, berisi function-function pembantu
+	 */
 	class Helper{
 
 		/**
-		* Fungsi cetak angka dengan format rupiah
-		* contoh: Rp. 1.590.850,00
-		*/
+		 * Method cetakRupiah
+		 * Proses cetak angka dengan format rupiah
+		 * contoh: Rp 1.590.850,00
+		 * @param value {decimal}
+		 * @return result {string}
+		 */
 		public function cetakRupiah($value){
 			$rupiah = 'Rp '.number_format($value, 2, ',', '.');
 			return $rupiah;
 		}
 
 		/**
-		* Fungsi cetak angka dengan format standar
-		* contoh: 1.000,00, 10.500,00
-		*/
+		 * Method cetakAngka
+		 * Fungsi cetak angka dengan format standar
+		 * contoh: 1.000,00, 10.500,00
+		 * @param value {decimal}
+		 * @return result {string}
+		 */
 		public function cetakAngka($value){
 			$angka = number_format($value, 2, ',', '.');
 			return $angka;
 		}
 
 		/**
-		* Fungsi cetak tgl sesuai dengan format yang di inginkan
-		* param $tgl harus berformat 'yyyy-mm-dd'
-		* param $format :
-		* 'dd-mm-yyyy' (27-02-1995),
-		* 'yyyy-mm-dd' (2018-01-01) format default,
-		* 'd-m-y' (27 Februari 2018),
-		* 'yyyymmdd' (20180101),
-		* 'full (Senin, 27 Februari 1995)'
-		*/
+		 * Method cetakTgl
+		 * Fungsi cetak tgl sesuai dengan format yang di inginkan
+		 * @param tgl {date} format harus 'yyyy-mm-dd' 
+		 * @param format {string} default 'yyyy-mm-dd'
+		 * 		'dd-mm-yyyy' (27-02-1995),
+		 * 		'yyyy-mm-dd' (2018-01-01) format default,
+		 * 		'd-m-y' (27 Februari 2018),
+		 * 		'yyyymmdd' (20180101),
+		 * 		'full (Senin, 27 Februari 1995)'
+		 * @return result {string}
+		 */
 		public function cetakTgl($tgl, $format = 'yyyy-mm-dd'){
 			//array hari
 			$arrHari = array(
@@ -95,23 +103,32 @@
 		}
 
 		/**
-		* Fungsi mengganti data yang kosong menjadi '-' (garis strip)
-		*/
+		 * Method setKosong
+		 * Fungsi mengganti data yang kosong menjadi '-' (garis strip)
+		 * @param data {string}
+		 * @return result {string}
+		 */
 		public function setKosong($data){
 			$temp = ($data == "" || empty($data)) ? "-" : $data;
 			return $temp;
 		}
 
 		/**
-		*
-		*/
+		 * Method cekArray
+		 * @param data {array}
+		 * 
+		 * Masih tahap pengembangan
+		 */
 		public function cekArray($data){
 
 		}
 
 		/**
-		*
-		*/
+		 * Method reArrayFiles
+		 * Proses menyusun multiple file post menjadi array yang mudah dibaca
+		 * @param file_post {array}
+		 * @return result {array}
+		 */
 		public function reArrayFiles($file_post) {
 		    $file_ary = array();
 		    $file_count = count($file_post['name']);
@@ -127,13 +144,18 @@
 		}
 
 		/**
-		*
-		*/
-		public function rollback_file($file, $array = false){
-			if(!$array) unlink($file);
+		 * Method rollback_file
+		 * Proses rollback files / penghapusan file yang sudah diupload di server
+		 * @param paths {array / string} path file yang ingin dihapus
+		 * @param array {boolean} default false
+		 */
+		public function rollback_file($paths, $array = false){
+			if(!$array) {
+				if(file_exists($paths)) { unlink($file); }
+			}
 			else{
-				foreach($file as $value){
-					unlink($value);
+				foreach($paths as $value){
+					if(file_exists($value)) { unlink($value); }
 				}
 			}
 		}

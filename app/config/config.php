@@ -44,6 +44,11 @@
 		define('DB_PASSWORD', ''); // password db
 		define('DB_NAME', '69design-build'); // db yang digunakan
 	}
-	else die();
+	else die(json_encode(
+		array(
+			'success' => false,
+			'message' => 'Access Denied'
+		)
+	));
 
 		

@@ -2,18 +2,21 @@
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 	
 	/**
-	* Class Route
-	* untuk mengarahkan semua request ke controller
-	*/
+	 * Class Route
+	 * untuk mengarahkan semua request ke controller
+	 */
 	class Route{
 		
 		private $__request;
 		private $__controller;
 
 		/**
-		* fungsi untuk set properti request dengan request yg diisi oleh user
-		* support method chaining
-		*/
+		 * Method setUri
+		 * Proses untuk set properti request dengan request yg diisi oleh user
+		 * support method chaining
+		 * @param {string} request
+		 * @return {function} this
+		 */
 		public function setUri($request){
 			// set $_request dari request yg di pinta
 			$this->__request = $request;
@@ -21,9 +24,10 @@
 		}
 
 		/**
-		* fungsi untuk load controller
-		* mengecek request dan mengarahkan ke controller
-		*/
+		 * Method getController
+		 * Proses load controller
+		 * mengecek request dan mengarahkan ke controller
+		 */
 		public function getController(){
 			$uri = explode('/', $this->__request);
 			$class = isset($uri[0]) && ($uri[0] != "") ? strtolower($uri[0]) : DEFAULT_CONTROLLER; // class
@@ -59,9 +63,12 @@
 		}
 
 		/**
-		* fungsi untuk mengarahkan request yg tidak tersedia ke page error
-		* masih tahap pengembangan
-		*/
+		 * Method error
+		 * Proses mengarahkan request yg tidak tersedia ke page error
+		 * masih tahap pengembangan
+		 * 
+		 * @param {string} error
+		 */
 		protected function error($error){
 			switch ($error) {
 				case '403':

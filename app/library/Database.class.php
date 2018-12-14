@@ -2,13 +2,14 @@
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 	
 	/**
-	* Class database untuk open dan close koneksi database
-	*/
+	 * Class database untuk open dan close koneksi database
+	 */
 	class Database{
 
 		/**
-		* Fungsi membuka koneksi memakai PDO
-		*/
+		 * Method openConnection
+		 * Proses membuka koneksi memakai PDO
+		 */
 		public function openConnection(){
 			$dbHost = DB_HOST;
 			$dbName = DB_NAME;
@@ -24,8 +25,10 @@
 		}
 
 		/**
-		* Fungsi tutup koneksi
-		*/
+		 * Method closeConnection
+		 * Proses tutup koneksi
+		 * @param koneksi {new PDO}
+		 */
 		public function closeConnection($koneksi){
 			$koneksi = null;
 		}

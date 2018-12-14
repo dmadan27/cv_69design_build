@@ -7,7 +7,7 @@
 	define('DS', DIRECTORY_SEPARATOR); // pemisah direktori '\'
 	define('STATUS_DEV', 'DEVELOPMENT'); // DEVELOPMENT, LIVE, PRODUCTION 
 
-	// load config
+	/** Load config */
 	require_once "app/config/config.php";
 	require_once "app/config/route.php";
 	require_once "app/library/Database.class.php"; 
@@ -17,7 +17,7 @@
 	require_once "app/library/Datatable.class.php";
 	require_once "app/library/Helper.class.php";
 	require_once "app/library/Validation.class.php";
-	require_once "app/library/Excel.php";
+	require_once "app/library/Excel.class.php";
 
 	// load abstract
 	require_once "app/abstracts/CrudAbstract.php";
@@ -26,6 +26,7 @@
 	// load interface
 	require_once "app/interfaces/ModelInterface.php";
 
+	// get request
 	$request = isset($_SERVER['PATH_INFO']) ? preg_replace("|/*(.+?)/*$|", "\\1", $_SERVER['PATH_INFO']) : DEFAULT_CONTROLLER;
 
 	$route = new Route();

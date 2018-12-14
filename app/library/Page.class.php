@@ -2,11 +2,11 @@
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 	
 	/**
-	* Class Page
-	* Berfungsi untuk merender halaman layout
-	* Menambah Header, Sidebar, Content, dan Footer
-	* Menambah CSS, JS, title content, set data
-	*/
+	 * Class Page
+	 * Berfungsi untuk merender halaman layout
+	 * Menambah Header, Sidebar, Content, dan Footer
+	 * Menambah CSS, JS, title content, set data
+	 */
 	class Page{
 		private $title = array();
 		private $header;
@@ -19,18 +19,20 @@
 		private $data;
 
 		/**
-		* Fungsi untuk set title
-		* Main Title => Title utama
-		* Sub Title => Sub Title
-		*/
+		 * Method setTitle
+		 * Fungsi untuk set title
+		 * @param mainTitle {string} Title utama
+		 * @param subTitle {string} Sub Title
+		 */
 		public function setTitle($mainTitle = '', $subTitle = ''){
 			$this->title['main'] = $mainTitle;
 			$this->title['sub'] = $subTitle;
 		}
 
 		/**
-		* Fungsi untuk set header
-		*/
+		 * Method setHeader
+		 * Fungsi untuk set header
+		 */
 		public function setHeader(){
 			ob_start();
 			require_once ROOT.DS.'app'.DS.'views'.DS.'layout'.DS.'header.php';
@@ -38,8 +40,9 @@
 		}
 
 		/**
-		* Fungsi untuk set sidebar
-		*/
+		 * Method setSidebar
+		 * Fungsi untuk set sidebar
+		 */
 		public function setSidebar(){
 			ob_start();
 			require_once ROOT.DS.'app'.DS.'views'.DS.'layout'.DS.'sidebar.php';
@@ -47,29 +50,36 @@
 		}
 
 		/**
-		* Fungsi untuk set content
-		*/
+		 * Method setContent
+		 * Fungsi untuk set content
+		 * @param content
+		 */
 		public function setContent($content){
-			$temp = explode('/', $content);
-			if (count($temp) > 1){
-				$content = $temp[0].DS.$temp[1];
+			$temp = explode('/', $view);
+			$newContent = '';
+			for($i=0; $i<count($temp); $i++){
+				if((count($temp)-$i!=1)) $newContent .= $temp[$i].DS;
+				else $newContent .= $temp[$i];
 			}
-
+			
 			ob_start();
-			require_once ROOT.DS.'app'.DS.'views'.DS.$content.'.php';
+			require_once ROOT.DS.'app'.DS.'views'.DS.$newView.'.php';
 			$this->content = ob_get_clean();
 		}
 
 		/**
-		* Fungsi untuk set data
-		*/
+		 * Method setData
+		 * Fungsi untuk set data
+		 * @param data {array}
+		 */
 		public function setData($data){
 			$this->data = $data;
 		}
 
 		/**
-		* Fungsi untuk set footer
-		*/
+		 * Method setFooter
+		 * Fungsi untuk set footer
+		 */
 		public function setFooter(){
 			ob_start();
 			require_once ROOT.DS.'app'.DS.'views'.DS.'layout'.DS.'footer.php';
@@ -77,8 +87,11 @@
 		}
 
 		/**
-		* Fungsi untuk set menu sidebar dinamis
-		*/
+		 * Method setMenuSidebar
+		 * Fungsi untuk set menu sidebar dinamis
+		 * 
+		 * Masih bersifat statis, dan masih dalam tahap pengembangan
+		 */
 		public function setMenuSidebar(){
 			$level = isset($_SESSION['sess_level']) ? $_SESSION['sess_level'] : false;
 
@@ -111,22 +124,27 @@
 		}
 
 		/**
-		* Fungsi untuk menambah css custom kedalam layout
-		*/
+		 * Method addCSS
+		 * Fungsi untuk menambah css custom kedalam layout
+		 * @param cssPath {string}
+		 */
 		public function addCSS($cssPath){
 			$this->css[] = $cssPath;
 		}
 
 		/**
-		* Fungsi untuk menambah js custom kecalam layout
-		*/
+		 * Method addJS
+		 * Fungsi untuk menambah js custom kecalam layout
+		 * @param jsPath {string}
+		 */
 		public function addJS($jsPath){
 			$this->js[] = $jsPath;
 		}
 
 		/**
-		* Fungsi untuk mencetak css yang telah di tambah custom ke dalam layout
-		*/
+		 * Method getCSS
+		 * Fungsi untuk mencetak css yang telah di tambah custom ke dalam layout
+		 */
 		public function getCSS(){
 			foreach ($this->css as $value) {
 				echo '<link rel="stylesheet" href="'.BASE_URL.$value.'">'."\n";
@@ -134,8 +152,9 @@
 		}
 
 		/**
-		* Fungsi untuk mencetak js yang telah ditambah custom ke dalam layout
-		*/
+		 * Method getJS
+		 * Fungsi untuk mencetak js yang telah ditambah custom ke dalam layout
+		 */
 		public function getJS(){
 			foreach ($this->js as $value) {
 				echo '<script src="'.BASE_URL.$value.'"></script>'."\n";
@@ -143,8 +162,9 @@
 		}
 
 		/**
-		* Fungsi rendering layout yang telah di set komponen2nya sebelumnya
-		*/
+		 * Method render
+		 * Fungsi rendering layout yang telah di set komponen2nya sebelumnya
+		 */
 		public function render(){
 			$this->setHeader();
 			$this->setSidebar();
