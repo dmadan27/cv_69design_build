@@ -55,7 +55,8 @@
 		 * @param content
 		 */
 		public function setContent($content){
-			$temp = explode('/', $view);
+			// $temp = explode('/', $view);
+			$temp = explode('/', $content);
 			$newContent = '';
 			for($i=0; $i<count($temp); $i++){
 				if((count($temp)-$i!=1)) $newContent .= $temp[$i].DS;
@@ -63,7 +64,8 @@
 			}
 			
 			ob_start();
-			require_once ROOT.DS.'app'.DS.'views'.DS.$newView.'.php';
+			// require_once ROOT.DS.'app'.DS.'views'.DS.$newView.'.php';
+			require_once ROOT.DS.'app'.DS.'views'.DS.$content.'.php';
 			$this->content = ob_get_clean();
 		}
 
