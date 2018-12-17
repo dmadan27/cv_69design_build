@@ -411,7 +411,7 @@
 	-- FROM JAKA
 	-- harus d review bersama yah ^_^
 
-	--FLOW
+	-- FLOW
 	-- 1. insert ke tabel pengajuan kas kecil
 	-- 2. insert ke detail pengajuan kas_kecil
 	delimiter //
@@ -576,7 +576,7 @@
 
 
 -- Procedure Edit Data Laporan Pengajuan Sub Kas Kecil
-C
+
 
 -- Procedure Hapus Data Laporan Pengajuan Sub Kas Kecil
 
@@ -656,7 +656,7 @@ C
 	delimiter ;
 
 -- Procedure Tambah data Operasional Proyek New
-	delimeter //
+	delimiter //
 	CREATE PROCEDURE tambah_operasional_proyek_new(
 		IN id_param varchar(50),
 		IN id_proyek_param varchar(50),
@@ -696,7 +696,7 @@ C
 				VALUES
 				(id_bank_param, tgl_param, 0, total_param, (get_saldo - total_param),  ket_param);
 	END//
-	delimeter ;
+	delimiter ;
 
 
 -- Procedure Edit Data Operasional Proyek
@@ -704,7 +704,7 @@ C
 
 
 -- Procedure Hapus Data Operasional Proyek
-	delimeter //
+	delimiter //
 	CREATE PROCEDURE hapus_operasional_proyek_versi2(
 		IN id_param varchar(50),
 		IN tgl_param date,
@@ -742,7 +742,7 @@ C
 		-- hapus operasional proyek
 		DELETE  FROM operasional_proyek where id = id_param;
 	END//
-	delimeter ;
+	delimiter ;
 
 
 -- Procedure Tambah Data Operasional
@@ -859,7 +859,7 @@ C
 -- ===================================================================================
 -- Procedure edit_laporan_sub_kas_kecil
 -- belum fix
-delimeter //
+delimiter //
 CREATE PROCEDURE edit_laporan_sub_kas_kecil (
     IN id_pengajuan_param varchar(50),
     IN id_sub_kas_kecil_param varchar(10),
@@ -920,7 +920,7 @@ BEGIN
 
 
 END//
-delimeter; 
+delimiter; 
 
 
 # =================================================================== #
