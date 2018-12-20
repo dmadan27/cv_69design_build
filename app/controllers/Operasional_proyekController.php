@@ -450,7 +450,7 @@
 
 			// var_dump($dataHistoryPembelanjaan);
 
-			if((empty($id) || $id == "") || !$dataOperasionalProyek) $this->redirect(BASE_URL."operasional-proyek/");
+			// if((empty($id) || $id == "") || !$dataOperasionalProyek) $this->redirect(BASE_URL."operasional-proyek/");
 
 
 			// if((empty($id) || $id == "") || !$dataHistoryPembelanjaan) $this->redirect(BASE_URL."operasional-proyek/");
