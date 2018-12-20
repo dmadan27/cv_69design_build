@@ -448,7 +448,7 @@
 
 			$dataHistoryPembelanjaan = !empty($this->Operasional_ProyekModel->getBYid_fromHistoryPembelian($id)) ? $this->Operasional_ProyekModel->getBYid_fromHistoryPembelian($id) : false;
 
-			var_dump($dataHistoryPembelanjaan);
+			// var_dump($dataHistoryPembelanjaan);
 
 			if((empty($id) || $id == "") || !$dataOperasionalProyek) $this->redirect(BASE_URL."operasional-proyek/");
 
@@ -938,10 +938,10 @@
 					'kolomOrder' => array('id', 'tgl', 'nama', 'total', 'status_lunas', 'ID_DISTRIBUTOR', 'NAMA_DISTRIBUTOR','pemilik'),
 					'kolomCari' => array('id', 'tgl', 'nama', 'total', 'status_lunas', 'ID_DISTRIBUTOR', 'NAMA_DISTRIBUTOR','pemilik'),
 					'orderBy' => array('id' => 'desc'),
-					'kondisi' => 'WHERE id = "'.$id.'"',
+					'kondisi' => 'where id = "'.$id.'"',
 				);
 
-				$dataHistoryPembelanjaan = $this->operasional_ProyekModel->getAllDataTable($config_dataTable);
+				$dataHistoryPembelanjaan = $this->Operasional_ProyekModel->getAllDataTable($config_dataTable);
 
 				$data = array();
 				// $no_urut = $_POST['start'];
@@ -981,8 +981,8 @@
 
 				$output = array(
 					'draw' => $_POST['draw'],
-					'recordsTotal' => $this->operasional_ProyekModel->recordTotal(),
-					'recordsFiltered' => $this->operasional_ProyekModel->recordFilter(),
+					'recordsTotal' => $this->Operasional_ProyekModel->recordTotal(),
+					'recordsFiltered' => $this->Operasional_ProyekModel->recordFilter(),
 					'data' => $data,
 				);
 
