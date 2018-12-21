@@ -160,3 +160,16 @@ CREATE OR REPLACE VIEW v_pengajuan_sub_kas_kecil AS
 	JOIN detail_pengajuan_sub_kas_kecil dpskk ON pskk.id=dpskk.id_pengajuan
 	GROUP BY pskk.id;
 -- ========================================================================================
+
+
+/* VIEW HISTORY PEMBELIAN
+	LEGEND : Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Operasional Proyek
+*/
+CREATE OR REPLACE VIEW v_history_pembelian_operasionalProyek AS
+SELECT
+	 opr.id, opr.tgl, opr.nama, opr.total, opr.status_lunas,
+		 d.id ID_DISTRIBUTOR, d.nama NAMA_DISTRIBUTOR, d.pemilik
+	FROM operasional_proyek opr 
+		JOIN	
+			distributor d
+				ON opr.id_distributor = d.id
