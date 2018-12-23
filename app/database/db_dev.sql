@@ -85,6 +85,16 @@ CREATE TABLE IF NOT EXISTS token_lupa_password(
 		ON DELETE RESTRICT ON UPDATE RESTRICT
 )ENGINE=InnoDb;
 
+-- Tabel Bank
+CREATE TABLE IF NOT EXISTS bank(
+	id int NOT NULL AUTO_INCREMENT, -- pk
+	nama varchar(255), -- nama bank / jenis bank, Bank BCA, Giro BCA, Mandiri, dll
+	saldo double(12,2), -- saldo bank
+	status enum('AKTIF', 'NONAKTIF'), -- status aktif bank
+
+	CONSTRAINT pk_bank_id PRIMARY KEY(id)
+)ENGINE=InnoDb;
+
 -- Tabel Proyek
 CREATE TABLE IF NOT EXISTS proyek(
 	id varchar(50) NOT NULL UNIQUE, -- pk, otomatis
@@ -97,14 +107,11 @@ CREATE TABLE IF NOT EXISTS proyek(
 	estimasi smallint, -- estimasi waktu dalam bulan
 	total double(12,2), -- total nilai rab
 	dp double(12,2), -- dp
-	id_bank int, -- fk bank, khusus untuk pendataan uang dp
 	cco double(12,2), -- change contract order
 	progress int,
 	status enum('SELESAI', 'BERJALAN'), -- status proyek
 
-	CONSTRAINT pk_proyek_id PRIMARY KEY(id),
-	CONSTRAINT fk_proyek_id_bank FOREIGN KEY(id_bank) REFERENCES bank(id)
-		ON DELETE RESTRICT ON UPDATE CASCADE
+	CONSTRAINT pk_proyek_id PRIMARY KEY(id)
 )ENGINE=InnoDb;
 
 -- Tabel Detail Proyek (detail pembayaran)
@@ -115,6 +122,7 @@ CREATE TABLE IF NOT EXISTS detail_proyek(
 	tgl date,
 	nama varchar(255), -- nama pembayaran
 	total double(12,2), -- total angsuran
+	is_DP char(1), -- check DP atau bukan
 
 	CONSTRAINT pk_detail_proyek_id PRIMARY KEY(id),
 	CONSTRAINT fk_detail_proyek_id_proyek FOREIGN KEY(id_proyek) REFERENCES proyek(id)
@@ -134,16 +142,6 @@ CREATE TABLE IF NOT EXISTS logistik_proyek(
 		ON DELETE RESTRICT ON UPDATE CASCADE,
 	CONSTRAINT fk_logistik_proyek_id_sub_kas_kecil FOREIGN KEY(id_sub_kas_kecil) REFERENCES sub_kas_kecil(id)
 		ON DELETE RESTRICT ON UPDATE CASCADE
-)ENGINE=InnoDb;
-
--- Tabel Bank
-CREATE TABLE IF NOT EXISTS bank(
-	id int NOT NULL AUTO_INCREMENT, -- pk
-	nama varchar(255), -- nama bank / jenis bank, Bank BCA, Giro BCA, Mandiri, dll
-	saldo double(12,2), -- saldo bank
-	status enum('AKTIF', 'NONAKTIF'), -- status aktif bank
-
-	CONSTRAINT pk_bank_id PRIMARY KEY(id)
 )ENGINE=InnoDb;
 
 -- Tabel Operasional (Pengeluaran di luar proyek)
@@ -298,7 +296,6 @@ CREATE TABLE IF NOT EXISTS distributor(
 	id varchar(50) NOT NULL UNIQUE, -- primary key
 	nama varchar(50), -- nama distributor
 	alamat text, -- alamat distributor
-	-- jenis varchar(50), -- jenis distributor
 	no_telp varchar(25), -- telpon 
 	pemilik varchar(50), -- pemilik
 	status enum('AKTIF','NONAKTIF'),
@@ -310,7 +307,7 @@ CREATE TABLE IF NOT EXISTS distributor(
 CREATE TABLE IF NOT EXISTS operasional_proyek(
 	id varchar(50) NOT NULL UNIQUE,
 	id_proyek varchar(50), -- fk proyek
-	id_bank int, -- fk bank
+	-- id_bank int, -- fk bank
 	id_kas_besar varchar(10), -- fk kas besar
 	id_distributor varchar(10), -- fk distributor
 	tgl date,
@@ -325,25 +322,17 @@ CREATE TABLE IF NOT EXISTS operasional_proyek(
 	CONSTRAINT pk_operasional_proyek_id PRIMARY KEY(id),
 	CONSTRAINT fk_operasional_proyek_id_proyek FOREIGN KEY(id_proyek) REFERENCES proyek(id)
 		ON DELETE RESTRICT ON UPDATE CASCADE,
-	CONSTRAINT fk_operasional_proyek_id_bank FOREIGN KEY(id_bank) REFERENCES bank(id)
-		ON DELETE RESTRICT ON UPDATE CASCADE,
 	CONSTRAINT fk_operasional_proyek_id_kas_besar FOREIGN KEY(id_kas_besar) REFERENCES kas_besar(id)
 		ON DELETE RESTRICT ON UPDATE CASCADE,
 	CONSTRAINT fk_operasional_proyek_id_distributor FOREIGN KEY(id_distributor) REFERENCES distributor(id)
 		ON DELETE RESTRICT ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
--- Tabel Detail Operasional Proyek
-CREATE TABLE IF NOT EXISTS detail_operasional_proyek(
-
-)ENGINE=InnoDb;
-
-
 -- Tabel Detail Operasional Proyek_temp
-CREATE TABLE IF NOT EXISTS detail_operasional_proyek_temp(
+CREATE TABLE IF NOT EXISTS detail_operasional_proyek(
  	id int NOT NULL AUTO_INCREMENT, -- pk
  	id_operasional_proyek varchar(50), -- fk operasional proyek
- 	id_bank int,  --fk bank 
+ 	id_bank int,  -- fk bank 
  	nama varchar(255), -- nama angsuran (angsuran ke-n)
  	tgl date, -- tanggl angsuran
  	total double(12,2), -- total angsuran
@@ -354,25 +343,5 @@ CREATE TABLE IF NOT EXISTS detail_operasional_proyek_temp(
  	CONSTRAINT fk_detail_operasional_proyek_id_operasional FOREIGN KEY(id_operasional_proyek) REFERENCES operasional_proyek(id)
 		ON DELETE RESTRICT ON UPDATE CASCADE
 )ENGINE=InnoDb;
-
--- Opsional (tergantung permintaan {apakah akan di data detail nya/ tidak})
--- CREATE TABLE IF NOT EXISTS detail_operasional_proyek(
--- 	id int NOT NULL AUTO_INCREMENT, -- pk
--- 	id_operasional_proyek varchar(50), -- fk operasional proyek
--- 	nama varchar(255), -- nama barang/bahan
--- 	jenis enum('TEKNIS', 'NON-TEKNIS'), -- jenis pengajuan
--- 	satuan varchar(50), -- satuan barang/bahan
--- 	qty int, -- jumlah barang/bahan
--- 	harga double(12,2), -- harga satuan per barang/bahan
--- 	subtotal double(12,2), -- total per detail pengajuan
--- 	status enum('TUNAI', 'KREDIT'), -- status barang/bahan dibeli secara tunai/kredit, default 'tunai'
--- 	harga_asli double(12,2),
--- 	sisa double(12,2),
--- 	status_lunas enum('LUNAS', 'BELUM LUNAS'), -- status pembayaran barang/bahan
-
--- 	CONSTRAINT pk_detail_operasional_proyek PRIMARY KEY(id),
--- 	CONSTRAINT fk_detail_operasional_proyek_id_operasional FOREIGN KEY(id_operasional_proyek) REFERENCES operasional_proyek(id)
--- 		ON DELETE RESTRICT ON UPDATE CASCADE
--- );
 
 # =================================================================== #
