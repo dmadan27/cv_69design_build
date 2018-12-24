@@ -493,8 +493,6 @@
 				'id_proyek' =>   $dataOperasionalProyek['id_proyek'],
 				'pemilik_proyek' =>   $dataOperasionalProyek['pemilik_proyek'],
 				'nama_pembangunan' =>   $dataOperasionalProyek['nama_pembangunan'],
-				'id_bank' =>  $dataOperasionalProyek['id_bank'],
-				'nama_bank' =>  $dataOperasionalProyek['nama_bank'],
 				'id_kas_besar' => $dataOperasionalProyek['id_kas_besar'],
 				'nama_kas_besar' => $dataOperasionalProyek['nama_kas_besar'],
 				'id_distributor' => $dataOperasionalProyek['id_distributor'],
