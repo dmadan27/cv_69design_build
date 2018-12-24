@@ -103,18 +103,7 @@
 																	<td><strong>Nama Pembangunan</strong></td>
 																	<td><?=  $o_proyek['nama_pembangunan'] ?></td>
 																</tr>
-																<tr>
-																	<td colspan="2"><legend style="font-size: 18px;">Bank</legend></td>
-																</tr>
 																
-																<tr>
-																	<td><strong>ID Bank</strong></td>
-																	<td><?=  $o_proyek['id_bank'] ?></td>
-																</tr>
-																<tr>
-																	<td><strong>Nama Bank</strong></td>
-																	<td><?=  $o_proyek['nama_bank'] ?></td>
-																</tr>
 															</table>	
 														</fieldset>
 												</div>
