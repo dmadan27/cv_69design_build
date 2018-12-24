@@ -106,15 +106,14 @@ CREATE OR REPLACE VIEW v_pengajuan_kas_kecil_rev2 AS
 -- View Operasional Proyek
 CREATE OR REPLACE VIEW v_operasional_proyek AS
 	SELECT opr.id , pr.id id_proyek, pr.pemilik pemilik_proyek, pr.pembangunan nama_pembangunan,
-	  b.id id_bank, b.nama nama_bank, kb.id id_kas_besar, kb.nama nama_kas_besar, 
+	  kb.id id_kas_besar, kb.nama nama_kas_besar, 
 	  dst.id id_distributor, dst.nama nama_distributor, opr.tgl tgl_pengajuan, 
 	  opr.nama nama_pengajuan, opr.jenis jenis_pengajuan, opr.total total_pengajuan, opr.sisa sisa_pengajuan, 
 	  opr.status status_pengajuan,  opr.status_lunas status_lunas, opr.ket keterangan
 	   FROM operasional_proyek opr
-	   	JOIN proyek pr ON pr.id = opr.id_proyek
-	   		JOIN  bank b ON b.id = opr.id_bank 
-	   			JOIN kas_besar kb ON kb.id = opr.id_kas_besar
-	   				JOIN distributor dst ON dst.id = opr.id_distributor; 
+	   	JOIN proyek pr ON pr.id = opr.id_proyek 
+   			JOIN kas_besar kb ON kb.id = opr.id_kas_besar
+   				JOIN distributor dst ON dst.id = opr.id_distributor; 
 
 
 -- View Detail Operasional Proyek
