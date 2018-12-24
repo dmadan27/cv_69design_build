@@ -105,6 +105,26 @@
                         <div class="tab-pane" id="data-historypembelian">
                             <div class="row">
                                 <div class="col-md-12">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <!-- export -->
+                                            <button type="button" class="btn btn-success btn-flat" id="exportExcel_pengajuan"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+                                        </div>
+                                            <table id="historyPembelianDistributor" class="table table-bordered table-hover" style="width: 100%;">
+                                                <thead>
+                                                    <tr>
+                                                        <!-- <th class="text-right">No</th> -->
+                                                        <th>ID</th>
+                                                        <th>NAMA TOKO</th>
+                                                        <th>PEMILIK</th>
+                                                        <th>ID OPERASIONAL PROYEK</th>
+                                                        <th>KEBUTUHAN </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                </tbody>
+                                            </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
