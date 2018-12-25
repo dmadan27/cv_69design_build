@@ -6,8 +6,12 @@
 	*/
 	class Operasional_proyek extends CrudAbstract{
 
-		private $token;
-		private $status = false;
+		// private $token;
+		// private $status = false;
+		private $success = false;
+		private $notif = array();
+		private $error = array();
+		private $message = NULL;
 
 		/**
 		*
@@ -180,10 +184,9 @@
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
 				$dataOperasionalProyek = isset($_POST['dataOperasionalProyek']) ? json_decode($_POST['dataOperasionalProyek'], true) : false;
-				$dataDetail = isset($_POST['dataDetail']) ? json_decode($_POST['dataDetail'], true) : false;
+				$dataDetail = isset($_POST['listDetail']) ? json_decode($_POST['listDetail'], true) : false;
 				
-				
-				$error = $notif = array();
+				// $error = $notif = array();
 				
 				// $cekDetail = true;
 
@@ -228,11 +231,12 @@
 
 						$dataInsert = array(
 							'dataOperasionalProyek' => $dataOperasionalProyek,
+							'listDetail'=>$dataDetail
 						);
 
 						// insert data proyek
 						if($this->Operasional_ProyekModel->insert($dataInsert)){
-							$this->status = true;
+							$this->success = true;
 							$_SESSION['notif'] = array(
 								'type' => "success",
 								'title' => "Pesan Berhasil",
@@ -252,7 +256,7 @@
 				}
 
 				$output = array(
-					'status' => $this->status,
+					'status' => $this->success,
 					'notif' => $notif,
 					'error' => $error,
 					'cek' => array(
@@ -387,7 +391,7 @@
 
 					// update data
 					if($this->Operasional_ProyekModel->update($dataUpdate)){
-						$this->status = true;
+						$this->success = true;
 							$_SESSION['notif'] = array(
 								'type' => "success",
 								'title' => "Pesan Berhasil",
@@ -419,7 +423,7 @@
 				}
 
 				$output = array(
-					'status' => $this->status,
+					'status' => $this->success,
 					'notif' => $notif,
 					'error' => $error,
 					'cek' => array(
@@ -568,9 +572,9 @@
 				// 	'ket' => $ket,	
 				// );
 
-				if($this->Operasional_ProyekModel->delete($id)) $this->status =true;
+				if($this->Operasional_ProyekModel->delete($id)) $this->success =true;
 
-				echo json_encode($this->status);
+				echo json_encode($this->success);
 			}
 			else{
 				$this->redirect(); 	

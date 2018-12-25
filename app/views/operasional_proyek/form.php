@@ -185,7 +185,7 @@
                                             <th>Bank</th>
                                             <th>Nama</th>
                                             <th>Tanggal</th>
-                                            <th>Satuan</th>
+                                            <!-- <th>Satuan</th> -->
                                             <th>Total</th>
                                             <th>Aksi</th>
                                           </tr>

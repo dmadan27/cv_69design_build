@@ -199,7 +199,7 @@ $(document).ready(function () {
 						'</tr>'
 					);
 					numbering_listDetail();
-					console.log(listDetail);
+					// console.log(listDetail);
 
 					$("#modalDetailOperasional").modal('hide');
 					resetModal();
@@ -209,6 +209,7 @@ $(document).ready(function () {
 					indexDetail -= 1;
 					setError(output.error);
 				}	
+				console.log(listDetail);
 			},
 			error: function (jqXHR, textStatus, errorThrown){ // error handling
 	            console.log(jqXHR, textStatus, errorThrown);
@@ -314,6 +315,8 @@ $(document).ready(function () {
 	*
 	*/
 	function setValueDetail(data,index){
+
+		
 		$('#id_detail').val(index);
 		$('#id_bank').val(data[index].id_bank);
 		$('#nama_detail').val(data[index].nama_detail);
@@ -476,8 +479,8 @@ function setnamaDistributor(){
 *
 */
 function getDataForm(){
-	var data = new FormData();
-
+	console.log(listDetail)
+	var data = new FormData()
 	// var total = parseFloat($('#total').val().trim()) ? parseFloat($('#total').val().trim()) : $('#total').val().trim();
 
 	var total = ($('#total').inputmask) ? 
@@ -521,17 +524,17 @@ function getDataForm(){
 		status : $('#status').val().trim(),
 		status_lunas : $('#status_lunas').val().trim(),
 		ket : $('#ket').val().trim()
-		
-		
 	}
 
-	// data.append('token', $('#token_form').val().trim());
-	// data.append('dataOperasionalProyek', JSON.stringify(dataOperasionalProyek));
+	var detailList = listDetail
+
+	// // data.append('token', $('#token_form').val().trim());
+	// // data.append('dataOperasionalProyek', JSON.stringify(dataOperasionalProyek));
 	data.append('id', $('#id').val().trim());
 	data.append('dataOperasionalProyek', JSON.stringify(dataOperasionalProyek));
-	// data.append('dataDetail', JSON.stringify(listDetail));
+	data.append('listDetail', JSON.stringify(detailList));
 	data.append('action', $('#submit_operasional_proyek').val().trim());
-
+	
 	return data;
 }
 
@@ -540,7 +543,6 @@ function getDataForm(){
 */
 function submit(){
 	var data = getDataForm();
-
 	$.ajax({
 		url: BASE_URL+'operasional-proyek/'+$('#submit_operasional_proyek').val().trim()+'/',
 		type: 'POST',
