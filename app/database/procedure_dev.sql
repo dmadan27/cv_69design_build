@@ -382,12 +382,14 @@
         DELETE FROM operasional WHERE id_bank = id_param;
 
         -- hapus detail operasional proyek
+        -- 1. hapus detail
         DELETE FROM detail_operasional_proyek WHERE id_operasional_proyek IN (
-            SELECT id FROM operasional_proyek WHERE id_bank = id_param
+            SELECT id FROM operasional_proyek WHERE id = id_operasional_proyek
         );
 
         -- hapus operasional proyek
-        DELETE FROM operasional_proyek WHERE id_bank = id_param;
+        -- ini harus di hapus di operasional proyek aja {tanpa procedure}
+        -- DELETE FROM operasional_proyek WHERE id_bank = id_param;
 
         -- hapus detail pengajuan kas kecil
         DELETE FROM detail_pengajuan_kas_kecil WHERE id_pengajuan IN (
