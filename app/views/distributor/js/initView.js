@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	var HistoryPembelianTable = $("#HistoryPembelianTable").DataTable({
+	var historyPembelianDistributor = $("#historyPembelianDistributor").DataTable({
         "language" : {
             "lengthMenu": "Tampilkan _MENU_ data/page",
             "zeroRecords": "Data Tidak Ada",
@@ -21,7 +21,7 @@ $(document).ready(function(){
         processing: true,
         serverSide: true,
         ajax: {
-            url: BASE_URL+"distributor/get-history-pembelian/"+$('#id').val().trim(),
+            url: BASE_URL+"distributor/get-history-distributor/"+$('#id').val(),
             type: 'POST',
             data: {},
         },

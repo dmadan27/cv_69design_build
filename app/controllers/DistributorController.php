@@ -409,45 +409,49 @@
 		*	Fungsi history pembelian
 		*	di menu Distributor
 		*/
-		public function get_history_pembelian($id){
-			// if($_SERVER['REQUEST_METHOD'] == "POST"){
-			// 	$this->model('');
+		public function get_history_distributor($id){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$this->model('DistributorModel');
 				
-			// 	// config datatable
-			// 	$config_dataTable = array(
-			// 		'tabel' => 'pengajuan_kas_kecil',
-			// 		'kolomOrder' => array(null, 'tgl', 'nama', 'total', 'status'),
-			// 		'kolomCari' => array('tgl', 'nama', 'total', 'status'),
-			// 		'orderBy' => array('id' => 'desc'),
-			// 		'kondisi' => 'WHERE id_kas_kecil = "'.$id.'"',
-			// 	);
+				// config datatable
+				$config_dataTable = array(
+					'tabel' => 'v_history_distributor',
+					'kolomOrder' => array('id', 'NAMA_DISTRIBUTOR', 'PEMILIK_DISTRIBUTOR', 'ID_OPERASIONAL_PROYEK','NAMA_KEBUTUHAN'),
+					'kolomCari' => array('id', 'NAMA_DISTRIBUTOR', 'PEMILIK_DISTRIBUTOR', 'ID_OPERASIONAL_PROYEK','NAMA_KEBUTUHAN'),
+					'orderBy' => array('id' => 'asc'),
+					'kondisi' => false,
+				);
 
-			// 	$dataMutasi = $this->Pengajuan_kasKecilModel->getAllDataTable($config_dataTable);
-			// 	$data = array();
-			// 	$no_urut = $_POST['start'];
-			// 	foreach($dataMutasi as $row){
-			// 		$no_urut++;
+				$dataHistory = $this->DistributorModel->getAllDataTable($config_dataTable);
+
+
+
+				$data = array();
+				// $no_urut = $_POST['start'];
+				foreach($dataHistory as $row){
+					// $no_urut++;
 					
-			// 		$dataRow = array();
-			// 		$dataRow[] = $no_urut;
-			// 		$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
-			// 		$dataRow[] = $row['nama'];
-			// 		$dataRow[] = $this->helper->cetakRupiah($row['total']);
-			// 		$dataRow[] = $row['status'];
+					$dataRow = array();
+					// $dataRow[] = $no_urut;
+					$dataRow[] = $row['id'];
+					$dataRow[] = $row['NAMA_DISTRIBUTOR'];
+					$dataRow[] = $row['PEMILIK_DISTRIBUTOR'];
+					$dataRow[] = $row['ID_OPERASIONAL_PROYEK'];
+					$dataRow[] = $row['NAMA_KEBUTUHAN'];
+					
+					$data[] = $dataRow;
+				}
 
-			// 		$data[] = $dataRow;
-			// 	}
+				$output = array(
+					'draw' => $_POST['draw'],
+					'recordsTotal' => $this->DistributorModel->recordTotal(),
+					'recordsFiltered' => $this->DistributorModel->recordFilter(),
+					'data' => $data,
+				);
 
-			// 	$output = array(
-			// 		'draw' => $_POST['draw'],
-			// 		'recordsTotal' => $this->Pengajuan_kasKecilModel->recordTotal(),
-			// 		'recordsFiltered' => $this->Pengajuan_kasKecilModel->recordFilter(),
-			// 		'data' => $data,
-			// 	);
-
-			// 	echo json_encode($output);
-			// }
-			// else $this->redirect();
+				echo json_encode($output);
+			}
+			else $this->redirect();
 
 		}
 
