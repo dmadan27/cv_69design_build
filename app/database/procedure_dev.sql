@@ -3,7 +3,7 @@
 
 # ============================ Procedure ============================ #
 
--- Procedure Tambah Data Kas Besar
+-- Procedure Tambah Data Kas Besar {FIX}
 	delimiter //
 	CREATE PROCEDURE tambah_kas_besar(
 		in id_param varchar(10),
@@ -38,7 +38,7 @@
 	-- tanpa prosedur
 
 
--- Procedure Hapus Data Kas Besar
+-- Procedure Hapus Data Kas Besar {FIX}
 	delimiter //
 	CREATE PROCEDURE hapus_kas_besar(
 		in id_param varchar(10)
@@ -110,7 +110,7 @@
 	delimiter ;
 
 
--- Procedure Tambah Data Kas Kecil
+-- Procedure Tambah Data Kas Kecil {FIX}
 	delimiter //
 	CREATE PROCEDURE tambah_kas_kecil(
 		in id_param varchar(10),
@@ -382,12 +382,14 @@
         DELETE FROM operasional WHERE id_bank = id_param;
 
         -- hapus detail operasional proyek
+        -- 1. hapus detail
         DELETE FROM detail_operasional_proyek WHERE id_operasional_proyek IN (
-            SELECT id FROM operasional_proyek WHERE id_bank = id_param
+            SELECT id FROM operasional_proyek WHERE id = id_operasional_proyek
         );
 
         -- hapus operasional proyek
-        DELETE FROM operasional_proyek WHERE id_bank = id_param;
+        -- ini harus di hapus di operasional proyek aja {tanpa procedure}
+        -- DELETE FROM operasional_proyek WHERE id_bank = id_param;
 
         -- hapus detail pengajuan kas kecil
         DELETE FROM detail_pengajuan_kas_kecil WHERE id_pengajuan IN (
