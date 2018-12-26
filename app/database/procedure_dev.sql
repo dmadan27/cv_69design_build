@@ -676,7 +676,6 @@
 	BEGIN
 		DECLARE get_saldo double(12,2);
 
-
 			-- 1. insert ke operasional proyek
 			INSERT INTO operasional_proyek
 				(id, id_proyek, id_kas_besar, id_distributor, tgl, nama, jenis, total, sisa, status, status_lunas, ket)
@@ -684,10 +683,10 @@
 				(id_param, id_proyek_param, id_kas_besar_param, id_distributor_param, tgl_param, nama_param, jenis_param, total_param, sisa_param, status_param, status_lunas_param, ket_param );
 
 			-- 2. insert ke detail operasional proyek
-			-- INSERT INTO detail_operasional_proyek
-			--	(id_operasional_proyek, id_bank, nama, tgl, total)
-			--	VALUES
-			--	(id_param, id_bank_param, nama_param_detail, tgl_param_detail, total_detail_param);
+			INSERT INTO detail_operasional_proyek
+				(id_operasional_proyek, id_bank, nama, tgl, total)
+				VALUES
+				(id_param, id_bank_param, nama_param, tgl_param, total_param);
 
 			-- 3. ambil saldo terakhir
 			SELECT saldo INTO get_saldo FROM bank WHERE id = id_bank_param;
@@ -724,11 +723,11 @@
 	BEGIN
 		DECLARE get_saldo double(12,2);
 
-			-- 1. insert ke detail operasional proyek
-			INSERT INTO detail_operasional_proyek
-				(id_operasional_proyek, id_bank, nama, tgl, total)
+			-- 1. insert ke operasional proyek
+			INSERT INTO operasional_proyek
+				(id, id_proyek, id_kas_besar, id_distributor, tgl, nama, jenis, total, sisa, status, status_lunas, ket)
 				VALUES
-				(id_param, id_bank_param, nama_param, tgl_param, total_param);
+				(id_param, id_proyek_param, id_kas_besar_param, id_distributor_param, tgl_param, nama_param, jenis_param, total_param, sisa_param, status_param, status_lunas_param, ket_param );
 
 			-- 2. ambil saldo terakhir
 			SELECT saldo INTO get_saldo FROM bank WHERE id = id_bank_param;
@@ -743,6 +742,79 @@
 				(id_bank_param, tgl_param, 0, total_param, (get_saldo - total_param),  ket_param);
 
 			
+	END//
+	delimiter ;
+
+	-- Procedure Tambah data Operasional Proyek Tunai Belum Lunas
+	delimiter //
+	CREATE PROCEDURE tambah_operasional_proyek_tunaiblmlunas(
+		IN id_param varchar(50),
+		IN id_proyek_param varchar(50),
+		IN id_bank_param int,
+		IN id_kas_besar_param varchar(10),
+		IN id_distributor_param varchar(50),
+		IN tgl_param date,
+		IN nama_param varchar(50),
+		IN jenis_param varchar(50),
+		IN total_param double(12,2),
+		IN sisa_param double(12,2),
+		IN status_param enum('TUNAI','KREDIT'),
+		IN status_lunas_param enum('LUNAS','BELUM LUNAS'),
+		IN ket_param text
+	)
+
+	BEGIN
+		DECLARE get_saldo double(12,2);
+
+			-- 1. insert ke operasional proyek
+			INSERT INTO operasional_proyek
+				(id, id_proyek, id_kas_besar, id_distributor, tgl, nama, jenis, total, sisa, status, status_lunas, ket)
+				VALUES
+				(id_param, id_proyek_param, id_kas_besar_param, id_distributor_param, tgl_param, nama_param, jenis_param, total_param, sisa_param, status_param, status_lunas_param, ket_param );
+			
+	END//
+	delimiter ;
+
+	-- Procedure Tambah data Operasional Proyek Kredit Belum Lunas
+	delimiter //
+	CREATE PROCEDURE tambah_operasional_proyek_kreditblmlunas(
+		IN id_param varchar(50),
+		IN id_proyek_param varchar(50),
+		IN id_bank_param int,
+		IN id_kas_besar_param varchar(10),
+		IN id_distributor_param varchar(50),
+		IN tgl_param date,
+		IN nama_param varchar(50),
+		IN jenis_param varchar(50),
+		IN total_param double(12,2),
+		IN sisa_param double(12,2),
+		IN status_param enum('TUNAI','KREDIT'),
+		IN status_lunas_param enum('LUNAS','BELUM LUNAS'),
+		IN ket_param text,
+		IN sum_detail double(12,2)
+	)
+
+	BEGIN
+		DECLARE get_saldo double(12,2);
+
+			-- 1. insert ke operasional proyek
+			INSERT INTO operasional_proyek
+				(id, id_proyek, id_kas_besar, id_distributor, tgl, nama, jenis, total, sisa, status, status_lunas, ket)
+				VALUES
+				(id_param, id_proyek_param, id_kas_besar_param, id_distributor_param, tgl_param, nama_param, jenis_param, total_param, sisa_param, status_param, status_lunas_param, ket_param );
+
+			-- 2. ambil saldo terakhir
+			SELECT saldo INTO get_saldo FROM bank WHERE id = id_bank_param;
+
+			-- 3. update saldo
+			UPDATE  bank SET saldo = ( get_saldo - sum_detail ) WHERE id = id_bank_param;
+
+			-- 4. insert mutasi
+			INSERT INTO mutasi_bank
+				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+				VALUES
+				(id_bank_param, tgl_param, 0, sum_detail, (get_saldo - sum_detail),  ket_param);
+
 	END//
 	delimiter ;
 

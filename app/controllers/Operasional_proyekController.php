@@ -1003,7 +1003,7 @@
 			// id_proyek
 			$this->validation->set_rules($data['id_proyek'], 'ID proyek', 'id_proyek', 'string | 1 | 255 | required');
 			// id_bank
-			$this->validation->set_rules($data['id_bank'], 'ID Bank', 'id_bank', 'string | 1 | 255 | required');
+			// $this->validation->set_rules($data['id_bank'], 'ID Bank', 'id_bank', 'string | 1 | 255');
 			// id_kas_besar
 			$this->validation->set_rules($data['id_kas_besar'], 'ID Kas Besar', 'id_kas_besar', 'string | 1 | 255 | required');
 			// id_distributor
@@ -1017,7 +1017,7 @@
 			// total
 			$this->validation->set_rules($data['total'], 'Total Pengajuan', 'total', 'nilai | 1 | 9999999 | required');
 			// sisa
-			$this->validation->set_rules($data['sisa'], 'Sisa Pengajuan', 'sisa', 'nilai | 1 | 9999999 | required');
+			$this->validation->set_rules($data['sisa'], 'Sisa Pengajuan', 'sisa', 'nilai | 0 | 9999999 | required');
 			// status
 			$this->validation->set_rules($data['jenis'], 'Status Pengajuan', 'status', 'string | 1 | 255 | required');
 			// status lunas

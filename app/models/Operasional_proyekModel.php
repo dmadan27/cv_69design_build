@@ -101,26 +101,71 @@
 			$dataOperasionalProyek = $data['dataOperasionalProyek'];
 			$dataDetail = $data['listDetail'];
 			
-			//Mendapatkan Total Detail Operasional Proyek
-			$sum = 0;
-			foreach ($dataDetail as $index => $row) {
-				$sum += $row['total_detail'];
-				
-			}
-			// print_r($sum);
-			// 	exit;
 			try{
 				$this->koneksi->beginTransaction();
 
-				// insert data proyek
-				$this->insertOperasionalProyek($dataOperasionalProyek);
+				if($dataOperasionalProyek['status'] == "TUNAI" && $dataOperasionalProyek['status_lunas'] == "LUNAS"){
+					
+					// insert data operasional proyek kondisi tunai lunas
+					$this->insertOperasionalProyek_TunaiLunas($dataOperasionalProyek);
+				
+				} else if($dataOperasionalProyek['status'] == "TUNAI" && $dataOperasionalProyek['status_lunas'] == "BELUM LUNAS"){
+				
+					// insert data operasional proyek kondisi tunai belum lunas
+					$this->insertOperasionalProyek_TunaiBelumLunas($dataOperasionalProyek);
 
-				// insert data detail
-				foreach ($dataDetail as $index => $row) {
-					if(!$dataDetail[$index]['delete']){
-						array_map('strtoupper', $row);
-						$this->insertDetailOperasionalProyek($row, $dataOperasionalProyek['id']);
+					
+				} else if($dataOperasionalProyek['status'] == "KREDIT" && $dataOperasionalProyek['status_lunas'] == "LUNAS"){
+
+					//Mendapatkan Total Detail Operasional Proyek
+					$sum = 0;
+					foreach ($dataDetail as $index => $row) {
+						$sum += $row['total_detail'];
+						
 					}
+
+					if($dataOperasionalProyek['total'] == $sum){
+						//insert data operasaional proyek kondisi kredit lunas
+						$this->insertOperasionalProyek_KreditLunas($dataOperasionalProyek);
+
+						// insert data detail operasional proyek
+						foreach ($dataDetail as $index => $row) {
+							if(!$dataDetail[$index]['delete']){
+								array_map('strtoupper', $row);
+								$this->insertDetailOperasionalProyek($row, $dataOperasionalProyek['id']);
+							}
+						}	
+
+					} else if($dataOperasionalProyek['total'] < $sum || $dataOperasionalProyek['total'] > $sum) {
+
+						exit;
+
+					}
+
+				} else if($dataOperasionalProyek['status'] == "KREDIT" && $dataOperasionalProyek['status_lunas'] == "BELUM LUNAS"){
+
+					//Mendapatkan Total Detail Operasional Proyek
+					$sum = 0;
+					foreach ($dataDetail as $index => $row) {
+						$sum += $row['total_detail'];
+					}
+
+					$dataOperasionalProyek['sisa'] = $dataOperasionalProyek['total'] - $sum;
+					$dataOperasionalProyek['sum'] = $sum;
+					
+					//insert data operasaional proyek kondisi kredit belum lunas
+					$this->insertOperasionalProyek_KreditBelumLunas($dataOperasionalProyek);
+
+					// insert data detail operasional proyek
+					foreach ($dataDetail as $index => $row) {
+						if(!$dataDetail[$index]['delete']){
+							array_map('strtoupper', $row);
+							$this->insertDetailOperasionalProyek($row, $dataOperasionalProyek['id']);
+						}
+					}
+
+
+
 				}
 								
 				$this->koneksi->commit();
@@ -137,7 +182,7 @@
 		/**
 		*
 		*/
-		private function insertOperasionalProyek($data){
+		private function insertOperasionalProyek_TunaiLunas($data){
 			// insert operasional_proyek
 			$query = "CALL tambah_operasional_proyek_tunailunas (
 				:id, 
@@ -170,6 +215,128 @@
 					':status' => $data['status'],
 					':status_lunas' => $data['status_lunas'],
 					':ket' => $data['ket'],
+				)
+			);
+			$statement->closeCursor();
+		}
+
+		/**
+		*
+		*/
+		private function insertOperasionalProyek_KreditLunas($data) {
+			$query = "CALL tambah_operasional_proyek_kreditlunas (
+				:id, 
+				:id_proyek, 
+				:id_bank, 
+				:id_kas_besar, 
+				:id_distributor, 
+				:tgl, 
+				:nama, 
+				:jenis,  
+				:total, 
+				:sisa, 
+				:status, 
+				:status_lunas, 
+				:ket
+			);";
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id' => $data['id'],
+					':id_proyek' => $data['id_proyek'],
+					':id_bank' => $data['id_bank'],
+					':id_kas_besar' => $data['id_kas_besar'],
+					':id_distributor' => $data['id_distributor'],
+					':tgl' => $data['tgl'],
+					':nama' => $data['nama'],
+					':jenis' => $data['jenis'],
+					':total' => $data['total'],
+					':sisa' => '0',
+					':status' => $data['status'],
+					':status_lunas' => $data['status_lunas'],
+					':ket' => $data['ket'],
+				)
+			);
+			$statement->closeCursor();
+		}
+
+		/**
+		*
+		*/
+		private function insertOperasionalProyek_TunaiBelumLunas($data) {
+			$query = "CALL tambah_operasional_proyek_tunaiblmlunas (
+				:id, 
+				:id_proyek, 
+				:id_bank, 
+				:id_kas_besar, 
+				:id_distributor, 
+				:tgl, 
+				:nama, 
+				:jenis,  
+				:total, 
+				:sisa, 
+				:status, 
+				:status_lunas, 
+				:ket
+			);";
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id' => $data['id'],
+					':id_proyek' => $data['id_proyek'],
+					':id_bank' => $data['id_bank'],
+					':id_kas_besar' => $data['id_kas_besar'],
+					':id_distributor' => $data['id_distributor'],
+					':tgl' => $data['tgl'],
+					':nama' => $data['nama'],
+					':jenis' => $data['jenis'],
+					':total' => $data['total'],
+					':sisa' => $data['total'],
+					':status' => $data['status'],
+					':status_lunas' => $data['status_lunas'],
+					':ket' => $data['ket'],
+				)
+			);
+			$statement->closeCursor();
+		}
+
+		/**
+		*
+		*/
+		private function insertOperasionalProyek_KreditBelumLunas($data) {
+			$query = "CALL tambah_operasional_proyek_kreditblmlunas (
+				:id, 
+				:id_proyek, 
+				:id_bank, 
+				:id_kas_besar, 
+				:id_distributor, 
+				:tgl, 
+				:nama, 
+				:jenis,  
+				:total, 
+				:sisa, 
+				:status, 
+				:status_lunas, 
+				:ket,
+				:sum_detail
+			);";
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id' => $data['id'],
+					':id_proyek' => $data['id_proyek'],
+					':id_bank' => $data['id_bank'],
+					':id_kas_besar' => $data['id_kas_besar'],
+					':id_distributor' => $data['id_distributor'],
+					':tgl' => $data['tgl'],
+					':nama' => $data['nama'],
+					':jenis' => $data['jenis'],
+					':total' => $data['total'],
+					':sisa' => $data['sisa'],
+					':status' => $data['status'],
+					':status_lunas' => $data['status_lunas'],
+					':ket' => $data['ket'],
+					':sum_detail' => $data['sum']
 				)
 			);
 			$statement->closeCursor();
