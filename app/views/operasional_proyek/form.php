@@ -57,13 +57,6 @@
                                                 <span class="help-block small pesan pesan-nama"></span>
                                             </div>    
 
-		                              <!-- ID Kas Besar -->
-		                                    <div class="form-group field-id_kas_besar has-feedback">
-		                                        <label for="id_kas_besar">ID Kas Besar</label>
-		                                        <select class="form-control select2" name="id_kas_besar" id="id_kas_besar"></select>
-		                                        <span class="help-block small pesan pesan-id_kas_besar"></span>
-		                                    </div>
-
 		                              <!-- ID Distributor -->
 		                                    <div class="form-group field-id_distributor has-feedback">
 		                                        <label for="id_distributor">ID Distributor</label>
@@ -82,6 +75,13 @@
 		                                        </div>
 		                                        <span class="help-block small pesan pesan-tgl"></span>
 		                                  </div>
+
+                                           <!-- Input Keterangan -->
+                                           <div class="form-group field-ket has-feedback">
+                                                <label for="ket">Keterangan</label>
+                                                <textarea class="form-control field" id="ket" name="ket" placeholder="Masukan Keterangan" value=""><?= $this->data['ket'];?></textarea>
+                                                <span class="help-block small pesan pesan-ket"></span>
+                                            </div>
 		                        </div>
 
 		                        <div class="col-lg-6 col-md-6 col-xs-12">
@@ -108,22 +108,9 @@
 			                                        <span class="help-block small pesan pesan-total"></span>
 			                                    </div>
 
-	                                    <!-- Input Sisa -->
-			                                    <!-- <div class="form-group field-sisa has-feedback">
-			                                        <label for="sisa">Sisa</label>
-			                                        <div class="input-group" style="width: 100%">
-			                                         <div class="input-group">
-			                                                <span class="input-group-addon">Rp.</span>
-			                                                <input type="text" class="form-control field input-mask-uang" id="sisa" name="sisa" placeholder="" value="<?= $this->data['sisa']; ?>">
-			                                                <span class="input-group-addon">,00-</span>
-			                                          </div>
-			                                        </div>
-			                                        <span class="help-block small pesan pesan-sisa"></span>
-			                                    </div> -->
-
 			                           	<!-- Input Status -->
 			                                    <div class="form-group field-status has-feedback">
-			                                        <label for="status">Status</label>
+			                                        <label for="status">Jenis Pembayaran</label>
 			                                        <select name="status" class="form-control field select2" id="status"></select>
 			                                        <span class="help-block small pesan pesan-status"></span>
 			                                    </div>
@@ -142,12 +129,7 @@
                                                     <span class="help-block small pesan pesan-id_bank"></span>
                                                 </div>
 
-                                        <!-- Input Keterangan -->
-                                                <div class="form-group field-ket has-feedback">
-                                                    <label for="ket">Keterangan</label>
-                                                    <textarea class="form-control field" id="ket" name="ket" placeholder="Masukan Keterangan" value=""><?= $this->data['ket'];?></textarea>
-                                                    <span class="help-block small pesan pesan-ket"></span>
-                                                </div>
+                                       
 
                                 </div>          
                         		<div class="clearfix"></div>

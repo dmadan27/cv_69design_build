@@ -3,33 +3,27 @@ $(document).ready(function () {
 
 	if($('#submit_operasional_proyek').val() == 'action-add') {
 		generateID();
+		
 		$('#id').prop('disabled', true);
 		$('#id_bank').prop('disabled', true);
 		$('#btn_tambahDetail').prop('disabled', true);
-		// $('#submit_operasional_proyek').prop('disabled', true);
 		$('#id_bank').prop('disabled', true);
+
 	    //Initialize Select2 Elements
 	    $('#id_proyek').select2({
 	    	placeholder: "Pilih Proyek",
 			allowClear: true
 	    });
 
-	    // set format 
-	    // $('#id_bank').prop('', true);
 	    //Initialize Select2 Elements
 	    $('#id_bank').select2({
 	    	placeholder: "Pilih Bank",
 			allowClear: true
 	    });
 
-	    $('#id_kas_besar').select2({
-	    	placeholder: "Pilih Kas Besar",
-			allowClear: true
-	    });
-
 	    $('#id_distributor').select2({
 	    	placeholder: "Pilih Distributor",
-			allowClear: true
+			allowClear: true,
 	    });
 	}
 	else if($('#submit_operasional_proyek').val() == 'action-edit') {
@@ -42,7 +36,7 @@ $(document).ready(function () {
     // Inisiasi Function
     setNamaProyek();
     setNamaBank();
-    setnamaKasBesar();
+    // setnamaKasBesar();
 	setnamaDistributor();
 	setJenis();
 	setStatus();
@@ -387,9 +381,9 @@ $(document).ready(function () {
 	*/
 	function setValueDetail(data,index){
 
-		
+		console.log(index);
 		$('#id_detail').val(index);
-		$('#id_bank').val(data[index].id_bank);
+		// $('#id_bank').val(data[index].id_bank);
 		$('#nama_detail').val(data[index].nama_detail);
 		$('#tgl_detail').val(data[index].tgl_detail);
 		$('#total_detail').val(data[index].total_detail);
@@ -588,7 +582,6 @@ function getDataForm(){
 		id : $('#id').val().trim(),
 		id_proyek : $('#id_proyek').val().trim(),
 		id_bank : bank,
-		id_kas_besar : $('#id_kas_besar').val().trim(),
 		id_distributor : $('#id_distributor').val().trim(),
 		tgl : $('#tgl').val().trim(),
 		nama : $('#nama').val().trim(),
@@ -665,10 +658,10 @@ function getEdit(id){
 
 
 	// $('#id').prop('disabled', true);
-		// $('#id_proyek').prop('disabled', true);
-		// $('.field-id_bank').css('display', 'none');
-		// $('.field-id_kas_besar').css('display', 'none');
-		// $('.field-id_distributor').css('display', 'none');
+	// 	$('#id_proyek').prop('disabled', true);
+	// 	$('.field-id_bank').css('display', 'none');
+	// 	$('.field-id_kas_besar').css('display', 'none');
+	// 	$('.field-id_distributor').css('display', 'none');
 
 	$.ajax({
 		url: BASE_URL+'operasional-proyek/get-edit/'+id.toLowerCase(),
@@ -679,34 +672,54 @@ function getEdit(id){
 		success: function(output){
 			console.log(output);
 
-			// each dataOperasionalProyek
-			// $.each(output.dataOperasionalProyek, function(i, data)
-					// var dataOperasionalProyek = {
-					// index: index,
-					// id: data.id,
-					// id_proyek: data.id_proyek,
-					// id_bank: data.id_bank,
-					// id_kas_besar: data.id_kas_besar,
-					// id_distributor: data.id_distributor,
-					// tgl: data.tgl,
-					// nama: data.nama,
-					// id_bank: data.id_bank,
-					// id_bank: data.id_bank,
-					// id_bank: data.id_bank,
-					// id_bank: data.id_bank,
-					// id_bank: data.id_bank,
-					// id_bank: data.id_bank,
-				// 	aksi: 'edit',
-				// 	delete: false,
-				// };
+			$("#jenis").val(output.dataOperasionalProyek.jenis).trigger('change');
+			$("#status").val(output.dataOperasionalProyek.status).trigger('change');
+			$("#status_lunas").val(output.dataOperasionalProyek.status_lunas).trigger('change');
+
+			$.each(output.dataDetail, function(i, data){
 				
-			
+				var detailOperasional = {
+					id: data.id,
+					id_operasional_proyek: data.id_operasional_proyek,
+					id_bank: data.id_bank,
+					nama_detail: data.nama,
+					tgl_detail: data.tgl,
+					total_detail: data.total
+				};
+
+				console.log(detailOperasional)
+				
+				renderTableDetailOperasional(detailOperasional)
+			});
+
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling
             console.log(jqXHR, textStatus, errorThrown);
             swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
         }
 	})
+}
+
+/**
+*
+*/
+function renderTableDetailOperasional(data){
+	// tambah data ke tabel
+	$('#detail_OperasionalproyekTable > tbody:last-child').append(
+		"<tr id="+data.index+">"+
+			"<td></td>"+
+			"<td>"+data.id_bank+"</td>"+
+			"<td>"+data.nama_detail+"</td>"+
+			"<td>"+data.tgl_detail+"</td>"+
+			"<td>"+data.total_detail+"</td>"+
+			// "<td></td>"+
+			"<td>"+btnAksi_detail(data.index)+"</td>"+
+		"</tr>"
+	);
+	console.log(data)
+	listDetail.push(data)
+	numbering_listDetail();
+	
 }
 
 /**

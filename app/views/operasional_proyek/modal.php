@@ -18,14 +18,6 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12 col-xs-12">
-                        
-                            <!-- field ID Bank -->
-                            <div class="form-group field-id_bank has-feedback">
-                              <label for="id_bank">ID Bank</label>
-                                <select class="form-control field select2" name="id_bank" id="id_bank" style="width: 100%;"> 
-                                </select>
-                              <span class="help-block small pesan pesan-id_bank"></span>
-                            </div>
 
                             <!-- Nama -->
                             <div class="form-group field-nama_detail has-feedback">

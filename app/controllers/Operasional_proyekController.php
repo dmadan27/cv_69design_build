@@ -562,21 +562,83 @@
 				
 				if(empty($id) || $id == "") { $this->redirect(BASE_URL."operasional-proyek/"); }
 
-				// $getNamaOperasionalProyek = $this->Operasional_ProyekModel->getById($id)['nama'];
+				$dataOperasionalProyek = $this->Operasional_ProyekModel->getById($id);
+				$dataDetail = $this->Operasional_ProyekModel->getDetailById($id);
+				
+				
 
-				// $ket = 'Data Operasional Proyek '.$getNamaOperasionalProyek. 'telah Dihapus';
+				//Penentuan Kondisi Jenis dan Status Pembayaran
 
-				// $data = array(
-				// 	'id' => $id,
-				// 	'tgl' => date('Y-m-d'),
-				// 	'ket' => $ket,	
-				// );
+				if($dataOperasionalProyek['status'] == "TUNAI" && $dataOperasionalProyek['status_lunas'] == "LUNAS"){
+					
+					// hapus data operasional proyek kondisi tunai lunas
+					$ket = 'Data Operasional Proyek '.$dataOperasionalProyek['nama']. ' telah dihapus';
 
-				if($this->Operasional_ProyekModel->delete($id)) $this->success =true;
+					$data = array(
+						'id' => $id,
+						'total' => $dataOperasionalProyek['total'],
+						'tgl' => date('Y-m-d'),
+						'ket' => $ket,	
+					);
 
-				echo json_encode($this->success);
-			}
-			else{
+					if($this->Operasional_ProyekModel->delete($data)) $this->success =true;
+					echo json_encode($this->success);
+				
+				} else if($dataOperasionalProyek['status'] == "TUNAI" && $dataOperasionalProyek['status_lunas'] == "BELUM LUNAS"){
+				
+					// hapus data operasional proyek kondisi tunai belum lunas
+					if($this->Operasional_ProyekModel->delete_TunaiBelumLunas($dataOperasionalProyek)) $this->success =true;
+					echo json_encode($this->success);
+					
+				} else if($dataOperasionalProyek['status'] == "KREDIT" && $dataOperasionalProyek['status_lunas'] == "LUNAS"){
+
+					// hapus data operasional proyek kondisi tunai lunas
+					$ket = 'Data Operasional Proyek '.$dataOperasionalProyek['nama']. ' telah dihapus';
+
+					//Mendapatkan Total Detail Operasional Proyek
+					$sum = 0;
+					foreach ($dataDetail as $index => $row) {	
+						$sum += $row['total'];
+						$row['ket'] = $row['nama']. ' pada '. $ket;
+						$this->Operasional_ProyekModel->catatMutasi($row);
+					}
+					
+					$data = array(
+						'id' => $id,
+						'total' => $sum,
+						'tgl' => date('Y-m-d'),
+						'ket' => $ket,	
+					);
+
+					if($this->Operasional_ProyekModel->deleteKredit($data)) $this->success =true;
+					echo json_encode($this->success);
+
+				} else if($dataOperasionalProyek['status'] == "KREDIT" && $dataOperasionalProyek['status_lunas'] == "BELUM LUNAS"){
+
+					// hapus data operasional proyek kondisi tunai lunas
+					$ket = 'Data Operasional Proyek '.$dataOperasionalProyek['nama']. ' telah dihapus';
+
+					//Mendapatkan Total Detail Operasional Proyek
+					$sum = 0;
+					foreach ($dataDetail as $index => $row) {	
+						$sum += $row['total'];
+						$row['ket'] = $row['nama']. ' pada '. $ket;
+						$this->Operasional_ProyekModel->catatMutasi($row);
+					}
+					
+					$data = array(
+						'id' => $id,
+						'total' => $sum,
+						'tgl' => date('Y-m-d'),
+						'ket' => $ket,	
+					);
+
+					if($this->Operasional_ProyekModel->deleteKredit($data)) $this->success =true;
+					echo json_encode($this->success);
+			
+				}
+
+			} else {
 				$this->redirect(); 	
 			}
 				
@@ -1049,7 +1111,7 @@
 			// id_bank
 			// $this->validation->set_rules($data['id_bank'], 'ID Bank', 'id_bank', 'string | 1 | 255');
 			// id_kas_besar
-			$this->validation->set_rules($data['id_kas_besar'], 'ID Kas Besar', 'id_kas_besar', 'string | 1 | 255 | required');
+			// $this->validation->set_rules($data['id_kas_besar'], 'ID Kas Besar', 'id_kas_besar', 'string | 1 | 255 | required');
 			// id_distributor
 			$this->validation->set_rules($data['id_distributor'], 'ID Distributor', 'id_distributor', 'string | 1 | 255 | required');
 			// tgl

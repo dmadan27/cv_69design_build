@@ -66,6 +66,19 @@
 		}
 
 		/**
+		* 
+		*/
+		public function getDetailById($id){
+			$query = "SELECT * FROM detail_operasional_proyek WHERE id_operasional_proyek = :id;";
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$statement->execute();
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+
+		/**
 		*
 		*/
 		public function getById_fromView($id){
@@ -404,19 +417,17 @@
 		/**
 		* 
 		*/
-		public function delete($id){
+		public function delete($data){
 			// TRANSACT
 			try{
-				$query = 'CALL hapus_operasional_proyek_versi2 (:id, :tgl, :ket);';
+				$query = 'CALL hapus_operasional_proyek_versi2 (:id);';
 
 				$this->koneksi->beginTransaction();
 
 				$statement = $this->koneksi->prepare($query);
 				$statement->execute(
 					array(
-						':id' => $id,
-						':tgl' => $tgl,
-						':ket' => $ket,
+						':id' => $data['id'],
 							
 					)
 				);
@@ -424,10 +435,109 @@
 
 				$this->koneksi->commit();
 
-				// return array(
-				// 	'success' => true,
-				// 	'error' => NULL
-				// );
+				return array(
+					'success' => true,
+					'error' => NULL
+				);
+			}
+			catch(PDOException $e){
+				$this->koneksi->rollback();
+				die($e->getMessage());
+				// return false;
+			}
+		}
+
+		public function catatMutasi($data){
+			// TRANSACT
+			try{
+				$query = 'CALL hapus_operasional_proyek_catat_mutasiKredit (
+					:id,
+					:id_bank,
+					:total_detail,
+					:tgl,
+					:ket
+				);';
+
+				$this->koneksi->beginTransaction();
+
+				$statement = $this->koneksi->prepare($query);
+				$statement->execute(
+					array(
+						':id' 			=> $data['id'],
+						':id_bank' 		=> $data['id_bank'],
+						':total_detail'	=> $data['total'],
+						':tgl' 			=> $data['tgl'],
+						':ket'			=> $data['ket']							
+					)
+				);
+				$statement->closeCursor();
+
+				$this->koneksi->commit();
+
+				return array(
+					'success' => true,
+					'error' => NULL
+				);
+			}
+			catch(PDOException $e){
+				$this->koneksi->rollback();
+				die($e->getMessage());
+				// return false;
+			}
+		}
+
+		public function deleteKredit($data){
+			// TRANSACT
+			try{
+				$query = 'CALL hapus_operasional_proyek_kredit (
+					:id
+				);';
+
+				$this->koneksi->beginTransaction();
+
+				$statement = $this->koneksi->prepare($query);
+				$statement->execute(
+					array(
+						':id' 			=> $data['id'],							
+					)
+				);
+				$statement->closeCursor();
+
+				$this->koneksi->commit();
+
+				return array(
+					'success' => true,
+					'error' => NULL
+				);
+			}
+			catch(PDOException $e){
+				$this->koneksi->rollback();
+				die($e->getMessage());
+				// return false;
+			}
+		}
+
+		public function delete_TunaiBelumLunas($data){
+			// TRANSACT
+			try{
+				$query = 'CALL hapus_operasional_proyek_tunai_blmlunas (:id);';
+
+				$this->koneksi->beginTransaction();
+
+				$statement = $this->koneksi->prepare($query);
+				$statement->execute(
+					array(
+						':id' => $data['id'],							
+					)
+				);
+				$statement->closeCursor();
+
+				$this->koneksi->commit();
+
+				return array(
+					'success' => true,
+					'error' => NULL
+				);
 			}
 			catch(PDOException $e){
 				$this->koneksi->rollback();

@@ -828,6 +828,7 @@
 	delimiter //
 	CREATE PROCEDURE hapus_operasional_proyek_versi2(
 		IN id_param varchar(50),
+		IN total_param double(12,2),
 		IN tgl_param date,
 		IN ket_param text
 	)
@@ -836,25 +837,21 @@
 		-- deklarasi ambil saldo terakhir 
 		DECLARE get_saldo double(12,2);
 		DECLARE get_id_bank int;
-		DECLARE get_total double(12,2);
 
 		-- get id_bank
-		SELECT id INTO get_id_bank FROM bank where id = get_id_bank;
+		SELECT DISTINCT(id_bank) INTO get_id_bank FROM detail_operasional_proyek where id_operasional_proyek = id_param;
 
-		-- get total
-		SELECT total INTO get_total FROM operasional_proyek where id = id_param;
-
-		-- ambil saldo terahir
+		-- ambil saldo terakhir
 		SELECT saldo INTO get_saldo FROM bank WHERE id = get_id_bank;
 
 		-- update saldo ke semula
-		UPDATE bank SET saldo = (get_saldo + get_total) WHERE id = get_id_bank;
+		UPDATE bank SET saldo = (get_saldo + total_param) WHERE id = get_id_bank;
 
 		-- insert mutasi (setelah perubahan)
 		INSERT INTO mutasi_bank 
 			(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 		VALUES
-			(get_id_bank, tgl_param, get_total, 0, (get_saldo + get_total), ket_param);
+			(get_id_bank, tgl_param, total_param, 0, (get_saldo + total_param), ket_param);
 
 		-- hapus detail operasional proyek
 		DELETE FROM detail_operasional_proyek where id_operasional_proyek IN
@@ -862,6 +859,64 @@
 		
 		-- hapus operasional proyek
 		DELETE  FROM operasional_proyek where id = id_param;
+	END//
+	delimiter ;
+
+	-- Procedure Hapus Data Operasional Proyek Tunai Belum Lunas
+	delimiter //
+	CREATE PROCEDURE hapus_operasional_proyek_tunai_blmlunas(
+		IN id_param varchar(50)
+	)
+
+	BEGIN
+		-- hapus operasional proyek
+		DELETE  FROM operasional_proyek where id = id_param;
+
+	END//
+	delimiter ;
+
+	-- Procedure Hapus Data Operasional Proyek kredit
+	delimiter //
+	CREATE PROCEDURE hapus_operasional_proyek_kredit(
+		IN id_param varchar(50)
+	)
+
+	BEGIN
+		-- hapus detail operasional proyek
+		DELETE FROM detail_operasional_proyek where id_operasional_proyek IN
+			(SELECT id FROM operasional_proyek where id = id_param);
+
+		-- hapus operasional proyek
+		DELETE  FROM operasional_proyek where id = id_param;
+		
+	END//
+	delimiter ;
+
+	-- Procedure Pencatatan Mutasi Bank Setelah Operasional Proyek Dihapus
+	delimiter //
+	CREATE PROCEDURE hapus_operasional_proyek_catat_mutasiKredit(
+		IN id_param varchar(50),
+		IN id_bank_param varchar(50),
+		IN total_detail_param double(12,2),
+		IN tgl_param date,
+		IN ket_param text
+	)
+
+	BEGIN
+		DECLARE get_saldo double(12,2);
+
+		-- ambil saldo terakhir
+		SELECT saldo INTO get_saldo FROM bank WHERE id = id_bank_param;
+
+		-- update saldo ke semula
+		UPDATE bank SET saldo = (get_saldo + total_detail_param) WHERE id = id_bank_param;
+
+		-- insert mutasi 
+		INSERT INTO mutasi_bank 
+			(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+		VALUES
+			(id_bank_param, tgl_param, total_detail_param, 0, (get_saldo + total_detail_param), ket_param);
+
 	END//
 	delimiter ;
 
