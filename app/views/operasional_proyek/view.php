@@ -109,29 +109,6 @@
 
 																
 															</table >	
-
-															<table class="table table-hover">
-																<tr>
-																	<legend style="font-size: 18px;">Detail Operasional Proyek</legend>
-																</tr>
-																<tr>
-																	<td><strong>ID Bank</strong></td>
-																	<td><?=  $o_proyek['id_bank'] ?></td>
-																</tr>
-																<tr>
-																	<td><strong>Nama Detail</strong></td>
-																	<td><?=  $o_proyek['nama_detail'] ?></td>
-																</tr>
-																<tr>
-																	<td><strong>Tanggal Detail</strong></td>
-																	<td><?=  $o_proyek['tgl_detail'] ?></td>
-																</tr>
-																<tr>
-																	<td><strong>Total Detail</strong></td>
-																	<td><?=  $o_proyek['total_detail'] ?></td>
-																</tr>
-
-															</table>
 														</fieldset>
 												</div>
 
