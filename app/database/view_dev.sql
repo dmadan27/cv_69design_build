@@ -109,11 +109,13 @@ CREATE OR REPLACE VIEW v_operasional_proyek AS
 	  kb.id id_kas_besar, kb.nama nama_kas_besar, 
 	  dst.id id_distributor, dst.nama nama_distributor, opr.tgl tgl_pengajuan, 
 	  opr.nama nama_pengajuan, opr.jenis jenis_pengajuan, opr.total total_pengajuan, opr.sisa sisa_pengajuan, 
-	  opr.status status_pengajuan,  opr.status_lunas status_lunas, opr.ket keterangan
+	  opr.status status_pengajuan,  opr.status_lunas status_lunas, opr.ket keterangan,
+	  dopr.id_bank, dopr.nama nama_detail, dopr.tgl tgl_detail, dopr.total total_detail
 	   FROM operasional_proyek opr
 	   	JOIN proyek pr ON pr.id = opr.id_proyek 
    			JOIN kas_besar kb ON kb.id = opr.id_kas_besar
-   				JOIN distributor dst ON dst.id = opr.id_distributor; 
+   				JOIN distributor dst ON dst.id = opr.id_distributor
+   					JOIN detail_operasional_proyek dopr ON dopr.id_operasional_proyek = opr.id; 
 
 
 -- View Detail Operasional Proyek
