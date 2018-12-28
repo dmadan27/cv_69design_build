@@ -450,6 +450,8 @@
 			$id = strtoupper($id);
 			$dataOperasionalProyek = !empty($this->Operasional_ProyekModel->getById_fromView($id)) ? $this->Operasional_ProyekModel->getById_fromView($id) : false;
 
+			$dataDetailOperasionalProyek = !empty($this->Operasional_ProyekModel->getDetailById_fromView($id)) ? $this->Operasional_ProyekModel->getDetailById_fromView($id) : false;
+
 			$dataHistoryPembelanjaan = !empty($this->Operasional_ProyekModel->getBYid_fromHistoryPembelian($id)) ? $this->Operasional_ProyekModel->getBYid_fromHistoryPembelian($id) : false;
 
 			// var_dump($dataHistoryPembelanjaan);
@@ -479,19 +481,6 @@
 			);
 
 			$dataOperasionalProyek = array(
-				// 'id' => $dataOperasionalProyek['id'],
-				// 'id_proyek' =>   $dataOperasionalProyek['id_proyek'],
-				// 'id_bank' =>  $dataOperasionalProyek['id_bank'],
-				// 'id_kas_besar' => $dataOperasionalProyek['id_kas_besar'],
-				// 'id_distributor' => $dataOperasionalProyek['id_distributor'],
-				// 'tgl' => $dataOperasionalProyek['tgl'],
-				// 'nama' => $dataOperasionalProyek['nama'],
-				// 'jenis' => $dataOperasionalProyek['jenis'],
-				// 'total' => $dataOperasionalProyek['total'],
-				// 'sisa' => $dataOperasionalProyek['sisa'],
-				// 'status' => $dataOperasionalProyek['status'],
-				// 'status_lunas' => $dataOperasionalProyek['status_lunas'],
-				// 'ket' => $dataOperasionalProyek['ket'],
 
 				'id' => $dataOperasionalProyek['id'],
 				'id_proyek' =>   $dataOperasionalProyek['id_proyek'],
@@ -509,6 +498,18 @@
 				'status_pengajuan' => $dataOperasionalProyek['status_pengajuan'],
 				'status_lunas' => $dataOperasionalProyek['status_lunas'],
 				'keterangan' => $dataOperasionalProyek['keterangan'],
+				'id_bank' => $dataOperasionalProyek['id_bank'],
+				'nama_detail' => $dataOperasionalProyek['nama_detail'],
+				'tgl_detail' => $dataOperasionalProyek['tgl_detail'],
+				'total_detail' => $dataOperasionalProyek['total_detail'],
+					
+			);
+
+			$dataDetailOperasionalProyek = array(
+				'id_bank' => $dataOperasionalProyek['id_bank'],
+				'nama_detail' => $dataOperasionalProyek['nama_detail'],
+				'tgl_detail' => $dataOperasionalProyek['tgl_detail'],
+				'total_detail' => $dataOperasionalProyek['total_detail'],
 			);
 
 			$dataHistoryPembelanjaan = array(
@@ -543,6 +544,7 @@
 			
 			$data = array(
 				'dataOperasionalProyek' => $dataOperasionalProyek,
+				'dataDetailOperasionalProyek' => $dataDetailOperasionalProyek,
 				'dataHistoryPembelanjaan' => $dataHistoryPembelanjaan
 			);
 
@@ -977,6 +979,48 @@
 					$dataRow[] = $row['ID_DISTRIBUTOR'];
 					$dataRow[] = $row['NAMA_DISTRIBUTOR'];
 					$dataRow[] = $row['pemilik'];
+
+					$data[] = $dataRow;
+				}
+
+				$output = array(
+					'draw' => $_POST['draw'],
+					'recordsTotal' => $this->Operasional_ProyekModel->recordTotal(),
+					'recordsFiltered' => $this->Operasional_ProyekModel->recordFilter(),
+					'data' => $data,
+				);
+
+				echo json_encode($output);
+			}
+			else{ $this->redirect(); }
+		}
+
+		/**
+		*
+		*/
+		public function get_detail_operasional_proyek($id){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$config_dataTable = array(
+					'tabel' => 'v_operasional_proyek',
+					'kolomOrder' => array('id_bank', 'nama_detail', 'tgl_detail','total_detail'),
+					'kolomCari' => array('id_bank', 'nama_detail', 'tgl_detail','total_detail'),
+					'orderBy' => array('id_bank' => 'asc'),
+					'kondisi' => 'where id = "'.$id.'"',
+				);
+
+				$dataDetailOperasionalProyek = $this->Operasional_ProyekModel->getAllDataTable($config_dataTable);
+
+				$data = array();
+				// $no_urut = $_POST['start'];
+				foreach($dataDetailOperasionalProyek as $row){
+					// $no_urut++;
+					
+					$dataRow = array();
+					// $dataRow[] = $no_urut;
+					$dataRow[] = $row['id_bank'];					
+					$dataRow[] = $row['nama_detail'];
+					$dataRow[] = $row['tgl_detail'];
+					$dataRow[] = $row['total_detail'];
 
 					$data[] = $dataRow;
 				}

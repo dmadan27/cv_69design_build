@@ -31,12 +31,14 @@
 								<div class="nav-tabs-custom">
 									<ul class="nav nav-tabs">
 										<li class="active"><a href="#tab_1" data-toggle="tab">Pengajuan Operasional Proyek</a></li>
+										<li class=""><a href="#tab_detail_operasionalProyek" data-toggle="tab">Detail Operasional Proyek</a></li>
 										<li class=""><a href="#tab_history_pembelian" data-toggle="tab">History Pembelian</a></li>
+										
 										
 									</ul>
 									<!-- tab content -->
 									<div class="tab-content">
-										<!-- Tab 1: profil proyek -->
+										<!-- Tab 1: Data Operasional Proyek -->
 										<div class="tab-pane active" id="tab_1">
 											<div class="row">
 												<!-- data profil -->
@@ -103,8 +105,33 @@
 																	<td><strong>Nama Pembangunan</strong></td>
 																	<td><?=  $o_proyek['nama_pembangunan'] ?></td>
 																</tr>
+
+
 																
-															</table>	
+															</table >	
+
+															<table class="table table-hover">
+																<tr>
+																	<legend style="font-size: 18px;">Detail Operasional Proyek</legend>
+																</tr>
+																<tr>
+																	<td><strong>ID Bank</strong></td>
+																	<td><?=  $o_proyek['id_bank'] ?></td>
+																</tr>
+																<tr>
+																	<td><strong>Nama Detail</strong></td>
+																	<td><?=  $o_proyek['nama_detail'] ?></td>
+																</tr>
+																<tr>
+																	<td><strong>Tanggal Detail</strong></td>
+																	<td><?=  $o_proyek['tgl_detail'] ?></td>
+																</tr>
+																<tr>
+																	<td><strong>Total Detail</strong></td>
+																	<td><?=  $o_proyek['total_detail'] ?></td>
+																</tr>
+
+															</table>
 														</fieldset>
 												</div>
 
@@ -142,6 +169,44 @@
 													
 												</div>
 										</div>
+
+										<!-- Tab 2 : Data Detail Operasional Proyek  -->
+										<div class="tab-pane" id="tab_detail_operasionalProyek">
+											<!-- tabel detail operasional proyek -->
+											<div class="panel box box-primary">
+												<div class="box-header with-border">
+													<h6 class="box-title">
+                      									<a data-toggle="collapse" data-parent="#accordion" href="#collapse_detailOperasionalProyek">
+								                        	Data Detail Operasional Proyek
+								                      	</a>
+								                    </h6>
+												</div>
+												<div id="collapse_detailOperasionalProyek" class="panel-collapse collapse in">
+													<div class="box-body">
+														<div class="form-group">
+															<!-- export -->
+															<button type="button" class="btn btn-success btn-flat" id=""><i class="fa fa-file-excel-o"></i> Export Excel</button>
+														</div>
+														<table id="detailOperasionalProyek" class="table table-bordered table-hover" style="width: 100%;">
+															<thead>
+																<tr><!-- 
+																	<th class="text-right">No</th> -->
+																	<th>ID Bank</th>
+																	<th>Nama</th>
+																	<th>Tanggal</th>
+																	<th>Total</th>
+																</tr>
+															</thead>
+															<tbody>
+															</tbody>
+														</table>
+													</div>
+												</div>
+											</div>
+
+										</div>
+
+										<!-- Tab 3 : Data History Pembelian  -->
 										<div class="tab-pane" id="tab_history_pembelian">
 											<!-- tabel history pembelian -->
 											<div class="panel box box-primary">
@@ -179,7 +244,9 @@
 												</div>
 											</div>
 
+								
 										</div>
+
 									</div>
 								</div>
 							</div>
