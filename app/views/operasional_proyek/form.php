@@ -45,17 +45,22 @@
 		                              <!-- ID Proyek -->
 		                                    <div class="form-group field-id_proyek has-feedback">
 		                                        <label for="id_proyek">ID Proyek</label>
-                                            <select class="form-control select2" name="id_proyek" id="id_proyek">
-                                            </select>
+                                                <select class="form-control select2" name="id_proyek" id="id_proyek"></select>
 		                                        <span class="help-block small pesan pesan-id_proyek"></span>
 		                                    </div>
 
-                                        <!-- Input Nama Pengajuan -->
-                                            <div class="form-group field-nama has-feedback">
-                                                <label for="nama">Nama</label>
-                                                <input type="text" class="form-control field" id="nama" name="nama" placeholder="Masukan Nama Kebutuhan Operasional" value="<?= $this->data['nama'];?> ">
-                                                <span class="help-block small pesan pesan-nama"></span>
-                                            </div>    
+                                            <div class="form-group field-id_proyek_f has-feedback">
+                                                <label for="id_proyek_f">ID Proyek</label>
+                                                <input type="text" class="form-control field" id="id_proyek_f" name="id_proyek_f" value="<?= $this->data['id_proyek'];?> ">
+                                                <span class="help-block small pesan pesan-id_proyek_f"></span>
+                                            </div>  
+
+                                  <!-- Input Nama Pengajuan -->
+                                        <div class="form-group field-nama has-feedback">
+                                            <label for="nama">Nama</label>
+                                            <input type="text" class="form-control field" id="nama" name="nama" value="<?= $this->data['nama'];?> ">
+                                            <span class="help-block small pesan pesan-nama"></span>
+                                        </div>    
 
 		                              <!-- ID Distributor -->
 		                                    <div class="form-group field-id_distributor has-feedback">
@@ -63,7 +68,12 @@
 		                                        <select class="form-control select2" name="id_distributor" id="id_distributor"></select>
 		                                        <span class="help-block small pesan pesan-id_distributor"></span>
 		                                    </div>
-		                                    
+                                            <div class="form-group field-id_distributor_f has-feedback">
+                                                <label for="id_distributor_f">ID Distributor</label>
+                                                <input type="text" class="form-control field" id="id_distributor_f" name="id_distributor_f" placeholder="Masukan Nama Kebutuhan Operasional" value="<?= $this->data['id_distributor'];?> ">
+                                                <span class="help-block small pesan pesan-id_distributor_f"></span>
+                                            </div>  
+                                                
 		                              <!-- Tgl -->
 		                                    <div class="form-group field-tgl has-feedback">
 		                                        <label for="tgl">Tanggal</label>
@@ -74,15 +84,15 @@
 		                                            <input type="text" name="tgl" class="form-control datepicker field" id="tgl" placeholder="yyyy-mm-dd" value="<?= $this->data['tgl']; ?>">
 		                                        </div>
 		                                        <span class="help-block small pesan pesan-tgl"></span>
-		                                  </div>
+		                                    </div>
 
-                                           <!-- Input Keterangan -->
-                                           <div class="form-group field-ket has-feedback">
-                                                <label for="ket">Keterangan</label>
-                                                <textarea class="form-control field" id="ket" name="ket" placeholder="Masukan Keterangan" value=""><?= $this->data['ket'];?></textarea>
-                                                <span class="help-block small pesan pesan-ket"></span>
-                                            </div>
-		                        </div>
+                                    <!-- Input Keterangan -->
+                                          <div class="form-group field-ket has-feedback">
+                                              <label for="ket">Keterangan</label>
+                                              <textarea class="form-control field" id="ket" name="ket" placeholder="Masukan Keterangan" value=""><?= $this->data['ket'];?></textarea>
+                                              <span class="help-block small pesan pesan-ket"></span>
+                                          </div>
+                            </div>
 
 		                        <div class="col-lg-6 col-md-6 col-xs-12">
                                           
@@ -123,11 +133,17 @@
 			                                    </div>
 
                                         <!-- ID Bank -->
-                                                <div class="form-group field-id_bank has-feedback">
-                                                    <label for="id_bank">ID Bank</label>
-                                                    <select class="form-control select2" name="id_bank" id="id_bank"></select>
-                                                    <span class="help-block small pesan pesan-id_bank"></span>
-                                                </div>
+                                          <div class="form-group field-id_bank has-feedback">
+                                              <label for="id_bank">ID Bank</label>
+                                              <select class="form-control select2" name="id_bank" id="id_bank"></select>
+                                              <span class="help-block small pesan pesan-id_bank"></span>
+                                          </div>
+                                          <div class="form-group field-id_bank_f has-feedback">
+                                              <label for="id_bank_f">ID Bank</label>
+                                              <input type="text" class="form-control field" id="id_bank_f" name="id_bank_f" value="<?= $this->data['id_bank'];?> ">
+                                              <span class="help-block small pesan pesan-id_bank_f"></span>
+                                          </div>  
+                                                
 
                                        
 

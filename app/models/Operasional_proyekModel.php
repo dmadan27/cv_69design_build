@@ -68,6 +68,19 @@
 		/**
 		* 
 		*/
+		public function getBankById($id){
+			$query = "SELECT DISTINCT(id_bank) as id_bank FROM detail_operasional_proyek WHERE id_operasional_proyek = :id;";
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+
+		/**
+		* 
+		*/
 		public function getDetailById($id){
 			$query = "SELECT * FROM detail_operasional_proyek WHERE id_operasional_proyek = :id;";
 			$statement = $this->koneksi->prepare($query);
@@ -395,23 +408,112 @@
 		* 
 		*/
 		public function update($data){
-			$query = "UPDATE operasional_proyek SET tgl = :tgl, nama = :nama, jenis = :jenis, total = :total, sisa = :sisa, status = :status, status_lunas = :status_lunas, ket = :ket WHERE id = :id;";
+
+			try{
+				$this->koneksi->beginTransaction();
+
+				if($data['dataOperasionalProyek']['status'] == "TUNAI" && $data['dataOperasionalProyek']['status_lunas'] == "LUNAS"){
+					
+					$this->edit_OperasionalProyek($data['dataOperasionalProyek']);
+				
+				} else if($data['dataOperasionalProyek']['status'] == "TUNAI" && $data['dataOperasionalProyek']['status_lunas'] == "BELUM LUNAS"){
+				
+					$this->edit_OperasionalProyek_ver2($data['dataOperasionalProyek']);
+
+				} else if($data['dataOperasionalProyek']['status'] == "KREDIT" && $data['dataOperasionalProyek']['status_lunas'] == "LUNAS"){
+
+					
+
+				} else if($data['dataOperasionalProyek']['status'] == "KREDIT" && $data['dataOperasionalProyek']['status_lunas'] == "BELUM LUNAS"){
+
+
+				}
+				
+				$this->koneksi->commit();
+				return true;
+
+			} catch(PDOException $e){
+				$this->koneksi->rollback();
+				die($e->getMessage());
+				// return false;
+			}
+
+		}
+
+		/**
+		* 
+		*/
+		private function edit_operasionalProyek($data) {
+			//Update Mutasi Saldo Tunai Belum Lunas -> Lunas 
+			
+			$query = "CALL edit_operasional_proyek (
+				:id, 
+				:id_proyek, 
+				:id_bank, 
+				:tgl, 
+				:nama, 
+				:jenis,  
+				:total, 
+				:sisa, 
+				:status, 
+				:status_lunas, 
+				:ket
+			);";
 
 			$statement = $this->koneksi->prepare($query);
-			$statement->bindParam(':tgl', $data['tgl']);
-			$statement->bindParam(':nama', $data['nama']);
-			$statement->bindParam(':jenis', $data['jenis']);
-			$statement->bindParam(':total', $data['total']);
-			$statement->bindParam(':sisa', $data['sisa']);
-			$statement->bindParam(':status', $data['status']);
-			$statement->bindParam(':status_lunas', $data['status_lunas']);
-			$statement->bindParam(':ket', $data['ket']);
-			
-			
-			$statement->bindParam(':id', $data['id']);
-			$result = $statement->execute();
+			$statement->execute(
+				array(
+					':id' => $data['id'],
+					':id_proyek' => $data['id_proyek'],
+					':id_bank' => $data['id_bank'],
+					':tgl' => $data['tgl'],
+					':nama' => $data['nama'],
+					':jenis' => $data['jenis'],
+					':total' => $data['total'],
+					':sisa' => $data['sisa'],
+					':status' => $data['status'],
+					':status_lunas' => $data['status_lunas'],
+					':ket' => $data['ket']
+				)
+			);
+			$statement->closeCursor();
+		}
 
-			return $result;
+		/**
+		* 
+		*/
+		private function edit_operasionalProyek_ver2($data) {
+			//Update Mutasi Saldo Tunai Lunas -> Belum Lunas 
+			
+			$query = "CALL edit_operasional_proyek_ver2 (
+				:id, 
+				:id_proyek, 
+				:tgl, 
+				:nama, 
+				:jenis,  
+				:total, 
+				:sisa, 
+				:status, 
+				:status_lunas, 
+				:ket
+			);";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id' => $data['id'],
+					':id_proyek' => $data['id_proyek'],
+					':tgl' => $data['tgl'],
+					':nama' => $data['nama'],
+					':jenis' => $data['jenis'],
+					':total' => $data['total'],
+					':sisa' => $data['sisa'],
+					':status' => $data['status'],
+					':status_lunas' => $data['status_lunas'],
+					':ket' => $data['ket']
+				)
+			);
+			$statement->closeCursor();
 		}
 
 		/**
@@ -420,7 +522,7 @@
 		public function delete($data){
 			// TRANSACT
 			try{
-				$query = 'CALL hapus_operasional_proyek_versi2 (:id);';
+				$query = 'CALL hapus_operasional_proyek_versi2 (:id, :total, :tgl, :ket);';
 
 				$this->koneksi->beginTransaction();
 
@@ -428,7 +530,9 @@
 				$statement->execute(
 					array(
 						':id' => $data['id'],
-							
+						':total' => $data['total'],
+						':tgl' => $data['tgl'],
+						':ket' => $data['ket'],
 					)
 				);
 				$statement->closeCursor();

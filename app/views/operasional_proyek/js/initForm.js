@@ -9,6 +9,12 @@ $(document).ready(function () {
 		$('#btn_tambahDetail').prop('disabled', true);
 		$('#id_bank').prop('disabled', true);
 
+		$('.field-id_proyek_f').css('display', 'none');
+		$('.field-id_bank_f').css('display', 'none');
+		$('.field-id_kas_besar_f').css('display', 'none');
+		$('.field-id_distributor_f').css('display', 'none');
+		
+
 	    //Initialize Select2 Elements
 	    $('#id_proyek').select2({
 	    	placeholder: "Pilih Proyek",
@@ -134,6 +140,11 @@ $(document).ready(function () {
 		} else if($('#status').val() == "TUNAI" && $('#status_lunas').val() == "BELUM LUNAS"){
 		
 			$('#id_bank').prop('disabled', true);
+			$('#id_bank').val('').trigger('change');
+			
+			$('#id_bank_f').prop('disabled', true);
+			$('#id_bank_f').val('').trigger('change');
+
 			$('#btn_tambahDetail').prop('disabled', true);
 			$('#submit_operasional_proyek').prop('disabled', false);
 		
@@ -191,9 +202,6 @@ $(document).ready(function () {
 	    });
 
 		var index = indexDetail++;
-
-		// var total_detail = parseFloat($('#total_detail').val().trim()) ? 
-		// 	parseFloat($('#total_detail').val().trim()) : $('#total_detail').val().trim();
 			
 		var total_detail = ($('#total_detail').inputmask) ? 
 			( parseFloat($('#total_detail').inputmask('unmaskedvalue')) ?
@@ -248,7 +256,6 @@ $(document).ready(function () {
 							"<td>"+data.nama_detail+"</td>"+
 							"<td>"+data.tgl_detail+"</td>"+
 							"<td>"+data.total_detail+"</td>"+
-							// "<td></td>"+
 							"<td>"+btnAksi_detail(data.index)+"</td>"+
 						"</tr>"
 					);
@@ -315,35 +322,20 @@ $(document).ready(function () {
 	*
 	*/
 	function actionEditDetail(){
-		var qty_detail = parseFloat($('#qty_detail').val().trim()) ? 
-			parseFloat($('#qty_detail').val().trim()) : $('#qty_detail').val().trim();
 
-		var harga_detail = parseFloat($('#harga_detail').val().trim()) ? 
-			parseFloat($('#harga_detail').val().trim()) : $('#harga_detail').val().trim();
-
-		var sub_total_detail = parseFloat($('#sub_total_detail').val().trim()) ? 
-			parseFloat($('#sub_total_detail').val().trim()) : $('#sub_total_detail').val().trim();
-
-		var harga_asli_detail = parseFloat($('#harga_asli_detail').val().trim()) ? 
-			parseFloat($('#harga_asli_detail').val().trim()) : $('#harga_asli_detail').val().trim();
-		
-		var sisa_detail = parseFloat($('#sisa_detail').val().trim()) ? 
-			parseFloat($('#sisa_detail').val().trim()) : $('#sisa_detail').val().trim();
+		var total_detail = ($('#total_detail').inputmask) ? 
+			( parseFloat($('#total_detail').inputmask('unmaskedvalue')) ?
+				parseFloat($('#total_detail').inputmask('unmaskedvalue')) : 
+				$('#total_detail').inputmask('unmaskedvalue')
+			) : $('#total_detail').val().trim();
 
 		var data = {
 			index: $('#id_detail').val().trim(),
 			id: '',
-			id_operasional_proyek : $('#id').val().trim(),
+			id_bank: $('#id_bank').val().trim(),
+			tgl_detail : $('#tgl_detail').val().trim(),
 			nama_detail : $('#nama_detail').val().trim(),
-			jenis_detail : $('#jenis_detail').val().trim(),
-			satuan_detail : $('#satuan_detail').val().trim(),
-			qty_detail : qty_detail,
-			harga_detail : harga_detail,
-			sub_total_detail : sub_total_detail,
-			status_detail : $('#status_detail').val().trim(),
-			harga_asli_detail : harga_asli_detail,
-			sisa_detail : sisa_detail,
-			status_lunas_detail : $('#status_lunas_detail').val().trim(),
+			total_detail : total_detail,
 			aksi: 'tambah',
 			delete: false,
 		};
@@ -381,21 +373,12 @@ $(document).ready(function () {
 	*/
 	function setValueDetail(data,index){
 
-		console.log(index);
+		console.log(data);
 		$('#id_detail').val(index);
-		// $('#id_bank').val(data[index].id_bank);
 		$('#nama_detail').val(data[index].nama_detail);
 		$('#tgl_detail').val(data[index].tgl_detail);
 		$('#total_detail').val(data[index].total_detail);
 		
-		// $('#satuan_detail').val(data[index].satuan_detail);
-		// $('#qty_detail').val(data[index].qty_detail);
-		// $('#harga_detail').val(data[index].harga_detail);
-		// $('#sub_total_detail').val(data[index].sub_total_detail);
-		// $('#status_detail').val(data[index].status_detail);
-		// $('#harga_asli_detail').val(data[index].harga_asli_detail);
-		// $('#sisa_detail').val(data[index].sisa_detail);
-		// $('#status_lunas_detail').val(data[index].status_lunas_detail);
 	}
 
 	/**
@@ -412,14 +395,6 @@ $(document).ready(function () {
 					'<td>'+item.nama_detail+'</td>'+
 					'<td>'+item.tgl_detail+'</td>'+
 					'<td>'+item.total_detail+'</td>'+
-					// '<td>'+item.qty_detail+'</td>'+
-					// '<td>'+item.harga_detail+'</td>'+
-					// '<td>'+item.sub_total_detail+'</td>'+
-					// '<td>'+item.status_detail+'</td>'+
-					// '<td>'+item.harga_asli_detail+'</td>'+
-					// '<td>'+item.sisa_detail+'</td>'+
-					// '<td>'+item.status_lunas_detail+'</td>'+
-					// '<td></td>'+
 					'<td>'+btnAksi_detail(item.index)+'</td>'+
 				'</tr>'
 			);
@@ -544,9 +519,8 @@ function setnamaDistributor(){
 *
 */
 function getDataForm(){
-	console.log(listDetail)
+
 	var data = new FormData()
-	// var total = parseFloat($('#total').val().trim()) ? parseFloat($('#total').val().trim()) : $('#total').val().trim();
 
 	var total = ($('#total').inputmask) ? 
 		( parseFloat($('#total').inputmask('unmaskedvalue')) ?
@@ -562,41 +536,46 @@ function getDataForm(){
 		bank = $('#id_bank').val().trim();
 	}
 
-	// if($('#submit_operasional_proyek').val().trim().toLowerCase() == 'action-edit'){
-	// 	id : $('#id').val().trim(),
-	// 	id_proyek : $('#id_proyek').val().trim(),
-	// 	id_bank : $('#id_bank').val().trim(),
-	// 	id_kas_besar : $('#id_kas_besar').val().trim(),
-	// 	id_distributor : $('#id_distributor').val().trim(),
-	// 	tgl : $('#tgl').val().trim(),
-	// 	nama : $('#nama').val().trim(),
-	// 	jenis : $('#jenis').val().trim(),
-	// 	total : total,
-	// 	sisa : sisa,
-	// 	status : $('#status').val().trim(),
-	// 	status_lunas : $('#status_lunas').val().trim(),
-	// 	ket : $('#ket').val().trim()
-	// }
+	if($('#submit_operasional_proyek').val().trim().toLowerCase() == 'action-edit'){
 
-	var dataOperasionalProyek = {
-		id : $('#id').val().trim(),
-		id_proyek : $('#id_proyek').val().trim(),
-		id_bank : bank,
-		id_distributor : $('#id_distributor').val().trim(),
-		tgl : $('#tgl').val().trim(),
-		nama : $('#nama').val().trim(),
-		jenis : $('#jenis').val().trim(),
-		total : total,
-		sisa : '0',
-		status : $('#status').val().trim(),
-		status_lunas : $('#status_lunas').val().trim(),
-		ket : $('#ket').val().trim()
+		var dataOperasionalProyek = {
+			id : $('#id').val().trim(),
+			id_proyek : $('#id_proyek_f').val().trim(),
+			id_bank : bank,
+			id_distributor : $('#id_distributor_f').val().trim(),
+			tgl : $('#tgl').val().trim(),
+			nama : $('#nama').val().trim(),
+			jenis : $('#jenis').val().trim(),
+			total : total,
+			sisa : '0',
+			status : $('#status').val().trim(),
+			status_lunas : $('#status_lunas').val().trim(),
+			ket : $('#ket').val().trim()
+		}
+		console.log('proses edit')
+		var detailList = listDetail
+	
+	} else {
+
+		var dataOperasionalProyek = {
+			id : $('#id').val().trim(),
+			id_proyek : $('#id_proyek').val().trim(),
+			id_bank : bank,
+			id_distributor : $('#id_distributor').val().trim(),
+			tgl : $('#tgl').val().trim(),
+			nama : $('#nama').val().trim(),
+			jenis : $('#jenis').val().trim(),
+			total : total,
+			sisa : '0',
+			status : $('#status').val().trim(),
+			status_lunas : $('#status_lunas').val().trim(),
+			ket : $('#ket').val().trim()
+		}
+		console.log('proses add')
+		var detailList = listDetail
 	}
 
-	var detailList = listDetail
-
 	// // data.append('token', $('#token_form').val().trim());
-	// // data.append('dataOperasionalProyek', JSON.stringify(dataOperasionalProyek));
 	data.append('id', $('#id').val().trim());
 	data.append('dataOperasionalProyek', JSON.stringify(dataOperasionalProyek));
 	data.append('listDetail', JSON.stringify(detailList));
@@ -656,12 +635,7 @@ function submit(){
 */
 function getEdit(id){
 
-
-	// $('#id').prop('disabled', true);
-	// 	$('#id_proyek').prop('disabled', true);
-	// 	$('.field-id_bank').css('display', 'none');
-	// 	$('.field-id_kas_besar').css('display', 'none');
-	// 	$('.field-id_distributor').css('display', 'none');
+		
 
 	$.ajax({
 		url: BASE_URL+'operasional-proyek/get-edit/'+id.toLowerCase(),
@@ -670,7 +644,46 @@ function getEdit(id){
 		data: {},
 		beforeSend: function(){},
 		success: function(output){
-			console.log(output);
+			console.log(output.dataOperasionalProyek);
+
+			if(!output.dataOperasionalProyek.id_bank) {
+				console.log('aku disini')
+
+				$('#id_bank').prop('disabled', false);
+				$('.field-id_bank').css('display', 'block');
+
+				$('.field-id_proyek').css('display', 'none');
+				$('.field-id_kas_besar').css('display', 'none');
+				$('.field-id_distributor').css('display', 'none');
+
+				$('#id_proyek_f').prop('disabled', true);
+				$('#id_bank_f').prop('disabled', true);
+				$('#id_kas_besar_f').prop('disabled', true);
+				$('#id_distributor_f').prop('disabled', true);
+
+				$('.field-id_bank_f').css('display', 'none');
+				$('.field-id_kas_besar_f').css('display', 'block');
+				$('.field-id_distributor_f').css('display', 'block');
+				
+
+			} else if(output.dataOperasionalProyek.id_bank){
+				console.log('aku disini cuy')
+
+				$('#id').prop('disabled', true);
+				$('.field-id_bank').css('display', 'none');
+				$('.field-id_kas_besar').css('display', 'none');
+				$('.field-id_distributor').css('display', 'none');
+				$('.field-id_proyek').css('display', 'none');
+				
+				$('#id_proyek_f').prop('disabled', true);
+				$('#id_bank_f').prop('disabled', true);
+				$('#id_kas_besar_f').prop('disabled', true);
+				$('#id_distributor_f').prop('disabled', true);
+
+				$('.field-id_bank_f').css('display', 'block');
+				$('.field-id_kas_besar_f').css('display', 'block');
+				$('.field-id_distributor_f').css('display', 'block');
+			}
 
 			$("#jenis").val(output.dataOperasionalProyek.jenis).trigger('change');
 			$("#status").val(output.dataOperasionalProyek.status).trigger('change');
