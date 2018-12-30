@@ -336,15 +336,18 @@
 				if(empty($id) || $id == "") $this->redirect(BASE_URL."operasional-proyek/");
 
 				// get data detail dan skk
-				// $dataDetail = $this->ProyekModel->getDetailById($id);
+				
 				// $dataSkk = $this->ProyekModel->getSkkById($id);
 				$dataOperasionalProyek = $this->Operasional_ProyekModel->getById($id);
+				$dataDetail = $this->Operasional_ProyekModel->getDetailById($id);
+
 				$id_bank = !empty($this->Operasional_ProyekModel->getBankById($id)) ? $this->Operasional_ProyekModel->getBankById($id) :false;
 
 				$dataOperasionalProyek['id_bank'] = $id_bank['id_bank'];
 
 				$output = array(
 					'dataOperasionalProyek' => $dataOperasionalProyek,
+					'dataDetail' => $dataDetail
 				);
 
 				echo json_encode($output);
@@ -359,6 +362,8 @@
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST :false;
 				$dataOperasionalProyek = isset($_POST['dataOperasionalProyek']) ? json_decode($_POST['dataOperasionalProyek'], true) : false;
+				$dataDetail = isset($_POST['listDetail']) ? json_decode($_POST['listDetail'], true) : false;	
+				$dataDetailTambahan = isset($_POST['listDetail_Tambahan']) ? json_decode($_POST['listDetail_Tambahan'], true) : false;
 
 				$error = $notif = array();
 				if(!$data){
@@ -396,6 +401,8 @@
 
 					$dataUpdate = array(
 							'dataOperasionalProyek' => $dataOperasionalProyek,
+							'dataDetail' => $dataDetail,
+							'dataDetailTambahan' => $dataDetailTambahan
 					);
 
 					// update data

@@ -2,6 +2,8 @@ $(document).ready(function () {
 
 
 	if($('#submit_operasional_proyek').val() == 'action-add') {
+		console.log('mode tambah')
+
 		generateID();
 		
 		$('#id').prop('disabled', true);
@@ -33,6 +35,7 @@ $(document).ready(function () {
 	    });
 	}
 	else if($('#submit_operasional_proyek').val() == 'action-edit') {
+		console.log('mode edit')
 		getEdit($('#id').val().trim());
 		// $('#id_bank').val();		
 
@@ -210,19 +213,38 @@ $(document).ready(function () {
 			) : $('#total_detail').val().trim();
 
 		
+			if($('#submit_operasional_proyek').val() == 'action-add'){
 
-		var data = {
-			index: index,
-			id: '',
-			id_operasional_proyek : $('#id').val().trim(),
-			id_bank : $('#id_bank').val().trim(),
-			nama_detail : $('#nama_detail').val().trim(),
-			tgl_detail : $('#tgl_detail').val().trim(),
-			total_detail : total_detail,
+				var data = {
+					index: index,
+					id: '',
+					id_operasional_proyek : $('#id').val().trim(),
+					id_bank : $('#id_bank').val().trim(),
+					nama_detail : $('#nama_detail').val().trim(),
+					tgl_detail : $('#tgl_detail').val().trim(),
+					total_detail : total_detail,
+					
+					aksi: 'tambah',
+					delete: false,
+				};
 			
-			aksi: 'tambah',
-			delete: false,
-		};
+			} else if($('#submit_operasional_proyek').val() == 'action-edit'){
+
+				var data = {
+					index: index,
+					id: '',
+					id_operasional_proyek : $('#id').val().trim(),
+					id_bank : $('#id_bank_f').val().trim(),
+					nama_detail : $('#nama_detail').val().trim(),
+					tgl_detail : $('#tgl_detail').val().trim(),
+					total_detail : total_detail,
+					
+					aksi: 'tambah',
+					delete: false,
+				};
+
+			}
+		
 
 		validDetail(data);
 		console.log(data);
@@ -245,8 +267,11 @@ $(document).ready(function () {
 			success: function(output){
 				console.log(output);
 				if(output.status){
+
 					// tambah data ke list
+					
 					listDetail.push(data);
+					listDetail_Tambahan.push(data);
 					
 					// tambah data ke tabel
 					$('#detail_OperasionalproyekTable > tbody:last-child').append(
@@ -260,16 +285,20 @@ $(document).ready(function () {
 						"</tr>"
 					);
 					numbering_listDetail();
-					// console.log(listDetail);
+
+					console.log(listDetail);
+					console.log(listDetail_Tambahan);
 
 					$("#modalDetailOperasional").modal('hide');
 					$('#submit_operasional_proyek').prop('disabled', false);
 					resetModal();
-				}
-				else{
+
+				} else {
+					
 					// decrement index utama
 					indexDetail -= 1;
 					setError(output.error);
+					
 				}	
 				console.log(listDetail);
 			},
@@ -314,8 +343,8 @@ $(document).ready(function () {
 		$('#submit_detail').val('edit');
 		$('#submit_detail').text('Edit Detail');
 
+		console.log('edit Clicked on index ' + index);
 		setValueDetail(listDetail,index);
-		// console.log('trigger edit');
 	}
 
 	/**
@@ -329,10 +358,18 @@ $(document).ready(function () {
 				$('#total_detail').inputmask('unmaskedvalue')
 			) : $('#total_detail').val().trim();
 
+		var bank = '';
+
+		if($('#submit_operasional_proyek').val() == 'action-add'){
+			bank = $('#id_bank').val().trim();
+		} else if($('#submit_operasional_proyek').val() == 'action-edit') {
+			bank = $('#id_bank_f').val().trim()
+		}
+
 		var data = {
 			index: $('#id_detail').val().trim(),
 			id: '',
-			id_bank: $('#id_bank').val().trim(),
+			id_bank: bank,
 			tgl_detail : $('#tgl_detail').val().trim(),
 			nama_detail : $('#nama_detail').val().trim(),
 			total_detail : total_detail,
@@ -345,7 +382,7 @@ $(document).ready(function () {
 				listDetail[i] = data;
 			}
 		});
-
+		
 		$('#modalDetailOperasional').modal('hide');
 		set_data_table(listDetail);
 		console.log(listDetail);
@@ -356,6 +393,8 @@ $(document).ready(function () {
 	*/
 	function delete_detail(index){
 		
+		setDelete(listDetail,index);
+
 		listDetail.splice(index, 1);
 		var indexval = index;
 		$('#'+indexval).remove()
@@ -366,6 +405,14 @@ $(document).ready(function () {
 		
 		console.log('delete Clicked on index ' + index);
 		console.log(listDetail);
+	}
+
+	/**
+	*
+	*/
+	function setDelete(data, index) {
+		toDeleteList.push(data[index])
+		console.log(toDeleteList);
 	}
 
 	/**
@@ -530,13 +577,23 @@ function getDataForm(){
 
 	var bank = '';
 
-	if($('#status').val() == "TUNAI" && $('#status_lunas').val() == "BELUM LUNAS"){
-		bank = '';
-	} else {
-		bank = $('#id_bank').val().trim();
-	}
+	
 
 	if($('#submit_operasional_proyek').val().trim().toLowerCase() == 'action-edit'){
+
+		if($('#status').val() == "TUNAI" && $('#status_lunas').val() == "BELUM LUNAS"){
+		
+			bank = '';
+		
+		} else if($('#status').val() == "TUNAI" && $('#status_lunas').val() == "LUNAS") {
+		
+			bank = $('#id_bank').val().trim();
+		
+		} else {
+
+			bank = $('#id_bank_f').val().trim();
+		
+		}
 
 		var dataOperasionalProyek = {
 			id : $('#id').val().trim(),
@@ -554,8 +611,15 @@ function getDataForm(){
 		}
 		console.log('proses edit')
 		var detailList = listDetail
+		var detailTambahan = listDetail_Tambahan
 	
 	} else {
+
+		if($('#status').val() == "TUNAI" && $('#status_lunas').val() == "BELUM LUNAS"){
+			bank = '';
+		} else {
+			bank = $('#id_bank').val().trim();
+		}
 
 		var dataOperasionalProyek = {
 			id : $('#id').val().trim(),
@@ -573,12 +637,14 @@ function getDataForm(){
 		}
 		console.log('proses add')
 		var detailList = listDetail
+		var detailTambahan = listDetail_Tambahan
 	}
 
 	// // data.append('token', $('#token_form').val().trim());
 	data.append('id', $('#id').val().trim());
 	data.append('dataOperasionalProyek', JSON.stringify(dataOperasionalProyek));
 	data.append('listDetail', JSON.stringify(detailList));
+	data.append('listDetail_Tambahan', JSON.stringify(detailTambahan));
 	data.append('action', $('#submit_operasional_proyek').val().trim());
 	
 	return data;
@@ -689,9 +755,12 @@ function getEdit(id){
 			$("#status").val(output.dataOperasionalProyek.status).trigger('change');
 			$("#status_lunas").val(output.dataOperasionalProyek.status_lunas).trigger('change');
 
+			
+
 			$.each(output.dataDetail, function(i, data){
 				
 				var detailOperasional = {
+					index: indexDetail++,
 					id: data.id,
 					id_operasional_proyek: data.id_operasional_proyek,
 					id_bank: data.id_bank,
@@ -700,9 +769,13 @@ function getEdit(id){
 					total_detail: data.total
 				};
 
-				console.log(detailOperasional)
-				
+			
+			console.log(detailOperasional)
+			
+			if(output.dataOperasionalProyek.status == "KREDIT"){
 				renderTableDetailOperasional(detailOperasional)
+			}
+
 			});
 
 		},

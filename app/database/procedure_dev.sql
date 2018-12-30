@@ -911,6 +911,53 @@ delimiter //
 	END//
 	delimiter ;
 
+-- Procedure Edit Data Operasional Kredit Belum Lunas
+delimiter //
+	CREATE PROCEDURE edit_operasional_proyek_ver3(
+		IN id_param varchar(50),
+		IN id_proyek_param varchar(50),
+		IN tgl_param date,
+		IN nama_param varchar(50),
+		IN jenis_param varchar(50),
+		IN total_param double(12,2),
+		IN sisa_param double(12,2),
+		IN status_param enum('TUNAI','KREDIT'),
+		IN status_lunas_param enum('LUNAS','BELUM LUNAS'),
+		IN total_detail double(12,2),
+		IN ket_param text
+	)
+
+	BEGIN
+		DECLARE get_saldo double(12,2);
+		DECLARE get_id_bank int;
+		DECLARE get_sisa double(12,2);
+
+		-- 1. get id_bank
+		SELECT DISTINCT(id_bank) INTO get_id_bank FROM detail_operasional_proyek where id_operasional_proyek = id_param;
+
+		-- 1. get sisa
+		SELECT sisa INTO get_sisa FROM operasional_proyek where id = id_param;
+		
+		-- 2. Update table operasional proyek
+		UPDATE operasional_proyek 
+		SET tgl = tgl_param, nama = nama_param, jenis = jenis_param, total = total_param, sisa = (get_sisa - total_detail), status = status_param, status_lunas = status_lunas_param, ket = ket_param 
+		WHERE id = id_param;
+
+		-- 3. ambil saldo terakhir
+		SELECT saldo INTO get_saldo FROM bank WHERE id = get_id_bank;
+
+		-- 4. update saldo
+		UPDATE  bank SET saldo = ( get_saldo - total_detail ) WHERE id = get_id_bank;
+
+		-- 5. insert mutasi
+		INSERT INTO mutasi_bank
+			(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+			VALUES
+			(get_id_bank, tgl_param, 0, total_detail, (get_saldo - total_detail),  ket_param);
+
+	END//
+	delimiter ;
+
 
 
 -- Procedure Hapus Data Operasional Proyek

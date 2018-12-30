@@ -403,6 +403,28 @@
 
 		}
 
+		/**
+		*
+		*/
+		// private function insertMutasi($data, $id_operasional_proyek){
+		// 	//insert mutasi
+		// 	$query = 'INSERT INTO mutasi (id_bank, tgl, masuk, keluar, saldo, ket) 
+		// 			  VALUES (:id_bank, :tgl, :masuk, :keluar, :saldo, :ket)';
+		// 	$statement = $this->koneksi->prepare($query);
+		// 	$statement->execute(
+		// 		array(
+		// 			':id_bank' => $data['id_bank'],
+		// 			':tgl' => $data['tgl_detail'],
+		// 			':masuk' => '0',
+		// 			':keluar' => $data['total_detail'],
+		// 			':saldo' =>
+		// 			':ket' => $data['nama_detail']
+		// 		)
+		// 	);
+		// 	$statement->closeCursor();
+
+		// }
+
 
 		/**
 		* 
@@ -422,11 +444,62 @@
 
 				} else if($data['dataOperasionalProyek']['status'] == "KREDIT" && $data['dataOperasionalProyek']['status_lunas'] == "LUNAS"){
 
-					
+					//Mendapatkan Total Detail Operasional Proyek Tambahan
+					$sumDetailTambahan = 0;
+					foreach ($data['dataDetailTambahan'] as $index => $row) {
+						$sumDetailTambahan += $row['total_detail'];
+					}
+
+					//Mendapatkan Total Detail Operasional Proyek Lama
+					$sumDetail = 0;
+					foreach ($data['dataDetail'] as $index => $row) {
+						$sumDetail += $row['total_detail'];
+					}
+
+					if($sumDetail == $data['dataOperasionalProyek']['total']){
+
+						$data['dataOperasionalProyek']['sum'] = $sumDetailTambahan;
+						$this->edit_OperasionalProyek_ver3($data['dataOperasionalProyek']);
+
+						//insert detail operasional proyek
+						foreach ($data['dataDetailTambahan'] as $index => $row) {
+							if(!$data['dataDetailTambahan'][$index]['delete']){
+								array_map('strtoupper', $row);
+								$this->insertDetailOperasionalProyek($row, $data['dataOperasionalProyek']['id']);
+							}
+						}
+						
+					} else if($data['dataOperasionalProyek']['total'] < $sumDetail || $data['dataOperasionalProyek']['total'] > $sumDetail) {
+						exit;
+					}
+
 
 				} else if($data['dataOperasionalProyek']['status'] == "KREDIT" && $data['dataOperasionalProyek']['status_lunas'] == "BELUM LUNAS"){
+					//Mendapatkan Total Detail Operasional Proyek Lama
+					$sumDetail = 0;
+					foreach ($data['dataDetail'] as $index => $row) {
+						$sumDetail += $row['total_detail'];
+					}
 
+					$sumDetailTambahan = 0;
+					foreach ($data['dataDetailTambahan'] as $index => $row) {
+						$sumDetailTambahan += $row['total_detail'];
+					}
 
+					//Selama total cicilan masih kurang dari total maka detail bisa terus ditambah
+					if($data['dataOperasionalProyek']['total'] > $sumDetail){
+						//insert detail operasional proyek
+						foreach ($data['dataDetailTambahan'] as $index => $row) {
+							if(!$data['dataDetailTambahan'][$index]['delete']){
+								array_map('strtoupper', $row);
+								$this->insertDetailOperasionalProyek($row, $data['dataOperasionalProyek']['id']);
+							}
+						}
+					}
+
+					// $data['dataOperasionalProyek']['sisa'] = $data['dataOperasionalProyek']['sisa'] - $sumDetailTambahan;
+					$data['dataOperasionalProyek']['sum'] = $sumDetailTambahan;
+					$this->edit_OperasionalProyek_ver3($data['dataOperasionalProyek']);
 				}
 				
 				$this->koneksi->commit();
@@ -510,6 +583,43 @@
 					':sisa' => $data['sisa'],
 					':status' => $data['status'],
 					':status_lunas' => $data['status_lunas'],
+					':ket' => $data['ket']
+				)
+			);
+			$statement->closeCursor();
+		}
+
+		/**
+		* 
+		*/
+		private function edit_operasionalProyek_ver3($data) {
+			$query = "CALL edit_operasional_proyek_ver3 (
+				:id, 
+				:id_proyek, 
+				:tgl, 
+				:nama, 
+				:jenis,  
+				:total, 
+				:sisa, 
+				:status, 
+				:status_lunas, 
+				:total_detail,
+				:ket
+			);";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id' => $data['id'],
+					':id_proyek' => $data['id_proyek'],
+					':tgl' => $data['tgl'],
+					':nama' => $data['nama'],
+					':jenis' => $data['jenis'],
+					':total' => $data['total'],
+					':sisa' => $data['sisa'],
+					':status' => $data['status'],
+					':status_lunas' => $data['status_lunas'],
+					':total_detail' => $data['sum'],
 					':ket' => $data['ket']
 				)
 			);

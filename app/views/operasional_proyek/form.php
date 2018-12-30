@@ -233,6 +233,8 @@
 <?php include_once('modal.php'); ?>
 <script type="text/javascript">
   var listDetail = [];
+  var listDetail_Tambahan = [];
+  var toDeleteList = [];
   var indexDetail = 0;
 
 </script>
