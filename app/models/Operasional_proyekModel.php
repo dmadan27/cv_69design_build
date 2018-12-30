@@ -444,6 +444,14 @@
 
 				} else if($data['dataOperasionalProyek']['status'] == "KREDIT" && $data['dataOperasionalProyek']['status_lunas'] == "LUNAS"){
 
+					if(!empty($data['toDelete'])){
+						foreach ($data['toDelete'] as $index => $row) {
+							if($row['id'] != ''){
+								$this->hapus_DetailOperasional($row);
+							}
+						}
+					}
+
 					//Mendapatkan Total Detail Operasional Proyek Tambahan
 					$sumDetailTambahan = 0;
 					foreach ($data['dataDetailTambahan'] as $index => $row) {
@@ -475,6 +483,15 @@
 
 
 				} else if($data['dataOperasionalProyek']['status'] == "KREDIT" && $data['dataOperasionalProyek']['status_lunas'] == "BELUM LUNAS"){
+									
+					if(!empty($data['toDelete'])){
+						foreach ($data['toDelete'] as $index => $row) {
+							if($row['id'] != ''){
+								$this->hapus_DetailOperasional($row, $data['dataOperasionalProyek']['id']);
+							}
+						}
+					}
+
 					//Mendapatkan Total Detail Operasional Proyek Lama
 					$sumDetail = 0;
 					foreach ($data['dataDetail'] as $index => $row) {
@@ -511,6 +528,27 @@
 				// return false;
 			}
 
+		}
+
+		/**
+		* 
+		*/
+		private function hapus_DetailOperasional($data, $id) {
+			// print_r($data);
+			// exit;
+			$query = 'CALL hapus_detail_operasional_proyek (:id, :id_operasional_proyek, :total_detail, :ket, :tgl);';
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id' => $data['id'],
+					':id_operasional_proyek' => $id,
+					':total_detail' => $data['total_detail'],
+					':ket' => 'hapus detail operasional '.$data['nama_detail'],
+					':tgl' => $data['tgl_detail']
+					
+				)
+			);
+			$statement->closeCursor();
 		}
 
 		/**

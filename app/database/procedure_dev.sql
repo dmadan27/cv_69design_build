@@ -958,6 +958,48 @@ delimiter //
 	END//
 	delimiter ;
 
+-- Procedure Hapus Detail Operasional Proyek untuk kondisi kredit
+delimiter //
+	CREATE PROCEDURE hapus_detail_operasional_proyek(
+		IN id_param varchar(50),
+		IN id_operasional_proyek_param varchar(50),
+		IN total_detail double(12,2),
+		IN ket_param text,
+		IN tgl_param date
+	)
+
+	BEGIN
+		DECLARE get_saldo double(12,2);
+		DECLARE get_id_bank int;
+		DECLARE get_sisa double(12,2);
+
+		-- 1. get id_bank
+		SELECT DISTINCT(id_bank) INTO get_id_bank FROM detail_operasional_proyek where id_operasional_proyek = id_operasional_proyek_param;
+
+		-- 2. get sisa
+		SELECT sisa INTO get_sisa FROM operasional_proyek where id = id_operasional_proyek_param;
+		
+		-- 3. Update table operasional proyek
+		UPDATE operasional_proyek SET sisa = (get_sisa + total_detail) WHERE id = id_operasional_proyek_param;
+
+		-- 4. Delete dari table detail operasional proyek
+		DELETE FROM detail_operasional_proyek WHERE id = id_param;
+
+		-- 5. ambil saldo terakhir
+		SELECT saldo INTO get_saldo FROM bank WHERE id = get_id_bank;
+
+		-- 6. update saldo
+		UPDATE  bank SET saldo = ( get_saldo + total_detail ) WHERE id = get_id_bank;
+
+		-- 7. insert mutasi
+		INSERT INTO mutasi_bank
+			(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+			VALUES
+			(get_id_bank, tgl_param, total_detail, 0, (get_saldo + total_detail),  ket_param);
+
+	END//
+	delimiter ;
+
 
 
 -- Procedure Hapus Data Operasional Proyek

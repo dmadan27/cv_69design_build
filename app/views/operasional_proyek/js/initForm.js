@@ -36,6 +36,7 @@ $(document).ready(function () {
 	}
 	else if($('#submit_operasional_proyek').val() == 'action-edit') {
 		console.log('mode edit')
+		console.log(toDeleteList)
 		getEdit($('#id').val().trim());
 		// $('#id_bank').val();		
 
@@ -399,7 +400,7 @@ $(document).ready(function () {
 		var indexval = index;
 		$('#'+indexval).remove()
 		
-		if(listDetail.length == 0){
+		if(listDetail.length == 0 && $('#status').val() != "KREDIT" && $('#status_lunas').val() != "BELUM LUNAS"){
 			$('#submit_operasional_proyek').prop('disabled', true);
 		}
 		
@@ -413,6 +414,7 @@ $(document).ready(function () {
 	function setDelete(data, index) {
 		toDeleteList.push(data[index])
 		console.log(toDeleteList);
+		
 	}
 
 	/**
@@ -645,6 +647,7 @@ function getDataForm(){
 	data.append('dataOperasionalProyek', JSON.stringify(dataOperasionalProyek));
 	data.append('listDetail', JSON.stringify(detailList));
 	data.append('listDetail_Tambahan', JSON.stringify(detailTambahan));
+	data.append('toDelete',JSON.stringify(toDeleteList));
 	data.append('action', $('#submit_operasional_proyek').val().trim());
 	
 	return data;
