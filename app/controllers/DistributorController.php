@@ -391,7 +391,7 @@
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = !empty($this->DistributorModel->getLastID()['id']) ? $this->DistributorModel->getLastID()['id'] : false;
 
-				if(!$data) $id = 'DIS001';
+				if(!$data) $id = 'DIS0001';
 				else{
 					$kode = 'DIS';
 					$noUrut = (int)substr($data, 3, 4);
@@ -419,7 +419,7 @@
 					'kolomOrder' => array('id', 'NAMA_DISTRIBUTOR', 'PEMILIK_DISTRIBUTOR', 'ID_OPERASIONAL_PROYEK','NAMA_KEBUTUHAN'),
 					'kolomCari' => array('id', 'NAMA_DISTRIBUTOR', 'PEMILIK_DISTRIBUTOR', 'ID_OPERASIONAL_PROYEK','NAMA_KEBUTUHAN'),
 					'orderBy' => array('id' => 'asc'),
-					'kondisi' => false,
+					'kondisi' => 'where id = "'.$id.'"',
 				);
 
 				$dataHistory = $this->DistributorModel->getAllDataTable($config_dataTable);
