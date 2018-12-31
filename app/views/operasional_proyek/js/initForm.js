@@ -270,7 +270,6 @@ $(document).ready(function () {
 				if(output.status){
 
 					// tambah data ke list
-					
 					listDetail.push(data);
 					listDetail_Tambahan.push(data);
 					
@@ -368,8 +367,8 @@ $(document).ready(function () {
 		}
 
 		var data = {
-			index: $('#id_detail').val().trim(),
-			id: '',
+			index: EditedIndex,
+			id: $('#id_detail').val().trim(),
 			id_bank: bank,
 			tgl_detail : $('#tgl_detail').val().trim(),
 			nama_detail : $('#nama_detail').val().trim(),
@@ -387,6 +386,9 @@ $(document).ready(function () {
 		$('#modalDetailOperasional').modal('hide');
 		set_data_table(listDetail);
 		console.log(listDetail);
+
+		toEditList.push(data);
+		console.log(toEditList);
 	}
 
 	/**
@@ -421,13 +423,13 @@ $(document).ready(function () {
 	*
 	*/
 	function setValueDetail(data,index){
-
-		console.log(data);
-		$('#id_detail').val(index);
+		// console.log(data[index])
+		EditedIndex = index;
+		$('#id_detail').val(data[index].id);
 		$('#nama_detail').val(data[index].nama_detail);
 		$('#tgl_detail').val(data[index].tgl_detail);
 		$('#total_detail').val(data[index].total_detail);
-		
+
 	}
 
 	/**
@@ -648,6 +650,7 @@ function getDataForm(){
 	data.append('listDetail', JSON.stringify(detailList));
 	data.append('listDetail_Tambahan', JSON.stringify(detailTambahan));
 	data.append('toDelete',JSON.stringify(toDeleteList));
+	data.append('toEdit', JSON.stringify(toEditList));
 	data.append('action', $('#submit_operasional_proyek').val().trim());
 	
 	return data;

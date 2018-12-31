@@ -235,6 +235,8 @@
   var listDetail = [];
   var listDetail_Tambahan = [];
   var toDeleteList = [];
-  var indexDetail = 0;
+  var toEditList = [];
 
+  var indexDetail = 0;
+  var EditedIndex = 0;
 </script>

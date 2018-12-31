@@ -365,6 +365,7 @@
 				$dataDetail = isset($_POST['listDetail']) ? json_decode($_POST['listDetail'], true) : false;	
 				$dataDetailTambahan = isset($_POST['listDetail_Tambahan']) ? json_decode($_POST['listDetail_Tambahan'], true) : false;
 				$toDeleteList = isset($_POST['toDelete']) ? json_decode($_POST['toDelete'], true) : false;
+				$toEditList = isset($_POST['toEdit']) ? json_decode($_POST['toEdit'], true) : false;
 
 				$error = $notif = array();
 				if(!$data){
@@ -404,7 +405,8 @@
 							'dataOperasionalProyek' => $dataOperasionalProyek,
 							'dataDetail' => $dataDetail,
 							'dataDetailTambahan' => $dataDetailTambahan,
-							'toDelete' => $toDeleteList
+							'toDelete' => $toDeleteList,
+							'toEdit' => $toEditList
 					);
 
 					// update data
