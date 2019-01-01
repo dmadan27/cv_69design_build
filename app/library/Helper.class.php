@@ -120,7 +120,12 @@
 		 * Masih tahap pengembangan
 		 */
 		public function cekArray($data){
+			$check = false;
+			foreach($data as $key => $item) {
+				if(!$item['delete']) { $check = true; }
+			}
 
+			return $check;
 		}
 
 		/**
