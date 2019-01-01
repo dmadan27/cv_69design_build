@@ -191,7 +191,7 @@
 				$dataDetail = isset($_POST['dataDetail']) ? json_decode($_POST['dataDetail'], true) : false;
 				$dataSkk = isset($_POST['dataSkk']) ? json_decode($_POST['dataSkk'], true) : false;
 				
-				$cekSkk = true;
+				$cekSkk = $cekDetail = true;
 
 				if(!$data){
 					$this->notif['default'] = array(
@@ -206,7 +206,10 @@
 					$cek = $validasi['cek'];
 					$this->error = $validasi['error'];
 
-					if(empty($dataSkk)){ $cek = false; }
+					if(!$this->helper->cekArray($dataSkk)){ 
+						$cek = false;
+						$cekSkk = false;
+					}
 
 					if($cek){
 						// validasi input
@@ -257,7 +260,7 @@
 							$this->notif['data_skk'] = array(
 								'type' => 'warning',
 								'title' => "Pesan Pemberitahuan",
-								'message' => "Silahkan Cek Kembali Data Logistik Proyek",
+								'message' => "Silahkan Cek Kembali Data Pemilihan Sub Kas Kecil Proyek",
 							);
 						}
 
@@ -277,6 +280,7 @@
 					'cek' => array(
 						'cek' => $cek,
 						'data_skk' => $cekSkk,
+						'data_detail' => $cekDetail
 					),
 					// 'data' => $data,
 					'dataProyek' => $dataProyek,
@@ -410,12 +414,7 @@
 					// validasi data
 					$validasi = $this->set_validation($dataProyek, $data['action']);
 					$cek = $validasi['cek'];
-					$error = $validasi['error'];
-
-					if(empty($dataDetail)){
-						$cek = false;
-						$cekDetail = false;
-					}
+					$this->error = $validasi['error'];
 
 					if(empty($dataSkk)) {
 						$cek = false;
@@ -479,7 +478,7 @@
 							$this->notif['data_skk'] = array(
 								'type' => 'warning',
 								'title' => "Pesan Pemberitahuan",
-								'message' => "Silahkan Cek Kembali Data Logistik Proyek",
+								'message' => "Silahkan Cek Kembali Data Pemilihan Sub Kas Kecil Proyek",
 							);
 						}
 

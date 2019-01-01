@@ -94,8 +94,12 @@
 		 * @return result {array}
 		 */
 		public function getDetailById($id){
-			$query = "SELECT id, id_proyek, angsuran, persentase, total total_detail, status status_detail ";
-			$query .= "FROM detail_proyek WHERE id_proyek = :id;";
+			$query = "SELECT dp.id, id_proyek, id_bank, b.nama nama_bank, dp.tgl tgl_detail, dp.nama nama_detail, dp.total total_detail, is_DP ";
+			$query .= "FROM detail_proyek dp "; 
+			$query .= "JOIN bank b ON b.id = dp.id_bank ";
+			$query .= "JOIN proyek p ON p.id = dp.id_proyek ";
+			$query .= "WHERE p.id = :id";
+			
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id', $id);
 			$statement->execute();
@@ -260,9 +264,11 @@
 		 * @return result {array}
 		 */
 		private function insertDetail($data){
+			// butuh review
+			$ket = "";
+			
 			// insert detail_proyek
-			$query = 'INSERT INTO detail_proyek (id_proyek, id_bank, tgl, nama, total) ';
-			$query .= 'VALUES (:id_proyek, :id_bank, :tgl_detail, :nama_detail, :total_detail);';
+			$query = 'CALL tambah_detail_proyek (:id_proyek, :id_bank, :tgl_detail, :nama_detail, :total_detail, :is_DP, :ket);';
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
@@ -272,6 +278,8 @@
 					':tgl_detail' => $data['tgl_detail'],
 					':nama_detail' => $data['nama_detail'],
 					':total_detail' => $data['total_detail'],
+					':is_DP' => $data['is_DP'],
+					':ket' => $ket
 				)
 			);
 			$statement->closeCursor();
@@ -393,7 +401,10 @@
 		 * @return result {array}
 		 */
 		private function updateDetail($data){
-			$query = 'UPDATE detail_proyek SET tgl = :tgl_detail, nama = :nama_detail, id_bank = :id_bank, total = :total_detail, status = :status WHERE id = :id;';
+			// butuh review
+			$ket = "";
+			
+			$query = 'CALL edit_detail_proyek (:id, :id_bank, :tgl_detail, :nama_detail, :total_detail, :is_DP, :ket)';
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
 				array(
@@ -402,6 +413,8 @@
 					':tgl_detail' => $data['tgl_detail'],
 					':nama_detail' => $data['nama_detail'],
 					':total_detail' => $data['total_detail'],
+					':is_DP' => $data['is_DP'],
+					':ket' => $ket
 				)
 			);
 			$statement->closeCursor();
@@ -414,11 +427,17 @@
 		 * @param id {string}
 		 */
 		private function deleteDetail($id){
-			$query = 'DELETE FROM detail_proyek WHERE id = :id';
+			// butuh review
+			$ket = "";
+			$tgl = date('Y-m-d');
+
+			$query = 'CALL hapus_detail_proyek (:id, :tgl, :ket)';
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
 				array(
 					':id' => $id,
+					':tgl' => $tgl,
+					':ket' => $ket,
 				)
 			);
 			$statement->closeCursor();
@@ -563,17 +582,6 @@
 			}
 
 		// ========================================================= //
-
-			/**
-			*
-			*/
-			public function countProyek(){
-				$query = "SELECT count(id) FROM proyek";
-				$statement = $this->koneksi->prepare($query);
-				$statement->execute();
-				$result = $statement->fetchAll(PDO::FETCH_ASSOC);
-				return $result;			 
-			}
 
 			/**
 			 * Method __destruct

@@ -41,13 +41,13 @@ $(document).ready(function(){
 
     // btn tambah
     $('#tambah').on('click', function(){
-        console.log('Button Tambah Proyek clicked...');
+        console.log('%cButton Tambah Proyek clicked...', 'font-style: italic');
         window.location.href = BASE_URL+'proyek/form/';
     });
 
      // btn Export
     $('#exportExcel').on('click', function(){
-        console.log('Button Export Excel Proyek clicked...');
+        console.log('%cButton Export Excel Proyek clicked...', 'font-style: italic');
         getExport();
     });
 
@@ -58,7 +58,7 @@ $(document).ready(function(){
  * @param {string} id
  */
 function getView(id){
-    console.log('Button View Proyek clicked...');
+    console.log('%cButton View Proyek clicked...', 'font-style: italic');
     
     window.location.href = BASE_URL+'proyek/detail/'+id;
 }
@@ -68,7 +68,7 @@ function getView(id){
  * @param {string} id 
  */
 function getEdit(id){
-    console.log('Button Edit Proyek clicked...');
+    console.log('%cButton Edit Proyek clicked...', 'font-style: italic');
 
     window.location.href = BASE_URL+'proyek/form/'+id;
 }
@@ -80,7 +80,7 @@ function getEdit(id){
  * @return {object} response
  */
 function getDelete(id){
-    console.log('Button Hapus Proyek clicked...');
+    console.log('%cButton Hapus Proyek clicked...', 'font-style: italic');
 
     swal({
         title: "Pesan Konfirmasi",
@@ -98,14 +98,19 @@ function getDelete(id){
             dataType: 'json',
             data: {},
             beforeSend: function(){
+                // tampilkan loading
             },
             success: function(response){
-                console.log('Response getDelete Proyek: ', response);
+                // stop loading
+
+                console.log('%cResponse getDelete Proyek: ', 'color: green; font-weight: bold', response);
                 if(response.success){ $("#proyekTable").DataTable().ajax.reload(); }
                 swal(response.notif.title, response.notif.message, response.notif.type);
             },
             error: function (jqXHR, textStatus, errorThrown){ // error handling
-                console.log('Response Error getDelete Proyek', jqXHR, textStatus, errorThrown);
+                // stop loading
+                
+                console.log('%cResponse Error getDelete Proyek', 'color: red; font-weight: bold', jqXHR, textStatus, errorThrown);
                 swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
                 $("#proyekTable").DataTable().ajax.reload();
             }

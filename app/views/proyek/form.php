@@ -136,10 +136,7 @@
                                     <!-- Status -->
                         			<div class="form-group field-status has-feedback">
                                         <label for="status">Status Proyek</label>           
-                                        <select class="form-control field" id="status">
-                                        	<option value="BERJALAN" <?= $selected = ($this->data['status'] == "BERJALAN") ? "selected" : ""; ?> >BERJALAN</option>
-                                        	<option value="SELESAI" <?= $selected = ($this->data['status'] == "SELESAI") ? "selected" : ""; ?> >SELESAI</option>
-                                        </select>
+                                        <select class="form-control field select2" id="status"></select>
                                         <span class="help-block small pesan pesan-status"></span>
                                     </div>
 
@@ -272,4 +269,8 @@
 
 	var listSkk = [];
 	var indexSkk = 0;
+
+	var checkDP = false;
+
+	var statusProyek = "<?= $this->data['status']; ?>";
 </script>

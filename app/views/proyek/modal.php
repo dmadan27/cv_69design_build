@@ -11,25 +11,40 @@
                 <h4 class="modal-title">Form Data Detail Pembayaran Proyek</h4>
 			</div>
 			<form id="form_detail" role="form">
+				<input type="hidden" id="index_detail">
 				<input type="hidden" id="id_detail">
 				<!-- body modal -->
 				<div class="modal-body">
 					<!-- tgl dan nama pembayaran -->
 					<div class="row">
+
+						<!-- field tgl -->
 						<div class="col-md-4 col-sm-4 col-xs-12">
-							<!-- field tgl -->
 							<div class="form-group field-tgl_detail has-feedback">
 								<label for="tgl_detail">Tanggal</label>
 								<input type="text" name="tgl_detail" id="tgl_detail" class="form-control field datepicker" placeholder="Masukkan Tanggal Pembayaran">
 								<span class="help-block small pesan pesan-tgl_detail"></span>
 							</div>
 						</div>
+
+						<!-- field nama pembayaran -->
 						<div class="col-md-8 col-sm-8 col-xs-12">
-							<!-- field nama pembayaran -->
 							<div class="form-group field-nama_detail has-feedback">
 								<label for="nama_detail">Nama Pembayaran</label>
 								<input type="text" name="nama_detail" id="nama_detail" class="form-control field" placeholder="Masukkan Nama Pembayaran">
 								<span class="help-block small pesan pesan-nama_detail"></span>
+							</div>
+						</div>
+					</div>
+
+					<!-- field is DP -->
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group field-is_DP has-feedback">
+								<div class="checkbox">
+									<label><input type="checkbox" id="is_DP" value="1">DP (Checklist jika pembayaran untuk DP)</label>
+									<span class="help-block small pesan pesan-is_DP"></span>
+								</div>
 							</div>
 						</div>
 					</div>
