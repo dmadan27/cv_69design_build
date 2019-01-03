@@ -441,7 +441,9 @@
 			INSERT INTO detail_pengajuan_kas_kecil
 			(id_pengajuan, id_pengajuan_sub_kas_kecil)
 				VALUES
-			(id_param, id_pengajuan_sub_kas_kecil_param);		
+			(id_param, id_pengajuan_sub_kas_kecil_param);
+			
+		-- insert ke mutasi saldo kas kecil		
 			
 	END//
 	delimiter ;
