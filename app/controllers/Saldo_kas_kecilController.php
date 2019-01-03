@@ -65,9 +65,9 @@
 				$config_dataTable = array(
 					'tabel' => 'mutasi_saldo_kas_kecil',
 					'kolomOrder' => array(null, 'id', 'id_kas_kecil', 'tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
-					'kolomCari' => array('id','id_kas_kecil', 'tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
+					'kolomCari' => array('id', 'tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
 					'orderBy' => array('id' => 'desc'),
-					'kondisi' => false,
+					'kondisi' => 'where id_kas_kecil = "'.$_SESSION['sess_id'].'"',
 				);
 
 				$dataMutasi = $this->Mutasi_saldo_kas_kecilModel->getAllDataTable($config_dataTable);
@@ -77,19 +77,11 @@
 				foreach($dataMutasi as $row){
 					$no_urut++;
 
-					// $status = (strtolower($row['status']) == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-primary">'.$row['status'].'</span>';
-
-					// //button aksi
-					// $aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-					// $aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-					// $aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 					
-					// $aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
 					
 					$dataRow = array();
 					$dataRow[] = $no_urut;
 					// $dataRow[] = $row['id'];
-					$dataRow[] = $row['id_kas_kecil'];
 					$dataRow[] = $row['tgl'];
 					$dataRow[] = $row['uang_masuk'];
 					$dataRow[] = $row['uang_keluar'];

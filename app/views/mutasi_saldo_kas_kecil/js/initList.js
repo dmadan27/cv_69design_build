@@ -27,7 +27,7 @@ $(document).ready(function(){
         },
         "columnDefs": [
             {
-                "targets":[0, 6],
+                "targets":[0, 5],
                 "orderable":false,
             }
         ]
