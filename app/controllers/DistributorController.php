@@ -296,6 +296,7 @@
 		*/
 		public function detail($id){
 			$id = strtoupper($id);
+
 			$data_detail = !empty($this->DistributorModel->getById($id)) ? $this->DistributorModel->getById($id) : false;
 
 			if(!$data_detail || (empty($id) || $id == "")) $this->redirect(BASE_URL."distributor/");
@@ -325,19 +326,9 @@
 				'<span class="label label-success">'.$data_detail['status'].'</span>' : 
 				'<span class="label label-danger">'.$data_detail['status'].'</span>';
 			
-			// // validasi foto
-			// if(!empty($data_detail['foto'])){
-			// 	// cek foto di storage
-			// 	$filename = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$data_detail['foto'];
-			// 	if(!file_exists($filename)) 
-			// 		$foto = BASE_URL.'assets/images/user/default.jpg';
-			// 	else
-			// 		$foto = BASE_URL.'assets/images/user/'.$data_detail['foto'];
-			// }
-			// else $foto = BASE_URL.'assets/images/user/default.jpg';
 
 			$data = array(
-				'id' => $data_detail['id'],
+				'id' => strtoupper($data_detail['id']),
 				'nama' => $data_detail['nama'],
 				'alamat' => $data_detail['alamat'],
 				'no_telp' => $data_detail['no_telp'],
