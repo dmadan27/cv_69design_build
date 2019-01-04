@@ -610,7 +610,7 @@
 	-- masih tahap pengerjaan
 	delimiter //
 	CREATE PROCEDURE edit_operasional(
-		in id_param int;
+		in id_param int,
 		in id_bank_param int, -- id bank
 		in tgl_param date,  -- tanggal operasional
 		in nama_param varchar(255), -- nama operasional
