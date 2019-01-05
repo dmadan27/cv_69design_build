@@ -97,7 +97,7 @@
 					$dataRow[] = $row['id_distributor'];
 					$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
 					$dataRow[] = $row['nama'];
-					$dataRow[] = $row['total'];
+					$dataRow[] = $this->helper->cetakRupiah($row['total']);
 					$dataRow[] = $aksi;
 
 					$data[] = $dataRow;
@@ -509,11 +509,11 @@
 				'nama_kas_besar' => $dataOperasionalProyek['nama_kas_besar'],
 				'id_distributor' => $dataOperasionalProyek['id_distributor'],
 				'nama_distributor' => $dataOperasionalProyek['nama_distributor'],
-				'tgl_pengajuan' => $dataOperasionalProyek['tgl_pengajuan'],
+				'tgl_pengajuan' => $this->helper->cetakTgl($dataOperasionalProyek['tgl_pengajuan'], 'full'),
 				'nama_pengajuan' => $dataOperasionalProyek['nama_pengajuan'],
 				'jenis_pengajuan' => $dataOperasionalProyek['jenis_pengajuan'],
-				'total_pengajuan' => $dataOperasionalProyek['total_pengajuan'],
-				'sisa_pengajuan' => $dataOperasionalProyek['sisa_pengajuan'],
+				'total_pengajuan' => $this->helper->cetakRupiah($dataOperasionalProyek['total_pengajuan']),
+				'sisa_pengajuan' => $this->helper->cetakRupiah($dataOperasionalProyek['sisa_pengajuan']),
 				'status_pengajuan' => $dataOperasionalProyek['status_pengajuan'],
 				'status_lunas' => $dataOperasionalProyek['status_lunas'],
 				'keterangan' => $dataOperasionalProyek['keterangan'],
@@ -525,10 +525,10 @@
 			);
 
 			$dataDetailOperasionalProyek = array(
-				'id_bank' => $dataOperasionalProyek['id_bank'],
-				'nama_detail' => $dataOperasionalProyek['nama_detail'],
-				'tgl_detail' => $dataOperasionalProyek['tgl_detail'],
-				'total_detail' => $dataOperasionalProyek['total_detail'],
+				'id_bank' => $dataDetailOperasionalProyek['id_bank'],
+				'nama_detail' => $dataDetailOperasionalProyek['nama_detail'],
+				'tgl_detail' => $this->helper->cetakTgl($dataDetailOperasionalProyek['tgl_detail'], 'full'),
+				'total_detail' => $this->helper->cetakRupiah($dataDetailOperasionalProyek['total_detail']),
 			);
 
 			$dataHistoryPembelanjaan = array(
@@ -1053,9 +1053,9 @@
 					$dataRow = array();
 					// $dataRow[] = $no_urut;
 					$dataRow[] = $row['id'];
-					$dataRow[] = $row['tgl'];
+					$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
 					$dataRow[] = $row['nama'];
-					$dataRow[] = $row['total'];
+					$dataRow[] = $this->helper->cetakRupiah($row['total']);
 					$dataRow[] = $row['status_lunas'];
 					$dataRow[] = $row['ID_DISTRIBUTOR'];
 					$dataRow[] = $row['NAMA_DISTRIBUTOR'];
@@ -1100,8 +1100,8 @@
 					// $dataRow[] = $no_urut;
 					$dataRow[] = $row['id_bank'];					
 					$dataRow[] = $row['nama_detail'];
-					$dataRow[] = $row['tgl_detail'];
-					$dataRow[] = $row['total_detail'];
+					$dataRow[] = $this->helper->cetakTgl($row['tgl_detail'], 'full');
+					$dataRow[] = $this->helper->cetakRupiah($row['total_detail']);
 
 					$data[] = $dataRow;
 				}

@@ -31,7 +31,7 @@
 							<div class="col-md-12 col-sm-12 col-xs-12">
 								<div class="btn-group">
 									<!-- tambah -->
-									<!-- <a href="<?= BASE_URL."proyek/form/" ?>" class="btn btn-default btn-flat" role="button"><i class="fa fa-plus"></i> Tambah</a> -->
+									<!-- <a href="<?= BASE_URL."" ?>" class="btn btn-default btn-flat" role="button"><i class="fa fa-plus"></i> Tambah</a> -->
 									<!-- export -->
 									<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 								</div>
@@ -45,7 +45,6 @@
 									<thead>
 										<tr>
 											<th>No</th>
-											<th>ID Kas Kecil</th>
 											<th>Tanggal</th>
 											<th>Uang Masuk</th>
 											<th>Uang Keluar</th>
