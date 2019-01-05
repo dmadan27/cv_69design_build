@@ -729,4 +729,58 @@
 	END//
 	delimiter ;
 
+
+-- Procedure Edit Status Data Pengajuan Kas Kecil Menjadi Disetujui
+	delimiter //
+	CREATE PROCEDURE acc_pengajuan_kas_kecil(
+		id_param int,
+		
+	)
+	BEGIN
+        
+		DECLARE id_bank_param int;
+		DECLARE nominal_param double(12,2);
+		DECLARE jenis_param varchar(25);
+		DECLARE get_saldo double(12,2);
+
+		-- get id bank
+		SELECT id_bank INTO id_bank_param FROM operasional WHERE id = id_param;
+		-- get jenis
+		SELECT jenis INTO jenis_param FROM operasional WHERE id = id_param;
+		-- get nominal
+		SELECT nominal INTO nominal_param FROM operasional WHERE id = id_param;
+
+		-- get saldo
+		SELECT saldo INTO get_saldo FROM bank WHERE id = id_bank_param;
+
+		IF jenis_param = 'UANG MASUK' THEN
+
+			-- 1. insert mutasi
+			INSERT INTO mutasi_bank 
+				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+			VALUES 
+				(id_bank_param, tgl_param, 0, nominal_param, (get_saldo - nominal_param), ket_param);
+
+			-- 2. update saldo
+			UPDATE bank SET saldo = (get_saldo - nominal_param) WHERE id = id_bank_param;
+
+		ELSE
+
+			-- 1. insert mutasi
+			INSERT INTO mutasi_bank 
+				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+			VALUES 
+				(id_bank_param, tgl_param, nominal_param, 0, (get_saldo + nominal_param), ket_param);
+
+			-- 2. update saldo
+			UPDATE bank SET saldo = (get_saldo + nominal_param) WHERE id = id_bank_param;
+
+		END IF;
+
+		-- 3. hapus data operasional
+		DELETE FROM operasional WHERE id = id_param;
+
+	END//
+	delimiter ;
+
 # =================================================================== #

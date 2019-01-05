@@ -216,6 +216,7 @@
 				                        				<thead>
 				                        					<tr>
 				                        						<th class="text-right" style="width: 15px">No</th>
+																<th>Tanggal</th>
 				                        						<th>Pembayaran</th>
 																<th>Bank</th>
 				                        						<th class="text-right">Total</th>

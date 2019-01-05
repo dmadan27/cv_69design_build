@@ -31,6 +31,8 @@ $(document).ready(function () {
 		// disable checkbox DP
 		if(checkDP) { $('#is_DP').prop('disabled', true); }
 		else { $('#is_DP').prop('disabled', false); }
+
+		console.log('%cCheck DP: ', 'color: blue; font-style: italic', checkDP);
     });
 
     // event on click button tambah skk
@@ -86,7 +88,7 @@ function init(){
 	
 	$('#id').prop('disabled', true);
 
-	//Initialize Select2 Elements
+	// Initialize Select2 Elements
 	$('#status').select2({
     	placeholder: "Pilih Status Proyek",
 		allowClear: true
@@ -269,10 +271,12 @@ function init(){
 			id: '',
 			id_proyek: $('#id').val().trim(),
 			tgl_detail: $('#tgl_detail').val().trim(),
+			tgl_detail_full: '',
 			nama_detail: $('#nama_detail').val().trim(),
 			id_bank: $('#id_bank').val(),
 			nama_bank: $('#id_bank option:selected').text(),
 			total_detail: total_detail,
+			total_detail_full: '',
 			is_DP: is_DP,
 			aksi: 'tambah',
 			delete: false,
@@ -310,7 +314,7 @@ function init(){
 						listDetail.push(data);
 
 						// tambah data ke tabel
-						renderTableDetailPembayaran(data);
+						renderTableDetailPembayaran(response.data);
 
 						if(data.is_DP === '1') { checkDP = true; }
 
@@ -326,10 +330,12 @@ function init(){
 				else if(action == 'edit') {
 					if(response.status) {
 						listDetail[data.index].tgl_detail = data.tgl_detail;
+						listDetail[data.index].tgl_detail_full = response.data.tgl_detail_full;
 						listDetail[data.index].nama_detail = data.nama_detail;
 						listDetail[data.index].id_bank = data.id_bank;
 						listDetail[data.index].nama_bank = data.nama_bank;
 						listDetail[data.index].total_detail = data.total_detail;
+						listDetail[data.index].total_detail_full = response.data.total_detail_full;
 						listDetail[data.index].is_DP = data.is_DP;
 						listDetail[data.index].aksi = data.aksi;
 						
@@ -339,7 +345,7 @@ function init(){
 								renderTableDetailPembayaran(item);
 							}
 						});
-							
+
 						$("#modalDetail").modal('hide');
 						resetModal();
 	
@@ -365,9 +371,10 @@ function init(){
 		$('#detail_proyekTable > tbody:last-child').append(
 			'<tr>'+
 				'<td></td>'+ // no
+				'<td>'+data.tgl_detail_full+'</td>'+ // nama detail pembayaran
 				'<td>'+data.nama_detail+'</td>'+ // nama detail pembayaran
 				'<td>'+data.nama_bank+'</td>'+ // bank
-				'<td class="text-right">Rp '+data.total_detail+'</td>'+ // total pembayaran
+				'<td class="text-right">'+data.total_detail_full+'</td>'+ // total pembayaran
 				'<td>'+btnAksi_detail(data.index)+'</td>'+ // aksi
 			'</tr>'
 		);
@@ -434,6 +441,8 @@ function init(){
 		$('#submit_detail').text('Edit Detail Pembayaran');
 
 		$('#modalDetail').modal();
+
+		console.log('%cCheck DP: ', 'color: blue; font-style: italic', checkDP);
 	}
 
 	/**
@@ -454,10 +463,12 @@ function init(){
 			id: $('#id_detail').val().trim(),
 			id_proyek: $('#id').val().trim(),
 			tgl_detail: $('#tgl_detail').val().trim(),
+			tgl_detail_full: '',
 			nama_detail: $('#nama_detail').val().trim(),
 			id_bank: $('#id_bank').val(),
 			nama_bank: $('#id_bank option:selected').text(),
 			total_detail: total_detail,
+			total_detail_full: '',
 			is_DP: is_DP,
 			aksi: aksi,
 			delete: false,
@@ -621,10 +632,12 @@ function getEdit(id){
 					id: data.id,
 					id_proyek: data.id_proyek,
 					tgl_detail: data.tgl_detail,
+					tgl_detail_full: data.tgl_detail_full,
 					nama_detail: data.nama_detail,
 					id_bank: data.id_bank,
 					nama_bank: data.nama_bank,
 					total_detail: data.total_detail,
+					total_detail_full: data.total_detail_full,
 					is_DP: data.is_DP,
 					aksi: 'edit',
 					delete: false,
@@ -632,6 +645,8 @@ function getEdit(id){
 
 				listDetail.push(dataDetail);
 				renderTableDetailPembayaran(dataDetail);
+
+				if(data.is_DP === '1') { checkDP = true; }
 			});	
 
 			// each dataSkk

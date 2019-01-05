@@ -394,7 +394,7 @@
 					
 					$dataRow = array();
 					$dataRow[] = $no_urut;
-					$dataRow[] = $row['tgl'];
+					$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
 					$dataRow[] = $this->helper->cetakRupiah($row['uang_masuk']);
 					$dataRow[] = $this->helper->cetakRupiah($row['uang_keluar']);
 					$dataRow[] = $this->helper->cetakRupiah($row['saldo']);

@@ -306,7 +306,11 @@
 				$cek = $validasi['cek'];
 				$this->error = $validasi['error'];
 
-				if($cek) { $this->success = true; }
+				if($cek) { 
+					$this->success = true;
+					$data['tgl_detail_full'] = $this->helper->cetakTgl($data['tgl_detail'], 'full');
+					$data['total_detail_full'] = $this->helper->cetakRupiah($data['total_detail']);
+				}
 
 				$output = array(
 					'status' => $this->success,
@@ -380,8 +384,17 @@
 				$dataDetail = $this->ProyekModel->getDetailById($id);
 				$dataSkk = $this->ProyekModel->getSkkById($id);
 
+				$dataDetail_new = array();
+				foreach($dataDetail as $row) {
+					$temp = $row;
+					$temp['tgl_detail_full'] = $this->helper->cetakTgl($row['tgl_detail'], 'full');
+					$temp['total_detail_full'] = $this->helper->cetakRupiah($row['total_detail']);
+
+					$dataDetail_new[] = $temp;
+				}
+
 				$output = array(
-					'dataDetail' => $dataDetail,
+					'dataDetail' => $dataDetail_new,
 					'dataSkk' => $dataSkk,
 				);
 
