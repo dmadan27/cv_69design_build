@@ -1,7 +1,7 @@
 <?php Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung"); ?>
 
 <div class="modal fade" id="modalDetailOperasional">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-md">
         <div class="modal-content">
             <!-- header modal -->
             <div class="modal-header">
@@ -26,14 +26,19 @@
                                 <span class="help-block small pesan pesan-nama_detail"></span>
                             </div>
 
+                            <!-- ID Bank -->
+                            <div class="form-group field-id_bank has-feedback">
+								<label for="id_bank">Bank</label>
+								<select id="id_bank" class="form-control field select2" style="width: 100%;"></select>
+								<span class="help-block small pesan pesan-id_bank"></span>
+							</div>
+
                             <!-- field Tanggal -->
                             <div class="form-group field-tgl_detail has-feedback">
                               <label for="tgl_detail">Tanggal</label>
                               <input type="text" name="tgl" id="tgl_detail" class="form-control datepicker field" placeholder="Masukan Tanggal">
                               <span class="help-block small pesan pesan-tgl_detail"></span>
                             </div>
-
-                            
 
                             <!-- Input Total -->
                             <div class="form-group field-total_detail has-feedback">
@@ -50,10 +55,9 @@
 
                         </div>
 
-                        
+                    </div>
 
                 </div>
-            </div>
             
                 <!-- modal footer -->
                 <div class="modal-footer">

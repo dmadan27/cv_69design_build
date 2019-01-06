@@ -97,7 +97,7 @@
 					$dataRow[] = $row['id_distributor'];
 					$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
 					$dataRow[] = $row['nama'];
-					$dataRow[] = $this->helper->cetakRupiah($row['total']);
+					$dataRow[] = $row['total'];
 					$dataRow[] = $aksi;
 
 					$data[] = $dataRow;
@@ -186,27 +186,18 @@
 				$dataOperasionalProyek = isset($_POST['dataOperasionalProyek']) ? json_decode($_POST['dataOperasionalProyek'], true) : false;
 				$dataDetail = isset($_POST['listDetail']) ? json_decode($_POST['listDetail'], true) : false;
 				
-				// $error = $notif = array();
-				
-				// $cekDetail = true;
-
 				if(!$data){
+					
 					$notif = array(
 						'type' => "error",
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
 					);
-				}
-				else{
+				} else {
 					// validasi data
 					$validasi = $this->set_validation($dataOperasionalProyek, $data['action']);
 					$cek = $validasi['cek'];
 					$error = $validasi['error'];
-
-					// if(empty($dataDetail)){
-					// 	$cek = false;
-					// 	$cekDetail = false;
-					// }
 					
 					if($cek){
 						$keterangan = 'OPERASIONAL PROYEK ['.$dataOperasionalProyek['id'].'] - '.strtoupper($dataOperasionalProyek['nama']);
@@ -233,7 +224,7 @@
 							'dataOperasionalProyek' => $dataOperasionalProyek,
 							'listDetail'=>$dataDetail
 						);
-
+						// print_r('aku disini');
 						// insert data proyek
 						if($this->Operasional_ProyekModel->insert($dataInsert)){
 							$this->success = true;
@@ -335,9 +326,6 @@
 				$id = strtoupper($id);
 				if(empty($id) || $id == "") $this->redirect(BASE_URL."operasional-proyek/");
 
-				// get data detail dan skk
-				
-				// $dataSkk = $this->ProyekModel->getSkkById($id);
 				$dataOperasionalProyek = $this->Operasional_ProyekModel->getById($id);
 				$dataDetail = $this->Operasional_ProyekModel->getDetailById($id);
 
@@ -345,9 +333,18 @@
 
 				$dataOperasionalProyek['id_bank'] = $id_bank['id_bank'];
 
+				$dataDetail_new = array();
+				foreach($dataDetail as $row) {
+					$temp = $row;
+					$temp['tgl_detail_full'] = $this->helper->cetakTgl($row['tgl_detail'], 'full');
+					$temp['total_detail_full'] = $this->helper->cetakRupiah($row['total_detail']);
+
+					$dataDetail_new[] = $temp;
+				}
+
 				$output = array(
 					'dataOperasionalProyek' => $dataOperasionalProyek,
-					'dataDetail' => $dataDetail
+					'dataDetail' => $dataDetail_new
 				);
 
 				echo json_encode($output);
@@ -431,36 +428,23 @@
 							);
 					}
 
-					}
-
-					// $notif['default'] = array(
-					// 		'type' => "warning",
-					// 		'title' => "Pesan Pemberitahuan",
-					// 		'message' => "Silahkan Cek Kembali Form Isian ",
-					// 	);
-
 				}
 
-				$output = array(
-					'status' => $this->success,
-					'notif' => $notif,
-					'error' => $error,
-					'cek' => array(
-						'cek' => $cek,
-						// 'data_detail' => $cekDetail,
-						// 'data_skk' => $cekSkk,
-					),
-					// 'data' => $data,
-					'dataOperasionalProyek' => $dataOperasionalProyek,
-					// 'dataDetail' => $dataDetail,
-					// 'dataSkk' => $dataSkk,
-				);
-
-				echo json_encode($output);			
 			}
-			else $this->redirect();
 
-		}
+			$output = array(
+				'status' => $this->success,
+				'notif' => $notif,
+				'error' => $error,
+				'cek' => array(
+					'cek' => $cek,
+				),
+				'dataOperasionalProyek' => $dataOperasionalProyek,
+			);
+
+			echo json_encode($output);			
+		} else $this->redirect();
+	}
 
 		/**
 		*
@@ -509,11 +493,11 @@
 				'nama_kas_besar' => $dataOperasionalProyek['nama_kas_besar'],
 				'id_distributor' => $dataOperasionalProyek['id_distributor'],
 				'nama_distributor' => $dataOperasionalProyek['nama_distributor'],
-				'tgl_pengajuan' => $this->helper->cetakTgl($dataOperasionalProyek['tgl_pengajuan'], 'full'),
+				'tgl_pengajuan' => $dataOperasionalProyek['tgl_pengajuan'],
 				'nama_pengajuan' => $dataOperasionalProyek['nama_pengajuan'],
 				'jenis_pengajuan' => $dataOperasionalProyek['jenis_pengajuan'],
-				'total_pengajuan' => $this->helper->cetakRupiah($dataOperasionalProyek['total_pengajuan']),
-				'sisa_pengajuan' => $this->helper->cetakRupiah($dataOperasionalProyek['sisa_pengajuan']),
+				'total_pengajuan' => $dataOperasionalProyek['total_pengajuan'],
+				'sisa_pengajuan' => $dataOperasionalProyek['sisa_pengajuan'],
 				'status_pengajuan' => $dataOperasionalProyek['status_pengajuan'],
 				'status_lunas' => $dataOperasionalProyek['status_lunas'],
 				'keterangan' => $dataOperasionalProyek['keterangan'],
@@ -525,10 +509,10 @@
 			);
 
 			$dataDetailOperasionalProyek = array(
-				'id_bank' => $dataDetailOperasionalProyek['id_bank'],
-				'nama_detail' => $dataDetailOperasionalProyek['nama_detail'],
-				'tgl_detail' => $this->helper->cetakTgl($dataDetailOperasionalProyek['tgl_detail'], 'full'),
-				'total_detail' => $this->helper->cetakRupiah($dataDetailOperasionalProyek['total_detail']),
+				'id_bank' => $dataOperasionalProyek['id_bank'],
+				'nama_detail' => $dataOperasionalProyek['nama_detail'],
+				'tgl_detail' => $dataOperasionalProyek['tgl_detail'],
+				'total_detail' => $dataOperasionalProyek['total_detail'],
 			);
 
 			$dataHistoryPembelanjaan = array(
@@ -583,88 +567,114 @@
 
 				$dataOperasionalProyek = $this->Operasional_ProyekModel->getById($id);
 				$dataDetail = $this->Operasional_ProyekModel->getDetailById($id);
-				
-				
 
-				//Penentuan Kondisi Jenis dan Status Pembayaran
+				$data = array(
+					'dataOperasionalProyek' => $dataOperasionalProyek,
+					'dataDetail' => $dataDetail
+				);
 
-				if($dataOperasionalProyek['status'] == "TUNAI" && $dataOperasionalProyek['status_lunas'] == "LUNAS"){
-					
-					// hapus data operasional proyek kondisi tunai lunas
-					$ket = 'Data Operasional Proyek '.$dataOperasionalProyek['nama']. ' telah dihapus';
+				$delete = $this->Operasional_ProyekModel->delete($data);
 
-					$data = array(
-						'id' => $id,
-						'total' => $dataOperasionalProyek['total'],
-						'tgl' => date('Y-m-d'),
-						'ket' => $ket,	
+				if($delete['success']){
+					$this->success = true;
+					$_SESSION['notif'] = array(
+						'type' => "success",
+						'title' => "Pesan Berhasil",
+						'message' => "Hapus Data Operasional Proyek Baru Berhasil",
 					);
-
-					if($this->Operasional_ProyekModel->delete($data)) $this->success =true;
-					echo json_encode($this->success);
-				
-				} else if($dataOperasionalProyek['status'] == "TUNAI" && $dataOperasionalProyek['status_lunas'] == "BELUM LUNAS"){
-				
-					// hapus data operasional proyek kondisi tunai belum lunas
-					if($this->Operasional_ProyekModel->delete_TunaiBelumLunas($dataOperasionalProyek)) $this->success =true;
-					echo json_encode($this->success);
-					
-				} else if($dataOperasionalProyek['status'] == "KREDIT" && $dataOperasionalProyek['status_lunas'] == "LUNAS"){
-
-					// hapus data operasional proyek kondisi tunai lunas
-					$ket = 'Data Operasional Proyek '.$dataOperasionalProyek['nama']. ' telah dihapus';
-
-					//Mendapatkan Total Detail Operasional Proyek
-					$sum = 0;
-					foreach ($dataDetail as $index => $row) {	
-						$sum += $row['total'];
-						$row['ket'] = $row['nama']. ' pada '. $ket;
-						$this->Operasional_ProyekModel->catatMutasi($row);
-					}
-					
-					$data = array(
-						'id' => $id,
-						'total' => $sum,
-						'tgl' => date('Y-m-d'),
-						'ket' => $ket,	
+					$notif['default'] = $_SESSION['notif'];
+				} else {
+					$notif['default'] = array(
+						'type' => "error",
+						'title' => "Pesan Gagal",
+						'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
 					);
-
-					if($this->Operasional_ProyekModel->deleteKredit($data)) $this->success =true;
-					echo json_encode($this->success);
-
-				} else if($dataOperasionalProyek['status'] == "KREDIT" && $dataOperasionalProyek['status_lunas'] == "BELUM LUNAS"){
-
-					// hapus data operasional proyek kondisi tunai lunas
-					$ket = 'Data Operasional Proyek '.$dataOperasionalProyek['nama']. ' telah dihapus';
-
-					//Mendapatkan Total Detail Operasional Proyek
-					$sum = 0;
-					foreach ($dataDetail as $index => $row) {	
-						$sum += $row['total'];
-						$row['ket'] = $row['nama']. ' pada '. $ket;
-						$this->Operasional_ProyekModel->catatMutasi($row);
-					}
-					
-					$data = array(
-						'id' => $id,
-						'total' => $sum,
-						'tgl' => date('Y-m-d'),
-						'ket' => $ket,	
-					);
-
-					if($this->Operasional_ProyekModel->deleteKredit($data)) $this->success =true;
-					echo json_encode($this->success);
-			
 				}
 
-			} else {
-				$this->redirect(); 	
-			}
-				
-			
-		
-
+				echo json_encode(array(
+					'success' => $this->success,
+					'message' => $this->message,
+					'notif' => $this->notif
+				));
+			} else { 
+				$this->redirect(); 
+			}	
 		}
+				
+				
+
+			// 	//Penentuan Kondisi Jenis dan Status Pembayaran
+
+			// 	if($dataOperasionalProyek['status'] == "TUNAI" && $dataOperasionalProyek['status_lunas'] == "LUNAS"){
+					
+			// 		// hapus data operasional proyek kondisi tunai lunas
+			// 		$ket = 'Data Operasional Proyek '.$dataOperasionalProyek['nama']. ' telah dihapus';
+
+			// 		$data = array(
+			// 			'id' => $id,
+			// 			'total' => $dataOperasionalProyek['total'],
+			// 			'tgl' => date('Y-m-d'),
+			// 			'ket' => $ket,	
+			// 		);
+
+			// 		if($this->Operasional_ProyekModel->delete($data)) $this->success =true;
+			// 		echo json_encode($this->success);
+				
+			// 	} else if($dataOperasionalProyek['status'] == "TUNAI" && $dataOperasionalProyek['status_lunas'] == "BELUM LUNAS"){
+				
+			// 		// hapus data operasional proyek kondisi tunai belum lunas
+			// 		if($this->Operasional_ProyekModel->delete_TunaiBelumLunas($dataOperasionalProyek)) $this->success =true;
+			// 		echo json_encode($this->success);
+					
+			// 	} else if($dataOperasionalProyek['status'] == "KREDIT" && $dataOperasionalProyek['status_lunas'] == "LUNAS"){
+
+			// 		// Hapus data operasional proyek kondisi tunai lunas
+			// 		// Mendapatkan Total Detail Operasional Proyek
+			// 		$sum = 0;
+			// 		foreach ($dataDetail as $index => $row) {	
+			// 			$sum += $row['total'];
+			// 			$row['ket'] = '';
+			// 			$this->Operasional_ProyekModel->catatMutasi($row);
+			// 		}
+					
+			// 		$data = array(
+			// 			'id' => $id,
+			// 			'total' => $sum,
+			// 			'tgl' => date('Y-m-d'),
+			// 			'ket' => '',	
+			// 		);
+
+			// 		if($this->Operasional_ProyekModel->deleteKredit($data)) $this->success =true;
+			// 		echo json_encode($this->success);
+
+			// 	} else if($dataOperasionalProyek['status'] == "KREDIT" && $dataOperasionalProyek['status_lunas'] == "BELUM LUNAS"){
+
+			// 		// hapus data operasional proyek kondisi tunai lunas
+			// 		$ket = 'Data Operasional Proyek '.$dataOperasionalProyek['nama']. ' telah dihapus';
+
+			// 		//Mendapatkan Total Detail Operasional Proyek
+			// 		$sum = 0;
+			// 		foreach ($dataDetail as $index => $row) {	
+			// 			$sum += $row['total'];
+			// 			$row['ket'] = $row['nama']. ' pada '. $ket;
+			// 			$this->Operasional_ProyekModel->catatMutasi($row);
+			// 		}
+					
+			// 		$data = array(
+			// 			'id' => $id,
+			// 			'total' => $sum,
+			// 			'tgl' => date('Y-m-d'),
+			// 			'ket' => $ket,	
+			// 		);
+
+			// 		if($this->Operasional_ProyekModel->deleteKredit($data)) $this->success =true;
+			// 		echo json_encode($this->success);
+			
+			// 	}
+
+			// } else {
+			// 	$this->redirect(); 	
+			// }
 
 		/**
 		*	Export data ke format Excel
@@ -894,50 +904,27 @@
 			echo json_encode($data);
 		}
 
-
-
 		/**
-		*
-		*/
-		public function get_nama_bank_lama(){
-			$this->model('BankModel');
-			// kondisi jika id di parameter terisi maka (action edit) selain itu (action add)
-			$data_nama_bank =  $this->BankModel->getAll();
+		 * Method get_bank
+		 * Proses get data bank yang aktif untuk keperluan select
+		 * @return data {object} array berupa json
+		 */
+		public function get_nama_bank(){
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$data_bank = $this->Operasional_ProyekModel->get_selectBank();
+				$data = array();
 
-			$data = array();
-
-			foreach($data_nama_bank as $row){
+				foreach($data_bank as $row){
 					$dataRow = array();
-					$dataRow['id '] = $row['id'];
-					$dataRow['text'] = $row['nama']. ' - '.$row['saldo'];
+					$dataRow['id'] = $row['id'];
+					$dataRow['text'] = $row['nama'];
 
 					$data[] = $dataRow;
 				}
-			
-			echo json_encode($data);
-			
-			// echo '<pre>';
-			// var_dump($data);
-			// echo '</pre>';
+
+				echo json_encode($data);
 			}
-
-		/**
-		*
-		*/
-		public function get_nama_bank(){
-			$this->model('BankModel');
-			$data_nama_bank = $this->BankModel->getAll();
-			$data = array();
-
-			foreach($data_nama_bank as $row){
-				$dataRow = array();
-				$dataRow['id'] = $row['id'];
-				$dataRow['text'] = $row['nama']. ' - '.$row['saldo'];
-
-				$data[] = $dataRow;
-			}
-
-			echo json_encode($data);
+			else { $this->redirect(); }
 		}
 		
 
@@ -991,27 +978,27 @@
 		*
 		*/
 		public function action_add_detail(){
-			$data = isset($_POST) ? $_POST : false;
-			
-			$status = false;
-			$error = "";
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$data = isset($_POST) ? $_POST : false;
 
-			$validasi = $this->set_validation_detail($data);
-			$cek = $validasi['cek'];
-			$error = $validasi['error'];
+				$validasi = $this->set_validation_detail($data);
+				$cek = $validasi['cek'];
+				$error = $validasi['error'];
 
-			if($cek) $status = true;
+				if($cek) {
+					$this->success = true;
+					$data['tgl_detail_full'] = $this->helper->cetakTgl($data['tgl_detail'], 'full');
+					$data['total_detail_full'] = $this->helper->cetakRupiah($data['total_detail']);
+				}
 
-			$output = array(
-				'status' => $status,
-				// 'notif' => $notif,
-				'error' => $error,
-				'data' => $data,
-			);
-			echo json_encode($output);
-
+				$output = array(
+					'status' => $this->success,
+					'error' => $this->error,
+					'data' => $data,
+				);
+				echo json_encode($output);
+			}
 		}
-
 
 		/**
 		*
@@ -1053,9 +1040,9 @@
 					$dataRow = array();
 					// $dataRow[] = $no_urut;
 					$dataRow[] = $row['id'];
-					$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
+					$dataRow[] = $row['tgl'];
 					$dataRow[] = $row['nama'];
-					$dataRow[] = $this->helper->cetakRupiah($row['total']);
+					$dataRow[] = $row['total'];
 					$dataRow[] = $row['status_lunas'];
 					$dataRow[] = $row['ID_DISTRIBUTOR'];
 					$dataRow[] = $row['NAMA_DISTRIBUTOR'];
@@ -1100,8 +1087,8 @@
 					// $dataRow[] = $no_urut;
 					$dataRow[] = $row['id_bank'];					
 					$dataRow[] = $row['nama_detail'];
-					$dataRow[] = $this->helper->cetakTgl($row['tgl_detail'], 'full');
-					$dataRow[] = $this->helper->cetakRupiah($row['total_detail']);
+					$dataRow[] = $row['tgl_detail'];
+					$dataRow[] = $row['total_detail'];
 
 					$data[] = $dataRow;
 				}
@@ -1192,37 +1179,15 @@
 		* Function validasi form detail
 		*/
 		private function set_validation_detail($data){
-			
 			//id_bank
 			$this->validation->set_rules($data['id_bank'], 'ID Bank', 'id_bank', 'string | 1 | 255 | required');
-
 			// nama
 			$this->validation->set_rules($data['nama_detail'], 'Nama Kebutuhan', 'nama_detail', 'string | 1 | 255 | required');
-
 			// tgl
 			$this->validation->set_rules($data['tgl_detail'], 'Tanggal Operasional', 'tgl_detail', 'string | 1 | 255 | required');
 			// total
 			$this->validation->set_rules($data['total_detail'], 'Total', 'total_detail', 'nilai | 1 | 9999999999 | required');
 			
-			// // jenis
-			// $this->validation->set_rules($data['jenis_detail'], 'Jenis Kebutuhan', 'jenis_detail', 'string | 1 | 255 | required');
-			// // satuan
-			// $this->validation->set_rules($data['satuan_detail'], 'Satuan', 'satuan_detail', 'string | 1 | 255 | required');
-			// // kuantiti
-			// $this->validation->set_rules($data['qty_detail'], 'Kuantiti', 'qty_detail', 'angka | 1 | 255 | required');
-			// // harga
-			// $this->validation->set_rules($data['harga_detail'], 'Harga Kebutuhan', 'harga_detail', 'nilai | 1 | 9999999999 | required');
-			// sub_total
-			// $this->validation->set_rules($data['sub_total_detail'], 'Sub Total', 'sub_total_detail', 'nilai | 1 | 9999999999 | required');
-			// // status
-			// $this->validation->set_rules($data['status_detail'], 'Status', 'status_detail', 'string | 1 | 255 | required');
-			// // harga asli
-			// $this->validation->set_rules($data['harga_asli_detail'], 'Harga Asli', 'harga_asli_detail', 'nilai | 1 | 9999999999 | required');
-			// // sisa
-			// $this->validation->set_rules($data['sisa_detail'], 'Sisa', 'sisa_detail', 'nilai | 1 | 9999999999 | required');
-			// // status lunas
-			// $this->validation->set_rules($data['status_lunas_detail'], 'Status Lunas', 'status_lunas_detail', 'string | 1 | 255 | required');
-
 			return $this->validation->run();
 		}
 
