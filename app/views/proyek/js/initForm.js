@@ -93,10 +93,12 @@ function init(){
     	placeholder: "Pilih Status Proyek",
 		allowClear: true
 	});
+	
 	$('#skk').select2({
     	placeholder: "Pilih Sub Kas Kecil",
 		allowClear: true
 	});
+
 	$('#id_bank').select2({
     	placeholder: "Pilih Bank",
 		allowClear: true

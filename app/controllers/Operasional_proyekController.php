@@ -97,7 +97,7 @@
 					$dataRow[] = $row['id_distributor'];
 					$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
 					$dataRow[] = $row['nama'];
-					$dataRow[] = $row['total'];
+					$dataRow[] = $this->helper->cetakRupiah($row['total']);
 					$dataRow[] = $aksi;
 
 					$data[] = $dataRow;
@@ -188,7 +188,7 @@
 				
 				if(!$data){
 					
-					$notif = array(
+					$this->notif = array(
 						'type' => "error",
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
@@ -197,7 +197,7 @@
 					// validasi data
 					$validasi = $this->set_validation($dataOperasionalProyek, $data['action']);
 					$cek = $validasi['cek'];
-					$error = $validasi['error'];
+					$this->error = $validasi['error'];
 					
 					if($cek){
 						$keterangan = 'OPERASIONAL PROYEK ['.$dataOperasionalProyek['id'].'] - '.strtoupper($dataOperasionalProyek['nama']);
@@ -224,32 +224,49 @@
 							'dataOperasionalProyek' => $dataOperasionalProyek,
 							'listDetail'=>$dataDetail
 						);
-						// print_r('aku disini');
-						// insert data proyek
-						if($this->Operasional_ProyekModel->insert($dataInsert)){
+						
+						$res = $this->Operasional_ProyekModel->insert($dataInsert);
+						if($res['success']){
+
 							$this->success = true;
 							$_SESSION['notif'] = array(
 								'type' => "success",
 								'title' => "Pesan Berhasil",
 								'message' => "Tambah Data Operasional Proyek Baru Berhasil",
 							);
-							$notif['default'] = $_SESSION['notif'];
-						}
-						else{
-							$notif['default'] = array(
+							$this->notif['default'] = $_SESSION['notif'];
+
+						} else if($res['invalidtotaldetail'] == "invalidTotal") {
+
+							$this->notif['default'] = array(
+								'type' => "warning",
+								'title' => "Pesan Pemberitahuan",
+								'message' => "Cek Kembali List Detail / Total Detail Anda",
+							);
+
+						} else {
+
+							$this->notif['default'] = array(
 								'type' => "error",
 								'title' => "Pesan Gagal",
 								'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
 							);
+
 						}
+					} else {
+						$this->notif['default'] = array(
+							'type' => 'warning',
+							'title' => "Pesan Pemberitahuan",
+							'message' => "Silahkan Cek Kembali Form Isian",
+						);
 					}
 					
 				}
 
 				$output = array(
 					'status' => $this->success,
-					'notif' => $notif,
-					'error' => $error,
+					'notif' => $this->notif,
+					'error' => $this->error,
 					'cek' => array(
 						'cek' => $cek,
 						
@@ -600,81 +617,6 @@
 				$this->redirect(); 
 			}	
 		}
-				
-				
-
-			// 	//Penentuan Kondisi Jenis dan Status Pembayaran
-
-			// 	if($dataOperasionalProyek['status'] == "TUNAI" && $dataOperasionalProyek['status_lunas'] == "LUNAS"){
-					
-			// 		// hapus data operasional proyek kondisi tunai lunas
-			// 		$ket = 'Data Operasional Proyek '.$dataOperasionalProyek['nama']. ' telah dihapus';
-
-			// 		$data = array(
-			// 			'id' => $id,
-			// 			'total' => $dataOperasionalProyek['total'],
-			// 			'tgl' => date('Y-m-d'),
-			// 			'ket' => $ket,	
-			// 		);
-
-			// 		if($this->Operasional_ProyekModel->delete($data)) $this->success =true;
-			// 		echo json_encode($this->success);
-				
-			// 	} else if($dataOperasionalProyek['status'] == "TUNAI" && $dataOperasionalProyek['status_lunas'] == "BELUM LUNAS"){
-				
-			// 		// hapus data operasional proyek kondisi tunai belum lunas
-			// 		if($this->Operasional_ProyekModel->delete_TunaiBelumLunas($dataOperasionalProyek)) $this->success =true;
-			// 		echo json_encode($this->success);
-					
-			// 	} else if($dataOperasionalProyek['status'] == "KREDIT" && $dataOperasionalProyek['status_lunas'] == "LUNAS"){
-
-			// 		// Hapus data operasional proyek kondisi tunai lunas
-			// 		// Mendapatkan Total Detail Operasional Proyek
-			// 		$sum = 0;
-			// 		foreach ($dataDetail as $index => $row) {	
-			// 			$sum += $row['total'];
-			// 			$row['ket'] = '';
-			// 			$this->Operasional_ProyekModel->catatMutasi($row);
-			// 		}
-					
-			// 		$data = array(
-			// 			'id' => $id,
-			// 			'total' => $sum,
-			// 			'tgl' => date('Y-m-d'),
-			// 			'ket' => '',	
-			// 		);
-
-			// 		if($this->Operasional_ProyekModel->deleteKredit($data)) $this->success =true;
-			// 		echo json_encode($this->success);
-
-			// 	} else if($dataOperasionalProyek['status'] == "KREDIT" && $dataOperasionalProyek['status_lunas'] == "BELUM LUNAS"){
-
-			// 		// hapus data operasional proyek kondisi tunai lunas
-			// 		$ket = 'Data Operasional Proyek '.$dataOperasionalProyek['nama']. ' telah dihapus';
-
-			// 		//Mendapatkan Total Detail Operasional Proyek
-			// 		$sum = 0;
-			// 		foreach ($dataDetail as $index => $row) {	
-			// 			$sum += $row['total'];
-			// 			$row['ket'] = $row['nama']. ' pada '. $ket;
-			// 			$this->Operasional_ProyekModel->catatMutasi($row);
-			// 		}
-					
-			// 		$data = array(
-			// 			'id' => $id,
-			// 			'total' => $sum,
-			// 			'tgl' => date('Y-m-d'),
-			// 			'ket' => $ket,	
-			// 		);
-
-			// 		if($this->Operasional_ProyekModel->deleteKredit($data)) $this->success =true;
-			// 		echo json_encode($this->success);
-			
-			// 	}
-
-			// } else {
-			// 	$this->redirect(); 	
-			// }
 
 		/**
 		*	Export data ke format Excel
@@ -983,7 +925,7 @@
 
 				$validasi = $this->set_validation_detail($data);
 				$cek = $validasi['cek'];
-				$error = $validasi['error'];
+				$this->error = $validasi['error'];
 
 				if($cek) {
 					$this->success = true;

@@ -76,36 +76,39 @@ function getEdit(id){
 *
 */
 function getDelete(id){
-		swal({
-			title: "Pesan Konfirmasi",
-			text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
-			type: "warning",
-	        showCancelButton: true,
-	        confirmButtonColor: "#DD6B55",
-	        confirmButtonText: "Ya, Hapus!",
-	        cancelButtonText: "Batal",
-	        closeOnConfirm: false,
-		}, function(){
-			$.ajax({
-				url: BASE_URL+'operasional-proyek/delete/'+id,
-				type: 'post',
-				dataType: 'json',
-				data: {},
-				beforeSend: function(){
+    console.log('%cButton Hapus Operasional Proyek Proyek clicked...', 'font-style: italic');
+    swal({
+        title: "Pesan Konfirmasi",
+        text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Hapus!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: false,
+    }, function(){
+        $.ajax({
+            url: BASE_URL+'operasional-proyek/delete/'+id,
+            type: 'post',
+            dataType: 'json',
+            data: {},
+            beforeSend: function(){
 
-				},
-				success: function(output){
-					console.log(output);
-					if(output){
-						swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
-						$("#operasionalProyekTable").DataTable().ajax.reload();
-					}
-				},
-				error: function (jqXHR, textStatus, errorThrown){ // error handling
-		            console.log(jqXHR, textStatus, errorThrown);
-                    swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
-		        }
-			})
-		});
+            },
+            success: function(output){
+                if(output.success){ 
+                    console.log('%cResponse getDelete Operasional Proyek: ', 'color: green; font-weight: bold', output);
+                    //Reload ini gak jalan
+                    $("#operasionalProyekTable").DataTable().ajax.reload(); 
+                }
+                swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
+                
+            },
+            error: function (jqXHR, textStatus, errorThrown){ // error handling
+                console.log(jqXHR, textStatus, errorThrown);
+                swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+            }
+        })
+    });
 	
 }

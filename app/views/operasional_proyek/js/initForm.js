@@ -39,6 +39,21 @@ function init () {
 		allowClear: true
 	});
 
+	$('#jenis').select2({
+		placeholder: "Pilih Jenis Operasional Proyek",
+		allowClear: true
+	});
+
+	$('#status').select2({
+		placeholder: "Pilih Jenis Pembayaran",
+		allowClear: true
+	});
+
+	$('#status_lunas').select2({
+		placeholder: "Pilih Status Pembayaran",
+		allowClear: true
+	});
+
 	$('#id_bank_form').select2({
 		placeholder: "Pilih Bank",
 		allowClear: true
@@ -131,18 +146,22 @@ function init () {
 
 	//On Change STATUS & STATUS LUNAS
 	$('#status').add('#status_lunas').on('change', function(){
-		console.log('Jenis Pembayaran Changed To - ' + $('#status').val().trim());
-		console.log('Status Pembayaran Changed To - ' +$('#status_lunas').val().trim());
+
+		var status = ($('status').val() != "" && $('#status').val() != null) ? $('#status').val().trim() : "DEFAULT";
+		var status_lunas = ($('status_lunas').val() != "" && $('#status_lunas').val() != null) ? $('#status_lunas').val().trim() : "DEFAULT";
+
+		console.log('Jenis Pembayaran Changed To - ' + status);
+		console.log('Status Pembayaran Changed To - ' + status_lunas);
 
 		//Jika STATUS = "TUNAI" dan STATUS LUNAS = "LUNAS" 
-		if($('#status').val() == "TUNAI" && $('#status_lunas').val() == "LUNAS") {
+		if(status == "TUNAI" && status_lunas == "LUNAS") {
 		
 			$('.field-id_bank_form').css('display', 'block');
 			$('#btn_tambahDetail').prop('disabled', true);
 			$('#submit_operasional_proyek').prop('disabled', false);
 
 		// Jika STATUS = "TUNAI" dan STATUS LUNAS = "BELUM LUNAS"
-		} else if($('#status').val() == "TUNAI" && $('#status_lunas').val() == "BELUM LUNAS"){
+		} else if(status == "TUNAI" && status_lunas == "BELUM LUNAS"){
 		
 			$('.field-id_bank_form').css('display', 'none');
 			$('#id_bank_form').val(null).trigger('change');
@@ -150,7 +169,7 @@ function init () {
 			$('#submit_operasional_proyek').prop('disabled', false);
 		
 		//Jika STATUS = "KREDIT" dan STATUS LUNAS = "LUNAS"
-		} else if($('#status').val() == "KREDIT" && $('#status_lunas').val() == "LUNAS" && listDetail.length == 0){
+		} else if(status == "KREDIT" && status_lunas == "LUNAS" && listDetail.length == 0){
 			
 			$('.field-id_bank_form').css('display', 'none');
 			$('#id_bank_form').val(null).trigger('change');
@@ -165,7 +184,7 @@ function init () {
 			// });
 			
 		//Jika STATUS = "KREDIT" dan STATUS LUNAS = "BELUM LUNAS"	
-		} else if($('#status').val() == "KREDIT" && $('#status_lunas').val() == "BELUM LUNAS"){
+		} else if(status == "KREDIT" && status_lunas == "BELUM LUNAS"){
 			
 			$('.field-id_bank_form').css('display', 'none');
 			$('#id_bank_form').val(null).trigger('change');
@@ -174,7 +193,7 @@ function init () {
 			$('#submit_operasional_proyek').prop('disabled', false);
 		
 		//Jika STATUS dan STATU LUNAS bernilai "DEFAULT"	
-		} else if($('#status').val() == "DEFAULT" && $('#status_lunas').val() == "DEFAULT"){
+		} else if(status == "DEFAULT" && status_lunas == "DEFAULT"){
 			
 			$('#id_bank').prop('disabled', true);
 			$('#btn_tambahDetail').prop('disabled', true);
@@ -214,7 +233,7 @@ function init () {
 					index: index,
 					id: '',
 					id_operasional_proyek : $('#id').val().trim(),
-					id_bank : $('#id_bank').val().trim(),
+					id_bank :($('id_bank').val() != "" && $('#id_bank').val() != null) ? $('#id_bank').val().trim() : "",
 					nama_bank : $('#id_bank option:selected').text(),
 					nama_detail : $('#nama_detail').val().trim(),
 					tgl_detail : $('#tgl_detail').val().trim(),
@@ -229,7 +248,7 @@ function init () {
 					index: index,
 					id: '',
 					id_operasional_proyek : $('#id').val().trim(),
-					id_bank : $('#id_bank_f').val().trim(),
+					id_bank : ($('id_bank').val() != "" && $('#id_bank').val() != null) ? $('#id_bank').val().trim() : "",
 					nama_bank : $('#id_bank option:selected').text(),
 					nama_detail : $('#nama_detail').val().trim(),
 					tgl_detail : $('#tgl_detail').val().trim(),
@@ -344,7 +363,7 @@ function init () {
 					' title="Edit data dari list" onclick="edit_detail('+index+')">'+
 					'<i class="fa fa-edit"></i></button>';
 			var btn_hapus = '<button disabled type="button" class="btn btn-danger btn-flat btn-sm"'+
-					' title="Hapus data dari list" onclick="delete_detail('+index+')">'+
+					' title="Hapus data dari list" onclick="delete_detail('+index+', this)">'+
 					'<i class="fa fa-trash"></i></button>';
 			var btn = '<div class="button-group">'+btn_edit+btn_hapus+'</div>';
 
@@ -354,7 +373,7 @@ function init () {
 						' title="Edit data dari list" onclick="edit_detail('+index+')">'+
 						'<i class="fa fa-edit"></i></button>';
 			var btn_hapus = '<button type="button" class="btn btn-danger btn-flat btn-sm"'+
-						' title="Hapus data dari list" onclick="delete_detail('+index+')">'+
+						' title="Hapus data dari list" onclick="delete_detail('+index+', this)">'+
 						'<i class="fa fa-trash"></i></button>';
 			var btn = '<div class="button-group">'+btn_edit+btn_hapus+'</div>';
 
@@ -432,32 +451,16 @@ function init () {
 	/**
 	*
 	*/
-	function delete_detail(index){
-		
-		setDelete(listDetail,index);
-
-		listDetail.splice(index, 1);
-		var indexval = index;
-		$('#'+indexval).remove()
-		
+	function delete_detail(index, val){
+		$(val).parent().parent().parent().remove();
+		listDetail[index].delete = true;
 		if(listDetail.length == 0 && $('#status').val() != "KREDIT" && $('#status_lunas').val() != "BELUM LUNAS"){
 			$('#submit_operasional_proyek').prop('disabled', true);
 		}
-		
+		numbering_listDetail();
 		console.log('delete Clicked on index ' + index);
-		console.log(listDetail);
-	}
-
-	/**
-	*
-	*/
-	function setDelete(data, index) {
-		toDeleteList.push(data[index])
-		console.log(toDeleteList);
-		
-	}
-
-	
+		console.log('%cList Detail Ready: ', 'font-style: italic; color: white', listDetail);
+	}	
 
 	/**
 	*
@@ -623,7 +626,8 @@ function getDataForm(){
 		
 		} else if($('#status').val() == "TUNAI" && $('#status_lunas').val() == "LUNAS") {
 		
-			bank = $('#id_bank_form').val().trim();
+			bank = ($('id_bank_form').val() != "" && $('#id_bank_form').val() != null) ? $('#id_bank_form').val().trim() : ""; 
+			// $('#id_bank_form').val().trim();
 		
 		} else if (($('#status').val() == "KREDIT" && $('#status_lunas').val() == "BELUM LUNAS" || $('#status_lunas').val() == "LUNAS")) {
 			
@@ -656,21 +660,27 @@ function getDataForm(){
 		} else if (($('#status').val() == "KREDIT" && $('#status_lunas').val() == "BELUM LUNAS" || $('#status_lunas').val() == "LUNAS")) {
 			bank = $('#id_bank').val().trim();
 		} else {
-			bank = $('#id_bank_form').val().trim();
+			bank = ($('id_bank_form').val() != "" && $('#id_bank_form').val() != null) ? $('#id_bank_form').val().trim() : ""; 
 		}
-		console.log(bank)
+
+		var id_distributor = ($('id_distributor').val() != "" && $('#id_distributor').val() != null) ? $('#id_distributor').val().trim() : "";
+		var id_proyek = ($('id_proyek').val() != "" && $('#id_proyek').val() != null) ? $('#id_proyek').val().trim() : "";
+		var jenis = ($('jenis').val() != "" && $('#jenis').val() != null) ? $('#jenis').val().trim() : "";
+		var status = ($('status').val() != "" && $('#status').val() != null) ? $('#status').val().trim() : "";
+		var status_lunas = ($('status_lunas').val() != "" && $('#status_lunas').val() != null) ? $('#status_lunas').val().trim() : "";
+	
 		var dataOperasionalProyek = {
 			id : $('#id').val().trim(),
-			id_proyek : $('#id_proyek').val().trim(),
+			id_proyek : id_proyek,
 			id_bank : bank,
-			id_distributor : $('#id_distributor').val().trim(),
+			id_distributor : id_distributor, 
 			tgl : $('#tgl').val().trim(),
 			nama : $('#nama').val().trim(),
-			jenis : $('#jenis').val().trim(),
+			jenis : jenis,
 			total : total,
 			sisa : '0',
-			status : $('#status').val().trim(),
-			status_lunas : $('#status_lunas').val().trim(),
+			status : status,
+			status_lunas : status_lunas,
 			ket : $('#ket').val().trim()
 		}
 		console.log('proses add')
@@ -688,13 +698,6 @@ function getDataForm(){
 	data.append('action', $('#submit_operasional_proyek').val().trim());
 	
 	return data;
-}
-
-/**
-*
-*/ 
-function validData() {
-	
 }
 
 /**
@@ -785,7 +788,8 @@ function getEdit(id){
 					tgl_detail_full: data.tgl_detail_full,
 					total_detail: data.total_detail,
 					total_detail_full: data.total_detail_full,
-					aksi: 'edit'
+					aksi: 'edit',
+					delete : false
 				};
 
 			renderTableDetailOperasional(detailOperasional)
@@ -871,7 +875,6 @@ function generateID(proyek = null){
 */
 function setJenis(){
 	var jenis = [
-		{value: "DEFAULT", text: "PILIH"},
 		{value: "TEKNIS", text: "TEKNIS"},
 		{value: "NON-TEKNIS", text: "NON-TEKNIS"},
 	];
@@ -880,6 +883,7 @@ function setJenis(){
 		var option = new Option(item.text, item.value);
 		$("#jenis").append(option);
 	});
+	$("#jenis").val(null).trigger('change');
 }
 
 /**
@@ -887,7 +891,6 @@ function setJenis(){
 */
 function setStatus(){
 	var status = [
-		{value: "DEFAULT", text: "PILIH"},
 		{value: "TUNAI", text: "TUNAI"},
 		{value: "KREDIT", text: "KREDIT"},
 	];
@@ -896,13 +899,13 @@ function setStatus(){
 		var option = new Option(item.text, item.value);
 		$("#status").append(option);
 	});
+	$("#status").val(null).trigger('change');
 }
 /**
 *
 */
 function setStatusLunas(){
 	var status_lunas = [
-		{value: "DEFAULT", text: "PILIH"},
 		{value: "LUNAS", text: "LUNAS"},
 		{value: "BELUM LUNAS", text: "BELUM LUNAS"},
 	];
@@ -911,21 +914,22 @@ function setStatusLunas(){
 		var option = new Option(item.text, item.value);
 		$("#status_lunas").append(option);
 	});
+	$("#status_lunas").val(null).trigger('change');
 }
 
 /**
 *
 */
-// function resetForm(){
-// 	// trigger reset form
-// 	$('#form_detail_operasional_proyek').trigger('reset');
+function resetForm(){
+	// trigger reset form
+	$('#form_detail_operasional_proyek').trigger('reset');
 
-// 	// hapus semua pesan
-// 	$('.pesan').text('');
+	// hapus semua pesan
+	$('.pesan').text('');
 
-// 	// hapus semua feedback
-// 	$('.form-group').removeClass('has-success').removeClass('has-error');
-// }
+	// hapus semua feedback
+	$('.form-group').removeClass('has-success').removeClass('has-error');
+}
 
 /**
 *

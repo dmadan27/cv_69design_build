@@ -908,11 +908,12 @@ delimiter //
 			IF get_total_sebelum != total_param THEN
 				-- get saldo bank
 				SELECT saldo INTO get_saldo_bank_baru FROM bank WHERE id = id_bank_param;
-
-				-- normalisasi saldo
-				UPDATE bank SET saldo = (get_saldo_bank_baru + (total_param - get_total_sebelum)) WHERE id = id_bank_param;
 				
 				IF total_param > get_total_sebelum THEN
+
+					-- normalisasi saldo
+					UPDATE bank SET saldo = (get_saldo_bank_baru - (total_param - get_total_sebelum)) WHERE id = id_bank_param;
+
 					-- insert mutasi
 					INSERT INTO mutasi_bank 
 						(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
@@ -920,6 +921,10 @@ delimiter //
 						(id_bank_param, tgl_param, 0, (total_param - get_total_sebelum), (get_saldo_bank_baru - (total_param - get_total_sebelum)), ket_param);
 				ELSE
 					IF total_param < get_total_sebelum THEN
+
+						-- normalisasi saldo
+						UPDATE bank SET saldo = (get_saldo_bank_baru + (get_total_sebelum - total_param)) WHERE id = id_bank_param;
+
 						-- insert mutasi
 						INSERT INTO mutasi_bank 
 							(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
@@ -943,7 +948,7 @@ delimiter //
 
 		-- Cek apakah ada detail atau tidak
 		-- Untuk menentukan apakah ini data perubahan dari belum lunas atau bukan
-		SELECT COUNT(id) INTO jumlah_detail FROM detail_operasional_proyek WHERE id = id_param;
+		SELECT COUNT(id) INTO jumlah_detail FROM detail_operasional_proyek WHERE id = id_detail_param;
 
 		-- Jika Detail Ada, Maka
 		IF (jumlah_detail > 0) THEN

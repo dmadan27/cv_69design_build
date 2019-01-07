@@ -58,7 +58,7 @@
                                   <!-- Input Nama Pengajuan -->
                                         <div class="form-group field-nama has-feedback">
                                             <label for="nama">Nama Operasional Proyek</label>
-                                            <input type="text" class="form-control field" id="nama" name="nama" value="<?= $this->data['nama'];?> ">
+                                            <input placeholder="Masukan Nama Operasional Proyek" type="text" class="form-control field" id="nama" name="nama" value="<?= $this->data['nama'];?> ">
                                             <span class="help-block small pesan pesan-nama"></span>
                                         </div>    
 
@@ -99,7 +99,7 @@
 
 			                              <!-- Input Jenis -->
 			                                    <div class="form-group field-jenis has-feedback">
-			                                        <label for="jenis">Jenis</label>
+			                                        <label for="jenis">Jenis Operasional Proyek</label>
 			                                        <select name="jenis" class="form-control field select2" id="jenis"></select>
 			                                        <span class="help-block small pesan pesan-jenis"></span>
 			                                    </div>
@@ -127,7 +127,7 @@
 
 			                            <!-- Input Status Lunas -->
 			                                    <div class="form-group field-status_lunas has-feedback">
-			                                        <label for="status_lunas">Status Lunas</label>
+			                                        <label for="status_lunas">Status Pembayaran</label>
 			                                        <select name="status_lunas" class="form-control field select2" id="status_lunas"></select>
 			                                        <span class="help-block small pesan pesan-status_lunas"></span>
 			                                    </div> 

@@ -168,6 +168,8 @@
 			$dataOperasionalProyek = $data['dataOperasionalProyek'];
 			$dataDetail = $data['listDetail'];
 			
+			$response = true;
+
 			try{
 				$this->koneksi->beginTransaction();
 
@@ -187,7 +189,9 @@
 					//Mendapatkan Total Detail Operasional Proyek
 					$sum = 0;
 					foreach ($dataDetail as $index => $row) {
-						$sum += $row['total_detail'];
+						if(!$dataDetail[$index]['delete']){
+							$sum += $row['total_detail'];
+						}
 					}
 
 					if($dataOperasionalProyek['total'] == $sum){
@@ -199,15 +203,18 @@
 						
 						// insert data detail operasional proyek
 						foreach ($dataDetail as $index => $row) {
+							
 							if(!$dataDetail[$index]['delete']){
 								array_map('strtoupper', $row);
 								$this->insertDetailOperasionalProyek($row, $dataOperasionalProyek['id']);
 							}
 						}	
 
+						
+
 					} else if($dataOperasionalProyek['total'] < $sum || $dataOperasionalProyek['total'] > $sum) {
 
-						exit;
+						$response = false;
 
 					}
 
@@ -220,27 +227,49 @@
 					}
 
 					if($dataOperasionalProyek['total'] < $sum) {
-						exit;
-					}
-						
-					$dataOperasionalProyek['sisa'] = $dataOperasionalProyek['total'] - $sum;
 
-					//insert data operasaional proyek kondisi kredit
-					$this->insertOperasionalProyek_Kredit($dataOperasionalProyek);
-					
-					// insert data detail operasional proyek
-					foreach ($dataDetail as $index => $row) {
-						if(!$dataDetail[$index]['delete']){
-							array_map('strtoupper', $row);
-							$this->insertDetailOperasionalProyek($row, $dataOperasionalProyek['id']);
-						}
-					}	
+						$response = false;
+
+					} else {
+						
+						$dataOperasionalProyek['sisa'] = $dataOperasionalProyek['total'] - $sum;
+
+						//insert data operasaional proyek kondisi kredit
+						$this->insertOperasionalProyek_Kredit($dataOperasionalProyek);
+						
+						// insert data detail operasional proyek
+						foreach ($dataDetail as $index => $row) {
+							if(!$dataDetail[$index]['delete']){
+								array_map('strtoupper', $row);
+								$this->insertDetailOperasionalProyek($row, $dataOperasionalProyek['id']);
+							}
+						}	
+
+					}
 
 				}
-								
-				$this->koneksi->commit();
 
-				return true;
+				if(!$response){
+
+					$output = array(
+						'success' => false,
+						'invalidtotaldetail' => true,
+						'error' => NULL
+					);
+
+				} else {
+					
+					$output = array(
+						'success' => true,
+						'invalidtotaldetail' => false,
+						'error' => NULL
+					);
+
+				}
+
+				$this->koneksi->commit();
+				return $output;
+
 			}
 			catch(PDOException $e){
 				$this->koneksi->rollback();
@@ -250,7 +279,7 @@
 		}
 
 		/**
-		*
+		*	Insert Data Operasional Proyek Tunai Lunas
 		*/
 		private function insertOperasionalProyek_TunaiLunas($data){
 			// insert operasional_proyek
@@ -291,47 +320,7 @@
 		}
 
 		/**
-		*
-		*/
-		private function insertOperasionalProyek_Kredit($data) {
-			$query = "CALL tambah_operasional_proyek_kredit (
-				:id, 
-				:id_proyek, 
-				:id_bank, 
-				:id_kas_besar, 
-				:id_distributor, 
-				:tgl, 
-				:nama, 
-				:jenis,  
-				:total, 
-				:sisa, 
-				:status, 
-				:status_lunas, 
-				:ket
-			);";
-			$statement = $this->koneksi->prepare($query);
-			$statement->execute(
-				array(
-					':id' => $data['id'],
-					':id_proyek' => $data['id_proyek'],
-					':id_bank' => $data['id_bank'],
-					':id_kas_besar' => $data['id_kas_besar'],
-					':id_distributor' => $data['id_distributor'],
-					':tgl' => $data['tgl'],
-					':nama' => $data['nama'],
-					':jenis' => $data['jenis'],
-					':total' => $data['total'],
-					':sisa' => $data['sisa'],
-					':status' => $data['status'],
-					':status_lunas' => $data['status_lunas'],
-					':ket' => $data['ket'],
-				)
-			);
-			$statement->closeCursor();
-		}
-
-		/**
-		*
+		*	Insert Data Operasional Proyek Tunai Belum Lunas
 		*/
 		private function insertOperasionalProyek_TunaiBelumLunas($data) {
 			$query = "CALL tambah_operasional_proyek_tunaiblmlunas (
@@ -371,10 +360,10 @@
 		}
 
 		/**
-		*
+		*	Insert Data Operasional Proyek Jenis Pembayaran Kredit
 		*/
-		private function insertOperasionalProyek_KreditBelumLunas($data) {
-			$query = "CALL tambah_operasional_proyek_kreditblmlunas (
+		private function insertOperasionalProyek_Kredit($data) {
+			$query = "CALL tambah_operasional_proyek_kredit (
 				:id, 
 				:id_proyek, 
 				:id_bank, 
@@ -387,8 +376,7 @@
 				:sisa, 
 				:status, 
 				:status_lunas, 
-				:ket,
-				:sum_detail
+				:ket
 			);";
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
@@ -406,14 +394,13 @@
 					':status' => $data['status'],
 					':status_lunas' => $data['status_lunas'],
 					':ket' => $data['ket'],
-					':sum_detail' => $data['sum']
 				)
 			);
 			$statement->closeCursor();
 		}
 
 		/**
-		*
+		*	Insert Data Detail Operasional Proyek
 		*/
 		private function insertDetailOperasionalProyek($data, $id_operasional_proyek){
 			$query = "CALL tambah_detail_operasional_proyek_kredit (
@@ -444,6 +431,8 @@
 		*/
 		public function update($data){
 
+			$response = true;
+
 			try{
 				$this->koneksi->beginTransaction();
 
@@ -462,13 +451,7 @@
 
 				} else if($data['dataOperasionalProyek']['status'] == "KREDIT" && $data['dataOperasionalProyek']['status_lunas'] == "LUNAS"){
 
-					//Mendapatkan Total Detail Operasional Proyek Tambahan
-					// $sumDetailTambahan = 0;
-					// foreach ($data['dataDetailTambahan'] as $index => $row) {
-					// 	$sumDetailTambahan += $row['total_detail'];
-					// }
-
-					//Mendapatkan Total Detail Operasional Proyek Lama
+					//Mendapatkan Total Detail Operasional Proyek
 					$sumDetail = 0;
 					foreach ($data['dataDetail'] as $index => $row) {
 						$sumDetail += $row['total_detail'];
@@ -477,85 +460,74 @@
 					if($sumDetail == $data['dataOperasionalProyek']['total']){
 
 						foreach ($data['dataDetail'] as $index => $row) {
-							if($row['id'] != ''){
+							if($row['aksi'] == 'edit'){
 								$this->updateDetail_OperasionalProyek($row);
 							}
 						}
 
 						//Update Operasional Proyek
 						$this->edit_operasionalProyek_kredit($data['dataOperasionalProyek']);
-
-						//insert detail operasional proyek
-						// foreach ($data['dataDetailTambahan'] as $index => $row) {
-						// 	if(!$data['dataDetailTambahan'][$index]['delete']){
-						// 		array_map('strtoupper', $row);
-						// 		$this->insertDetailOperasionalProyek($row, $data['dataOperasionalProyek']['id']);
-						// 	}
-						// }
 						
 					} else if($data['dataOperasionalProyek']['total'] < $sumDetail || $data['dataOperasionalProyek']['total'] > $sumDetail) {
-						exit;
+
+						$response = false;
+
 					}
 
 
 				} else if($data['dataOperasionalProyek']['status'] == "KREDIT" && $data['dataOperasionalProyek']['status_lunas'] == "BELUM LUNAS"){
-						
-					// if(!empty($data['toEdit'])){
-					// 	foreach ($data['toEdit'] as $index => $row) {
-					// 		if($row['id'] != ''){
-					// 			$this->hitung_DetailOperasional($row, $data['dataOperasionalProyek']);
-					// 		}
-					// 	}
-					// }
-
-					// if(!empty($data['toDelete'])){
-					// 	foreach ($data['toDelete'] as $index => $row) {
-					// 		if($row['id'] != ''){
-					// 			$this->hapus_DetailOperasional($row, $data['dataOperasionalProyek']['id']);
-					// 		}
-					// 	}
-					// }
 
 					//Mendapatkan Total Detail Operasional Proyek
 					$sumDetail = 0;
 					foreach ($data['dataDetail'] as $index => $row) {
-						$sumDetail += $row['total_detail'];
-					}
-
-					if($data['dataOperasionalProyek']['total'] < $sumDetail) {
-						exit;
-					}
-
-					foreach ($data['dataDetail'] as $index => $row) {
-						if($row['id'] != ''){
-							$this->updateDetail_OperasionalProyek($row);
+						if(!$row['delete']){
+							$sumDetail += $row['total_detail'];
 						}
 					}
 
-					$this->edit_operasionalProyek_kredit($data['dataOperasionalProyek']);
+					if($data['dataOperasionalProyek']['total'] < $sumDetail) {
 
-					// $sumDetailTambahan = 0;
-					// foreach ($data['dataDetailTambahan'] as $index => $row) {
-					// 	$sumDetailTambahan += $row['total_detail'];
-					// }
+						$response = false;
 
-					//Selama total cicilan masih kurang dari total maka detail bisa terus ditambah
-					// if($data['dataOperasionalProyek']['total'] > $sumDetail){
-					//insert detail operasional proyek
-					// 	foreach ($data['dataDetailTambahan'] as $index => $row) {
-					// 		if(!$data['dataDetailTambahan'][$index]['delete']){
-					// 			array_map('strtoupper', $row);
-					// 			$this->insertDetailOperasionalProyek($row, $data['dataOperasionalProyek']['id']);
-					// 		}
-					// 	}
-					// }
+					} else {
 
-					// $data['dataOperasionalProyek']['sisa'] = $data['dataOperasionalProyek']['sisa'] - $sumDetailTambahan;
+						$data['dataOperasionalProyek']['sisa'] = $data['dataOperasionalProyek']['total'] - $sumDetail;
+
+						foreach ($data['dataDetail'] as $index => $row) {
+							if($row['aksi'] == 'edit' && !$row['delete']){
+								$this->updateDetail_OperasionalProyek($row);
+							} else if($row['aksi'] == 'tambah' && !$row['delete']){
+								$this->insertDetailOperasionalProyek($row,$data['dataOperasionalProyek']['id']);
+							} else if($row['delete']){
+								$this->deleteDetailOperasionalProyek($row['id']);
+								$this->catatMutasi($row);
+							}
+						}
+
+						$this->edit_operasionalProyek_kredit($data['dataOperasionalProyek']);
+				
+					}
+
+				}
+
+				if(!$response){
+					$output = array(
+						'success' => false,
+						'invalidtotaldetail' => true,
+						'error' => NULL
+					);
+
+				} else {
 					
+					$output = array(
+						'success' => true,
+						'invalidtotaldetail' => false,
+						'error' => NULL
+					);
 				}
 				
 				$this->koneksi->commit();
-				return true;
+				return $output;
 
 			} catch(PDOException $e){
 				$this->koneksi->rollback();
@@ -566,147 +538,9 @@
 		}
 
 		/**
-		*  Jika Detail Operasional Proyek Ada Yang Didelete
-		*/
-		private function hitung_DetailOperasional($data, $dataOperasionalProyek){
-			$query = "SELECT total FROM detail_operasional_proyek WHERE id = :id;";
-			
-			$statement = $this->koneksi->prepare($query);
-			$statement->bindParam(':id', $data['id']);
-			$statement->execute();
-			$result = $statement->fetch(PDO::FETCH_ASSOC);
-
-			//Hitung Perubahan Total dan Update Data
-			$total_lama = $result['total'];
-			$total_baru = $data['total_detail'];
-			
-			if($total_lama > $total_baru){
-
-				$total_changes = $total_lama - $total_baru;
-				$this->updateDetail_OperasionalProyek_ver1($data, $dataOperasionalProyek, $total_changes);
-
-			} else if($total_lama < $total_baru) {
-
-				$total_changes = $total_baru - $total_lama;
-				$this->updateDetail_OperasionalProyek_ver2($data, $dataOperasionalProyek, $total_changes);
-
-			}
-		}
-
-		/**
-		*  
-		*/
-		private function updateDetail_OperasionalProyek($data) {
-			$query = "CALL edit_detail_operasional_proyek (
-				:id_operasional_proyek, 
-				:id_detail, 
-				:id_bank,
-				:tgl_detail,
-				:nama_detail,
-				:total_detail,
-				:ket
-			);";
-
-			$statement = $this->koneksi->prepare($query);
-			$statement->execute(
-				array(
-					':id_operasional_proyek' => $data['id_operasional_proyek'],
-					':id_detail' => $data['id'],
-					':id_bank' => $data['id_bank'],
-					':tgl_detail' => $data['tgl_detail'],
-					':nama_detail' => $data['nama_detail'],
-					':total_detail' => $data['total_detail'],
-					':ket' => ''
-				)
-			);
-			$statement->closeCursor();
-		}
-
-
-		/**
-		*  Jika Perubahan Total Detail Operasional Proyek > Yang Baru
-		*/
-		private function updateDetail_OperasionalProyek_ver1($data, $dataOperasionalProyek, $total_changes) {
-			$query = "CALL edit_detail_operasional_proyek_ver1 (
-				:id_operasional_proyek, 
-				:id_detail, 
-				:tgl_detail,
-				:nama_detail,
-				:perubahan_total,
-				:total,
-				:ket
-			);";
-
-			$statement = $this->koneksi->prepare($query);
-			$statement->execute(
-				array(
-					':id_operasional_proyek' => $dataOperasionalProyek['id'],
-					':id_detail' => $data['id'],
-					':tgl_detail' => $data['tgl_detail'],
-					':nama_detail' => $data['nama_detail'],
-					':perubahan_total' => $total_changes,
-					':total' => $data['total_detail'],
-					':ket' => 'Edit Detail '.$data['nama_detail']
-				)
-			);
-			$statement->closeCursor();
-		}
-
-		/**
-		*  Jika Perubahan Total Detail Operasional Proyek < Yang Baru
-		*/
-		private function updateDetail_OperasionalProyek_ver2($data, $dataOperasionalProyek, $total_changes) {
-			$query = "CALL edit_detail_operasional_proyek_ver2 (
-				:id_operasional_proyek, 
-				:id_detail, 
-				:tgl_detail,
-				:nama_detail,
-				:perubahan_total,
-				:total,
-				:ket
-			);";
-
-			$statement = $this->koneksi->prepare($query);
-			$statement->execute(
-				array(
-					':id_operasional_proyek' => $dataOperasionalProyek['id'],
-					':id_detail' => $data['id'],
-					':tgl_detail' => $data['tgl_detail'],
-					':nama_detail' => $data['nama_detail'],
-					':perubahan_total' => $total_changes,
-					':total' => $data['total_detail'],
-					':ket' => 'Edit Detail '.$data['nama_detail']
-				)
-			);
-			$statement->closeCursor();
-		}
-
-		/**
-		*  Jika Detail Operasional Proyek Ada Yang Dihapus
-		*/
-		private function hapus_DetailOperasional($data, $id) {
-			// print_r($data);
-			// exit;
-			$query = 'CALL hapus_detail_operasional_proyek (:id, :id_operasional_proyek, :total_detail, :ket, :tgl);';
-			$statement = $this->koneksi->prepare($query);
-			$statement->execute(
-				array(
-					':id' => $data['id'],
-					':id_operasional_proyek' => $id,
-					':total_detail' => $data['total_detail'],
-					':ket' => 'hapus detail operasional '.$data['nama_detail'],
-					':tgl' => $data['tgl_detail']
-					
-				)
-			);
-			$statement->closeCursor();
-		}
-
-		/**
-		* 
+		* 	Edit Data Operasional Proyek Tunai Lunas
 		*/
 		private function edit_operasionalProyek($id_detail, $data) {
-			//Update Mutasi Saldo Tunai Belum Lunas -> Lunas 
 			$query = "CALL edit_operasional_proyek (
 				:id, 
 				:id_detail,
@@ -743,7 +577,7 @@
 		}
 
 		/**
-		* 
+		* 	Edit Data Operasional Proyek Tunai Belum Lunas
 		*/
 		private function edit_operasionalProyek_BelumLunas($data) {
 			//Update Mutasi Saldo Tunai Lunas -> Belum Lunas 
@@ -779,7 +613,7 @@
 		}
 
 		/**
-		* 
+		* 	Edit Data Operasional Proyek Jenis Pembayaran Kredit
 		*/
 		private function edit_operasionalProyek_kredit($data) {
 			$query = "CALL edit_operasional_proyek_kredit (
@@ -814,11 +648,53 @@
 		}
 
 		/**
-		* 
+		*  Update Detail Operasional Proyek
+		*/
+		private function updateDetail_OperasionalProyek($data) {
+			$query = "CALL edit_detail_operasional_proyek (
+				:id_operasional_proyek, 
+				:id_detail, 
+				:id_bank,
+				:tgl_detail,
+				:nama_detail,
+				:total_detail,
+				:ket
+			);";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id_operasional_proyek' => $data['id_operasional_proyek'],
+					':id_detail' => $data['id'],
+					':id_bank' => $data['id_bank'],
+					':tgl_detail' => $data['tgl_detail'],
+					':nama_detail' => $data['nama_detail'],
+					':total_detail' => $data['total_detail'],
+					':ket' => ''
+				)
+			);
+			$statement->closeCursor();
+		}
+
+		/**
+		*  Delete Detail Operasional Proyek
+		*/
+		private function deleteDetailOperasionalProyek($id) {
+			$query = "DELETE FROM detail_operasional_proyek WHERE id = :id";
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id' => $id,
+				)
+			);
+			$statement->closeCursor();
+		}
+
+		/**
+		*  
 		*/
 		public function delete($data){
 			// TRANSACT
-			// print_r($data);
 			try {
 				$this->koneksi->beginTransaction();
 
@@ -839,8 +715,14 @@
 						$this->catatMutasi($row);
 					}
 
-				
 				} else if($data['dataOperasionalProyek']['status'] == "KREDIT" && $data['dataOperasionalProyek']['status_lunas'] == "BELUM LUNAS") {
+
+					$this->deleteKredit($data['dataOperasionalProyek']);	
+
+					foreach ($data['dataDetail'] as $index => $row) {
+						array_map('strtoupper', $row);
+						$this->catatMutasi($row);
+					}
 
 				}
 
@@ -857,6 +739,9 @@
 
 		}
 
+		/**
+		*  Hapus Data Operasional Proyek Dengan Jenis Pembayaran "LUNAS"
+		*/
 		private function deleteOperasionalProyek_Lunas($data) {
 			$query = 'CALL hapus_operasional_proyek_versi2 (:id, :total, :tgl, :ket);';
 			$statement = $this->koneksi->prepare($query);
@@ -871,6 +756,10 @@
 			$statement->closeCursor();
 		} 
 
+		
+		/**
+		*  Hapus Data Operasional Proyek Dengan Jenis Pembayaran "BELUM LUNAS"
+		*/
 		public function deleteOperasionalProyek_BelumLunas($data){
 			$query = 'CALL hapus_operasional_proyek_tunai_blmlunas (:id);';
 			$statement = $this->koneksi->prepare($query);
@@ -881,7 +770,24 @@
 			);
 			$statement->closeCursor();
 		}
+		
+		/**
+		*  Hapus Data Operasional Proyek Dengan Jenis Pembayaran "KREDIT"
+		*/
+		public function deleteKredit($dataOpr){
+			$query = 'CALL hapus_operasional_proyek_kredit (:id);';
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id' => $dataOpr['id']		
+				)
+			);
+			$statement->closeCursor();
+		}
 
+		/**
+		* 	Catat Mutasi Setelah Data Operasional Proyek Dihapus, Khusus "KREDIT"
+		*/
 		public function catatMutasi($data){
 			$query = 'CALL hapus_operasional_proyek_kredit_catatMutasi (
 				:id,
@@ -904,40 +810,9 @@
 			$statement->closeCursor();
 		}
 
-		public function deleteKredit($dataOpr){
-			$query = 'CALL hapus_operasional_proyek_kredit (:id);';
-			$statement = $this->koneksi->prepare($query);
-			$statement->execute(
-				array(
-					':id' => $dataOpr['id']		
-				)
-			);
-			$statement->closeCursor();
-		}
-
 		/**
 		* 
 		*/
-		public function deleteOperasionalProyek($data){
-			$query = "CALL hapus_operasional_proyek_versi2 (
-			:id, 
-			:tgl,
-			:total
-			);";
-			$statement = $this->koneksi->prepare($query);
-			$statement->execute(
-				array(
-					':id' => $data['id'],
-					':tgl' => $data['tgl'],
-					':ket' => $data['ket']		
-				)
-			);
-			$statement->closeCursor();
-
-		}
-
-
-
 		public function getLastID($id){
 			$id .= "%";
 			$query = "SELECT MAX(id) AS id FROM operasional_proyek WHERE id LIKE :id";
