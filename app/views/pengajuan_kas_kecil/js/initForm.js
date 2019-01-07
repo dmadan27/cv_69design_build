@@ -71,10 +71,10 @@ function init() {
       todayBtn: true,
     });
 	
-	setnamaKasKecil();
-	setNamaBank();
-	setIDPengajuanSubKasKecil();
+	// setnamaKasKecil();
+	// setNamaBank();
 	setStatus();
+	// setIDPengajuanSubKasKecil();
 	$('#status').prop('disabled', true);
 	$('#submit_pengajuan_kas_kecil').prop('disabled', true);
 }
@@ -235,6 +235,29 @@ function generateID(){
             swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
         }
 	})
+}
+
+function setNamaBank(){
+	$.ajax({
+		url: BASE_URL+'operasional-proyek/get-nama-bank',
+		type: 'post',
+		dataType: 'json',
+		beforeSend: function(){},
+		success: function(response){
+			console.log('%cResponse setNamaBank Operasional Proyek: ', 'font-style: italic', response);
+			$.each(response, function(index, item){
+				var newOption = new Option(item.text, item.id);
+				$('#id_bank').append(newOption).trigger('change');
+			});
+			$('#id_bank').val(null).trigger('change');
+			
+		},
+		error: function (jqXHR, textStatus, errorThrown){
+            console.log('%cResponse Error setBank Proyek: ', 'color: red; font-style: italic', jqXHR, textStatus, errorThrown);
+            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+        }
+	})
+	console.log($('#id_bank').val());
 }
 
 /**

@@ -14,6 +14,65 @@
 				<!-- body modal -->
 				<div class="modal-body">
 
+                <?php 
+                    $level = $_SESSION['sess_level'];
+                    if($level == "KAS BESAR"){
+                ?>
+
+                    <div class="row">
+						<div class="col-md-12">
+                            <!-- field id pengajuan-->
+                            <div class="form-group field-id has-feedback">
+                                <label for="id">ID Pengajuan Kas Kecil</label>
+                                <input type="text" name="id" id="id" class="form-control field" disabled placeholder="">
+                                <span class="help-block small pesan pesan-id"></span>
+                            </div>
+
+                            <!-- field tgl -->
+                            <div class="form-group field-tgl has-feedback">
+                                <label for="tgl">Tanggal</label>
+                                <input type="text" name="tgl" id="tgl" class="form-control datepicker field" placeholder="Masukan Tanggal" disabled>
+                                <span class="help-block small pesan pesan-tgl"></span>
+                            </div>
+
+                            <!-- field nama -->
+                            <div class="form-group field-nama has-feedback">
+                                <label for="nama">Nama Kebutuhan</label>
+                                    <input type="text" name="nama" id="nama" class="form-control field" placeholder="Masukan Nama" disabled>
+                                <span class="help-block small pesan pesan-nama"></span>
+                            </div>
+
+                            <!-- field Saldo terbaru -->
+                            <div class="form-group">
+                                <label for="saldo">Sisa Saldo Kas Kecil:</label>
+                                <p id="saldo"></p>       
+                            </div>
+
+                            <!-- field total -->
+                            <div class="form-group field-total has-feedback">
+                                <label for="total">Total</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon">Rp.</span>
+                                    <input disabled type="text" name="total" id="total" class="form-control field input-mask-uang" placeholder="Masukan Total">
+                                    <span class="input-group-addon">,00-</span>
+                                </div>
+                                <span class="help-block small pesan pesan-total"></span>
+                            </div>
+
+                            <!-- status -->
+                            <div class="form-group field-status has-feedback">
+                                <label for="status">Status</label>
+                                <div class="input-group">
+                                    <select disabled name="status" class="form-control field select2" id="status"></select>
+                                </div>
+                                <span class="help-block small pesan pesan-status"></span>
+                            </div>
+
+                        </div>
+					</div>
+
+                <?php } else if($level == "KAS KECIL") { ?>
+
 					<div class="row">
 						<div class="col-md-12">
                             <!-- field id pengajuan-->
@@ -57,13 +116,16 @@
                             <!-- status -->
                             <div class="form-group field-status has-feedback">
                                 <label for="status">Status</label>
-                                <select name="status" class="form-control field select2" id="status">
-                                </select>
+                                <div class="input-group">
+                                    <select name="status" class="form-control field select2" id="status"></select>
+                                </div>
                                 <span class="help-block small pesan pesan-status"></span>
                             </div>
 
                         </div>
 					</div>
+                
+                <?php } ?>
 				
 					<!-- modal footer -->
 					<div class="modal-footer">
