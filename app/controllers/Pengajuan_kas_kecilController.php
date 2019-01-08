@@ -94,11 +94,7 @@
 					'kolomOrder' => array(null, 'id','id_kas_kecil', 'tgl', 'nama',  'total', 'status',null),
 					'kolomCari' => array('id','id_kas_kecil','nama',  'status'),
 					'orderBy' => array('id' => 'asc'),
-<<<<<<< HEAD
-					'kondisi' =>  $kondisi,
-=======
-					'kondisi' =>  'where id_kas_kecil = "'.$_SESSION['sess_id'].'"',
->>>>>>> a554c5ae23d32784cb7016e3d77ba0fb3ae210d4
+					'kondisi' => $kondisi
 				);
 
 				$dataPengajuanKasKecil = $this->Pengajuan_kasKecilModel->getAllDataTable($config_dataTable);
@@ -120,8 +116,6 @@
 						$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
 						$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 					}
-					
-					
 					
 					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
 					

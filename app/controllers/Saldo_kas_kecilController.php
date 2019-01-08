@@ -88,10 +88,10 @@
 					$dataRow = array();
 					$dataRow[] = $no_urut;
 					// $dataRow[] = $row['id'];
-					$dataRow[] = $row['tgl'];
-					$dataRow[] = $row['uang_masuk'];
-					$dataRow[] = $row['uang_keluar'];
-					$dataRow[] = $row['saldo'];
+					$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
+					$dataRow[] = $this->helper->cetakRupiah($row['uang_masuk']);
+					$dataRow[] = $this->helper->cetakRupiah($row['uang_keluar']);
+					$dataRow[] = $this->helper->cetakRupiah($row['saldo']);
 					$dataRow[] = $row['ket'];
 
 					$data[] = $dataRow;
