@@ -78,7 +78,7 @@
 					'kolomOrder' => array(null, 'id','id_kas_kecil', 'tgl', 'nama',  'total', 'status',null),
 					'kolomCari' => array('id','id_kas_kecil','nama',  'status'),
 					'orderBy' => array('id' => 'asc'),
-					'kondisi' => false,
+					'kondisi' =>  'where id_kas_kecil = "'.$_SESSION['sess_id'].'"',
 				);
 
 				$dataPengajuanKasKecil = $this->Pengajuan_kasKecilModel->getAllDataTable($config_dataTable);
