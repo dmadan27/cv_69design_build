@@ -16,6 +16,10 @@
 	  	<!-- end breadcrumb -->
 	</section>
 
+	<?php 
+		$level = $_SESSION['sess_level'];
+	?>
+
 	<!-- Main content -->
 	<section class="content container-fluid">
 		<div class="row">
@@ -28,6 +32,7 @@
 						</div>
 						<!-- panel button -->
 						<div class="row">
+						<?php if($level == "KAS KECIL" ){ ?>
 							<div class="col-md-12 col-sm-12 col-xs-12">
 								<div class="btn-group">
 									<!-- tambah -->
@@ -36,6 +41,14 @@
 									<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 								</div>
 							</div>
+						<?php } else if($level == "KAS BESAR"){?>
+							<div class="col-md-12 col-sm-12 col-xs-12">
+								<div class="btn-group">
+									<!-- export -->
+									<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+								</div>
+							</div>
+							<?php } ?>
 						</div>
 					</div>
 					<!-- box body -->
@@ -48,9 +61,9 @@
 										<tr>
 											<th class="text-center" style="width: 35px">No</th>
 											<th class="text-center">ID Pengajuan</th>
+											<th class="text-center">Kas Kecil</th>
 											<th class="text-center">Tanggal</th>
 											<th class="text-center">Nama Pengajuan</th>
-											<th class="text-center">Kas Kecil</th>
 											<th class="text-center">Total</th>
 											<th class="text-center">Status Pengajuan</th>
 											<th class="text-center">Aksi</th>

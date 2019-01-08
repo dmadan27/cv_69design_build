@@ -7,7 +7,10 @@
 	class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 
 		private $token;
-		private $status = false;
+		private $success = false;
+		private $notif = array();
+		private $error = array();
+		private $message = NULL;
 
 		/**
 		* load auth, cekAuth
@@ -18,6 +21,7 @@
 			$this->auth();
 			$this->auth->cekAuth();
 			$this->model('Pengajuan_kasKecilModel');
+			$this->model('UserModel');
 			$this->helper();
 			$this->validation();
 		}	
@@ -37,6 +41,7 @@
 		*/
 		protected function list(){
 			// set config untuk layouting
+			$saldo_kasKecil = $this->UserModel->getKasKecil($_SESSION['sess_email']);
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
 				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
@@ -61,7 +66,11 @@
 				'js' => $js,
 			);
 
-			$this->layout('pengajuan_kas_kecil/list', $config, $data = NULL);
+			$data = array(
+				'saldo' => $this->helper->cetakRupiah($saldo_kasKecil['saldo']),
+			);
+
+			$this->layout('pengajuan_kas_kecil/list', $config, $data);
 		}	
 
 		/**
@@ -72,13 +81,20 @@
 		*/
 		public function get_list(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				
+				$level = $_SESSION['sess_level'];
+				if($level == "KAS BESAR"){
+					$kondisi = false;
+				} else if($level == "KAS KECIL") {
+					$kondisi = 'where id_kas_kecil = "'.$_SESSION['sess_id'].'"';
+				}
 				// config datatable
 				$config_dataTable = array(
 					'tabel' => 'pengajuan_kas_kecil',
 					'kolomOrder' => array(null, 'id','id_kas_kecil', 'tgl', 'nama',  'total', 'status',null),
 					'kolomCari' => array('id','id_kas_kecil','nama',  'status'),
 					'orderBy' => array('id' => 'asc'),
-					'kondisi' => false,
+					'kondisi' =>  $kondisi,
 				);
 
 				$dataPengajuanKasKecil = $this->Pengajuan_kasKecilModel->getAllDataTable($config_dataTable);
@@ -92,8 +108,16 @@
 
 					// // button aksi
 					$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-					$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-					$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+					
+					if($row['status'] == "DISETUJUI" || $row['status'] == "DITOLAK"){
+						$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" disabled class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+						$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" disabled class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+					} else {
+						$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+						$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+					}
+					
+					
 					
 					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
 					
@@ -101,9 +125,9 @@
 					$dataRow[] = $no_urut;
 					$dataRow[] = $row['id'];
 					$dataRow[] = $row['id_kas_kecil'];
-					$dataRow[] = $row['tgl'];
+					$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
 					$dataRow[] = $row['nama'];
-					$dataRow[] = $row['total'];
+					$dataRow[] = $this->helper->cetakRupiah($row['total']);
 					$dataRow[] = $row['status'];		
 					$dataRow[] = $aksi;
 
@@ -138,7 +162,7 @@
 				$error = $notif = array();
 
 				if(!$data){
-					$notif = array(
+					$this->notif = array(
 						'type' => 'error',
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
@@ -148,41 +172,42 @@
 					// validasi data
 					$validasi = $this->set_validation($data);
 					$cek = $validasi['cek'];
-					$error = $validasi['error'];
+					$this->error = $validasi['error'];
 
 					if($cek){
 						// validasi inputan
 						$data = array(
 							'id' => $this->validation->validInput($data['id']),
-							'id_kas_kecil' =>$this->validation->validInput($data['id_kas_kecil']),
-							'id_bank' =>$this->validation->validInput($data['id_bank']),
+							'id_kas_kecil' =>$_SESSION['sess_id'],
 							'tgl' => $this->validation->validInput($data['tgl']),
 							'nama' => $this->validation->validInput($data['nama']),
 							'total' => $this->validation->validInput($data['total']),
-							'status' => $this->validation->validInput($data['status']),
-							'id_pengajuan_sub_kas_kecil' => $this->validation->validInput($data['id_pengajuan_sub_kas_kecil'])
-								
+							'status' => 'PENDING',								
 						);
-
+						$res = $this->Pengajuan_kasKecilModel->insert($data);
 						// insert pengajuan kas kecil
-						if($this->Pengajuan_kasKecilModel->insert($data)) {
-							$this->status = true;
-							$notif = array(
+						if($res['success']) {
+							$this->success = true;
+							$this->notif = array(
 								'type' => 'success',
 								'title' => "Pesan Berhasil",
 								'message' => "Tambah Data Pengajuan Kas Kecil Berhasil",
 							);
-						}
-						else {
-							$notif = array(
-								'type' => 'error',
+						} else if($res['tolakdana']) {
+							$this->notif = array(
+								'type' => "warning",
+								'title' => "Pesan Pemberitahuan",
+								'message' => "Saldo anda masih mencukupi",
+							);
+						} else {
+							$this->notif = array(
+								'type' => "error",
 								'title' => "Pesan Gagal",
 								'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 							);
 						}
-					}
-					else {
-						$notif = array(
+					} else {
+						$this->notif = array(
 							'type' => 'warning',
 							'title' => "Pesan Pemberitahuan",
 							'message' => "Silahkan Cek Kembali Form Isian",
@@ -191,9 +216,9 @@
 				}
 
 				$output = array(
-					'status' => $this->status,
-					'notif' => $notif,
-					'error' => $error,
+					'status' => $this->success,
+					'notif' => $this->notif,
+					'error' => $this->error,
 					'data' => $data
 				);
 
@@ -210,6 +235,9 @@
 		*/
 		public function edit($id){
 			$data = !empty($this->Pengajuan_kasKecilModel->getById($id)) ? $this->Pengajuan_kasKecilModel->getById($id) : false;
+			$saldo = $this->Pengajuan_kasKecilModel->getSaldoKK($data['id_kas_kecil']);
+			$data['tgl_full'] = $this->helper->cetakTgl($data['tgl'], 'full');
+			$data['saldo'] = $saldo;
 			echo json_encode($data);
 		}
 
@@ -219,14 +247,16 @@
 		* return berupa json
 		* status => status berhasil atau gagal proses edit
 		* notif => pesan yang akan ditampilkan disistem
-		* error => error apa saja yang ada dari hasil validasi
+		* error => error apa saja yang ada dari hasil validas
+		i
 		*/
 		public function action_edit(){
 			$data = isset($_POST) ? $_POST : false;
-			
-			$error = $notif = array();
+			$level = $_SESSION['sess_level'];
+	
+			$this->error = $this->notif = array();
 			if(!$data){
-				$notif = array(
+				$this->notif = array(
 					'type' => "error",
 					'title' => "Pesan Pemberitahuan",
 					'message' => "Silahkan Cek Kembali Form Isian",
@@ -236,51 +266,68 @@
 				// validasi data
 				$validasi = $this->set_validation($data);
 				$cek = $validasi['cek'];
-				$error = $validasi['error'];
+				$this->error = $validasi['error'];
 
 				if($cek){
-					// validasi inputan
-					$data = array(
-						'id' => $this->validation->validInput($data['id']),
-						// 'tgl' => $this->validation->validInput($data['tgl']),
-						// 'nama' => $this->validation->validInput($data['nama']),
-						// 'total' => $this->validation->validInput($data['total']),
-						'status' => $this->validation->validInput($data['status'])
-							
-					);
 
-					// update db
-					if($this->Pengajuan_kasKecilModel->update($data)) {
-						$status = true;
-						$notif = array(
+					if($level == "KAS BESAR"){
+						
+						// validasi inputan
+						$data = array(
+							'id' => $this->validation->validInput($data['id']),
+							'id_kas_kecil' => $this->validation->validInput($data['id_kas_kecil']),
+							'tgl' => $this->validation->validInput($data['tgl']),
+							'id_bank' => $this->validation->validInput($data['id_bank']),
+							'total_disetujui' => $this->validation->validInput($data['total_disetujui']),
+							'status' => $this->validation->validInput($data['status'])
+						);
+					} else if($level == "KAS KECIL") {
+						// validasi inputan
+					
+						$data = array(
+							'id' => $this->validation->validInput($data['id']),
+							'nama' => $this->validation->validInput($data['nama']),
+							'tgl' => $this->validation->validInput($data['tgl']),
+							'total' => $this->validation->validInput($data['total'])
+						);
+					}
+
+					$res = $this->Pengajuan_kasKecilModel->update($data);
+					// To Model
+					if($res['success']) {
+						$this->success = true;
+						$this->notif = array(
 							'type' => "success",
 							'title' => "Pesan Berhasil",
 							'message' => "Edit Data Pengajuan Kas Kecil Berhasil",
 						);
-					}
-					else {
-						$notif = array(
+					} else if($res['tolakdana']) {
+						$this->notif = array(
+							'type' => "warning",
+							'title' => "Pesan Pemberitahuan",
+							'message' => "Saldo anda masih mencukupi",
+						);
+					} else {
+						$this->notif = array(
 							'type' => "error",
 							'title' => "Pesan Gagal",
 							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 						);
 					}
-				}
-				else {
-					$notif = array(
+				} else {
+					$this->notif = array(
 						'type' => 'warning',
 						'title' => "Pesan Pemberitahuan",
 						'message' => "Silahkan Cek Kembali Form Isian",
-					);
-					
+					);	
 				}
 			}
 
 			$output = array(
-				'status' => $status,
-				'notif' => $notif,
-				'error' => $error,
-				// 'data' => $data
+				'status' => $this->success,
+				'notif' => $this->notif,
+				'error' => $this->error,
+				'data' => $data
 			);
 
 			echo json_encode($output);
@@ -533,23 +580,22 @@
 		*/
 		private function set_validation($data){
 			// $required = ($action =="action-add") ? 'not_required' : 'required';
-			// id
-			$this->validation->set_rules($data['id'], 'ID Pengajuan Kas Kecil', 'id', 'string | 1 | 255 | required');
-			// id_kas_kecil
-			$this->validation->set_rules($data['id_kas_kecil'], 'ID Pengajuan Kas Kecil', 'id_kas_kecil', 'string | 1 | 255 | required');
-			// id_bank
-			$this->validation->set_rules($data['id_bank'], 'ID Bank', 'id_bank', 'string | 1 | 255 | required');
-			// tgl
-			$this->validation->set_rules($data['tgl'], 'Tanggal Pengajuan Kas Kecil', 'tgl', 'string | 1 | 255 | required');
-			// nama pengajuan kas kecil
-			$this->validation->set_rules($data['nama'], 'Nama Pengajuan', 'nama', 'string | 1 | 255 | required');
-			// total
-			$this->validation->set_rules($data['total'], 'Total Pengajuan', 'total', 'nilai | 1 | 99999999 | required');
-			// status
-			$this->validation->set_rules($data['status'], 'Status Pengajuan', 'status', 'string | 1 | 255 | required');
-			// ID PSKK
-			$this->validation->set_rules($data['id_pengajuan_sub_kas_kecil'], 'ID SKK', 'id_pengajuan_sub_kas_kecil', 'string | 1 | 255 | required');
-			
+		
+			if($data['action'] == 'action-add'){
+				// id
+				$this->validation->set_rules($data['id'], 'ID Pengajuan Kas Kecil', 'id', 'string | 1 | 255 | required');
+				// tgl
+				$this->validation->set_rules($data['tgl'], 'Tanggal Pengajuan Kas Kecil', 'tgl', 'string | 1 | 255 | required');
+				// nama pengajuan kas kecil
+				$this->validation->set_rules($data['nama'], 'Nama Pengajuan', 'nama', 'string | 1 | 255 | required');
+				// total
+				$this->validation->set_rules($data['total'], 'Total Pengajuan', 'total', 'nilai | 1 | 99999999 | required');
+					
+			} else if($data['action'] == 'action-edit'){
+				//status
+				$this->validation->set_rules($data['status'], 'Status Pengajuan', 'status', 'string | 1 | 255 | required');	
+			}
+				
 			
 			return $this->validation->run();
 			

@@ -61,6 +61,16 @@
 			return $result;
 		}
 
+		public function getSaldoKasKecil(){
+			$query = "SELECT saldo FROM kas_kecil";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute();
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+
 		public function getById($id){
 
 		}

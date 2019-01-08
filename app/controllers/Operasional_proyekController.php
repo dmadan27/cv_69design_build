@@ -227,7 +227,6 @@
 						
 						$res = $this->Operasional_ProyekModel->insert($dataInsert);
 						if($res['success']){
-
 							$this->success = true;
 							$_SESSION['notif'] = array(
 								'type' => "success",
@@ -422,11 +421,10 @@
 							'toDelete' => $toDeleteList,
 							'toEdit' => $toEditList
 					);
-
+					$res = $this->Operasional_ProyekModel->update($dataUpdate);
 					// update data
-					if($this->Operasional_ProyekModel->update($dataUpdate)){
-						// print_r('aku disini');
-						// exit;
+					if($res['success']){
+
 						$this->success = true;
 							$_SESSION['notif'] = array(
 								'type' => "success",
@@ -435,14 +433,22 @@
 							);
 							$notif['default'] = $_SESSION['notif'];
 
+					} else if($res['invalidtotaldetail'] == "invalidTotal") {
+
+						$this->notif['default'] = array(
+							'type' => "warning",
+							'title' => "Pesan Pemberitahuan",
+							'message' => "Cek Kembali List Detail / Total Detail Anda",
+						);
+
 					} else {
-						// print_r('aku disini deh');
-						// exit;
-						$notif['default'] = array(
-								'type' => "error",
-								'title' => "Pesan Gagal",
-								'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
-							);
+
+						$this->notif['default'] = array(
+							'type' => "error",
+							'title' => "Pesan Gagal",
+							'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
+						);
+
 					}
 
 				}
@@ -451,8 +457,8 @@
 
 			$output = array(
 				'status' => $this->success,
-				'notif' => $notif,
-				'error' => $error,
+				'notif' => $this->notif,
+				'error' => $this->error,
 				'cek' => array(
 					'cek' => $cek,
 				),

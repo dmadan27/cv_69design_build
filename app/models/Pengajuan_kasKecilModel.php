@@ -116,43 +116,53 @@
 		}
 
 		/**
+		*
+		*/
+		public function getSaldoKK($id) {
+			$query = "SELECT saldo FROM kas_kecil WHERE id = :id";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$statement->execute();
+			$result = $statement->fetchColumn();
+
+			return $result;	
+		}
+
+		/**
 		* 
 		*/
 		public function insert($data){
-			// $query = "INSERT INTO pengajuan_kas_kecil (id, id_kas_kecil, id_bank, tgl, nama, total, status) VALUES (:id, :id_kas_kecil, :id_bank,  :tgl, :nama, :total,  :status);";
+
+			$response = true;
 
 			try{
 				$this->koneksi->beginTransaction();
+				$saldoKK = $this->getSaldoKK($_SESSION['sess_id']);
+				//Cek Apakah Saldo KK masih mencukupi?
+				if($data['total'] <= $saldoKK){
+					$response = false;
+				} else {
+					//Edit Pengajuan
+					$this->tambahPengajuan($data);
+				}
 
-				$query = "CALL tambah_pengajuan_kas_kecil 
-				(:id, :id_kas_kecil,
-				 :id_bank,
-				 :tgl,
-				 :nama,
-				 :total,
-				 :status,
-				 :id_pengajuan_sub_kas_kecil
-				)";
-
-				$statement = $this->koneksi->prepare($query);
-				$result = $statement->execute(
-					array(
-						':id' => $data['id'],
-						':id_kas_kecil' => $data['id_kas_kecil'],
-						':id_bank' => $data['id_bank'],
-						':tgl' => $data['tgl'],
-						':nama' => $data['nama'],
-						':total' => $data['total'],
-						':status' => $data['status'],
-						':id_pengajuan_sub_kas_kecil' => $data['id_pengajuan_sub_kas_kecil'],
-							
-					)
-				);
-				$statement->closeCursor();
+				if($response){
+					$output = array(
+						'success' => true,
+						'tolakdana' => false,
+						'error' => NULL
+					);
+				} else if(!$response){
+					$output = array(
+						'success' => false,
+						'tolakdana' => true,
+						'error' => NULL
+					);
+				}
 
 				$this->koneksi->commit();
-
-				return true;
+				return $output;
 			}
 			catch(PDOException $e){
 				$this->koneksi->rollback();
@@ -162,16 +172,146 @@
 		}
 
 		/**
-		* 
+		* 	Tambah Pengajuan Kas Kecil
+		*/
+		private function tambahPengajuan($data) {
+			$query = "CALL tambah_pengajuan_kas_kecil(
+				:id, :id_kas_kecil,
+				:tgl,
+				:nama,
+				:total,
+				:status
+			)";
+			$statement = $this->koneksi->prepare($query);
+			$result = $statement->execute(
+				array(
+					':id' => $data['id'],
+					':id_kas_kecil' => $data['id_kas_kecil'],
+					':tgl' => $data['tgl'],
+					':nama' => $data['nama'],
+					':total' => $data['total'],
+					':status' => $data['status']						
+				)
+			);
+			$statement->closeCursor();
+		}
+
+		/**
+		* 	
 		*/
 		public function update($data){
-			$query = "UPDATE pengajuan_kas_kecil SET status = :status WHERE id = :id;";
-
-			$statement = $this->koneksi->prepare($query);
-			$statement->bindParam(':status', $data['status']);
-			$statement->bindParam(':id', $data['id']);
-			$result = $statement->execute();
 			
+			$response = true;
+
+			try {
+				$this->koneksi->beginTransaction();
+
+				//Define User Level
+				$level = $_SESSION['sess_level'];
+
+				//Jika User Kas Besar, masuk ke kondisi acc pengajuan
+				//Jika User Kas Kecil, masuk ke kondisi edit pengajuan
+				if($level == "KAS BESAR"){
+					if($data['status'] == "DISETUJUI"){
+						//Acc Pengajuan
+						$this->accPengajuan($data);
+					} else {
+						//Review Pengajuan
+						$this->revPengajuan($data);
+					}
+				} else if($level == "KAS KECIL") {
+					$saldoKK = $this->getSaldoKK($_SESSION['sess_id']);
+					//Cek Apakah Saldo KK masih mencukupi?
+					if($data['total'] <= $saldoKK){
+						$response = false;
+					} else {
+						//Edit Pengajuan
+						$this->editPengajuan($data);
+					}
+				}
+
+				if($response){
+					$output = array(
+						'success' => true,
+						'tolakdana' => false,
+						'error' => NULL
+					);
+				} else if(!$response){
+					$output = array(
+						'success' => false,
+						'tolakdana' => true,
+						'error' => NULL
+					);
+				}
+				
+				$this->koneksi->commit();
+				return $output;
+
+			} catch(PDOException $e){
+				$this->koneksi->rollback();
+				die($e->getMessage());
+				// return false;
+			}
+
+		}
+
+		/**
+		* 	Acc Pengajuan Kas Kecil. Dilakukkan Oleh Kas Besar
+		*/
+		private function accPengajuan($data) {
+			// insert operasional_proyek
+			$query = "CALL acc_pengajuan_kas_kecil (
+				:id, 
+				:id_kas_kecil,
+				:tgl_param,
+				:id_bank,
+				:total_disetujui,
+				:ket_kas_kecil,
+				:ket,
+				:status
+			);";
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id'				=> $data['id'], 
+					':id_kas_kecil'		=> $data['id_kas_kecil'],
+					':tgl_param'		=> $data['tgl'],
+					':id_bank'			=> $data['id_bank'],
+					':total_disetujui'	=> $data['total_disetujui'],
+					':ket_kas_kecil'	=> '',
+					':ket'				=> '',
+					':status'			=> $data['status']
+				)
+			);
+			$statement->closeCursor();
+		}
+
+		/**
+		* 	Review Pengajuan Kas Kecil. Dilakukkan Oleh Kas Besar
+		*/
+		private function revPengajuan($data) {
+			$query = "UPDATE pengajuan_kas_kecil SET status = :status WHERE id = :id";
+			
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $data['id']);
+			$statement->bindParam(':status', $data['status']);
+			$result = $statement->execute();
+
+			return $result;
+		}
+
+		/**
+		* 	Edit Pengajuan Kas Kecil. Dilakukkan Oleh Kas Kecil selama pengajuan belum di-review oleh Kas Besar  
+		*/
+		private function editPengajuan($data) {
+			$query = "UPDATE pengajuan_kas_kecil SET nama = :nama, tgl = :tgl, total = :total WHERE id = :id";
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $data['id']);
+			$statement->bindParam(':nama', $data['nama']);
+			$statement->bindParam(':tgl', $data['tgl']);
+			$statement->bindParam(':total', $data['total']);
+
+			$result = $statement->execute();
 			return $result;
 		}
 

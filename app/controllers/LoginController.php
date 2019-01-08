@@ -19,6 +19,7 @@
 		public function __construct(){
 			$this->auth();
 			$this->validation();
+			$this->helper();
 			$this->model('UserModel');
 		}
 
@@ -213,6 +214,7 @@
 			if(strtolower($level) == 'kas besar') { $dataProfil = $this->UserModel->getKasBesar($this->username); }
 			else if(strtolower($level) == 'kas kecil') {
 				$dataProfil = $this->UserModel->getKasKecil($this->username);
+				$_SESSION['sess_saldo_full'] = $this->helper->cetakRupiah($dataProfil['saldo']);
 				$_SESSION['sess_saldo'] = $dataProfil['saldo'];
 			}
 			else if(strtolower($level) == 'owner') { $dataProfil = $this->UserModel->getOwner($this->username); }

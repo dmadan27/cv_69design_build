@@ -183,7 +183,6 @@
 					// insert data operasional proyek kondisi tunai belum lunas
 					$this->insertOperasionalProyek_TunaiBelumLunas($dataOperasionalProyek);
 
-					
 				} else if($dataOperasionalProyek['status'] == "KREDIT" && $dataOperasionalProyek['status_lunas'] == "LUNAS"){
 
 					//Mendapatkan Total Detail Operasional Proyek
@@ -208,9 +207,8 @@
 								array_map('strtoupper', $row);
 								$this->insertDetailOperasionalProyek($row, $dataOperasionalProyek['id']);
 							}
-						}	
 
-						
+						}	
 
 					} else if($dataOperasionalProyek['total'] < $sum || $dataOperasionalProyek['total'] > $sum) {
 
@@ -454,7 +452,9 @@
 					//Mendapatkan Total Detail Operasional Proyek
 					$sumDetail = 0;
 					foreach ($data['dataDetail'] as $index => $row) {
-						$sumDetail += $row['total_detail'];
+						if(!$data['dataDetail'][$index]['delete']){
+							$sumDetail += $row['total_detail'];
+						}
 					}
 
 					if($sumDetail == $data['dataOperasionalProyek']['total']){

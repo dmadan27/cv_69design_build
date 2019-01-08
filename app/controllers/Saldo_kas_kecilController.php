@@ -22,6 +22,7 @@
 			$this->auth();
 			$this->auth->cekAuth();
 			$this->model('Mutasi_saldo_kas_kecilModel');
+			$this->model('UserModel');
 			$this->helper();
 			$this->validation();
 		}	
@@ -37,6 +38,7 @@
 		*
 		*/
 		protected function list(){
+			$saldo_kasKecil = $this->UserModel->getKasKecil($_SESSION['sess_email']);
 			$css = array('assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css');
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
@@ -53,7 +55,11 @@
 				'js' => $js,
 			);
 			
-			$this->layout('mutasi_saldo_kas_kecil/list', $config, $data = NULL);
+			$data = array(
+				'saldo' => $this->helper->cetakRupiah($saldo_kasKecil['saldo']),
+			);
+
+			$this->layout('mutasi_saldo_kas_kecil/list', $config, $data);
 		}	
 
 		/**

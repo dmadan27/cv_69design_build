@@ -16,6 +16,9 @@
 			$this->auth();
 			$this->auth->cekAuth();
 			$this->model('Mutasi_saldo_kas_kecilModel');
+			$this->model('UserModel');
+			$this->model('Mutasi_bankModel');
+			$this->helper();
 		}	
 
 		/**
@@ -44,6 +47,8 @@
 				'css' => $css,
 				'js' => $js,
 			);
+
+			
 			
 			$this->layout('mutasi_saldo_kas_kecil/list', $config, $data = NULL);
 		}	
@@ -56,18 +61,18 @@
 				// config datatable
 				$config_dataTable = array(
 					'tabel' => 'mutasi_bank',
-					// 'kolomOrder' => array(null, 'id', 'nama', 'alamat', 'status', null),
-					// 'kolomCari' => array('id', 'nama', 'alamat', 'status'),
-					// 'orderBy' => array('id' => 'desc', 'status' => 'asc'),
+					'kolomOrder' => array(null, 'id', 'nama', 'alamat', 'status', null),
+					'kolomCari' => array('id', 'nama', 'alamat', 'status'),
+					'orderBy' => array('id' => 'desc', 'status' => 'asc'),
 					'kondisi' => false,
 				);
 
 				$dataMutasi = $this->Mutasi_bankModel->getAllDataTable($config_dataTable);
 
 				$data = array();
-				$no_urut = $_POST['start'];
-				foreach($dataMutasi as $row){
-					$no_urut++;
+				// $no_urut = $_POST['start'];
+				// foreach($dataMutasi as $row){
+				// 	$no_urut++;
 
 					// $status = (strtolower($row['status']) == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-primary">'.$row['status'].'</span>';
 
@@ -86,8 +91,8 @@
 					// $dataRow[] = $row['status'];
 					// $dataRow[] = $aksi;
 
-					$data[] = $dataRow;
-				}
+					// $data[] = $dataRow;
+				// }
 
 				$output = array(
 					'draw' => $_POST['draw'],

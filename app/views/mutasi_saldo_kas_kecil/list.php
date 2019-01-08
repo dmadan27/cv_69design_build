@@ -14,6 +14,9 @@
 	  	<!-- end breadcrumb -->
 
 	</section>
+
+	
+
 	<!-- Main content -->
 	<section class="content container-fluid">
 		<div class="row">
@@ -23,18 +26,21 @@
 					<div class="box-header">
 						<div class="row">
 							<div class="col-md-12 col-sm-12 col-xs-12 text-right">
-								<h3 class="box-title"><strong>Saldo: Rp. ,-</strong></h3>
+								&nbsp;
 							</div>
 						</div>
 						<!-- panel button -->
 						<div class="row">
-							<div class="col-md-12 col-sm-12 col-xs-12">
+							<div class="col-md-9 col-sm-9 col-xs-9">
 								<div class="btn-group">
 									<!-- tambah -->
 									<!-- <a href="<?= BASE_URL."" ?>" class="btn btn-default btn-flat" role="button"><i class="fa fa-plus"></i> Tambah</a> -->
 									<!-- export -->
 									<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 								</div>
+							</div>
+							<div class="col-md-3 col-sm-3 col-xs-3">
+								<h3 class="box-title" style="margin-top:10px;"><strong>Saldo: Rp. <?php echo $this->data['saldo']; ?> ,-</strong></h3>
 							</div>
 						</div>
 					</div>

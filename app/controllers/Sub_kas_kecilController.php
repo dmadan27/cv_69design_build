@@ -55,7 +55,7 @@
 				'js' => $js,
 			);
 
-			$this->layout('sub_kas_kecil/list', $config, $data = null);
+			$this->layout('sub_kas_kecil/list', $config, $data = NULL);
 		}
 
 		/**

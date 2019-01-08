@@ -147,8 +147,8 @@ function init () {
 	//On Change STATUS & STATUS LUNAS
 	$('#status').add('#status_lunas').on('change', function(){
 
-		var status = ($('status').val() != "" && $('#status').val() != null) ? $('#status').val().trim() : "DEFAULT";
-		var status_lunas = ($('status_lunas').val() != "" && $('#status_lunas').val() != null) ? $('#status_lunas').val().trim() : "DEFAULT";
+		var status = ($('#status').val() != "" && $('#status').val() != null) ? $('#status').val().trim() : "DEFAULT";
+		var status_lunas = ($('#status_lunas').val() != "" && $('#status_lunas').val() != null) ? $('#status_lunas').val().trim() : "DEFAULT";
 
 		console.log('Jenis Pembayaran Changed To - ' + status);
 		console.log('Status Pembayaran Changed To - ' + status_lunas);
@@ -626,7 +626,7 @@ function getDataForm(){
 		
 		} else if($('#status').val() == "TUNAI" && $('#status_lunas').val() == "LUNAS") {
 		
-			bank = ($('id_bank_form').val() != "" && $('#id_bank_form').val() != null) ? $('#id_bank_form').val().trim() : ""; 
+			bank = ($('#id_bank_form').val() != "" && $('#id_bank_form').val() != null) ? $('#id_bank_form').val().trim() : ""; 
 			// $('#id_bank_form').val().trim();
 		
 		} else if (($('#status').val() == "KREDIT" && $('#status_lunas').val() == "BELUM LUNAS" || $('#status_lunas').val() == "LUNAS")) {
@@ -663,11 +663,11 @@ function getDataForm(){
 			bank = ($('id_bank_form').val() != "" && $('#id_bank_form').val() != null) ? $('#id_bank_form').val().trim() : ""; 
 		}
 
-		var id_distributor = ($('id_distributor').val() != "" && $('#id_distributor').val() != null) ? $('#id_distributor').val().trim() : "";
-		var id_proyek = ($('id_proyek').val() != "" && $('#id_proyek').val() != null) ? $('#id_proyek').val().trim() : "";
-		var jenis = ($('jenis').val() != "" && $('#jenis').val() != null) ? $('#jenis').val().trim() : "";
-		var status = ($('status').val() != "" && $('#status').val() != null) ? $('#status').val().trim() : "";
-		var status_lunas = ($('status_lunas').val() != "" && $('#status_lunas').val() != null) ? $('#status_lunas').val().trim() : "";
+		var id_distributor = ($('#id_distributor').val() != "" && $('#id_distributor').val() != null) ? $('#id_distributor').val().trim() : "";
+		var id_proyek = ($('#id_proyek').val() != "" && $('#id_proyek').val() != null) ? $('#id_proyek').val().trim() : "";
+		var jenis = ($('#jenis').val() != "" && $('#jenis').val() != null) ? $('#jenis').val().trim() : "";
+		var status = ($('#status').val() != "" && $('#status').val() != null) ? $('#status').val().trim() : "";
+		var status_lunas = ($('#status_lunas').val() != "" && $('#status_lunas').val() != null) ? $('#status_lunas').val().trim() : "";
 	
 		var dataOperasionalProyek = {
 			id : $('#id').val().trim(),
