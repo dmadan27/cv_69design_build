@@ -64,7 +64,7 @@
 
 				// config datatable
 				$config_dataTable = array(
-					'tabel' => 'v_tes_berandakasbesar',
+					'tabel' => 'v_proyek_berjalan_selesai',
 					'kolomOrder' => array(null, 'id', 'pembangunan', 'pemilik', 'status', 'total'),
 					'kolomCari' => array('id', 'pembangunan', 'pemilik', 'status', 'total'),
 					'orderBy' => array('id' => 'desc'),
@@ -115,7 +115,7 @@
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 
 				$config_dataTable = array(
-					'tabel' => 'v_saldo_kasbesar_and_subkaskecil',
+					'tabel' => 'v_saldo_kaskecil_and_subkaskecil',
 					'kolomOrder' => array(null, 'id', 'nama', 'saldo'),
 					'kolomCari' => array('id', 'nama', 'saldo'),
 					'orderBy' => array('id' => 'asc'),
