@@ -190,3 +190,24 @@ CREATE OR REPLACE VIEW v_history_distributor AS
 					operasional_proyek opr
 						ON d.id = 	opr.id_distributor
 						WHERE d.id = opr.id_distributor
+
+
+/* BERANDA KAS BESAR VIEW 
+	by : Jaka Pratama
+*/
+CREATE OR REPLACE VIEW v_saldo_kaskecil_and_subkaskecil AS
+			select id,nama, saldo from kas_kecil
+
+			union all
+
+			select id,nama, saldo from sub_kas_kecil;
+
+
+	CREATE OR REPLACE VIEW v_proyek_berjalan_selesai AS
+			select id,  pembangunan, pemilik, status, total from proyek where status = 'BERJALAN'
+
+			UNION all
+
+			SELECT id,  pembangunan, pemilik, status, total from proyek where status = 'SELESAI';
+
+/* END BERANDA KAS BESAR VIEW*/
