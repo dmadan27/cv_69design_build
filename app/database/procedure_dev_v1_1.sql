@@ -1361,7 +1361,7 @@
 	-- ================================================================= --
 
 	-- ================================================================= --
-	-- Pengajuan Kas Kecil -- Versi 08 Januari 2019 -- START --
+	-- Pengajuan Kas Kecil -- Versi 11 Januari 2019 -- START --
 	-- ================================================================= --
 
 	-- Tambah Data Pengajuan Kas Kecil (FIXED) 
@@ -1372,7 +1372,7 @@
 		IN tgl_param date,
 		IN nama_param varchar(50),
 		IN total_param double(12,2),
-		IN status_param enum('DISETUJUI','PERBAIKI','DITOLAK','PENDING')
+		IN status_param char(1)
 	)
 
 	BEGIN
@@ -1396,7 +1396,7 @@
 		IN total_disetujui_param double(12,2),
 		IN ket_kas_kecil_param text,
 		IN ket_param text,
-		IN status_param enum('DISETUJUI','PERBAIKI','DITOLAK','PENDING')
+		IN status_param char(1)
 	)
 	BEGIN
 		DECLARE saldo_kas_kecil double(12,2);
@@ -1433,7 +1433,7 @@
 	delimiter ;
 
 	-- ================================================================= --
-	-- Pengajuan Kas Kecil -- Versi 08 Januari 2019 -- END --
+	-- Pengajuan Kas Kecil -- Versi 11 Januari 2019 -- END --
 	-- ================================================================= --
 	
 # =================================================================== #
