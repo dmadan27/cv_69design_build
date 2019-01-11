@@ -82,7 +82,7 @@ function init() {
 }
 
 $('#status').on('change', function(){
-	if($('#status').val() == "DISETUJUI"){
+	if($('#status').val() == "2"){
 		$('#id_bank').prop('disabled', false);
 		$('#total_disetujui').prop('disabled', false);
 	} else {
@@ -311,17 +311,17 @@ function setNamaBank(){
  */
 function setStatus(){
 	var status = [
-		{value: "DISETUJUI", text: "DISETUJUI"},
-		{value: "PERBAIKI", text: "PERBAIKI"},
-		{value: "DITOLAK", text: "DITOLAK"},
-		{value: "PENDING", text: "PENDING"},
+		{value: "0", text: "PENDING"},
+		{value: "1", text: "PERBAIKI"},
+		{value: "2", text: "DISETUJUI"},
+		{value: "3", text: "DITOLAK"},
 	];
 
 	$.each(status, function(index, item){
 		var option = new Option(item.text, item.value);
 		$("#status").append(option);
 	});
-	$("#status").val(null).trigger('change');
+	$("#status").val("0").trigger('change');
 	
 }
 

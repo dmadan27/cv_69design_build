@@ -97,6 +97,8 @@
 					'kondisi' => $kondisi
 				);
 
+				$status_pengajuan = null;
+
 				$dataPengajuanKasKecil = $this->Pengajuan_kasKecilModel->getAllDataTable($config_dataTable);
 
 				$data = array();
@@ -104,7 +106,17 @@
 				foreach($dataPengajuanKasKecil as $row){
 					$no_urut++;
 
-					$status = ($row['status'] == "PENDING") ? '<span class="label label-warning">'.$row['status'].'</span>' : '<span class="label label-danger">'.$row['status'].'</span>';
+					if($row['status'] == '0'){
+						$row['status'] = "PENDING";
+					} else if($row['status'] == '1'){
+						$row['status'] = "PERBAIKI";
+					} else if($row['status'] == '2'){
+						$row['status'] = "DISETUJUI";
+					} else if($row['status'] == '3'){
+						$row['status'] = "DITOLAK";	
+					} 
+
+					// $status = ($row['status'] == "0") ? '<span class="label label-warning">'.$row['status'].'</span>' : '<span class="label label-danger">'.$row['status'].'</span>';
 
 					// // button aksi
 					$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
@@ -116,7 +128,7 @@
 						$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
 						$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 					}
-					
+	
 					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
 					
 					$dataRow = array();
@@ -180,7 +192,7 @@
 							'tgl' => $this->validation->validInput($data['tgl']),
 							'nama' => $this->validation->validInput($data['nama']),
 							'total' => $this->validation->validInput($data['total']),
-							'status' => 'PENDING',								
+							'status' => '0',								
 						);
 						$res = $this->Pengajuan_kasKecilModel->insert($data);
 						// insert pengajuan kas kecil
@@ -251,7 +263,7 @@
 		public function action_edit(){
 			$data = isset($_POST) ? $_POST : false;
 			$level = $_SESSION['sess_level'];
-	
+
 			$this->error = $this->notif = array();
 			if(!$data){
 				$this->notif = array(
@@ -286,7 +298,8 @@
 							'id' => $this->validation->validInput($data['id']),
 							'nama' => $this->validation->validInput($data['nama']),
 							'tgl' => $this->validation->validInput($data['tgl']),
-							'total' => $this->validation->validInput($data['total'])
+							'total' => $this->validation->validInput($data['total']),
+							'status' => '0'
 						);
 					}
 
@@ -590,8 +603,16 @@
 				$this->validation->set_rules($data['total'], 'Total Pengajuan', 'total', 'nilai | 1 | 99999999 | required');
 					
 			} else if($data['action'] == 'action-edit'){
-				//status
-				$this->validation->set_rules($data['status'], 'Status Pengajuan', 'status', 'string | 1 | 255 | required');	
+
+				if($_SESSION['sess_level'] == "KAS KECIL"){
+					//status
+					$this->validation->set_rules($data['status'], 'Status Pengajuan', 'status', 'string | 1 | 255 | ');	
+				} else {
+					//status
+					$this->validation->set_rules($data['status'], 'Status Pengajuan', 'status', 'string | 1 | 255 | required');	
+				}
+
+				
 			}
 				
 			

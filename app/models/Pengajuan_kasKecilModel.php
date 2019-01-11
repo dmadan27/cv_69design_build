@@ -74,7 +74,7 @@
 		*
 		*/
 		public function getAll_pending(){
-			$status = "PENDING";
+			$status = "0";
 			$query = "SELECT * FROM v_pengajuan_kas_kecil WHERE status = :status ORDER BY id DESC LIMIT 5";
 
 			$statement = $this->koneksi->prepare($query);
@@ -89,7 +89,7 @@
 		*
 		*/
 		public function getTotal_pending(){
-			$status = "PENDING";
+			$status = "0";
 			$query = "SELECT COUNT(*) FROM pengajuan_kas_kecil WHERE status = :status";
 
 			$statement = $this->koneksi->prepare($query);
@@ -104,7 +104,7 @@
 		*
 		*/
 		public function getTotal_setujui(){
-			$status = "DISETUJUI";
+			$status = "2";
 			$query = "SELECT COUNT(*) FROM pengajuan_kas_kecil WHERE status = :status";
 
 			$statement = $this->koneksi->prepare($query);
@@ -212,7 +212,7 @@
 				//Jika User Kas Besar, masuk ke kondisi acc pengajuan
 				//Jika User Kas Kecil, masuk ke kondisi edit pengajuan
 				if($level == "KAS BESAR"){
-					if($data['status'] == "DISETUJUI"){
+					if($data['status'] == "2"){
 						//Acc Pengajuan
 						$this->accPengajuan($data);
 					} else {
