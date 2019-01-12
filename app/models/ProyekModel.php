@@ -62,7 +62,7 @@
 		 * @return result {array}
 		 */
 		public function getAll(){
-			$query = "SELECT * FROM proyek";
+			$query = "SELECT * FROM proyek;";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute();
@@ -98,7 +98,7 @@
 			$query .= "FROM detail_proyek dp "; 
 			$query .= "JOIN bank b ON b.id = dp.id_bank ";
 			$query .= "JOIN proyek p ON p.id = dp.id_proyek ";
-			$query .= "WHERE p.id = :id";
+			$query .= "WHERE p.id = :id;";
 			
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id', $id);
@@ -120,6 +120,65 @@
 			$statement->bindParam(':id', $id);
 			$statement->execute();
 			$result = $statement->fetchAll();
+
+			return $result;
+		}
+
+		/**
+		 * Method getTermintMasuk
+		 * Proses get data sum total detail berdasarkan id proyek
+		 * @param id {string}
+		 * @return result {array}
+		 */
+		public function getTermintMasuk($id) {
+			$query = "SELECT sum(total) total_termint FROM detail_proyek ";
+			$query .= "WHERE id_proyek = :id ";
+			$query .= "GROUP BY id_proyek;";
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+
+		/**
+		 * 
+		 */
+		public function getKeluaranTunai($id) {
+			$total_sub_kas_kecil = $this->getPengeluaran_SubKasKecil($id)['total'];
+			$total_operasional_proyek = $this->getPengeluaran_operasionalProyek($id, 'TUNAI')['total'];
+
+			return $total_sub_kas_kecil + $total_operasional_proyek;
+		}
+
+		/**
+		 * 
+		 */
+		private function getPengeluaran_SubKasKecil($id_proyek) {
+			$query = "SELECT total FROM v_get_pengeluaran_sub_kas_kecil WHERE id_proyek = :id_proyek;";
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id_proyek', $id_proyek);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+
+		/**
+		 * 
+		 */
+		public function getPengeluaran_operasionalProyek($id_proyek, $status) {
+			$query = "SELECT total FROM v_get_pengeluaran_operasional_proyek ";
+			$query .= "WHERE id_proyek = :id_proyek AND status = :status;";
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id_proyek' => $id_proyek,
+					':status' => $status,
+				)
+			);
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
 
 			return $result;
 		}

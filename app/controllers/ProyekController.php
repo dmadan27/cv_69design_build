@@ -554,11 +554,7 @@
 				'js' => $js,
 			);
 
-			$total = $dataProyek['total'];
-			$dp = $dataProyek['dp'];
-			$cco = $dataProyek['cco'];
-
-			$dataProyek = array(
+			$parsing_dataProyek = array(
 				'id' => $dataProyek['id'],
 				'pemilik' => $dataProyek['pemilik'],
 				'tgl' => $this->helper->cetakTgl($dataProyek['tgl'], 'full'),
@@ -567,7 +563,7 @@
 				'alamat' => $dataProyek['alamat'],
 				'kota' => $dataProyek['kota'],
 				'estimasi' => $dataProyek['estimasi'].' Bulan',
-				'total' => $this->helper->cetakRupiah($total),
+				'total' => $this->helper->cetakRupiah($dataProyek['total']),
 				'dp' => $this->helper->cetakRupiah($dataProyek['dp']),
 				'cco' => $this->helper->cetakRupiah($dataProyek['cco']),
 				'status' => (strtolower($dataProyek['status']) == "lunas") ? 
@@ -583,13 +579,11 @@
 			$dataDetail = array();
 			foreach($this->ProyekModel->getDetailById($id) as $row){
 			 	$dataRow = array();
-			 	$dataRow['angsuran'] = $row['angsuran'];
-			 	$dataRow['persentase'] = $row['persentase'].' %';
-				$dataRow['total'] = $this->helper->cetakRupiah($row['total_detail']);
-				$dataRow['status'] = (strtolower($row['status_detail']) == "selesai") ? 
-					'<span class="label label-success">'.$row['status_detail'].'</span>' : 
-					'<span class="label label-primary">'.$row['status_detail'].'</span>';
-				$dataRow[] = '<button onclick="getEditDetail('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Detail Proyek"><i class="fa fa-pencil"></i></button>';
+			 	$dataRow['tgl_detail'] = $this->helper->cetakTgl($row['tgl_detail'], 'full');
+			 	$dataRow['nama_detail'] = $row['nama_detail'];
+				$dataRow['nama_bank'] = $row['nama_bank'];
+				$dataRow['is_DP'] = ($row['is_DP'] == '1') ? 'YA' : 'TIDAK';
+				$dataRow['total_detail'] = $row['total_detail'];
 
 				$dataDetail[] = $dataRow;
 			}
@@ -597,34 +591,44 @@
 			$dataSkk = array();
 			foreach($this->ProyekModel->getSkkById($id) as $row){
 				$dataRow = array();
-				// $dataRow['id'] = $row['id'];
 				$dataRow['id_skk'] = $row['id_skk'];
 				$dataRow['nama'] = $row['nama'];
 
 				$dataSkk[] = $dataRow;
 			}
 
-			$total_pelaksana_utama = $total + $cco;
+			$total_pelaksana_utama = $dataProyek['total'] + $dataProyek['cco'];
+			$nilaiTermint_diTerima = $this->ProyekModel->getTermintMasuk($id)['total_termint'];
+			$keluaran_tunai = $this->ProyekModel->getKeluaranTunai($id);
+			$keluaran_kredit = $this->ProyekModel->getPengeluaran_operasionalProyek($id, 'KREDIT')['total'];
+			$saldo_kas_pelaksanaan = $nilaiTermint_diTerima - ($keluaran_tunai + $keluaran_kredit);
+			$selisih = $nilaiTermint_diTerima - $keluaran_tunai;
+
 			$dataArus = array(
 				'total_pelaksana_utama' => $this->helper->cetakRupiah($total_pelaksana_utama),
-				'nilai_rab' => $dataProyek['total'],
-				'cco' => $dataProyek['cco'],
-				'nilai_terment_diterima' => $this->helper->cetakRupiah(0),
-				'sisa_terment_project' => $this->helper->cetakRupiah(0),
-				'nilai_terment_masuk' => $this->helper->cetakRupiah(0),
-				'total_pelaksana_project' => $this->helper->cetakRupiah(0),
-				'keluaran_tunai' => $this->helper->cetakRupiah(0),
-				'keluaran_kredit' => $this->helper->cetakRupiah(0),
-				'saldo_kas_pelaksanaan' => $this->helper->cetakRupiah(0),
-				'selisih' => $this->helper->cetakRupiah(0)
+				'nilai_rab' => $this->helper->cetakRupiah($dataProyek['total']),
+				'cco' => $this->helper->cetakRupiah($dataProyek['cco']),
+				'nilai_terment_diterima' => $this->helper->cetakRupiah($nilaiTermint_diTerima),
+				'sisa_terment_project' => $this->helper->cetakRupiah($total_pelaksana_utama - $nilaiTermint_diTerima),
+				'nilai_terment_masuk' => $this->helper->cetakRupiah($nilaiTermint_diTerima),
+				'total_pelaksana_project' => $this->helper->cetakRupiah($total_pelaksana_utama),
+				'keluaran_tunai' => $this->helper->cetakRupiah($keluaran_tunai),
+				'keluaran_kredit' => $this->helper->cetakRupiah($keluaran_kredit),
+				'saldo_kas_pelaksanaan' => $this->helper->cetakRupiah($saldo_kas_pelaksanaan),
+				'selisih' => $this->helper->cetakRupiah($selisih)
 			);
 
 			$data = array(
-				'data_proyek' => $dataProyek,
+				'data_proyek' => $parsing_dataProyek,
 				'data_detail' => $dataDetail,
 				'data_skk' => $dataSkk,
 				'data_arus' => $dataArus,
 			);
+
+			// echo '<pre>';
+			// var_dump($data);
+			// echo '</pre>';
+			// die();
 
 			$this->layout('proyek/view', $config, $data);
 		}

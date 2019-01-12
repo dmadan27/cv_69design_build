@@ -123,12 +123,12 @@
 																<table class="table table-hover">
 																	<thead>
 																		<tr>
-																			<th class="text-right">No</th>
-																			<th>Angsuran</th>
-																			<th class="text-right">Persentase</th>
+																			<th class="text-right" style="width: 35px">No</th>
+																			<th>Tanggal</th>
+																			<th>Pembayaran</th>
+																			<th>Bank</th>
+																			<th>DP</th>
 																			<th class="text-right">Total</th>
-																			<th>Status</th>
-																			<th>Aksi</th>
 																		</tr>
 																	</thead>
 																	<tbody>
@@ -139,7 +139,7 @@
 																				echo "<td class='text-right'>".$no++."</td>";
 																				$tempNo = 0;
 																				foreach($row as $value){
-																					if($tempNo == 1 || $tempNo == 2 ) echo "<td class='text-right'>".$value."</td>";
+																					if($tempNo == 4) echo "<td class='text-right'>".$value."</td>";
 																					else echo "<td>".$value."</td>";
 
 																					$tempNo++;
@@ -160,8 +160,8 @@
 																<table class="table table-hover">
 																	<thead>
 																		<tr>
-																			<th class="text-right">No</th>
-																			<th>ID Sub Kas Kecil</th>
+																			<th class="text-right" style="width: 35px">No</th>
+																			<th style="width: 200px">ID Sub Kas Kecil</th>
 																			<th>Nama</th>
 																		</tr>
 																	</thead>
@@ -275,7 +275,7 @@
 														<table id="pengajuan_skkTable" class="table table-bordered table-hover" style="width: 100%;">
 															<thead>
 																<tr>
-																	<th class="text-right">No</th>
+																	<th class="text-right" style="width: 35px">No</th>
 																	<th>ID</th>
 																	<th>Nama</th>
 																	<th>Sub Kas Kecil</th>
@@ -309,7 +309,7 @@
 														<table id="operasional_proyekTable" class="table table-bordered table-hover" style="width: 100%">
 															<thead>
 																<tr>
-																	<th class="text-right">No</th>
+																	<th class="text-right" style="width: 35px">No</th>
 																	<th>ID</th>
 																	<th>Nama</th>
 																	<th>Kas Besar</th>
