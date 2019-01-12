@@ -9,7 +9,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Sistem Informasi 69 Design & Build</title>
+		<title>Sistem Informasi Manajemen Arus Keuangan dan Proyek | 69 Design & Build</title>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
@@ -35,8 +35,10 @@
 		    var level = "<?php print $_SESSION['sess_level']; ?>";
 
 		    /**
-			*
-			*/
+			 * Function setNotif
+			 * Base function untuk akses notfikasi toastr
+			 * @param {object} notif
+			 */
 			function setNotif(notif){
 				switch(notif.type){
 					case 'success':
@@ -59,9 +61,12 @@
 			require_once "layout/js/js.php";
 			if($sess_welcome){
 		        ?>
-		        <script type="text/javascript">
+				<script type="text/javascript">
+					/**
+					 * Init toastr selamat datang ke sistem
+					 */
 			    	$(document).ready(function(){
-			    		toastr.success('Selamat Datang di Sistem Informasi 69 Design & Build');
+			    		toastr.success('Selamat Datang di SimakPro');
 			    	});
 			    </script>
 		        <?php
@@ -69,7 +74,10 @@
 
 		    if($sess_notif){
 		    	?>
-		        <script type="text/javascript">
+				<script type="text/javascript">
+					/**
+					 * Init toastr yang berasal dari session
+					 */
 		        	var sess_notif = <?php echo json_encode($sess_notif);?>;
 			    	$(document).ready(function(){
 			    		setNotif(sess_notif);
