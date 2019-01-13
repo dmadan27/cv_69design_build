@@ -291,9 +291,10 @@
 							'total_disetujui' => $this->validation->validInput($data['total_disetujui']),
 							'status' => $this->validation->validInput($data['status'])
 						);
+
 					} else if($level == "KAS KECIL") {
+
 						// validasi inputan
-					
 						$data = array(
 							'id' => $this->validation->validInput($data['id']),
 							'nama' => $this->validation->validInput($data['nama']),
@@ -301,6 +302,7 @@
 							'total' => $this->validation->validInput($data['total']),
 							'status' => '0'
 						);
+						
 					}
 
 					$res = $this->Pengajuan_kasKecilModel->update($data);
@@ -394,7 +396,7 @@
 				'tgl' => $data_detail['tgl'],
 				'nama' => $data_detail['nama'],
 				'total' => $data_detail['total'],
-				'status' => $data_detail['status'],
+				'status' => $data_detail['status']
 			);
 
 			$this->layout('pengajuan_kas_kecil/view', $config, $data);

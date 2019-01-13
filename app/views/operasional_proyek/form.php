@@ -17,7 +17,6 @@
     </section>
     <section class="content container-fluid">
       <form id="form_operasional_proyek" role="form">
-        <!-- <input type="hidden" id="token_form" value="<?= $this->data['token_form']?>"> -->
         
         <!-- panel tambah data operasional proyek -->
         <div class="row">
