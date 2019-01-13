@@ -928,13 +928,18 @@
 		public function action_add_detail(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
-
+			
 				$validasi = $this->set_validation_detail($data);
 				$cek = $validasi['cek'];
 				$this->error = $validasi['error'];
 
+				// print_r($data);
+				// exit;
+
 				if($cek) {
 					$this->success = true;
+					$data['index'] = (int)$data['index'];
+					$data['delete'] = $data['delete'] === 'true'? true: false;;
 					$data['tgl_detail_full'] = $this->helper->cetakTgl($data['tgl_detail'], 'full');
 					$data['total_detail_full'] = $this->helper->cetakRupiah($data['total_detail']);
 				}
@@ -944,6 +949,8 @@
 					'error' => $this->error,
 					'data' => $data,
 				);
+				// print_r($output);
+				// exit;
 				echo json_encode($output);
 			}
 		}

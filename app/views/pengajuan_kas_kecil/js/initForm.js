@@ -1,6 +1,5 @@
 $(document).ready(function(){
 	init();
-
 	// button tambah
 	$('#tambah').on('click', function(){
 		resetForm();
@@ -81,17 +80,7 @@ function init() {
 	$('#submit_pengajuan_kas_kecil').prop('disabled', true);
 }
 
-$('#status').on('change', function(){
-	if($('#status').val() == "2"){
-		$('#id_bank').prop('disabled', false);
-		$('#total_disetujui').prop('disabled', false);
-	} else {
-		$('#id_bank').prop('disabled', true);
-		$('#id_bank').val(null).trigger('change');
-		$('#total_disetujui').prop('disabled', true);
-		$('#total_disetujui').val(null).trigger('change');
-	}
-});
+
 
 /**
  * Fungsi getDataForm()
@@ -210,6 +199,23 @@ function getEdit(id){
 			},
 			success: function(output){
 				console.log('%cgetEdit Response:','',output);
+				
+				$('#status').on('change', function(){
+					if($('#status').val() == "2"){
+						$('#id_bank').prop('disabled', false);
+						$('#total_disetujui').prop('disabled', false);
+
+						var total_disetujui = output.total - output.saldo;
+						$('#total_disetujui').val(total_disetujui);
+
+					} else {
+						$('#id_bank').prop('disabled', true);
+						$('#id_bank').val(null).trigger('change');
+						$('#total_disetujui').prop('disabled', true);
+						$('#total_disetujui').val(null).trigger('change');
+					}
+				});
+
 				if(output){
 					$('#modalPengajuan_kasKecil').modal();
 					// $('#token_form').val(token);

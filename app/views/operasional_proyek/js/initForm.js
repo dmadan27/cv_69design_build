@@ -219,6 +219,8 @@ function init () {
 	function addDetail(){
 
 		var index = indexDetail++;
+
+		console.log(index);
 			
 		var total_detail = ($('#total_detail').inputmask) ? 
 			( parseFloat($('#total_detail').inputmask('unmaskedvalue')) ?
@@ -277,14 +279,14 @@ function init () {
 			},
 			success: function(output){
 			console.log('%cResponse validDetail Operasional Proyek: ', 'font-style: italic; color: blue', output);
-			console.log(action);
+			
 			if(action == 'tambah') {
 
 				if(output.status) {
 
 					// tambah data ke list
-					listDetail.push(data);
-					listDetail_Tambahan.push(data);
+					listDetail.push(output.data);
+					listDetail_Tambahan.push(output.data);
 					
 					// tambah data ke tabel
 					$('#detail_OperasionalproyekTable > tbody:last-child').append(
@@ -314,6 +316,9 @@ function init () {
 				}	
 			} else if(action == 'edit') {
 				
+				console.log(listDetail)
+				console.log(listDetail_Tambahan);
+
 				if(output.status) {
 
 					listDetail[data.index].tgl_detail = data.tgl_detail;
@@ -326,6 +331,8 @@ function init () {
 					listDetail[data.index].aksi = data.aksi;
 
 					set_data_table(listDetail);
+
+					console.log('%cResponse Edit OperasionalProyek: ', 'font-style: italic; color: white', listDetail);
 
 					$("#modalDetailOperasional").modal('hide');
 					resetModal();
