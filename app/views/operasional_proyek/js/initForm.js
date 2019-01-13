@@ -419,7 +419,9 @@ function init () {
 			delete: false,
 		};
 
-		validDetail(data, 'edit');
+		console.log('Ini data','',data)
+
+		// validDetail(data, 'edit');
 
 	}
 

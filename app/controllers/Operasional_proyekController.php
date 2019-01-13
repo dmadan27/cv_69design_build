@@ -19,7 +19,7 @@
 		public function __construct(){
 			$this->auth();
 			$this->auth->cekAuth();
-			$this->model('Operasional_ProyekModel');
+			$this->model('Operasional_proyekModel');
 			$this->helper();
 			$this->validation();
 		}
@@ -73,7 +73,7 @@
 					'kondisi' => false,
 				);
 
-				$dataOperasionalProyek = $this->Operasional_ProyekModel->getAllDataTable($config_dataTable);
+				$dataOperasionalProyek = $this->Operasional_proyekModel->getAllDataTable($config_dataTable);
 
 				$data = array();
 				$no_urut = $_POST['start'];
@@ -105,8 +105,8 @@
 
 				$output = array(
 					'draw' => $_POST['draw'],
-					'recordsTotal' => $this->Operasional_ProyekModel->recordTotal(),
-					'recordsFiltered' => $this->Operasional_ProyekModel->recordFilter(),
+					'recordsTotal' => $this->Operasional_proyekModel->recordTotal(),
+					'recordsFiltered' => $this->Operasional_proyekModel->recordFilter(),
 					'data' => $data,
 				);
 
@@ -225,7 +225,7 @@
 							'listDetail'=>$dataDetail
 						);
 						
-						$res = $this->Operasional_ProyekModel->insert($dataInsert);
+						$res = $this->Operasional_proyekModel->insert($dataInsert);
 						if($res['success']){
 							$this->success = true;
 							$_SESSION['notif'] = array(
@@ -284,8 +284,8 @@
 		protected function edit($id){
 			$id = strtoupper($id);
 
-			$dataOperasionalProyek = !empty($this->Operasional_ProyekModel->getById($id)) ? $this->Operasional_ProyekModel->getById($id) :false;
-			$id_bank = !empty($this->Operasional_ProyekModel->getBankById($id)) ? $this->Operasional_ProyekModel->getBankById($id) :false;
+			$dataOperasionalProyek = !empty($this->Operasional_proyekModel->getById($id)) ? $this->Operasional_proyekModel->getById($id) :false;
+			$id_bank = !empty($this->Operasional_proyekModel->getBankById($id)) ? $this->Operasional_proyekModel->getBankById($id) :false;
 
 			if(empty($id) || $id == "") $this->redirect(BASE_URL."operasional-proyek/");
 
@@ -342,10 +342,10 @@
 				$id = strtoupper($id);
 				if(empty($id) || $id == "") $this->redirect(BASE_URL."operasional-proyek/");
 
-				$dataOperasionalProyek = $this->Operasional_ProyekModel->getById($id);
-				$dataDetail = $this->Operasional_ProyekModel->getDetailById($id);
+				$dataOperasionalProyek = $this->Operasional_proyekModel->getById($id);
+				$dataDetail = $this->Operasional_proyekModel->getDetailById($id);
 
-				$id_bank = !empty($this->Operasional_ProyekModel->getBankById($id)) ? $this->Operasional_ProyekModel->getBankById($id) :false;
+				$id_bank = !empty($this->Operasional_proyekModel->getBankById($id)) ? $this->Operasional_proyekModel->getBankById($id) :false;
 
 				$dataOperasionalProyek['id_bank'] = $id_bank['id_bank'];
 
@@ -421,7 +421,7 @@
 							'toDelete' => $toDeleteList,
 							'toEdit' => $toEditList
 					);
-					$res = $this->Operasional_ProyekModel->update($dataUpdate);
+					$res = $this->Operasional_proyekModel->update($dataUpdate);
 					// update data
 					if($res['success']){
 
@@ -474,11 +474,11 @@
 		*/
 		public function detail($id){
 			$id = strtoupper($id);
-			$dataOperasionalProyek = !empty($this->Operasional_ProyekModel->getById_fromView($id)) ? $this->Operasional_ProyekModel->getById_fromView($id) : false;
+			$dataOperasionalProyek = !empty($this->Operasional_proyekModel->getById_fromView($id)) ? $this->Operasional_proyekModel->getById_fromView($id) : false;
 
-			$dataDetailOperasionalProyek = !empty($this->Operasional_ProyekModel->getDetailById_fromView($id)) ? $this->Operasional_ProyekModel->getDetailById_fromView($id) : false;
+			$dataDetailOperasionalProyek = !empty($this->Operasional_proyekModel->getDetailById_fromView($id)) ? $this->Operasional_proyekModel->getDetailById_fromView($id) : false;
 
-			$dataHistoryPembelanjaan = !empty($this->Operasional_ProyekModel->getBYid_fromHistoryPembelian($id)) ? $this->Operasional_ProyekModel->getBYid_fromHistoryPembelian($id) : false;
+			$dataHistoryPembelanjaan = !empty($this->Operasional_proyekModel->getBYid_fromHistoryPembelian($id)) ? $this->Operasional_proyekModel->getBYid_fromHistoryPembelian($id) : false;
 
 			// var_dump($dataHistoryPembelanjaan);
 
@@ -553,7 +553,7 @@
 
 
 
-			// foreach ($this->Operasional_ProyekModel->getBYid_fromHistoryPembelian($id) as $row) {
+			// foreach ($this->Operasional_proyekModel->getBYid_fromHistoryPembelian($id) as $row) {
 				
 			// 	$dataRow = array();
 			// 	$dataRow['id'] = $row['id'];
@@ -588,15 +588,15 @@
 				
 				if(empty($id) || $id == "") { $this->redirect(BASE_URL."operasional-proyek/"); }
 
-				$dataOperasionalProyek = $this->Operasional_ProyekModel->getById($id);
-				$dataDetail = $this->Operasional_ProyekModel->getDetailById($id);
+				$dataOperasionalProyek = $this->Operasional_proyekModel->getById($id);
+				$dataDetail = $this->Operasional_proyekModel->getDetailById($id);
 
 				$data = array(
 					'dataOperasionalProyek' => $dataOperasionalProyek,
 					'dataDetail' => $dataDetail
 				);
 
-				$delete = $this->Operasional_ProyekModel->delete($data);
+				$delete = $this->Operasional_proyekModel->delete($data);
 
 				if($delete['success']){
 					$this->success = true;
@@ -778,7 +778,7 @@
 
 				$id_temp = ($proyek) ? 'OPRY-'.$proyek.'-' : 'OPRY-[ID_PROYEK]-';
 
-				$data = !empty($this->Operasional_ProyekModel->getLastID($id_temp)['id']) ? $this->Operasional_ProyekModel->getLastID($id_temp)['id'] : false;
+				$data = !empty($this->Operasional_proyekModel->getLastID($id_temp)['id']) ? $this->Operasional_proyekModel->getLastID($id_temp)['id'] : false;
 
 				if(!$data) $id = $id_temp.'0001';
 				else{
@@ -859,7 +859,7 @@
 		 */
 		public function get_nama_bank(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
-				$data_bank = $this->Operasional_ProyekModel->get_selectBank();
+				$data_bank = $this->Operasional_proyekModel->get_selectBank();
 				$data = array();
 
 				foreach($data_bank as $row){
@@ -961,7 +961,7 @@
 					'kondisi' => 'where id = "'.$id.'"',
 				);
 
-				$dataHistoryPembelanjaan = $this->Operasional_ProyekModel->getAllDataTable($config_dataTable);
+				$dataHistoryPembelanjaan = $this->Operasional_proyekModel->getAllDataTable($config_dataTable);
 
 				$data = array();
 				// $no_urut = $_POST['start'];
@@ -1001,8 +1001,8 @@
 
 				$output = array(
 					'draw' => $_POST['draw'],
-					'recordsTotal' => $this->Operasional_ProyekModel->recordTotal(),
-					'recordsFiltered' => $this->Operasional_ProyekModel->recordFilter(),
+					'recordsTotal' => $this->Operasional_proyekModel->recordTotal(),
+					'recordsFiltered' => $this->Operasional_proyekModel->recordFilter(),
 					'data' => $data,
 				);
 
@@ -1024,7 +1024,7 @@
 					'kondisi' => 'where id = "'.$id.'"',
 				);
 
-				$dataDetailOperasionalProyek = $this->Operasional_ProyekModel->getAllDataTable($config_dataTable);
+				$dataDetailOperasionalProyek = $this->Operasional_proyekModel->getAllDataTable($config_dataTable);
 
 				$data = array();
 				// $no_urut = $_POST['start'];
@@ -1043,8 +1043,8 @@
 
 				$output = array(
 					'draw' => $_POST['draw'],
-					'recordsTotal' => $this->Operasional_ProyekModel->recordTotal(),
-					'recordsFiltered' => $this->Operasional_ProyekModel->recordFilter(),
+					'recordsTotal' => $this->Operasional_proyekModel->recordTotal(),
+					'recordsFiltered' => $this->Operasional_proyekModel->recordFilter(),
 					'data' => $data,
 				);
 
