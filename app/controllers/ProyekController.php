@@ -582,8 +582,10 @@
 			 	$dataRow['tgl_detail'] = $this->helper->cetakTgl($row['tgl_detail'], 'full');
 			 	$dataRow['nama_detail'] = $row['nama_detail'];
 				$dataRow['nama_bank'] = $row['nama_bank'];
-				$dataRow['is_DP'] = ($row['is_DP'] == '1') ? 'YA' : 'TIDAK';
-				$dataRow['total_detail'] = $row['total_detail'];
+				$dataRow['is_DP'] = ($row['is_DP'] == '1') ? 
+					'<span class="label label-success">YA</span>' : 
+					'<span class="label label-primary">TIDAK</span>';
+				$dataRow['total_detail'] = $this->helper->cetakRupiah($row['total_detail']);
 
 				$dataDetail[] = $dataRow;
 			}
@@ -601,7 +603,7 @@
 			$nilaiTermint_diTerima = $this->ProyekModel->getTermintMasuk($id)['total_termint'];
 			$keluaran_tunai = $this->ProyekModel->getKeluaranTunai($id);
 			$keluaran_kredit = $this->ProyekModel->getPengeluaran_operasionalProyek($id, 'KREDIT')['total'];
-			$saldo_kas_pelaksanaan = $nilaiTermint_diTerima - ($keluaran_tunai + $keluaran_kredit);
+			$saldo_kas_pelaksanaan = $total_pelaksana_utama - ($keluaran_tunai + $keluaran_kredit);
 			$selisih = $nilaiTermint_diTerima - $keluaran_tunai;
 
 			$dataArus = array(
