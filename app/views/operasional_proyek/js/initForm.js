@@ -419,9 +419,9 @@ function init () {
 			delete: false,
 		};
 
-		console.log('Ini data','',data)
+		// console.log('Ini data','',data)
 
-		// validDetail(data, 'edit');
+		validDetail(data, 'edit');
 
 	}
 
