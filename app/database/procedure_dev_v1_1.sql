@@ -730,59 +730,6 @@
 	delimiter ;
 
 
--- Procedure Edit Status Data Pengajuan Kas Kecil Menjadi Disetujui
-	-- delimiter //
-	-- CREATE PROCEDURE acc_pengajuan_kas_kecil(
-	-- 	id_param int,
-		
-	-- )
-	-- BEGIN
-        
-	-- 	DECLARE id_bank_param int;
-	-- 	DECLARE nominal_param double(12,2);
-	-- 	DECLARE jenis_param varchar(25);
-	-- 	DECLARE get_saldo double(12,2);
-
-	-- 	-- get id bank
-	-- 	SELECT id_bank INTO id_bank_param FROM operasional WHERE id = id_param;
-	-- 	-- get jenis
-	-- 	SELECT jenis INTO jenis_param FROM operasional WHERE id = id_param;
-	-- 	-- get nominal
-	-- 	SELECT nominal INTO nominal_param FROM operasional WHERE id = id_param;
-
-	-- 	-- get saldo
-	-- 	SELECT saldo INTO get_saldo FROM bank WHERE id = id_bank_param;
-
-	-- 	IF jenis_param = 'UANG MASUK' THEN
-
-	-- 		-- 1. insert mutasi
-	-- 		INSERT INTO mutasi_bank 
-	-- 			(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
-	-- 		VALUES 
-	-- 			(id_bank_param, tgl_param, 0, nominal_param, (get_saldo - nominal_param), ket_param);
-
-	-- 		-- 2. update saldo
-	-- 		UPDATE bank SET saldo = (get_saldo - nominal_param) WHERE id = id_bank_param;
-
-	-- 	ELSE
-
-	-- 		-- 1. insert mutasi
-	-- 		INSERT INTO mutasi_bank 
-	-- 			(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
-	-- 		VALUES 
-	-- 			(id_bank_param, tgl_param, nominal_param, 0, (get_saldo + nominal_param), ket_param);
-
-	-- 		-- 2. update saldo
-	-- 		UPDATE bank SET saldo = (get_saldo + nominal_param) WHERE id = id_bank_param;
-
-	-- 	END IF;
-
-	-- 	-- 3. hapus data operasional
-	-- 	DELETE FROM operasional WHERE id = id_param;
-
-	-- END//
-	delimiter ;
-
 	-- ================================================================= --
 	-- Operasional Proyek -- Versi 08 Januari 2019 -- START --
 	-- ================================================================= --
@@ -932,235 +879,235 @@
 
 	-- Procedure Edit Data Operasional Proyek Lunas (FIXED)
 	delimiter //
-		CREATE PROCEDURE edit_operasional_proyek(
-			IN id_param varchar(50),
-			IN id_detail_param varchar(50),
-			IN id_proyek_param varchar(50),
-			IN id_bank_param int,
-			IN tgl_param date,
-			IN nama_param varchar(50),
-			IN jenis_param varchar(50),
-			IN total_param double(12,2),
-			IN sisa_param double(12,2),
-			IN status_param enum('TUNAI','KREDIT'),
-			IN status_lunas_param enum('LUNAS','BELUM LUNAS'),
-			IN ket_param text
-		)
+	CREATE PROCEDURE edit_operasional_proyek(
+		IN id_param varchar(50),
+		IN id_detail_param varchar(50),
+		IN id_proyek_param varchar(50),
+		IN id_bank_param int,
+		IN tgl_param date,
+		IN nama_param varchar(50),
+		IN jenis_param varchar(50),
+		IN total_param double(12,2),
+		IN sisa_param double(12,2),
+		IN status_param enum('TUNAI','KREDIT'),
+		IN status_lunas_param enum('LUNAS','BELUM LUNAS'),
+		IN ket_param text
+	)
 
-		BEGIN
-			DECLARE get_saldo double(12,2);
-			DECLARE get_bank_sebelum int;
-			DECLARE get_id_bank int;
-			DECLARE jumlah_detail int;
-			DECLARE get_total_sebelum double(12,2);
-			DECLARE get_status_sebelum varchar(50);
-			DECLARE get_saldo_bank_lama double(12,2);
-			DECLARE get_saldo_bank_baru double(12,2);
+	BEGIN
+		DECLARE get_saldo double(12,2);
+		DECLARE get_bank_sebelum int;
+		DECLARE get_id_bank int;
+		DECLARE jumlah_detail int;
+		DECLARE get_total_sebelum double(12,2);
+		DECLARE get_status_sebelum varchar(50);
+		DECLARE get_saldo_bank_lama double(12,2);
+		DECLARE get_saldo_bank_baru double(12,2);
 
-			-- get id_bank dan total sebelum diedit
-			SELECT id_bank INTO get_bank_sebelum FROM detail_operasional_proyek WHERE id = id_detail_param;
-			SELECT total INTO get_total_sebelum FROM detail_operasional_proyek WHERE id = id_detail_param;
+		-- get id_bank dan total sebelum diedit
+		SELECT id_bank INTO get_bank_sebelum FROM detail_operasional_proyek WHERE id = id_detail_param;
+		SELECT total INTO get_total_sebelum FROM detail_operasional_proyek WHERE id = id_detail_param;
 
-			-- jika ada perubahan di bank
-			IF get_bank_sebelum != id_bank_param THEN
-				
-				-- get saldo bank lama
-				SELECT saldo INTO get_saldo_bank_lama FROM bank WHERE id = get_bank_sebelum;
-				
-				-- normalisasi saldo bank sebelum
-				UPDATE bank SET saldo = (get_saldo_bank_lama + get_total_sebelum) WHERE id = get_bank_sebelum;
+		-- jika ada perubahan di bank
+		IF get_bank_sebelum != id_bank_param THEN
+			
+			-- get saldo bank lama
+			SELECT saldo INTO get_saldo_bank_lama FROM bank WHERE id = get_bank_sebelum;
+			
+			-- normalisasi saldo bank sebelum
+			UPDATE bank SET saldo = (get_saldo_bank_lama + get_total_sebelum) WHERE id = get_bank_sebelum;
 
-				-- insert mutasi bank lama
-				INSERT INTO mutasi_bank 
-					(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
-				VALUES 
-					(get_bank_sebelum, tgl_param, get_total_sebelum, 0, (get_saldo_bank_lama + get_total_sebelum), ket_param);
+			-- insert mutasi bank lama
+			INSERT INTO mutasi_bank 
+				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+			VALUES 
+				(get_bank_sebelum, tgl_param, get_total_sebelum, 0, (get_saldo_bank_lama + get_total_sebelum), ket_param);
 
-				-- get saldo bank baru
+			-- get saldo bank baru
+			SELECT saldo INTO get_saldo_bank_baru FROM bank WHERE id = id_bank_param;
+
+			-- update saldo bank baru
+			UPDATE bank SET saldo = (get_saldo_bank_baru - total_param) WHERE id = id_bank_param;
+
+			-- insert mutasi bank baru
+			INSERT INTO mutasi_bank 
+				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+			VALUES 
+				(id_bank_param, tgl_param, 0, total_param, (get_saldo_bank_baru - total_param), ket_param);
+		ELSE
+			-- jika bank sama
+			-- jika ada perubahan di total
+			IF get_total_sebelum != total_param THEN
+				-- get saldo bank
 				SELECT saldo INTO get_saldo_bank_baru FROM bank WHERE id = id_bank_param;
+				
+				IF total_param > get_total_sebelum THEN
 
-				-- update saldo bank baru
-				UPDATE bank SET saldo = (get_saldo_bank_baru - total_param) WHERE id = id_bank_param;
+					-- normalisasi saldo
+					UPDATE bank SET saldo = (get_saldo_bank_baru - (total_param - get_total_sebelum)) WHERE id = id_bank_param;
 
-				-- insert mutasi bank baru
-				INSERT INTO mutasi_bank 
-					(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
-				VALUES 
-					(id_bank_param, tgl_param, 0, total_param, (get_saldo_bank_baru - total_param), ket_param);
-			ELSE
-				-- jika bank sama
-				-- jika ada perubahan di total
-				IF get_total_sebelum != total_param THEN
-					-- get saldo bank
-					SELECT saldo INTO get_saldo_bank_baru FROM bank WHERE id = id_bank_param;
-					
-					IF total_param > get_total_sebelum THEN
+					-- insert mutasi
+					INSERT INTO mutasi_bank 
+						(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+					VALUES 
+						(id_bank_param, tgl_param, 0, (total_param - get_total_sebelum), (get_saldo_bank_baru - (total_param - get_total_sebelum)), ket_param);
+				ELSE
+					IF total_param < get_total_sebelum THEN
 
 						-- normalisasi saldo
-						UPDATE bank SET saldo = (get_saldo_bank_baru - (total_param - get_total_sebelum)) WHERE id = id_bank_param;
+						UPDATE bank SET saldo = (get_saldo_bank_baru + (get_total_sebelum - total_param)) WHERE id = id_bank_param;
 
 						-- insert mutasi
 						INSERT INTO mutasi_bank 
 							(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 						VALUES 
-							(id_bank_param, tgl_param, 0, (total_param - get_total_sebelum), (get_saldo_bank_baru - (total_param - get_total_sebelum)), ket_param);
-					ELSE
-						IF total_param < get_total_sebelum THEN
-
-							-- normalisasi saldo
-							UPDATE bank SET saldo = (get_saldo_bank_baru + (get_total_sebelum - total_param)) WHERE id = id_bank_param;
-
-							-- insert mutasi
-							INSERT INTO mutasi_bank 
-								(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
-							VALUES 
-								(id_bank_param, tgl_param, (get_total_sebelum - total_param), 0, (get_saldo_bank_baru + (get_total_sebelum - total_param)), ket_param);
-						END IF;
-
+							(id_bank_param, tgl_param, (get_total_sebelum - total_param), 0, (get_saldo_bank_baru + (get_total_sebelum - total_param)), ket_param);
 					END IF;
-			
+
 				END IF;
-
+		
 			END IF;
 
-			-- Get Status Sebelum
-			SELECT status INTO get_status_sebelum FROM operasional_proyek WHERE id = id_param;
+		END IF;
 
-			-- Update table operasional proyek
-			UPDATE operasional_proyek 
-			SET tgl = tgl_param, nama = nama_param, jenis = jenis_param, total = total_param, sisa = sisa_param, status = status_param, status_lunas = status_lunas_param, ket = ket_param 
-			WHERE id = id_param;
+		-- Get Status Sebelum
+		SELECT status INTO get_status_sebelum FROM operasional_proyek WHERE id = id_param;
 
-			-- Cek apakah ada detail atau tidak
-			-- Untuk menentukan apakah ini data perubahan dari belum lunas atau bukan
-			SELECT COUNT(id) INTO jumlah_detail FROM detail_operasional_proyek WHERE id = id_detail_param;
+		-- Update table operasional proyek
+		UPDATE operasional_proyek 
+		SET tgl = tgl_param, nama = nama_param, jenis = jenis_param, total = total_param, sisa = sisa_param, status = status_param, status_lunas = status_lunas_param, ket = ket_param 
+		WHERE id = id_param;
 
-			-- Jika Detail Ada, Maka
-			IF (jumlah_detail > 0) THEN
-			
-				-- Update Table Detail Operasional Proyek
-				UPDATE detail_operasional_proyek
-				SET id_bank = id_bank_param, nama = nama_param, tgl = tgl_param, total = total_param
-				WHERE id = id_detail_param;
-			
-			ELSE 
+		-- Cek apakah ada detail atau tidak
+		-- Untuk menentukan apakah ini data perubahan dari belum lunas atau bukan
+		SELECT COUNT(id) INTO jumlah_detail FROM detail_operasional_proyek WHERE id = id_detail_param;
 
-				-- Ambil saldo terakhir
-				SELECT saldo INTO get_saldo FROM bank WHERE id = id_bank_param;
+		-- Jika Detail Ada, Maka
+		IF (jumlah_detail > 0) THEN
+		
+			-- Update Table Detail Operasional Proyek
+			UPDATE detail_operasional_proyek
+			SET id_bank = id_bank_param, nama = nama_param, tgl = tgl_param, total = total_param
+			WHERE id = id_detail_param;
+		
+		ELSE 
 
-				-- Update saldo
-				UPDATE  bank SET saldo = ( get_saldo - total_param ) WHERE id = id_bank_param;
+			-- Ambil saldo terakhir
+			SELECT saldo INTO get_saldo FROM bank WHERE id = id_bank_param;
 
-				-- Delete Table Detail Operasional Proyek
-				DELETE FROM detail_operasional_proyek WHERE id_operasional_proyek = id_param;
+			-- Update saldo
+			UPDATE  bank SET saldo = ( get_saldo - total_param ) WHERE id = id_bank_param;
 
-				-- Catat Mutasi
-				INSERT INTO mutasi_bank
-				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
-				VALUES
-				(id_bank_param, tgl_param, 0, total_param, (get_saldo - total_param),  ket_param);
+			-- Delete Table Detail Operasional Proyek
+			DELETE FROM detail_operasional_proyek WHERE id_operasional_proyek = id_param;
 
-				-- Insert Into Operasional Proyek
-				INSERT INTO detail_operasional_proyek
-				(id_operasional_proyek, id_bank, nama, tgl, total)
-				VALUES
-				(id_param, id_bank_param, nama_param, tgl_param, total_param);
-			
-			END IF;
+			-- Catat Mutasi
+			INSERT INTO mutasi_bank
+			(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+			VALUES
+			(id_bank_param, tgl_param, 0, total_param, (get_saldo - total_param),  ket_param);
+
+			-- Insert Into Operasional Proyek
+			INSERT INTO detail_operasional_proyek
+			(id_operasional_proyek, id_bank, nama, tgl, total)
+			VALUES
+			(id_param, id_bank_param, nama_param, tgl_param, total_param);
+		
+		END IF;
 
 	END//
 	delimiter ;
 
 	-- Procedure Edit Data Operasional Proyek Belum Lunas (FIXED)
 	delimiter //
-		CREATE PROCEDURE edit_operasional_proyek_BelumLunas(
-			IN id_param varchar(50),
-			IN id_proyek_param varchar(50),
-			IN tgl_param date,
-			IN nama_param varchar(50),
-			IN jenis_param varchar(50),
-			IN total_param double(12,2),
-			IN sisa_param double(12,2),
-			IN status_param enum('TUNAI','KREDIT'),
-			IN status_lunas_param enum('LUNAS','BELUM LUNAS'),
-			IN ket_param text
-		)
+	CREATE PROCEDURE edit_operasional_proyek_BelumLunas(
+		IN id_param varchar(50),
+		IN id_proyek_param varchar(50),
+		IN tgl_param date,
+		IN nama_param varchar(50),
+		IN jenis_param varchar(50),
+		IN total_param double(12,2),
+		IN sisa_param double(12,2),
+		IN status_param enum('TUNAI','KREDIT'),
+		IN status_lunas_param enum('LUNAS','BELUM LUNAS'),
+		IN ket_param text
+	)
 
-		BEGIN
-			DECLARE get_saldo double(12,2);
-			DECLARE get_id_bank int;
-			DECLARE jumlah_detail int;
-			DECLARE total_detail double(12,2);
+	BEGIN
+		DECLARE get_saldo double(12,2);
+		DECLARE get_id_bank int;
+		DECLARE jumlah_detail int;
+		DECLARE total_detail double(12,2);
 
-				-- Cek apakah ada detail atau tidak
-				-- Untuk menentukan apakah ini data perubahan dari lunas atau bukan
-				SELECT COUNT(id) INTO jumlah_detail FROM detail_operasional_proyek WHERE id_operasional_proyek = id_param;
+		-- Cek apakah ada detail atau tidak
+		-- Untuk menentukan apakah ini data perubahan dari lunas atau bukan
+		SELECT COUNT(id) INTO jumlah_detail FROM detail_operasional_proyek WHERE id_operasional_proyek = id_param;
 
-				-- Jika Detail Ada, Maka
-				IF (jumlah_detail > 0) THEN
+		-- Jika Detail Ada, Maka
+		IF (jumlah_detail > 0) THEN
 
-					-- Get id_bank
-					SELECT DISTINCT(id_bank) INTO get_id_bank FROM detail_operasional_proyek WHERE id_operasional_proyek = id_param;
+			-- Get id_bank
+			SELECT DISTINCT(id_bank) INTO get_id_bank FROM detail_operasional_proyek WHERE id_operasional_proyek = id_param;
 
-					-- Get Total
-					SELECT total INTO total_detail FROM detail_operasional_proyek WHERE id_operasional_proyek = id_param;
+			-- Get Total
+			SELECT total INTO total_detail FROM detail_operasional_proyek WHERE id_operasional_proyek = id_param;
 
-					-- Ambil saldo terakhir
-					SELECT saldo INTO get_saldo FROM bank WHERE id = get_id_bank;
+			-- Ambil saldo terakhir
+			SELECT saldo INTO get_saldo FROM bank WHERE id = get_id_bank;
 
-					-- Update saldo
-					UPDATE  bank SET saldo = ( get_saldo + total_detail ) WHERE id = get_id_bank;
+			-- Update saldo
+			UPDATE  bank SET saldo = ( get_saldo + total_detail ) WHERE id = get_id_bank;
 
-					-- Delete Table Detail Operasional Proyek
-					DELETE FROM detail_operasional_proyek WHERE id_operasional_proyek = id_param;
+			-- Delete Table Detail Operasional Proyek
+			DELETE FROM detail_operasional_proyek WHERE id_operasional_proyek = id_param;
 
-					-- Catat Mutasi
-					INSERT INTO mutasi_bank
-					(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
-					VALUES
-					(get_id_bank, tgl_param, total_detail, 0, (get_saldo + total_detail),  ket_param);
+			-- Catat Mutasi
+			INSERT INTO mutasi_bank
+			(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+			VALUES
+			(get_id_bank, tgl_param, total_detail, 0, (get_saldo + total_detail),  ket_param);
 
-					-- Update table operasional proyek
-					UPDATE operasional_proyek 
-					SET tgl = tgl_param, nama = nama_param, jenis = jenis_param, total = total_param, sisa = sisa_param, status = status_param, status_lunas = status_lunas_param, ket = ket_param 
-					WHERE id = id_param;
+			-- Update table operasional proyek
+			UPDATE operasional_proyek 
+			SET tgl = tgl_param, nama = nama_param, jenis = jenis_param, total = total_param, sisa = sisa_param, status = status_param, status_lunas = status_lunas_param, ket = ket_param 
+			WHERE id = id_param;
 
-				ELSE 
+		ELSE 
 
-					-- Update table operasional proyek
-					UPDATE operasional_proyek 
-					SET tgl = tgl_param, nama = nama_param, jenis = jenis_param, total = total_param, sisa = sisa_param, status = status_param, status_lunas = status_lunas_param, ket = ket_param 
-					WHERE id = id_param;
-				
-				END IF;
+			-- Update table operasional proyek
+			UPDATE operasional_proyek 
+			SET tgl = tgl_param, nama = nama_param, jenis = jenis_param, total = total_param, sisa = sisa_param, status = status_param, status_lunas = status_lunas_param, ket = ket_param 
+			WHERE id = id_param;
+		
+		END IF;
 
 	END//
 	delimiter ;
 
 	-- Procedure Edit Data Operasional Jenis Pembayaran Kredit (FIXED)
 	delimiter //
-		CREATE PROCEDURE edit_operasional_proyek_kredit(
-			IN id_param varchar(50),
-			IN id_proyek_param varchar(50),
-			IN tgl_param date,
-			IN nama_param varchar(50),
-			IN jenis_param varchar(50),
-			IN sisa_param double(12,2),
-			IN status_param enum('TUNAI','KREDIT'),
-			IN status_lunas_param enum('LUNAS','BELUM LUNAS'),
-			IN total_param double(12,2),
-			IN ket_param text
-		)
+	CREATE PROCEDURE edit_operasional_proyek_kredit(
+		IN id_param varchar(50),
+		IN id_proyek_param varchar(50),
+		IN tgl_param date,
+		IN nama_param varchar(50),
+		IN jenis_param varchar(50),
+		IN sisa_param double(12,2),
+		IN status_param enum('TUNAI','KREDIT'),
+		IN status_lunas_param enum('LUNAS','BELUM LUNAS'),
+		IN total_param double(12,2),
+		IN ket_param text
+	)
 
-		BEGIN
-			DECLARE get_saldo double(12,2);
-			DECLARE get_id_bank int;
-			DECLARE get_sisa double(12,2);
-			
-			-- Update table operasional proyek
-			UPDATE operasional_proyek 
-			SET tgl = tgl_param, nama = nama_param, jenis = jenis_param, total = total_param, sisa = sisa_param, status = status_param, status_lunas = status_lunas_param, ket = ket_param 
-			WHERE id = id_param;
+	BEGIN
+		DECLARE get_saldo double(12,2);
+		DECLARE get_id_bank int;
+		DECLARE get_sisa double(12,2);
+		
+		-- Update table operasional proyek
+		UPDATE operasional_proyek 
+		SET tgl = tgl_param, nama = nama_param, jenis = jenis_param, total = total_param, sisa = sisa_param, status = status_param, status_lunas = status_lunas_param, ket = ket_param 
+		WHERE id = id_param;
 
 	END//
 	delimiter ;
