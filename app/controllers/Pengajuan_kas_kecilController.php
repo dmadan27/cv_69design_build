@@ -400,11 +400,12 @@
 				'tgl' => $this->helper->cetakTgl($data_detail['tgl'], 'full'),
 				'nama' => $data_detail['nama'],
 				'total' => $this->helper->cetakRupiah($data_detail['total']),
+				'total_disetujui' => $this->helper->cetakRupiah($data_detail['total_disetujui']),
 				'status' => $data_detail['status']
 			);
 
-			$this->layout('pengajuan_kas_kecil/view', $config, $data);
-
+			// $this->layout('pengajuan_kas_kecil/view', $config, $data);
+			echo json_encode($data);
 			
 		}
 

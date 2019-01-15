@@ -69,7 +69,35 @@ $(document).ready(function(){
 *
 */
 function getView(id){
-	window.location.href = BASE_URL+'pengajuan-kas-kecil/detail/'+id;
+    // window.location.href = BASE_URL+'pengajuan-kas-kecil/detail/'+id;
+    $('#modalView_PKK').modal();
+    $.ajax({
+        url: BASE_URL+'pengajuan-kas-kecil/detail/'+id.toLowerCase(),
+        type: 'post',
+        dataType: 'json',
+        data: {},
+        beforeSend: function(){
+
+        },
+        success: function(output){
+            
+                $('#modalView_PKK').modal();
+                console.log('%cgetView Response:','',output);
+                
+                $('#res_id').html(output.id);
+                $('#id_kas_kecil').html(output.id_kas_kecil); 
+                $('#kas_kecil').html(output.kas_kecil);     
+                $('#tgl').html(output.tgl);   
+                $('#nama').html(output.nama);   
+                $('#total').html(output.total);
+                $('#total_disetujui').html(output.total_disetujui);
+                $('#status_pengajuan').html(output.status);            
+        
+        },
+        error: function (jqXHR, textStatus, errorThrown){ // error handling
+            console.log(jqXHR, textStatus, errorThrown);
+        }
+    })
 }
 
 /**
