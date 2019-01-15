@@ -869,7 +869,7 @@
 		/**
 		 * Method export
 		 */
-		public function export_detail($id){
+		public function export_detail(){
 			
 		}
 
