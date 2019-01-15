@@ -1,7 +1,13 @@
 $(document).ready(function(){
 	var url = $(location).attr("href").split('/');
+	var urlNew = [];
+	$.each(url, function(i, item) {
+		if(item != "localhost") {
+			urlNew.push(item);
+		}
+	});
 
-	switch(url[4].toLowerCase()){
+	switch(urlNew[3].toLowerCase()){
 		// menu proyek
 		case 'proyek':
 			$('.menu-proyek').addClass('active');
@@ -60,7 +66,7 @@ $(document).ready(function(){
 		// menu pengajuan sub kas kecil
 		case 'pengajuan-sub-kas-kecil':
 			$('.menu-pengajuan-sub-kas-kecil').addClass('active');
-			if(url[5] == 'laporan') $('.menu-laporan').addClass('active');
+			if(urlNew[4] == 'laporan') $('.menu-laporan').addClass('active');
 			else $('.menu-pengajuan').addClass('active');
 			break;		
 		
