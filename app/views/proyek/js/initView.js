@@ -22,22 +22,20 @@ $(document).ready(function(){
         processing: true,
         serverSide: true,
         ajax: {
-            url: BASE_URL+"proyek/get-list-pengajuan/"+$('#id').val().trim(),
+            url: BASE_URL+"proyek/get-list-pengajuan-sub-kas-kecil/"+$('#id').val().trim(),
             type: 'POST',
-            data: {
-                // "token" : $('#token').val().trim(),
-            }
+            data: {}
         },
         "columnDefs": [
             {
-                "targets":[0, 6],
+                "targets":[0, 8],
                 "orderable":false,
             }
         ],
         createdRow: function(row, data, dataIndex){
             // if($(data[7]).text().toLowerCase() == "selesai") $(row).addClass('danger');
             for(var i = 0; i < 7; i++){
-                if(i == 0 || i == 5) $('td:eq('+i+')', row).addClass('text-right');
+                if(i == 0 || i == 5 || i == 6) $('td:eq('+i+')', row).addClass('text-right');
             }
         }
     });
@@ -65,15 +63,13 @@ $(document).ready(function(){
         processing: true,
         serverSide: true,
         ajax: {
-            url: BASE_URL+"proyek/get-list-operasional/"+$('#id').val().trim(),
+            url: BASE_URL+"proyek/get-list-operasional-proyek/"+$('#id').val().trim(),
             type: 'POST',
-            data: {
-                // "token" : $('#token').val().trim(),
-            }
+            data: {}
         },
         "columnDefs": [
             {
-                "targets":[0, 6],
+                "targets":[0, 8],
                 "orderable":false,
             }
         ],

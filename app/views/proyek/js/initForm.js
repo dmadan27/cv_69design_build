@@ -801,7 +801,7 @@ function generateID(tahun = null){
 			$('#id').val(response);
 		},
 		error: function (jqXHR, textStatus, errorThrown){
-            console.log('%cResponse Error generateID Bank: ', 'color: red; font-style: italic', jqXHR, textStatus, errorThrown);
+            console.log('%cResponse Error generateID Proyek: ', 'color: red; font-style: italic', jqXHR, textStatus, errorThrown);
             swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
         }
 	})

@@ -74,7 +74,7 @@
 				$config_dataTable = array(
 					'tabel' => 'proyek',
 					'kolomOrder' => array(null, 'id', 'pemilik', 'tgl', 'pembangunan', 'kota', 'total', 'progress', 'status', null),
-					'kolomCari' => array('id', 'pemilik', 'tgl', 'pembangunan', 'luas_area', 'status', 'progress'),
+					'kolomCari' => array('id', 'pemilik', 'tgl', 'pembangunan', 'luas_area', 'kota', 'total', 'status', 'progress'),
 					'orderBy' => array('id' => 'desc', 'status' => 'asc'),
 					'kondisi' => false,
 				);
@@ -646,9 +646,9 @@
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				// config datatable
 				$config_dataTable = array(
-					'tabel' => 'pengajuan_sub_kas_kecil',
-					'kolomOrder' => array(null, 'id', 'nama', 'id_sub_kas_kecil', 'tgl', null),
-					'kolomCari' => array('id', 'nama', 'id_sub_kas_kecil', 'tgl', 'total'),
+					'tabel' => 'v_pengajuan_sub_kas_kecil_full',
+					'kolomOrder' => array(null, 'id_pengajuan', 'tgl', 'nama_pengajuan', 'nama_skk', 'total', 'dana_disetujui', 'status', null),
+					'kolomCari' => array('id_pengajuan', 'tgl', 'nama_pengajuan', 'id_sub_kas_kecil', 'nama_skk', 'total', 'dana_disetujui', 'status'),
 					'orderBy' => array('tgl' => 'desc'),
 					'kondisi' => 'WHERE id_proyek = "'.$id.'"',
 				);
@@ -661,19 +661,37 @@
 				foreach($dataPengajuan as $row){
 					$no_urut++;
 
+					$namaStatus = $this->helper->getNamaStatusPengajuanSKK($row['status']);
+					switch ($row['status']) {
+						case "1":
+							$span = '<span class="label label-primary">'.$namaStatus.' %</span>';
+							break;
+						case "2":
+							$span = '<span class="label label-warning">'.$namaStatus.' %</span>';
+							break;
+						case "3":
+						case "4":
+							$span = '<span class="label label-success">'.$namaStatus.' %</span>';
+							break;
+						default: // 5
+							$span = '<span class="label label-danger">'.$namaStatus.' %</span>';
+					}
+
 					// button aksi
-					$aksiDetail = '<button onclick="getView('."'".strtolower($row["id"])."'".')" type="button" ';
+					$aksiDetail = '<button onclick="getView('."'".strtolower($row["id_pengajuan"])."'".')" type="button" ';
 					$aksiDetail .= 'class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
 					
 					$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
 					
 					$dataRow = array();
 					$dataRow[] = $no_urut;
-					$dataRow[] = $row['id'];
-					$dataRow[] = $row['nama'];
-					$dataRow[] = $row['id_sub_kas_kecil'];
+					$dataRow[] = $row['id_pengajuan'];
 					$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
+					$dataRow[] = $row['nama_pengajuan'];
+					$dataRow[] = $row['id_sub_kas_kecil'].' - '.$row['nama_skk'];
 					$dataRow[] = $this->helper->cetakRupiah($row['total']);
+					$dataRow[] = $this->helper->cetakRupiah($row['dana_disetujui']);
+					$dataRow[] = $status;
 					$dataRow[] = $aksi;
 
 					$data[] = $dataRow;
@@ -702,10 +720,10 @@
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				// config datatable
 				$config_dataTable = array(
-					'tabel' => 'operasional_proyek',
-					'kolomOrder' => array(null, 'id', 'nama', 'id_kas_besar', 'tgl', null),
-					'kolomCari' => array('id', 'nama', 'id_kas_besar', 'tgl', 'total'),
-					'orderBy' => array('tgl' => 'desc'),
+					'tabel' => 'v_operasional_proyek',
+					'kolomOrder' => array(null, 'id', 'tgl_pengajuan', 'nama_pengajuan', 'nama_kas_besar', 'jenis_pembayaran', 'status_lunas', 'total_pengajuan', null),
+					'kolomCari' => array('tgl_pengajuan', 'nama_pengajuan', 'id_kas_besar', 'nama_kas_besar', 'jenis_pembayaran', 'status_lunas', 'total_pengajuan'),
+					'orderBy' => array('tgl_pengajuan' => 'desc'),
 					'kondisi' => 'WHERE id_proyek = "'.$proyek.'"',
 				);
 
@@ -723,13 +741,18 @@
 					
 					$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
 					
+					$jenis_pembayaran = "";
+					$status_lunas = "";
+
 					$dataRow = array();
 					$dataRow[] = $no_urut;
 					$dataRow[] = $row['id'];
-					$dataRow[] = $row['nama'];
-					$dataRow[] = $row['id_kas_besar'];
-					$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
-					$dataRow[] = $this->helper->cetakRupiah($row['total']);
+					$dataRow[] = $this->helper->cetakTgl($row['tgl_pengajuan'], 'full');
+					$dataRow[] = $row['nama_pengajuan'];
+					$dataRow[] = $row['id_kas_besar'].' - '.$row['nama_kas_besar'];
+					$dataRow[] = $row['jenis_pembayaran'];
+					$dataRow[] = $row['status_lunas'];
+					$dataRow[] = $this->helper->cetakRupiah($row['total_pengajuan']);
 					$dataRow[] = $aksi;
 
 					$data[] = $dataRow;
@@ -867,6 +890,13 @@
 		}
 
 		/**
+		 * 
+		 */
+		public function export_detail($id) {
+
+		}
+
+		/**
 		 * Method set_validation
 		 * Proses validasi inputan data proyek
 		 * @param data {array}
@@ -887,21 +917,21 @@
 			// luas_area
 			$this->validation->set_rules($data['luas_area'], 'Luas Area', 'luas_area', 'nilai | 1 | 99999 | required');
 			// alamat
-			$this->validation->set_rules($data['alamat'], 'Alamat Pembangunan', 'alamat', 'string | 1 | 500 | required');
+			$this->validation->set_rules($data['alamat'], 'Alamat Pembangunan', 'alamat', 'string | 1 | 500 | not_required');
 			// kota
-			$this->validation->set_rules($data['kota'], 'Kota', 'kota', 'string | 1 | 255 | required');
+			$this->validation->set_rules($data['kota'], 'Kota', 'kota', 'string | 1 | 255 | not_required');
 			// estimasi
-			$this->validation->set_rules($data['estimasi'], 'Estimasi Pengerjaan', 'estimasi', 'nilai | 1 | 255 | required');
+			$this->validation->set_rules($data['estimasi'], 'Estimasi Pengerjaan', 'estimasi', 'nilai | 1 | 9999 | not_required');
 			// total
-			$this->validation->set_rules($data['total'], 'Total Dana', 'total', 'nilai | 0 | 99999999999 | required');
+			$this->validation->set_rules($data['total'], 'Total Dana', 'total', 'nilai | 0 | 999999999999 | required');
 			// dp
-			$this->validation->set_rules($data['dp'], 'DP Proyek', 'dp', 'nilai | 0 | 99999999999 | required');
+			$this->validation->set_rules($data['dp'], 'DP Proyek', 'dp', 'nilai | 0 | 999999999999 | required');
 			// cco
-			$this->validation->set_rules($data['cco'], 'CCO', 'cco', 'nilai | 0 | 99999999999 | not_required');
+			$this->validation->set_rules($data['cco'], 'CCO', 'cco', 'nilai | 0 | 999999999999 | not_required');
 			// status
 			$this->validation->set_rules($data['status'], 'Status Proyek', 'status', 'string | 1 | 255 | required');
 			// progress
-			$this->validation->set_rules($data['progress'], 'Progress Proyek', 'progress', 'nilai | 0 | 100 | required');
+			$this->validation->set_rules($data['progress'], 'Progress Proyek', 'progress', 'nilai | 0 | 100 | not_required');
 
 			return $this->validation->run();
 		}

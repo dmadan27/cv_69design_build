@@ -258,8 +258,8 @@
 										<div class="tab-pane" id="tab_3">
 
 											<!-- tabel pengajuan skk -->
-											<div class="panel box box-primary">
-												<div class="box-header with-border">
+											<div class="panel box box-default">
+												<div class="box-header">
 													<h6 class="box-title">
                       									<a data-toggle="collapse" data-parent="#accordion" href="#collapse_pengajuan">
 								                        	Data Pengajuan Sub Kas Kecil
@@ -277,10 +277,12 @@
 																<tr>
 																	<th class="text-right" style="width: 35px">No</th>
 																	<th>ID</th>
-																	<th>Nama</th>
-																	<th>Sub Kas Kecil</th>
 																	<th>Tanggal</th>
-																	<th class="text-right">Total</th>
+																	<th>Pengajuan</th>
+																	<th>Sub Kas Kecil</th>
+																	<th class="text-right">Total Pengajuan</th>
+																	<th class="text-right">Dana Disetuji</th>
+																	<th>Status</th>
 																	<th>Aksi</th>
 																</tr>
 															</thead>
@@ -292,8 +294,8 @@
 											</div>
 											
 											<!-- tabel operasional proyek -->
-											<div class="panel box box-primary">
-												<div class="box-header with-border">
+											<div class="panel box box-default">
+												<div class="box-header">
 													<h6 class="box-title">
                       									<a data-toggle="collapse" data-parent="#accordion" href="#collapse_operasional">
 								                        	Data Operasional Proyek
@@ -311,9 +313,11 @@
 																<tr>
 																	<th class="text-right" style="width: 35px">No</th>
 																	<th>ID</th>
-																	<th>Nama</th>
-																	<th>Kas Besar</th>
 																	<th>Tanggal</th>
+																	<th>Nama Pengajuan</th>
+																	<th>Kas Besar</th>
+																	<th>Jenis Pembayaran</th>
+																	<th>Status</th>
 																	<th class="text-right">Total</th>
 																	<th>Aksi</th>
 																</tr>
