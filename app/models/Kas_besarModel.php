@@ -101,7 +101,7 @@
 		*/
 		public function insertKasBesar($data){
 			$level = "KAS BESAR";
-			$query = "CALL tambah_kas_besar (:id, :nama, :alamat, :no_telp, :email, :foto,  :status, :password,:level);";
+			$query = "CALL tambah_kas_besar (:id, :nama, :alamat, :no_telp, :email, :foto,  :status, :password, :level);";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
@@ -228,8 +228,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function checkExistEmail($email){
 			$query = "SELECT COUNT(*) total FROM kas_besar WHERE email =:email";
 

@@ -27,15 +27,11 @@ $(document).ready(function(){
         },
         "columnDefs": [
             {
-                "targets":[0, 4], // disable order di kolom 1 dan 3
+                "targets":[0, 5],
                 "orderable":false,
             }
         ],
         createdRow: function(row, data, dataIndex){
-        	if($(data[3]).text().toLowerCase() == "nonaktif") $(row).addClass('danger');
-        	for(var i = 0; i < 5; i++){
-                if(i == 0 || i == 2) $('td:eq('+i+')', row).addClass('text-right');
-        	}
         }
     });
 
@@ -49,47 +45,47 @@ $(document).ready(function(){
 });
 
 /**
-*
-*/
+ * 
+ * @param {string} id 
+ */
 function getView(id){
 	window.location.href = BASE_URL+'kas-besar/detail/'+id.toLowerCase();
 }
 
 /**
-*
-*/
+ * 
+ * @param {string} id 
+ */
 function getDelete(id){
-
-		swal({
-			title: "Pesan Konfirmasi",
-			text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
-			type: "warning",
-	        showCancelButton: true,
-	        confirmButtonColor: "#DD6B55",
-	        confirmButtonText: "Ya, Hapus!",
-	        cancelButtonText: "Batal",
-	        closeOnConfirm: false,
-		}, function(){
-			$.ajax({
-				url: BASE_URL+'kas-besar/delete/'+id.toLowerCase(),
-				type: 'post',
-				dataType: 'json',
-				data: {},
-				beforeSend: function(){
-
-				},
-				success: function(output){
-					console.log(output);
-					if(output){
-						swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
-						$("#kasBesarTable").DataTable().ajax.reload();
-					}
-				},
-				error: function (jqXHR, textStatus, errorThrown){ // error handling
-		            console.log(jqXHR, textStatus, errorThrown);
-                    swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
-		        }
-			})
-		});
+    swal({
+        title: "Pesan Konfirmasi",
+        text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Hapus!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: false,
+    }, function(){
+        $.ajax({
+            url: BASE_URL+'kas-besar/delete/'+id.toLowerCase(),
+            type: 'post',
+            dataType: 'json',
+            data: {},
+            beforeSend: function(){
+            },
+            success: function(response){
+                console.log("%cResponse getDelete: ", "color: green; font-weight: bold", response);
+                if(response.success){
+                    swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
+                    $("#kasBesarTable").DataTable().ajax.reload();
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown){
+                console.log("%cResponse Error getDelete: ", "color: red; font-weight: bold", jqXHR, textStatus, errorThrown);
+                swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+            }
+        })
+    });
 	
 }

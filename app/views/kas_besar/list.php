@@ -42,14 +42,14 @@
 					<div class="box-body">
 						<div class="row">
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-								<input type="hidden" id="token" value="">
-								<table id="kasBesarTable" class="table table-bordered table-hover">
+								<table id="kasBesarTable" class="table table-bordered table-hover" style="width: 100%">
 									<thead>
 										<tr>
 											<th class="text-right" style="width: 35px">No</th>
 											<th>ID</th>
 											<th>Nama</th>
-											<th>Alamat</th>
+											<th>No. Telepon</th>
+											<th>Email</th>
 											<th>Status</th>
 											<th>Aksi</th>
 										</tr>

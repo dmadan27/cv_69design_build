@@ -2,16 +2,21 @@
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 	
 	/**
-	*
-	*/
+	 * 
+	 */
 	class Kas_besar extends Crud_modalsAbstract{
 
-		private $token;
-		private $status = false;
+		// private $token;
+		// private $status = false;
+
+		private $success = false;
+		private $notif = array();
+		private $error = array();
+		private $message = NULL;
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function __construct(){
 			$this->auth();
 			$this->auth->cekAuth();
@@ -22,15 +27,17 @@
 		}	
 
 		/**
-		*
-		*/
+		 * Method __construct
+		 * Default load saat pertama kali controller diakses
+		 */
 		public function index(){
 			$this->list();
 		}
 
 		/**
-		*
-		*/
+		 * Method index
+		 * Render list kas besar
+		 */
 		protected function list(){
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
@@ -48,7 +55,7 @@
 			$config = array(
 				'title' => array(
 					'main' => 'Data Kas Besar',
-					'sub' => 'Menampilkan Semua Data Kas Besar',
+					'sub' => 'List Semua Data Kas Besar',
 				),
 				'css' => $css,
 				'js' => $js,
@@ -58,15 +65,18 @@
 		}
 
 		/**
-		* 
-		*/
+		 * Method get_list
+		 * Proses get data untuk list kas besar
+		 * Data akan di parsing dalam bentuk dataTable
+		 * @return output {object} array berupa json
+		 */
 		public function get_list(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				// config datatable
 				$config_dataTable = array(
 					'tabel' => 'kas_besar',
-					'kolomOrder' => array(null, 'id', 'nama', 'alamat', 'status', null),
-					'kolomCari' => array('id', 'nama', 'alamat', 'status'),
+					'kolomOrder' => array(null, 'id', 'nama', 'no_telp', 'email', 'status', null),
+					'kolomCari' => array('id', 'nama', 'alamat', 'no_telp', 'email', 'status'),
 					'orderBy' => array('id' => 'desc', 'status' => 'asc'),
 					'kondisi' => false,
 				);
@@ -78,7 +88,8 @@
 				foreach($dataKasBesar as $row){
 					$no_urut++;
 
-					$status = (strtolower($row['status']) == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-primary">'.$row['status'].'</span>';
+					$status = (strtolower($row['status']) == "aktif") ? 
+						'<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-danger">'.$row['status'].'</span>';
 
 					//button aksi
 					$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
@@ -91,8 +102,9 @@
 					$dataRow[] = $no_urut;
 					$dataRow[] = $row['id'];
 					$dataRow[] = $row['nama'];
-					$dataRow[] = $row['alamat'];
-					$dataRow[] = $row['status'];
+					$dataRow[] = $row['no_telp'];
+					$dataRow[] = $row['email'];
+					$dataRow[] = $status;
 					$dataRow[] = $aksi;
 
 					$data[] = $dataRow;
@@ -107,22 +119,23 @@
 
 				echo json_encode($output);
 			}
-			else $this->redirect();
+			else { $this->redirect(); }
 		}	
 
 		/**
-		*
-		*/
+		 * Method action_add
+		 * Proses penambahan data kas besar
+		 * @return output {object} array berupa json
+		 */
 		public function action_add(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
 				$foto = isset($_FILES['foto']) ? $_FILES['foto'] : false;
 
 				$cekFoto = true;
-				$error = $notif = array();
 
 				if(!$data){
-					$notif = array(
+					$this->notif = array(
 						'type' => 'error',
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
@@ -131,13 +144,13 @@
 				else{
 					$validasi = $this->set_validation($data);
 					$cek = $validasi['cek'];
-					$error = $validasi['error'];
+					$this->error = $validasi['error'];
 
 					// cek password dan konf password
-					// if($data['password'] != $data['konf_password']){
-					// 	$cek = false;
-					// 	$error['password'] = $error['password_confirm'] = 'Password dan Konfirmasi Password Berbeda';
-					// }
+					if(($this->error['password'] == "") && ($data['password'] != $data['password_confirm'])){
+						$cek = false;
+						$this->error['password'] = $this->error['password_confirm'] = 'Password dan Konfirmasi Password Berbeda';
+					}
 					
 					// jika upload foto
 					if($foto){
@@ -152,14 +165,14 @@
 						$validasiFoto = $this->validation->validFile($configFoto);
 						if(!$validasiFoto['cek']){
 							$cek = false;
-							$error['foto'] = $validasiFoto['error'];
+							$this->error['foto'] = $validasiFoto['error'];
 						}
 						else $valueFoto = md5($data['id']).$validasiFoto['namaFile'];
 					}
 					else $valueFoto = NULL;
 
 					if($cek){
-						$data = array(
+						$dataInsert = array(
 							'id' => $this->validation->validInput($data['id']),
 							'nama' => $this->validation->validInput($data['nama']),
 							'alamat' => $this->validation->validInput($data['alamat']),
@@ -168,52 +181,51 @@
 							'foto' => $this->validation->validInput($valueFoto, false),
 							'status' => $this->validation->validInput($data['status']),
 							'password' => password_hash($this->validation->validInput($data['password'], false), PASSWORD_BCRYPT),
-								
 						);
 
 						// jika upload foto
 						if($foto){
 							$path = ROOT.DS.'assets'.DS.'images'.DS.'user'.$valueFoto;
 							if(!move_uploaded_file($foto['tmp_name'], $path)){
-								$error['foto'] = "Upload Foto Gagal";
-								$this->status = $cekFoto = false;
+								$this->error['foto'] = "Upload Foto Gagal";
+								$this->success = $cekFoto = false;
 							}
 						}
 
 						if($cekFoto){
 							// cek email
-							if($this->Kas_besarModel->checkExistEmail($data['email'])){
+							if($this->Kas_besarModel->checkExistEmail($dataInsert['email'])){
 								// insert data
-								if($this->Kas_besarModel->insert($data)) {
-									$this->status = true;
-									$notif = array(
+								if($this->Kas_besarModel->insert($dataInsert)) {
+									$this->success = true;
+									$this->notif = array(
 										'type' => 'success',
 										'title' => "Pesan Berhasil",
 										'message' => "Tambah Data  Kas Besar Baru Berhasil",
 									);
 								}
 								else {
-									$notif = array(
+									$this->notif = array(
 										'type' => 'error',
 										'title' => "Pesan Gagal",
 										'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 									);
-									$path = ROOT.DS.'assets'.DS.'images'.DS.'user'.$valueFoto;
+									$path = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$valueFoto;
 									$this->helper->rollback_file($path, false);
 								}
 							}
 							else {
-								$notif = array(
+								$this->notif = array(
 									'type' => 'warning',
 									'title' => "Pesan Pemberitahuan",
 									'message' => "Silahkan Cek Kembali Form Isian",
 								);
-								$error['email'] = "Email telah digunakan sebelumnya";
+								$this->error['email'] = "Email telah digunakan sebelumnya";
 							}
 						}
 					}
 					else{
-						$notif = array(
+						$this->notif = array(
 							'type' => 'warning',
 							'title' => "Pesan Pemberitahuan",
 							'message' => "Silahkan Cek Kembali Form Isian",
@@ -222,10 +234,10 @@
 				}
 
 				$output = array(
-					'status' => $this->status,
+					'success' => $this->success,
 					'status_foto' => $cekFoto,
-					'notif' => $notif,
-					'error' => $error,
+					'notif' => $this->notif,
+					'error' => $this->error,
 					'data' => $data,
 					'foto' => $foto
 				);
@@ -455,7 +467,7 @@
 
 				echo json_encode($id);
 			}
-			else $this->redirect();
+			else { $this->redirect(); }
 		}
 
 		/**
@@ -476,9 +488,13 @@
 			// no_telp
 			$this->validation->set_rules($data['no_telp'], 'Nomor Telepon', 'no_telp', 'angka | 1 | 255 | required');
 			// email
-			$this->validation->set_rules($data['email'], 'Alamat Email', 'email', 'email | 1 | 255 |', $required);
+			$this->validation->set_rules($data['email'], 'Alamat Email', 'email', 'email | 1 | 255 | '.$required);
 			// status
 			$this->validation->set_rules($data['status'], 'Status', 'status', 'string | 1 | 255 | required');
+			// password
+			$this->validation->set_rules($data['password'], 'Password', 'password', 'string | 5 | 255 | '.$required);
+			// password_confirm
+			$this->validation->set_rules($data['password_confirm'], 'Password Confirm', 'password_confirm', 'string | 5 | 255 | '.$required);
 
 			return $this->validation->run();
 		}
