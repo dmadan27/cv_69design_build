@@ -159,7 +159,7 @@ SELECT  detail_operasional_proyek.id, detail_operasional_proyek.id_operasional_p
 	bank.nama AS 'nama_bank', detail_operasional_proyek.nama, detail_operasional_proyek.tgl,
 	detail_operasional_proyek.total
   FROM detail_operasional_proyek 
-  JOIN bank ON bank.id = detail_operasional_proyek.id_bank
+  JOIN bank ON bank.id = detail_operasional_proyek.id_bank;
 --   WHERE id_operasional_proyek = 'OPRY-PRY20180001-0002'
 --
 
