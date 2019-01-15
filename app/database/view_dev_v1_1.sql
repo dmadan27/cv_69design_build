@@ -36,7 +36,7 @@
         GROUP BY p.id;
 
     -- View get pengeluaran sub kas kecil
-    CREATE OR REPLACE VIEW AS v_get_pengeluaran_sub_kas_kecil
+    CREATE OR REPLACE VIEW v_get_pengeluaran_sub_kas_kecil AS
         SELECT 
             p.id AS id_proyek, SUM(dpskk.harga_asli) AS total 
         FROM detail_pengajuan_sub_kas_kecil dpskk 
@@ -140,18 +140,18 @@ CREATE OR REPLACE VIEW v_pengajuan_kas_kecil_rev2 AS
 -- View Operasional Proyek
 CREATE OR REPLACE VIEW v_operasional_proyek AS
 	SELECT 
-        opr.id , pr.id id_proyek, pr.pemilik pemilik_proyek, pr.pembangunan nama_pembangunan,
+        opr.id, pr.id id_proyek, pr.pemilik pemilik_proyek, pr.pembangunan nama_pembangunan,
 	    kb.id id_kas_besar, kb.nama nama_kas_besar, 
 	    dst.id id_distributor, dst.nama nama_distributor, opr.tgl tgl_pengajuan, 
 	    opr.nama nama_pengajuan, opr.jenis jenis_pengajuan, opr.total total_pengajuan, opr.sisa sisa_pengajuan, 
-	    opr.status status_pengajuan,  opr.status_lunas status_lunas, opr.ket keterangan,
-	    dopr.id_bank, dopr.nama nama_detail, dopr.tgl tgl_detail, dopr.total total_detail
+	    opr.status jenis_pembayaran,  opr.status_lunas status_lunas, opr.ket keterangan,
+	    dopr.id_bank, b.nama nama_bank, dopr.nama nama_detail, dopr.tgl tgl_detail, dopr.total total_detail
     FROM operasional_proyek opr
     JOIN proyek pr ON pr.id = opr.id_proyek 
     JOIN kas_besar kb ON kb.id = opr.id_kas_besar
-    JOIN distributor dst ON dst.id = opr.id_distributor
-    JOIN detail_operasional_proyek dopr ON dopr.id_operasional_proyek = opr.id; 
-
+    LEFT JOIN distributor dst ON dst.id = opr.id_distributor
+    JOIN detail_operasional_proyek dopr ON dopr.id_operasional_proyek = opr.id
+	JOIN bank b ON b.id = dopr.id_bank; 
 
 -- View Detail Operasional Proyek
 
