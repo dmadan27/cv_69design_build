@@ -133,7 +133,7 @@
 				$data = isset($_POST) ? $_POST : false;
 
 				if(!$data){
-					$notif = array(
+					$this->notif = array(
 						'type' => 'error',
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
