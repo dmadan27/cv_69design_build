@@ -96,13 +96,22 @@ CREATE OR REPLACE VIEW v_operasional_new AS
 -- View Pengajuan Sub Kas Kecil
 CREATE OR REPLACE VIEW v_pengajuan_sub_kas_kecil_full AS
 	SELECT
-		pskk.id id_pengajuan, pskk.id_sub_kas_kecil, pskk.id_proyek, pskk.tgl,
-		pskk.total, pskk.dana_disetujui, pskk.status, pskk.status_laporan,
-		dp.id id_detail, dp.nama, dp.jenis, dp.satuan, dp.qty, dp.harga, dp.subtotal,
+		pskk.id id_pengajuan, pskk.id_sub_kas_kecil, skk.nama nama_skk, pskk.id_proyek, pskk.tgl,
+        pskk.nama nama_pengajuan, pskk.total, pskk.dana_disetujui, 
+        (CASE 
+            WHEN pskk.status = '1' THEN 'PENDING'
+            WHEN pskk.status = '2' THEN 'PERBAIKI'
+            WHEN pskk.status = '3' THEN 'DISETUJUI'
+            WHEN pskk.status = '4' THEN 'LANGSUNG'
+            ELSE 'DITOLAK' END
+        ) status, 
+        pskk.status_laporan,
+		dp.id id_detail, dp.nama nama_detail, dp.jenis, dp.satuan, dp.qty, dp.harga, dp.subtotal,
 		dp.harga_asli, dp.sisa, p.pemilik, p.pembangunan, p.kota
 	FROM pengajuan_sub_kas_kecil pskk
 	JOIN detail_pengajuan_sub_kas_kecil dp ON dp.id_pengajuan = pskk.id
-	JOIN proyek p ON p.id = pskk.id_proyek;
+	JOIN proyek p ON p.id = pskk.id_proyek
+    JOIN sub_kas_kecil skk ON skk.id = pskk.id_sub_kas_kecil;
 
 -- View Detail Pengajuan Sub Kas Kecil
 

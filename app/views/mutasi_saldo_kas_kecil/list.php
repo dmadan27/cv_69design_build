@@ -40,7 +40,7 @@
 								</div>
 							</div>
 							<div class="col-md-3 col-sm-3 col-xs-3">
-								<h3 class="box-title" style="margin-top:10px;"><strong>Saldo: Rp. <?php echo $this->data['saldo']; ?> ,-</strong></h3>
+								<h3 class="box-title" style="margin-top:10px;"><strong>Saldo:  <?php echo $this->data['saldo']; ?> ,-</strong></h3>
 							</div>
 						</div>
 					</div>
