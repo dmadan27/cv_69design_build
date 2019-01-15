@@ -60,7 +60,12 @@
 		* 
 		*/
 		public function getById($id){
-			$query = "SELECT * FROM pengajuan_kas_kecil WHERE id = :id;";
+		$query = "	SELECT pengajuan_kas_kecil.id, pengajuan_kas_kecil.id_kas_kecil, 
+							 kas_kecil.nama AS 'kas_kecil', pengajuan_kas_kecil.tgl, pengajuan_kas_kecil.nama,
+							 pengajuan_kas_kecil.total, pengajuan_kas_kecil.total_disetujui, pengajuan_kas_kecil.status 
+					FROM pengajuan_kas_kecil 
+					JOIN kas_kecil ON kas_kecil.id = pengajuan_kas_kecil.id_kas_kecil
+					WHERE pengajuan_kas_kecil.id = :id;";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id', $id);

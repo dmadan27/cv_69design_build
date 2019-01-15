@@ -7,8 +7,8 @@
 	protected $dataTable;
 
 	/**
-		* 
-		*/
+	* 
+	*/
 		public function __construct(){
 			$this->koneksi = $this->openConnection();
 			$this->dataTable = new Datatable();

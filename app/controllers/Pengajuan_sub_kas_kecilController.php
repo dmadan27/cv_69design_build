@@ -493,6 +493,13 @@
 		/**
 		*
 		*/
+		public function export_detail(){
+
+		}
+
+		/**
+		*
+		*/
 		public function get_notif(){
 			$notif = $this->Pengajuan_sub_kas_kecilModel->getAll_pending();
 			$jumlah = $this->Pengajuan_sub_kas_kecilModel->getTotal_pending();

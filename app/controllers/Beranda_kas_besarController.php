@@ -217,4 +217,11 @@
 			
 		}
 
+		/**
+		 * Method export detail
+		 */
+		public function export_detail(){
+			
+		}
+
 	}

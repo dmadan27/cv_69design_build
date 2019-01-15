@@ -1,4 +1,5 @@
 $(document).ready(function(){
+    
 	var pengajuanKasKecilTable = $("#pengajuanKasKecilTable").DataTable({
         "language" : {
             "lengthMenu": "Tampilkan _MENU_ data/page",
@@ -31,14 +32,37 @@ $(document).ready(function(){
 
     // btn Export
     $('#exportExcel').on('click', function(){
-        // if(this.value.trim() != "") 
-            window.location.href = BASE_URL+'pengajuan-kas-kecil/export/';
-       
+            $('#modalTanggalExport').modal()
     });
-        
-        
-
+       
 });
+
+    /**
+    *
+    */
+    function export_excel() {
+
+    var tgl_awal = $('#tgl_awal').val().trim();
+    var tgl_akhir = $('#tgl_akhir').val().trim();
+
+    if(tgl_awal == '' && tgl_akhir != ''){
+        swal({
+            type: 'error',
+            title: 'Tanggal Awal Harus Diisi!',
+            text: 'Isi atau kosongkan keduanya !'
+        })
+    } else if(tgl_awal != '' && tgl_akhir == ''){
+        swal({
+            type: 'error',
+            title: 'Tanggal Akhir Harus Diisi!',
+            text: 'Isi atau kosongkan keduanya !'
+        })
+    } else {
+        window.location.href = BASE_URL+'pengajuan-kas-kecil/export?tgl_awal=' + tgl_awal + '&tgl_akhir=' + tgl_akhir;
+        console.log('export clicked');
+    // $('#modalTanggalExport').hide();  
+    }
+}
 
 
 /**

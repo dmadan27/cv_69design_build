@@ -42,12 +42,12 @@ $(document).ready(function(){
 function init() {
 	// Initialize Select2 Elements
 	$('#status').select2({
-    	placeholder: "Pilih Status Pengajuan",
+		placeholder: "Pilih Status Pembayaran",
 		allowClear: true
 	});
 
 	$('#id_bank').select2({
-    	placeholder: "Pilih Bank",
+		placeholder: "Pilih Bank",
 		allowClear: true
 	});
 
@@ -73,7 +73,7 @@ function init() {
 	
 	setStatus();
 	setNamaBank();
-
+	
 	$('#id').prop('disabled', true);
 	$('#id_bank').prop('disabled', true);
 	$('#total_disetujui').prop('disabled', true);

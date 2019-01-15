@@ -68,4 +68,8 @@
 		</div>			
 	</section>
 	<!-- /.content -->
+	<?php include_once('modal.php'); ?>
 </div>
+
+
+

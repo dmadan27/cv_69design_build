@@ -162,13 +162,14 @@
 													<div class="box-body">
 														<div class="form-group">
 															<!-- export -->
-															<button type="button" class="btn btn-success btn-flat" id=""><i class="fa fa-file-excel-o"></i> Export Excel</button>
+															<?php $id = $this->data['id_operasional_proyek']; ?>
+															<button type="button" class="btn btn-success btn-flat" id="exportExcel_detail" onclick="export_detail('<?php echo $id;?>')"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 														</div>
 														<table id="detailOperasionalProyek" class="table table-bordered table-hover" style="width: 100%;">
 															<thead>
 																<tr><!-- 
 																	<th class="text-right">No</th> -->
-																	<th>ID Bank</th>
+																	<th>Nama Bank</th>
 																	<th>Nama</th>
 																	<th>Tanggal</th>
 																	<th>Total</th>

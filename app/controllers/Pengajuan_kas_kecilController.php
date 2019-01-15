@@ -366,9 +366,7 @@
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',	
 				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
-				'app/views/pengajuan_kas_kecil/js/initView.js',
-				'app/views/pengajuan_kas_kecil/js/initForm.js',
-				'app/views/pengajuan_kas_kecil/js/initView.js',
+				'app/views/pengajuan_kas_kecil/js/initView.js'
 					
 			);
 
@@ -385,17 +383,23 @@
 			// 	'<span class="label label-success">'.$data_detail['status'].'</span>' : 
 			// 	'<span class="label label-danger">'.$data_detail['status'].'</span>';
 
-
-
-
+			if($data_detail['status'] == '0'){
+				$data_detail['status'] = "PENDING";
+			} else if($data_detail['status'] == '1'){
+				$data_detail['status'] = "PERBAIKI";
+			} else if($data_detail['status'] == '2'){
+				$data_detail['status'] = "DISETUJUI";
+			} else if($data_detail['status'] == '3'){
+				$data_detail['status'] = "DITOLAK";	
+			} 
 
 			$data = array(
 				'id' => $data_detail['id'],
 				'id_kas_kecil' => $data_detail['id_kas_kecil'],
-				'id_bank' => $data_detail['id_bank'],
-				'tgl' => $data_detail['tgl'],
+				'kas_kecil' => $data_detail['kas_kecil'],
+				'tgl' => $this->helper->cetakTgl($data_detail['tgl'], 'full'),
 				'nama' => $data_detail['nama'],
-				'total' => $data_detail['total'],
+				'total' => $this->helper->cetakRupiah($data_detail['total']),
 				'status' => $data_detail['status']
 			);
 
@@ -443,7 +447,7 @@
 			$excel = new PHPExcel();
 
 			// Settingan awal fil excel
-			$excel->getProperties()->setCreator('Jaka Pratama, Romadan Saputra, Fajar Cahyo')
+			$excel->getProperties()->setCreator('69 Design Build')
 								   ->setLastModifiedBy('PC Personal')
 								   ->setTitle("Data Pengajuan Kas Kecil")
 								   ->setSubject("Pengajuan Kas Kecil")
@@ -487,18 +491,14 @@
 			// Buat header tabel nya pada baris ke 3
 			$excel->setActiveSheetIndex(0)->setCellValue('A3', "NO"); // Set kolom A3 dengan tulisan "NO"
 			$excel->setActiveSheetIndex(0)->setCellValue('B3', "ID"); // Set kolom B3 dengan tulisan "NO"
-			
 			$excel->setActiveSheetIndex(0)->setCellValue('C3', "NAMA"); // Set kolom C3 dengan tulisan "NAMA"
-			$excel->setActiveSheetIndex(0)->setCellValue('D3', "TANGGAL"); // Set kolom D3 dengan tulisan "TANGGAL"
-			$excel->setActiveSheetIndex(0)->setCellValue('E3', "TOTAL"); // Set kolom E3 dengan tulisan "TOTAL"
-			$excel->setActiveSheetIndex(0)->setCellValue('F3', "STATUS"); // Set kolom F3 dengan tulisan "STATUS"
-			$excel->setActiveSheetIndex(0)->setCellValue('G3', "ID KAS KECIL"); // Set kolom G3 dengan tulisan "ID KAS KECIL"
-			$excel->setActiveSheetIndex(0)->setCellValue('H3', "NAMA KAS KECIL"); // Set kolom H3 dengan tulisan "NAMA KAS KECIL"
-			$excel->setActiveSheetIndex(0)->setCellValue('I3', "TANGGAL CETAK"); // Set kolom H3 dengan tulisan "NAMA KAS KECIL"
+			$excel->setActiveSheetIndex(0)->setCellValue('D3', "ID KAS KECIL"); // Set kolom G3 dengan tulisan "ID KAS KECIL"
+			$excel->setActiveSheetIndex(0)->setCellValue('E3', "KAS KECIL"); // Set kolom H3 dengan tulisan "NAMA KAS KECIL"
+			$excel->setActiveSheetIndex(0)->setCellValue('F3', "TANGGAL"); // Set kolom D3 dengan tulisan "TANGGAL"
+			$excel->setActiveSheetIndex(0)->setCellValue('G3', "TOTAL"); // Set kolom E3 dengan tulisan "TOTAL"
+			$excel->setActiveSheetIndex(0)->setCellValue('H3', "STATUS"); // Set kolom F3 dengan tulisan "STATUS"
+
 			
-
-
-
 
 			// Apply style header yang telah kita buat tadi ke masing-masing kolom header
 			$excel->getActiveSheet()->getStyle('A3')->applyFromArray($style_col);
@@ -510,30 +510,62 @@
 			$excel->getActiveSheet()->getStyle('G3')->applyFromArray($style_col);
 			$excel->getActiveSheet()->getStyle('H3')->applyFromArray($style_col);
 
-
-
 			// Set height baris ke 1, 2 dan 3
 			$excel->getActiveSheet()->getRowDimension('1')->setRowHeight(20);
 			$excel->getActiveSheet()->getRowDimension('2')->setRowHeight(20);
 			$excel->getActiveSheet()->getRowDimension('3')->setRowHeight(20);
-			// Buat query untuk menampilkan semua data siswa
-			$sql = $pdo->prepare("SELECT * FROM v_pengajuan_kas_kecil");
+			
+			$tgl_awal = $_GET['tgl_awal'];
+			$tgl_akhir = $_GET['tgl_akhir'];
+			$level = $_SESSION['sess_level'];
+			$id = $_SESSION['sess_id'];
+			
+			if($level == "KAS BESAR"){
+				
+				if($tgl_awal == '' && $tgl_akhir == ''){
+					$query = "SELECT * FROM v_pengajuan_kas_kecil";
+				} else {
+					$query = "SELECT * FROM v_pengajuan_kas_kecil WHERE tgl BETWEEN '$tgl_awal' AND '$tgl_akhir'";
+				}
+
+			} else if($level == "KAS KECIL"){
+
+				if($tgl_awal == '' && $tgl_akhir == ''){
+					$query = "SELECT * FROM v_pengajuan_kas_kecil WHERE id_kas_kecil = '$id'";
+				} else {
+					$query = "SELECT * FROM v_pengajuan_kas_kecil WHERE tgl BETWEEN '$tgl_awal' AND '$tgl_akhir' AND id_kas_kecil = '$id'";
+				}
+
+			}
+
+			// Buat query untuk menampilkan semua data pengajuan KK
+			$sql = $pdo->prepare($query);
 			$sql->execute(); // Eksekusi querynya
 
 			$no = 1; // Untuk penomoran tabel, di awal set dengan 1
 			$numrow = 4; // Set baris pertama untuk isi tabel adalah baris ke 4
 			while($data = $sql->fetch()){ // Ambil semua data dari hasil eksekusi $sql
+
+				if($data['status'] == '0'){
+					$data['status'] = "PENDING";
+				} else if($data['status'] == '1'){
+					$data['status'] = "DIPERBAIKI";
+				} else if($data['status'] == '2'){
+					$data['status'] = "DISETUJUI";
+				} else if($data['status'] == '3'){
+					$data['status'] = "DITOLAK";
+				}
+
 				$excel->setActiveSheetIndex(0)->setCellValue('A'.$numrow, $no);
 				$excel->setActiveSheetIndex(0)->setCellValue('B'.$numrow, $data['id']);
 				$excel->setActiveSheetIndex(0)->setCellValue('C'.$numrow, $data['nama']);
-				$excel->setActiveSheetIndex(0)->setCellValue('D'.$numrow, $data['tgl']);
-				$excel->setActiveSheetIndex(0)->setCellValue('E'.$numrow, $data['total']);
-				$excel->setActiveSheetIndex(0)->setCellValue('F'.$numrow, $data['status']);
-				$excel->setActiveSheetIndex(0)->setCellValue('G'.$numrow, $data['id_kas_kecil']);
-				$excel->setActiveSheetIndex(0)->setCellValue('H'.$numrow, $data['nama_kas_kecil']);
-				
-				
-				
+				$excel->setActiveSheetIndex(0)->setCellValue('D'.$numrow, $data['id_kas_kecil']);
+				$excel->setActiveSheetIndex(0)->setCellValue('E'.$numrow, $data['nama_kas_kecil']);
+				$excel->setActiveSheetIndex(0)->setCellValue('F'.$numrow, $data['tgl']);
+				$excel->setActiveSheetIndex(0)->setCellValue('G'.$numrow, $data['total']);
+				$excel->setActiveSheetIndex(0)->setCellValue('H'.$numrow, $data['status']);
+
+
 				// Apply style row yang telah kita buat tadi ke masing-masing baris (isi tabel)
 				$excel->getActiveSheet()->getStyle('A'.$numrow)->applyFromArray($style_row);
 				$excel->getActiveSheet()->getStyle('B'.$numrow)->applyFromArray($style_row);
@@ -544,10 +576,6 @@
 				$excel->getActiveSheet()->getStyle('G'.$numrow)->applyFromArray($style_row);
 				$excel->getActiveSheet()->getStyle('H'.$numrow)->applyFromArray($style_row);
 
-
-				
-
-				
 				$excel->getActiveSheet()->getRowDimension($numrow)->setRowHeight(20);
 				
 				$no++; // Tambah 1 setiap kali looping
@@ -557,22 +585,18 @@
 			// Set width kolom
 			$excel->getActiveSheet()->getColumnDimension('A')->setWidth(5); // Set width kolom A
 			$excel->getActiveSheet()->getColumnDimension('B')->setWidth(15); // Set width kolom B
-			$excel->getActiveSheet()->getColumnDimension('C')->setWidth(25); // Set width kolom C
-			$excel->getActiveSheet()->getColumnDimension('D')->setWidth(20); // Set width kolom D
+			$excel->getActiveSheet()->getColumnDimension('C')->setWidth(45); // Set width kolom C
+			$excel->getActiveSheet()->getColumnDimension('D')->setWidth(15); // Set width kolom D
 			$excel->getActiveSheet()->getColumnDimension('E')->setWidth(15); // Set width kolom E
 			$excel->getActiveSheet()->getColumnDimension('F')->setWidth(15); // Set width kolom F
 			$excel->getActiveSheet()->getColumnDimension('G')->setWidth(15); // Set width kolom G
 			$excel->getActiveSheet()->getColumnDimension('H')->setWidth(15); // Set width kolom H
 
-
-
-
-
 			// Set orientasi kertas jadi LANDSCAPE
 			$excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
 
 			// Set judul file excel nya
-			$excel->getActiveSheet(0)->setTitle("Laporan Data Pengajuan Kas Kecil");
+			$excel->getActiveSheet(0)->setTitle("Laporan Pengajuan Kas Kecil");
 			$excel->setActiveSheetIndex(0);
 
 			// Proses file excel
@@ -581,6 +605,7 @@
 			header('Cache-Control: max-age=0');
 
 			$write = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
+			ob_end_clean();
 			$write->save('php://output');
 			
 		}

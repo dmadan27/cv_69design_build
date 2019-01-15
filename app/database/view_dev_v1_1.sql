@@ -154,7 +154,13 @@ CREATE OR REPLACE VIEW v_operasional_proyek AS
 	JOIN bank b ON b.id = dopr.id_bank; 
 
 -- View Detail Operasional Proyek
-
+CREATE OR REPLACE VIEW v_detail_operasional_proyek AS
+SELECT  detail_operasional_proyek.id, detail_operasional_proyek.id_operasional_proyek,
+	bank.nama AS 'nama_bank', detail_operasional_proyek.nama, detail_operasional_proyek.tgl,
+	detail_operasional_proyek.total
+  FROM detail_operasional_proyek 
+  JOIN bank ON bank.id = detail_operasional_proyek.id_bank
+--   WHERE id_operasional_proyek = 'OPRY-PRY20180001-0002'
 --
 
 -- VIEW SUB KAS KECIL -> digunakan untuk mendapatkan informasi detail sub kas kecil
