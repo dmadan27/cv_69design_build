@@ -691,7 +691,7 @@ function getDataForm(){
 			bank = ($('id_bank_form').val() != "" && $('#id_bank_form').val() != null) ? $('#id_bank_form').val().trim() : ""; 
 		}
 
-		var id_distributor = ($('#id_distributor').val() != "" && $('#id_distributor').val() != null) ? $('#id_distributor').val().trim() : "";
+		var id_distributor = ($('#id_distributor').val() != "" && $('#id_distributor').val() != null) ? $('#id_distributor').val().trim() : null;
 		var id_proyek = ($('#id_proyek').val() != "" && $('#id_proyek').val() != null) ? $('#id_proyek').val().trim() : "";
 		var jenis = ($('#jenis').val() != "" && $('#jenis').val() != null) ? $('#jenis').val().trim() : "";
 		var status = ($('#status').val() != "" && $('#status').val() != null) ? $('#status').val().trim() : "";
