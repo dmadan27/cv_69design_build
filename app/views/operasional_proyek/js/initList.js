@@ -1,4 +1,23 @@
 $(document).ready(function(){
+    
+      //Date picker
+	$('#tgl_awal').datepicker({
+		autoclose: true,
+		format: "yyyy-mm-dd",
+		todayHighlight: true,
+		orientation:"bottom auto",
+		todayBtn: true,
+	  });
+
+	  //Date picker
+	$('#tgl_akhir').datepicker({
+		autoclose: true,
+		format: "yyyy-mm-dd",
+		todayHighlight: true,
+		orientation:"bottom auto",
+		todayBtn: true,
+	  });
+
 	var operasionalProyekTable = $("#operasionalProyekTable").DataTable({
         "language" : {
             "lengthMenu": "Tampilkan _MENU_ data/page",
@@ -51,11 +70,36 @@ $(document).ready(function(){
     // btn Export
     $('#exportExcel').on('click', function(){
         // if(this.value.trim() != "") 
-            window.location.href = BASE_URL+'operasional-proyek/export/';
-       
+            $('#modalTanggalExport').modal()         
     });
 
 });
+
+/**
+*
+*/
+function export_excel() {
+   
+    var tgl_awal = $('#tgl_awal').val().trim();
+    var tgl_akhir = $('#tgl_akhir').val().trim();
+
+    if(tgl_awal == '' && tgl_akhir != ''){
+        swal({
+            type: 'error',
+            title: 'Tanggal Awal Harus Diisi!',
+            text: 'Isi atau kosongkan keduanya !'
+        })
+    } else if(tgl_awal != '' && tgl_akhir == ''){
+        swal({
+            type: 'error',
+            title: 'Tanggal Akhir Harus Diisi!',
+            text: 'Isi atau kosongkan keduanya !'
+        })
+    } else {
+    window.location.href = BASE_URL+'operasional-proyek/export?tgl_awal=' + tgl_awal + '&tgl_akhir=' + tgl_akhir;
+    // $('#modalTanggalExport').hide();  
+    }
+}
 
 /**
 *

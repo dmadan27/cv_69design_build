@@ -867,6 +867,13 @@
 		}
 
 		/**
+		 * Method export
+		 */
+		public function export_detail($id){
+			
+		}
+
+		/**
 		 * Method set_validation
 		 * Proses validasi inputan data proyek
 		 * @param data {array}

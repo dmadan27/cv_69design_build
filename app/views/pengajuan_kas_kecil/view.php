@@ -27,7 +27,7 @@
 					
 					<ul class="nav nav-tabs">
               			<li class="active"><a href="#data-pkk" data-toggle="tab">Data Pengajuan Kas Kecil</a></li>
-                        <li class=""><a href="#data-detailPengajuanSKK" data-toggle="tab">Data Detail Pengajuan Sub Kas Kecil</a></li>
+                        <!-- <li class=""><a href="#data-detailPengajuanSKK" data-toggle="tab">Data Detail Pengajuan Sub Kas Kecil</a></li> -->
               			
             		</ul>
             		
@@ -50,28 +50,34 @@
                 							<td><?= $this->data['id_kas_kecil']; ?></td>
                 						</tr>
 
+										<!-- Nama Kas Kecil -->
+                						<tr>
+                							<td><strong>Kas Kecil</strong></td>
+                							<td><?= $this->data['kas_kecil']; ?></td>
+                						</tr>
+
                 						<!-- TGL -->
                 						<tr>
-                							<td><strong>Tanggal</strong></td>
+                							<td><strong>Tanggal Pengajuan</strong></td>
                 							<td><?= $this->data['tgl']; ?></td>
                 						</tr>
 
                 						<!-- Nama -->
                 						<tr>
-                							<td><strong>nama</strong></td>
+                							<td><strong>Nama Pengajuan</strong></td>
                 							<td><?= $this->data['nama']; ?></td>
                 						</tr>
                 						
 
                 						<!-- Total -->
                 						<tr>
-                							<td><strong>Total</strong></td>
+                							<td><strong>Total Pengajuan</strong></td>
                 							<td><?= $this->data['total']; ?></td>
                 						</tr>
 
                 						<!-- Status -->
                 						<tr>
-                							<td><strong>Status</strong></td>
+                							<td><strong>Status Pengajuan</strong></td>
                 							<td><?= $this->data['status']; ?></td>
                 						</tr>
                 					</table>
@@ -80,21 +86,21 @@
               			</div>
 
                         <!-- Data History Pembelian -->
-                        <div class="tab-pane" id="data-detailPengajuanSKK">
-                            <div class="row">
-                                <div class="col-md-12">
-                                        <div class="box">
+                        <!-- <div class="tab-pane" id="data-detailPengajuanSKK"> -->
+                            <!-- <div class="row"> -->
+                                <!-- <div class="col-md-12"> -->
+                                        <!-- <div class="box"> -->
                                         <!-- box header -->
-                                        <div class="box-header with-border">
-                                            <h3 class="box-title">Data Pengajuan Sub Kas Kecil</h3>
+                                        <!-- <div class="box-header with-border"> -->
+                                            <!-- <h3 class="box-title">Data Pengajuan Sub Kas Kecil</h3> -->
                                             <!-- export -->
-                                            <button type="button" class="pull-right btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button> 
-                                        </div>
+                                            <!-- <button type="button" class="pull-right btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>  -->
+                                        <!-- </div> -->
                                         <!-- box body -->
-                                        <div class="box-body">
-                                            <div class="row">
-                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                    <table id="mutasiSKKTable" class="table table-bordered table-hover" style="width:100%">
+                                        <!-- <div class="box-body"> -->
+                                            <!-- <div class="row"> -->
+                                                <!-- <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12"> -->
+                                                    <!-- <table id="mutasiSKKTable" class="table table-bordered table-hover" style="width:100%">
                                                         <thead>
                                                             <tr>
                                                                 <th class="text-right">No</th>
@@ -110,14 +116,14 @@
                                                         </thead>
                                                         <tbody>
                                                         </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>      
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                                    </table> -->
+                                                <!-- </div> -->
+                                            <!-- </div>       -->
+                                        <!-- </div> -->
+                                    <!-- </div> -->
+                                <!-- </div> -->
+                            <!-- </div> -->
+                        <!-- </div> -->
 
               			
 	              		<!-- /.tab-pane -->
@@ -131,7 +137,4 @@
 		</div>
 	</section>
 	<!-- /.content -->
-
-	
-
 </div>

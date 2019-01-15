@@ -55,4 +55,9 @@
 		 * public function export()
 		 */
 		abstract protected function export();
+
+		/**
+		 * public function export_detail()
+		 */
+		abstract protected function export_detail();
 	}

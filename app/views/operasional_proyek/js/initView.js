@@ -86,5 +86,9 @@ $(document).ready(function(){
         }
     });
 
-
 });
+
+function export_detail(id) {
+    console.log(id);
+    window.location.href = BASE_URL+'operasional-proyek/export-detail/?id=' + id;
+}

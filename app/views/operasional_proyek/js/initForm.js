@@ -64,25 +64,33 @@ function init () {
 		allowClear: true,
 	});
 
+	//Date picker
+	$('.datepicker').datepicker({
+		autoclose: true,
+		format: "yyyy-mm-dd",
+		todayHighlight: true,
+		orientation:"bottom auto",
+		todayBtn: true,
+	  });
 
-	 // Inisiasi Function
-	 setNamaProyek();
-	 setNamaBank();
-	 setnamaDistributor();
-	 setJenis();
-	 setStatus();
-	 setStatusLunas();
-}
+	  //Date picker
+	$('#tgl_awal').datepicker({
+		autoclose: true,
+		format: "yyyy-mm-dd",
+		todayHighlight: true,
+		orientation:"bottom auto",
+		todayBtn: true,
+	  });
 
- 	//Date picker
-    $('.datepicker').datepicker({
-      autoclose: true,
-      format: "yyyy-mm-dd",
-      todayHighlight: true,
-      orientation:"bottom auto",
-      todayBtn: true,
-    });
-
+	  //Date picker
+	$('#tgl_akhir').datepicker({
+		autoclose: true,
+		format: "yyyy-mm-dd",
+		todayHighlight: true,
+		orientation:"bottom auto",
+		todayBtn: true,
+	  });
+	  
     // input mask
     $('.input-mask-uang').inputmask({ 
     	alias : 'currency',
@@ -93,6 +101,17 @@ function init () {
     	clearMaskOnLostFocus: true, 
     	digitsOptional: false,
     });
+
+
+	 // Inisiasi Function
+	 setNamaProyek();
+	 setNamaBank();
+	 setnamaDistributor();
+	 setJenis();
+	 setStatus();
+	 setStatusLunas();
+}
+
 
  	// ------------------------------------------------
 	// FUNGSI DETAIL OPERSIONAL PROYEK
