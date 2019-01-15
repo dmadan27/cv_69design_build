@@ -125,18 +125,6 @@ CREATE OR REPLACE VIEW v_pengajuan_kas_kecil AS
 	FROM pengajuan_kas_kecil pkk
 	JOIN kas_kecil kk ON kk.id = pkk.id_kas_kecil;
 
--- View Pengajuan Kas Kecil_rev2 (harus d review dulu)
-CREATE OR REPLACE VIEW v_pengajuan_kas_kecil_rev2 AS
-	SELECT
-		pkk.id, pkk.nama, pkk.tgl, pkk.total, pkk.status,
-		kk.id id_kas_kecil, kk.nama nama_kas_kecil,
-		pskk.id_pengajuan_sub_kas_kecil
-	FROM pengajuan_kas_kecil pkk
-	JOIN kas_kecil kk ON kk.id = pkk.id_kas_kecil
-	JOIN detail_pengajuan_kas_kecil pskk ON pkk.id = pskk.id_pengajuan_sub_kas_kecil;
-
--- View Detail Pengajuan Kas Kecil
-
 -- View Operasional Proyek
 CREATE OR REPLACE VIEW v_operasional_proyek AS
 	SELECT 
