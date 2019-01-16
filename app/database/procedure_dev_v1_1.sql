@@ -387,20 +387,28 @@
 	delimiter //
 	CREATE PROCEDURE edit_detail_proyek(
 		id_param int,
+		id_proyek_param varchar(50),
 		id_bank_param int,
 		tgl_param date,
 		nama_param varchar(255),
 		total_param double(12,2),
 		is_DP_param char(1),
-		ket_param text
+		-- ket_param text
 		-- tgl_real date
 	)
 	BEGIN
+		DECLARE nama_bank_baru varchar(50);
+		DECLARE nama_bank_lama varchar(50);
+
 		DECLARE get_bank_sebelum int;
 		DECLARE get_total_sebelum double(12,2);
 
 		DECLARE get_saldo_bank_lama double(12,2);
 		DECLARE get_saldo_bank_baru double(12,2);
+
+		DECLARE ket_param text;
+		DECLARE ket_bank_lama_param text;
+		DECLARE ket_bank_baru_param text;
 
 		-- get id_bank dan total sebelum diedit
 		SELECT id_bank INTO get_bank_sebelum FROM detail_proyek WHERE id = id_param;
@@ -424,11 +432,19 @@
 			-- normalisasi saldo bank sebelum
 			UPDATE bank SET saldo = (get_saldo_bank_lama - get_total_sebelum) WHERE id = get_bank_sebelum;
 
+			-- get nama bank baru dan lama
+			SELECT nama INTO nama_bank_baru FROM bank WHERE id = id_bank_param;
+			SELECT nama INTO nama_bank_lama FROM bank WHERE id = id_bank_sebelum;
+
+			SELECT CONCAT('UANG KELUAR SEBESAR RP ', FORMAT(get_total_sebelum, 2, 'de_DE'), 
+				' DIKARENAKAN TRANSAKSI DI PROYEK (', id_proyek_param, ') - ', nama_param, 
+				' MELAKUKAN PERGANTIAN BANK KE ', nama_bank_baru) INTO ket_bank_lama_param;
+
 			-- insert mutasi bank lama
 			INSERT INTO mutasi_bank 
 				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 			VALUES 
-				(get_bank_sebelum, tgl_param, 0, get_total_sebelum, (get_saldo_bank_lama - get_total_sebelum), ket_param);
+				(get_bank_sebelum, tgl_param, 0, get_total_sebelum, (get_saldo_bank_lama - get_total_sebelum), ket_bank_lama_param);
 
 			-- get saldo bank baru
 			SELECT saldo INTO get_saldo_bank_baru FROM bank WHERE id = id_bank_param;
@@ -436,11 +452,15 @@
 			-- update saldo bank baru
 			UPDATE bank SET saldo = (get_saldo_bank_baru + total_param) WHERE id = id_bank_param;
 
+			SELECT CONCAT('UANG MASUK SEBESAR RP ', FORMAT(total_param, 2, 'de_DE'), 
+				' DIKARENAKAN TRANSAKSI DI PROYEK (', id_proyek_param, ') - ', nama_param, 
+				' MELAKUKAN PERGANTIAN BANK YANG SEBELUMNYA ', nama_bank_lama) INTO ket_bank_baru_param;
+
 			-- insert mutasi bank baru
 			INSERT INTO mutasi_bank 
 				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 			VALUES 
-				(id_bank_param, tgl_param, total_param, 0, (get_saldo_bank_baru + total_param), ket_param);
+				(id_bank_param, tgl_param, total_param, 0, (get_saldo_bank_baru + total_param), ket_bank_baru_param);
 		ELSE
 			-- jika bank sama
 			-- jika ada perubahan di total
@@ -452,6 +472,10 @@
 				UPDATE bank SET saldo = (get_saldo_bank_baru + (total_param - get_total_sebelum)) WHERE id = id_bank_param;
 				
 				IF total_param > get_total_sebelum THEN
+
+					SELECT CONCAT('UANG MASUK SEBESAR RP ', FORMAT((total_param - get_total_sebelum), 2, 'de_DE'), 
+						' DIKARENAKAN ADANYA PERUBAHAN DATA DI PROYEK (', id_proyek_param, ') - ', nama_param) INTO ket_param;
+					
 					-- insert mutasi
 					INSERT INTO mutasi_bank 
 						(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
@@ -459,6 +483,10 @@
 						(id_bank_param, tgl_param, (total_param - get_total_sebelum), 0, (get_saldo_bank_baru + (total_param - get_total_sebelum)), ket_param);
 				ELSE
 					IF total_param < get_total_sebelum THEN
+
+						SELECT CONCAT('UANG KELUAR SEBESAR RP ', FORMAT((get_total_sebelum - total_param), 2, 'de_DE'), 
+							' DIKARENAKAN ADANYA PERUBAHAN DATA DI PROYEK (', id_proyek_param, ') - ', nama_param) INTO ket_param;
+						
 						-- insert mutasi
 						INSERT INTO mutasi_bank 
 							(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
