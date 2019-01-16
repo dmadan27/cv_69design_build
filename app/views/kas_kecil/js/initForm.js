@@ -82,7 +82,7 @@ function getDataForm(){
 	 if($('#submit_kas_kecil').val().trim().toLowerCase() == "action-add"){
 	 	data.append('foto', $('#foto')[0].files[0]); //foto
 	 	data.append('email', $('#email').val().trim()); // email kas kecil
-		data.append('password', $('#email').val().trim()); // email kas kecil
+		data.append('password', $('#password').val().trim()); // password kas kecil
 	 	data.append('saldo',saldo); //saldo awal
 	 }
 
