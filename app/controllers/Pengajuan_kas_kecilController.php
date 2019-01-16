@@ -497,7 +497,8 @@
 			$excel->setActiveSheetIndex(0)->setCellValue('E3', "KAS KECIL"); // Set kolom H3 dengan tulisan "NAMA KAS KECIL"
 			$excel->setActiveSheetIndex(0)->setCellValue('F3', "TANGGAL"); // Set kolom D3 dengan tulisan "TANGGAL"
 			$excel->setActiveSheetIndex(0)->setCellValue('G3', "TOTAL"); // Set kolom E3 dengan tulisan "TOTAL"
-			$excel->setActiveSheetIndex(0)->setCellValue('H3', "STATUS"); // Set kolom F3 dengan tulisan "STATUS"
+			$excel->setActiveSheetIndex(0)->setCellValue('H3', "TOTAL DISETUJUI"); // Set kolom E3 dengan tulisan "TOTAL"
+			$excel->setActiveSheetIndex(0)->setCellValue('I3', "STATUS"); // Set kolom F3 dengan tulisan "STATUS"
 
 			
 
@@ -510,6 +511,7 @@
 			$excel->getActiveSheet()->getStyle('F3')->applyFromArray($style_col);
 			$excel->getActiveSheet()->getStyle('G3')->applyFromArray($style_col);
 			$excel->getActiveSheet()->getStyle('H3')->applyFromArray($style_col);
+			$excel->getActiveSheet()->getStyle('I3')->applyFromArray($style_col);
 
 			// Set height baris ke 1, 2 dan 3
 			$excel->getActiveSheet()->getRowDimension('1')->setRowHeight(20);
@@ -564,7 +566,8 @@
 				$excel->setActiveSheetIndex(0)->setCellValue('E'.$numrow, $data['nama_kas_kecil']);
 				$excel->setActiveSheetIndex(0)->setCellValue('F'.$numrow, $data['tgl']);
 				$excel->setActiveSheetIndex(0)->setCellValue('G'.$numrow, $data['total']);
-				$excel->setActiveSheetIndex(0)->setCellValue('H'.$numrow, $data['status']);
+				$excel->setActiveSheetIndex(0)->setCellValue('H'.$numrow, $data['total_disetujui']);
+				$excel->setActiveSheetIndex(0)->setCellValue('I'.$numrow, $data['status']);
 
 
 				// Apply style row yang telah kita buat tadi ke masing-masing baris (isi tabel)
@@ -576,6 +579,7 @@
 				$excel->getActiveSheet()->getStyle('F'.$numrow)->applyFromArray($style_row);
 				$excel->getActiveSheet()->getStyle('G'.$numrow)->applyFromArray($style_row);
 				$excel->getActiveSheet()->getStyle('H'.$numrow)->applyFromArray($style_row);
+				$excel->getActiveSheet()->getStyle('I'.$numrow)->applyFromArray($style_row);
 
 				$excel->getActiveSheet()->getRowDimension($numrow)->setRowHeight(20);
 				
@@ -592,6 +596,7 @@
 			$excel->getActiveSheet()->getColumnDimension('F')->setWidth(15); // Set width kolom F
 			$excel->getActiveSheet()->getColumnDimension('G')->setWidth(15); // Set width kolom G
 			$excel->getActiveSheet()->getColumnDimension('H')->setWidth(15); // Set width kolom H
+			$excel->getActiveSheet()->getColumnDimension('I')->setWidth(15); // Set width kolom H
 
 			// Set orientasi kertas jadi LANDSCAPE
 			$excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
