@@ -661,20 +661,19 @@
 				foreach($dataPengajuan as $row){
 					$no_urut++;
 
-					$namaStatus = $this->helper->getNamaStatusPengajuanSKK($row['status']);
 					switch ($row['status']) {
-						case "1":
-							$span = '<span class="label label-primary">'.$namaStatus.' %</span>';
+						case "PENDING":
+							$status = '<span class="label label-primary">'.$row['status'].' %</span>';
 							break;
-						case "2":
-							$span = '<span class="label label-warning">'.$namaStatus.' %</span>';
+						case "PERBAIKI":
+							$status = '<span class="label label-warning">'.$row['status'].' %</span>';
 							break;
-						case "3":
-						case "4":
-							$span = '<span class="label label-success">'.$namaStatus.' %</span>';
+						case "DISETUJUI":
+						case "LANGSUNG":
+							$status = '<span class="label label-success">'.$row['status'].' %</span>';
 							break;
 						default: // 5
-							$span = '<span class="label label-danger">'.$namaStatus.' %</span>';
+							$status = '<span class="label label-danger">'.$row['status'].' %</span>';
 					}
 
 					// button aksi
