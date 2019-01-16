@@ -120,7 +120,7 @@ CREATE OR REPLACE VIEW v_pengajuan_sub_kas_kecil_full AS
 -- View Pengajuan Kas Kecil
 CREATE OR REPLACE VIEW v_pengajuan_kas_kecil AS
 	SELECT
-		pkk.id, pkk.nama, pkk.tgl, pkk.total, pkk.status,
+		pkk.id, pkk.nama, pkk.tgl, pkk.total, pkk.total_disetujui, pkk.status,
 		kk.id id_kas_kecil, kk.nama nama_kas_kecil
 	FROM pengajuan_kas_kecil pkk
 	JOIN kas_kecil kk ON kk.id = pkk.id_kas_kecil;
