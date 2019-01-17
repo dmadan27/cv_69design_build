@@ -663,17 +663,17 @@
 
 					switch ($row['status']) {
 						case "PENDING":
-							$status = '<span class="label label-primary">'.$row['status'].' %</span>';
+							$status = '<span class="label label-primary">'.$row['status'].'</span>';
 							break;
 						case "PERBAIKI":
-							$status = '<span class="label label-warning">'.$row['status'].' %</span>';
+							$status = '<span class="label label-warning">'.$row['status'].'</span>';
 							break;
 						case "DISETUJUI":
 						case "LANGSUNG":
-							$status = '<span class="label label-success">'.$row['status'].' %</span>';
+							$status = '<span class="label label-success">'.$row['status'].'</span>';
 							break;
 						default: // 5
-							$status = '<span class="label label-danger">'.$row['status'].' %</span>';
+							$status = '<span class="label label-danger">'.$row['status'].'</span>';
 					}
 
 					// button aksi
