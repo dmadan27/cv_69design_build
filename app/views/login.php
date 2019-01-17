@@ -6,7 +6,8 @@
 	  	<meta charset="utf-8">
 	  	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	  	<title>Sistem Informasi Manajemen Arus Keuangan dan Proyek 69 Design Build | Log in</title>
-	  	<!-- Tell the browser to be responsive to screen width -->
+	  	<link rel="icon" href="<?= BASE_URL."assets/images/69design_icon.ico"; ?>" type='image/x-icon'>
+		<!-- Tell the browser to be responsive to screen width -->
 	  	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 	  	<!-- Bootstrap 3.3.7 -->
 	  	<link rel="stylesheet" href="<?= BASE_URL."assets/bower_components/bootstrap/dist/css/bootstrap.min.css"; ?>">

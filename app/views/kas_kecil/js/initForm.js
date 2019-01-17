@@ -1,4 +1,5 @@
 $(document).ready(function(){
+	init();
 	setStatus();
 	
 	$('#submit_kas_kecil').prop('disabled', true);
@@ -18,7 +19,6 @@ $(document).ready(function(){
 		$('#submit_kas_kecil').prop('value', 'action-add');
 		$('#submit_kas_kecil').prop('disabled', false);
 		$('#submit_kas_kecil').html('Simpan Data');
-		
 		$('#modalKasKecil').modal();
 		
 	});
@@ -26,7 +26,7 @@ $(document).ready(function(){
 	// submit kas kecil
 	$('#form_kas_kecil').submit(function(e){
 		e.preventDefault();
-		submit(edit_view);
+		submit();
 
 		return false;
 	});
@@ -65,12 +65,24 @@ $(document).ready(function(){
 });
 
 /**
+ * Function init
+ * Proses inisialisasi saat onload page
+ */
+function init() {
+	$('#submit_kas_kecil').prop('disabled', true);
+	$('#id').prop('disabled', true);
+
+	setStatus();
+}
+
+/**
 * Fungsi getDataForm()
 * untuk mendapatkan semua value di field
 * return berupa object data
 */
 function getDataForm(){
 	var data = new FormData();
+	var status = ($('#status').val() != "" && $('#status').val() != null) ? $('#status').val().trim() : "";
 	// var saldo = parseFloat($('#saldo').val().trim()) ? parseFloat($('#saldo').val().trim()) : $('#saldo').val().trim();
 
 	var saldo = ($('#saldo').inputmask) ? 
@@ -101,7 +113,7 @@ function getDataForm(){
 	data.append('nama', $('#nama').val().trim()); // nama kas kecil
 	data.append('alamat', $('#alamat').val().trim()); // alamat kas kecil
 	data.append('no_telp', $('#no_telp').val().trim()); // no_telp kas kecil
-	data.append('status', $('#status').val().trim()); // status kas kecil
+	data.append('status', status); // status kas kecil
 	data.append('action', $('#submit_kas_kecil').val().trim()); // action
 
 	return data;
@@ -110,7 +122,7 @@ function getDataForm(){
 /**
 *
 */
-function submit(edit_view){
+function submit(){
 	var data = getDataForm();
 
 	$.ajax({
@@ -125,29 +137,27 @@ function submit(edit_view){
 			$('#submit_kas_kecil').prop('disabled', true);
 			$('#submit_kas_kecil').prepend('<i class="fa fa-spin fa-refresh"></i> ');
 		},
-		success: function(output){
-			console.log(output);
-			if(!output.status) {
+		success: function(response){
+			console.log(response);
+			if(!response.success) {
 				$('#submit_kas_kecil').prop('disabled', false);
 				$('#submit_kas_kecil').html($('#submit_kas_kecil').text());
-				setError(output.error);
-				toastr.warning(output.notif.message, output.notif.title);
+				
+				setError(response.error);
 			}
 			else{
-				toastr.success(output.notif.message, output.notif.title);
+				
 				resetForm();
 				$("#modalKasKecil").modal('hide');
-				if(!edit_view) $("#kasKecilTable").DataTable().ajax.reload();
-				else {
-					setTimeout(function(){ 
-						location.reload(); 
-					}, 1000);
-				}
+				$("#kasKecilTable").DataTable().ajax.reload();
 			}
+			setNotif(response.notif);
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling
             console.log(jqXHR, textStatus, errorThrown);
             swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+            $('#submit_kas_kecil').prop('disabled', false);
+			$('#submit_kas_kecil').html($('#submit_kas_kecil').text());
         }
 	})
 }

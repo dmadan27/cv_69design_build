@@ -39,16 +39,16 @@
         /**
          * 
          */
-        public function getData($title, $title_header, $start_column_header, $start_row_data) {
-            // set title file
-            $this->excel->getActiveSheet(0)->setTitle($title);
+        public function getData($title_sheet, $title_header, $start_column_header, $start_row_data) {
+            // set title sheet
+            $this->excel->getActiveSheet(0)->setTitle($title_sheet);
 
             // set title header
             $this->excel->setActiveSheetIndex(0)->setCellValue('A1', $title_header);
 			$this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(TRUE); // Set bold kolom A1
-			$this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(15); // Set font size 15 untuk kolom A1
-            $this->excel->getActiveSheet()->getStyle('A1')->getAlignment()
-                        ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER); // Set text center untuk kolom A1
+			$this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(12); // Set font size 15 untuk kolom A1
+            $this->excel->getActiveSheet()->getStyle('A1')->getAlignment();
+                        // ->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER); // Set text center untuk kolom A1
             
             $column = 'A';
             $no = 1;
@@ -61,7 +61,6 @@
                     foreach($value as $header) {
                         $this->excel->setActiveSheetIndex(0)->setCellValue($column.$start_column_header, $header);
                         $column++;
-              
                     }
                     $column = 'A';
                 }

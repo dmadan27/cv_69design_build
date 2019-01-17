@@ -269,7 +269,7 @@ CREATE TABLE IF NOT EXISTS pengajuan_kas_kecil(
 	total double(12,2), -- total pengajuan ke kas besar
 	status char(1), -- status pengajuan, default 'pending'
 	-- 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI', 4: 'DITOLAK'
-	
+	total_disetujui double(12,2),
 
 	CONSTRAINT pk_pengajuan_kas_kecil_id PRIMARY KEY(id),
 	CONSTRAINT fk_pengajuan_kas_kecil_id_kas_kecil FOREIGN KEY(id_kas_kecil) REFERENCES kas_kecil(id)
@@ -279,17 +279,17 @@ CREATE TABLE IF NOT EXISTS pengajuan_kas_kecil(
 )ENGINE=InnoDb;
 
 -- Tabel Detail Pengajuan Kas Kecil
-CREATE TABLE IF NOT EXISTS detail_pengajuan_kas_kecil(
-	id int NOT NULL AUTO_INCREMENT, -- pk
-	id_pengajuan varchar(50), -- fk pengajuan kas kecil
-	id_pengajuan_sub_kas_kecil varchar(50), -- fk pengajuan sub kas kecil yg masih pending
+-- CREATE TABLE IF NOT EXISTS detail_pengajuan_kas_kecil(
+-- 	id int NOT NULL AUTO_INCREMENT, -- pk
+-- 	id_pengajuan varchar(50), -- fk pengajuan kas kecil
+-- 	id_pengajuan_sub_kas_kecil varchar(50), -- fk pengajuan sub kas kecil yg masih pending
 
-	CONSTRAINT pk_detail_pengajuan_kas_kecil_id PRIMARY KEY(id),
-	CONSTRAINT fk_detail_pengajuan_kas_kecil_id_pengajuan FOREIGN KEY(id_pengajuan) REFERENCES pengajuan_kas_kecil(id)
-		ON DELETE RESTRICT ON UPDATE CASCADE,
-	CONSTRAINT fk_detail_pengajuan_kas_kecil_id_pengajuan_sub_kas_kecil FOREIGN KEY(id_pengajuan_sub_kas_kecil) REFERENCES pengajuan_sub_kas_kecil(id)
-		ON DELETE RESTRICT ON UPDATE CASCADE
-)ENGINE=InnoDb;
+-- 	CONSTRAINT pk_detail_pengajuan_kas_kecil_id PRIMARY KEY(id),
+-- 	CONSTRAINT fk_detail_pengajuan_kas_kecil_id_pengajuan FOREIGN KEY(id_pengajuan) REFERENCES pengajuan_kas_kecil(id)
+-- 		ON DELETE RESTRICT ON UPDATE CASCADE,
+-- 	CONSTRAINT fk_detail_pengajuan_kas_kecil_id_pengajuan_sub_kas_kecil FOREIGN KEY(id_pengajuan_sub_kas_kecil) REFERENCES pengajuan_sub_kas_kecil(id)
+-- 		ON DELETE RESTRICT ON UPDATE CASCADE
+-- )ENGINE=InnoDb;
 
 -- Tabe Distributor / Toko / Supplier
 CREATE TABLE IF NOT EXISTS distributor(

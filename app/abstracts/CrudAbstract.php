@@ -59,5 +59,5 @@
 		/**
 		 * public function export_detail()
 		 */
-		abstract protected function export_detail();
+		// abstract protected function export_detail();
 	}

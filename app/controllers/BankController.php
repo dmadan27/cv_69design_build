@@ -422,11 +422,11 @@
 			$row = $this->BankModel->export();
 			$header = array_keys($row[0]); 
 
-			$this->excel->setProperty('bank','bank','bank');
+			$this->excel->setProperty('Data Bank Cv. 69 Design Build', 'Data Bank', 'List Semua Data Bank CV. 69 Design Build');
 			$this->excel->setData($header, $row);
-			$this->excel->getData('bank', 'bank', 4, 5 );
+			$this->excel->getData('Bank', 'Bank', 2, 3);
 
-			$this->excel->getExcel('bank');
+			$this->excel->getExcel('Data Bank');
 			
 		}
 
