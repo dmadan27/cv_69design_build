@@ -70,7 +70,8 @@ $(document).ready(function(){
     // btn Export
     $('#exportExcel').on('click', function(){
         // if(this.value.trim() != "") 
-            $('#modalTanggalExport').modal()         
+        $('#modalTanggalExport').modal()         
+        console.log('Button exportExcel Clicked');
     });
 
 });
@@ -80,6 +81,8 @@ $(document).ready(function(){
 */
 function export_excel() {
    
+    console.log('Export Detail Clicked');
+
     var tgl_awal = $('#tgl_awal').val().trim();
     var tgl_akhir = $('#tgl_akhir').val().trim();
 
@@ -97,7 +100,6 @@ function export_excel() {
         })
     } else {
     window.location.href = BASE_URL+'operasional-proyek/export?tgl_awal=' + tgl_awal + '&tgl_akhir=' + tgl_akhir;
-    // $('#modalTanggalExport').hide();  
     }
 }
 
@@ -105,6 +107,7 @@ function export_excel() {
 *
 */
 function getView(id){
+    console.log('%cButton View Opr Proyek clicked...', 'font-style: italic');
     window.location.href = BASE_URL+'operasional-proyek/detail/'+id;   
 }
 
@@ -112,6 +115,7 @@ function getView(id){
 *
 */
 function getEdit(id){
+    console.log('%cButton Edit Opr Proyek clicked...', 'font-style: italic');
     window.location.href = BASE_URL+'operasional-proyek/form/'+id;
    
 }

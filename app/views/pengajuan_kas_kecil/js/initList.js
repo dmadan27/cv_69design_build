@@ -32,7 +32,8 @@ $(document).ready(function(){
 
     // btn Export
     $('#exportExcel').on('click', function(){
-            $('#modalTanggalExport').modal()
+        $('#modalTanggalExport').modal()
+        console.log('Button exportExcel Clicked');
     });
        
 });
@@ -41,6 +42,8 @@ $(document).ready(function(){
     *
     */
     function export_excel() {
+
+    console.log('Export Detail Clicked');
 
     var tgl_awal = $('#tgl_awal').val().trim();
     var tgl_akhir = $('#tgl_akhir').val().trim();
@@ -59,8 +62,6 @@ $(document).ready(function(){
         })
     } else {
         window.location.href = BASE_URL+'pengajuan-kas-kecil/export?tgl_awal=' + tgl_awal + '&tgl_akhir=' + tgl_akhir;
-        console.log('export clicked');
-    // $('#modalTanggalExport').hide();  
     }
 }
 

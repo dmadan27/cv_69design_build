@@ -135,6 +135,74 @@
 		}
 
 		/**
+		*
+		*/
+		public function getExport($tgl_awal, $tgl_akhir) {
+
+			$level = $_SESSION['sess_level'];
+			$id = $_SESSION['sess_id'];
+			
+			if($level == "KAS BESAR"){
+				
+				if($tgl_awal == '' && $tgl_akhir == ''){
+					$query = "SELECT * FROM v_pengajuan_kas_kecil_export";
+					$statement = $this->koneksi->prepare($query);
+					$statement->execute();
+				} else {
+					$query = "SELECT * FROM v_pengajuan_kas_kecil_export WHERE TANGGAL BETWEEN :tgl_awal AND :tgl_akhir;";
+					$statement = $this->koneksi->prepare($query);
+					$statement->execute(
+						array(
+							':tgl_awal' => $tgl_awal,
+							':tgl_akhir' => $tgl_akhir
+						)
+					);
+				}
+
+			} else if($level == "KAS KECIL"){
+
+				if($tgl_awal == '' && $tgl_akhir == ''){
+					$query = "SELECT * FROM v_pengajuan_kas_kecil_export WHERE id_kas_kecil = :id;";
+					$statement = $this->koneksi->prepare($query);
+					$statement->execute(
+						array(
+							':id' => $id,
+						)
+					);
+				} else {
+					$query = "SELECT * FROM v_pengajuan_kas_kecil_export WHERE TANGGAL BETWEEN :tgl_awal AND :tgl_akhir AND id_kas_kecil = :id;";
+					$statement = $this->koneksi->prepare($query);
+					$statement->execute(
+						array(
+							':id' => $id,
+							':tgl_awal' => $tgl_awal,
+							':tgl_akhir' => $tgl_akhir
+						)
+					);
+				}
+			}
+
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+	
+			$row = array();
+
+			foreach ($result as $data){
+				if($data['STATUS'] == '0'){
+					$data['STATUS'] = "PENDING";
+				} else if($data['STATUS'] == '1'){
+					$data['STATUS'] = "DIPERBAIKI";
+				} else if($data['STATUS'] == '2'){
+					$data['STATUS'] = "DISETUJUI";
+				} else if($data['STATUS'] == '3'){
+					$data['STATUS'] = "DITOLAK";
+				}	
+				$row[] = $data;
+			}
+
+			return $row;
+		}
+
+		/**
 		* 
 		*/
 		public function insert($data){

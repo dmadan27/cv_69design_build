@@ -23,7 +23,7 @@ $(document).ready(function(){
         processing: true,
         serverSide: true,
         ajax: {
-            url: BASE_URL+"operasional-proyek/get-list-history-pembelian/"+$('#id').val(),
+            url: BASE_URL+"operasional-proyek/get-list-history-pembelian/"+$('#id').val().trim(),
             type: 'POST',
             data: {
 
@@ -66,7 +66,7 @@ $(document).ready(function(){
         processing: true,
         serverSide: true,
         ajax: {
-            url: BASE_URL+"operasional-proyek/get-detail-operasional-proyek/"+$('#id').val(),
+            url: BASE_URL+"operasional-proyek/get-detail-operasional-proyek/"+$('#id').val().trim(),
             type: 'POST',
             data: {
 
@@ -91,4 +91,9 @@ $(document).ready(function(){
 function export_detail(id) {
     console.log(id);
     window.location.href = BASE_URL+'operasional-proyek/export-detail/?id=' + id;
+}
+
+function export_history(id) {
+    console.log(id);
+    window.location.href = BASE_URL+'operasional-proyek/export-history/?id=' + id;
 }

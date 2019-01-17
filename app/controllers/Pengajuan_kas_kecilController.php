@@ -24,6 +24,7 @@
 			$this->model('UserModel');
 			$this->helper();
 			$this->validation();
+			$this->excel();
 		}	
 
 		/**
@@ -440,180 +441,19 @@
 		*	Export data ke format Excel
 		*/
 		public function export(){
-			include ('app/library/export_phpexcel/koneksi.php');
-			
-			// Load plugin PHPExcel nya
-			require_once 'app/library/export_phpexcel/PHPExcel/PHPExcel.php';
-
-			$excel = new PHPExcel();
-
-			// Settingan awal fil excel
-			$excel->getProperties()->setCreator('69 Design Build')
-								   ->setLastModifiedBy('PC Personal')
-								   ->setTitle("Data Pengajuan Kas Kecil")
-								   ->setSubject("Pengajuan Kas Kecil")
-								   ->setDescription("Laporan Semua Data Pengajuan Kas Kecil")
-								   ->setKeywords("Data Pengajuan Kas Kecil");
-
-			// Buat sebuah variabel untuk menampung pengaturan style dari header tabel
-			$style_col = array(
-				'font' => array('bold' => true), // Set font nya jadi bold
-				'alignment' => array(
-					'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER, // Set text jadi ditengah secara horizontal (center)
-					'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER // Set text jadi di tengah secara vertical (middle)
-				),
-				'borders' => array(
-					'top' => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border top dengan garis tipis
-					'right' => array('style'  => PHPExcel_Style_Border::BORDER_THIN),  // Set border right dengan garis tipis
-					'bottom' => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border bottom dengan garis tipis
-					'left' => array('style'  => PHPExcel_Style_Border::BORDER_THIN) // Set border left dengan garis tipis
-				)
-			);
-
-			// Buat sebuah variabel untuk menampung pengaturan style dari isi tabel
-			$style_row = array(
-				'alignment' => array(
-					'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER // Set text jadi di tengah secara vertical (middle)
-				),
-				'borders' => array(
-					'top' => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border top dengan garis tipis
-					'right' => array('style'  => PHPExcel_Style_Border::BORDER_THIN),  // Set border right dengan garis tipis
-					'bottom' => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border bottom dengan garis tipis
-					'left' => array('style'  => PHPExcel_Style_Border::BORDER_THIN) // Set border left dengan garis tipis
-				)
-			);
-
-			$excel->setActiveSheetIndex(0)->setCellValue('A1', "DATA PENGAJUAN KAS KECIL"); // Set kolom A1 dengan tulisan "DATA PENGAJUAN KAS KECIL"
-			$excel->getActiveSheet()->mergeCells('A1:H1'); // Set Merge Cell pada kolom A1 sampai G1
-			$excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(TRUE); // Set bold kolom A1
-			$excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(15); // Set font size 15 untuk kolom A1
-			$excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER); // Set text center untuk kolom A1
-
-			// Buat header tabel nya pada baris ke 3
-			$excel->setActiveSheetIndex(0)->setCellValue('A3', "NO"); // Set kolom A3 dengan tulisan "NO"
-			$excel->setActiveSheetIndex(0)->setCellValue('B3', "ID"); // Set kolom B3 dengan tulisan "NO"
-			$excel->setActiveSheetIndex(0)->setCellValue('C3', "NAMA"); // Set kolom C3 dengan tulisan "NAMA"
-			$excel->setActiveSheetIndex(0)->setCellValue('D3', "ID KAS KECIL"); // Set kolom G3 dengan tulisan "ID KAS KECIL"
-			$excel->setActiveSheetIndex(0)->setCellValue('E3', "KAS KECIL"); // Set kolom H3 dengan tulisan "NAMA KAS KECIL"
-			$excel->setActiveSheetIndex(0)->setCellValue('F3', "TANGGAL"); // Set kolom D3 dengan tulisan "TANGGAL"
-			$excel->setActiveSheetIndex(0)->setCellValue('G3', "TOTAL"); // Set kolom E3 dengan tulisan "TOTAL"
-			$excel->setActiveSheetIndex(0)->setCellValue('H3', "TOTAL DISETUJUI"); // Set kolom E3 dengan tulisan "TOTAL"
-			$excel->setActiveSheetIndex(0)->setCellValue('I3', "STATUS"); // Set kolom F3 dengan tulisan "STATUS"
-
-			
-
-			// Apply style header yang telah kita buat tadi ke masing-masing kolom header
-			$excel->getActiveSheet()->getStyle('A3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('B3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('C3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('D3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('E3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('F3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('G3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('H3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('I3')->applyFromArray($style_col);
-
-			// Set height baris ke 1, 2 dan 3
-			$excel->getActiveSheet()->getRowDimension('1')->setRowHeight(20);
-			$excel->getActiveSheet()->getRowDimension('2')->setRowHeight(20);
-			$excel->getActiveSheet()->getRowDimension('3')->setRowHeight(20);
 			
 			$tgl_awal = $_GET['tgl_awal'];
 			$tgl_akhir = $_GET['tgl_akhir'];
-			$level = $_SESSION['sess_level'];
-			$id = $_SESSION['sess_id'];
-			
-			if($level == "KAS BESAR"){
-				
-				if($tgl_awal == '' && $tgl_akhir == ''){
-					$query = "SELECT * FROM v_pengajuan_kas_kecil";
-				} else {
-					$query = "SELECT * FROM v_pengajuan_kas_kecil WHERE tgl BETWEEN '$tgl_awal' AND '$tgl_akhir'";
-				}
 
-			} else if($level == "KAS KECIL"){
+			$row = $this->Pengajuan_kasKecilModel->getExport($tgl_awal, $tgl_akhir);
+			$header = array_keys($row[0]); 
+			$header[6] = 'ID KAS KECIL';
+			$this->excel->setProperty('Laporan Pengajuan Kas Kecil','Laporan Pengajuan Kas Kecil','Data Laporan Pengajuan Kas Kecil');
+			$this->excel->setData($header, $row);
+			$this->excel->getData('Data Pengajuan Kas Kecil', 'Data Pengajuan Kas Kecil', 4, 5 );
 
-				if($tgl_awal == '' && $tgl_akhir == ''){
-					$query = "SELECT * FROM v_pengajuan_kas_kecil WHERE id_kas_kecil = '$id'";
-				} else {
-					$query = "SELECT * FROM v_pengajuan_kas_kecil WHERE tgl BETWEEN '$tgl_awal' AND '$tgl_akhir' AND id_kas_kecil = '$id'";
-				}
+			$this->excel->getExcel('Data Pengajuan Kas Kecil');		
 
-			}
-
-			// Buat query untuk menampilkan semua data pengajuan KK
-			$sql = $pdo->prepare($query);
-			$sql->execute(); // Eksekusi querynya
-
-			$no = 1; // Untuk penomoran tabel, di awal set dengan 1
-			$numrow = 4; // Set baris pertama untuk isi tabel adalah baris ke 4
-			while($data = $sql->fetch()){ // Ambil semua data dari hasil eksekusi $sql
-
-				if($data['status'] == '0'){
-					$data['status'] = "PENDING";
-				} else if($data['status'] == '1'){
-					$data['status'] = "DIPERBAIKI";
-				} else if($data['status'] == '2'){
-					$data['status'] = "DISETUJUI";
-				} else if($data['status'] == '3'){
-					$data['status'] = "DITOLAK";
-				}
-
-				$excel->setActiveSheetIndex(0)->setCellValue('A'.$numrow, $no);
-				$excel->setActiveSheetIndex(0)->setCellValue('B'.$numrow, $data['id']);
-				$excel->setActiveSheetIndex(0)->setCellValue('C'.$numrow, $data['nama']);
-				$excel->setActiveSheetIndex(0)->setCellValue('D'.$numrow, $data['id_kas_kecil']);
-				$excel->setActiveSheetIndex(0)->setCellValue('E'.$numrow, $data['nama_kas_kecil']);
-				$excel->setActiveSheetIndex(0)->setCellValue('F'.$numrow, $data['tgl']);
-				$excel->setActiveSheetIndex(0)->setCellValue('G'.$numrow, $data['total']);
-				$excel->setActiveSheetIndex(0)->setCellValue('H'.$numrow, $data['total_disetujui']);
-				$excel->setActiveSheetIndex(0)->setCellValue('I'.$numrow, $data['status']);
-
-
-				// Apply style row yang telah kita buat tadi ke masing-masing baris (isi tabel)
-				$excel->getActiveSheet()->getStyle('A'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('B'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('C'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('D'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('E'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('F'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('G'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('H'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('I'.$numrow)->applyFromArray($style_row);
-
-				$excel->getActiveSheet()->getRowDimension($numrow)->setRowHeight(20);
-				
-				$no++; // Tambah 1 setiap kali looping
-				$numrow++; // Tambah 1 setiap kali looping
-			}
-
-			// Set width kolom
-			$excel->getActiveSheet()->getColumnDimension('A')->setWidth(5); // Set width kolom A
-			$excel->getActiveSheet()->getColumnDimension('B')->setWidth(15); // Set width kolom B
-			$excel->getActiveSheet()->getColumnDimension('C')->setWidth(45); // Set width kolom C
-			$excel->getActiveSheet()->getColumnDimension('D')->setWidth(15); // Set width kolom D
-			$excel->getActiveSheet()->getColumnDimension('E')->setWidth(15); // Set width kolom E
-			$excel->getActiveSheet()->getColumnDimension('F')->setWidth(15); // Set width kolom F
-			$excel->getActiveSheet()->getColumnDimension('G')->setWidth(15); // Set width kolom G
-			$excel->getActiveSheet()->getColumnDimension('H')->setWidth(15); // Set width kolom H
-			$excel->getActiveSheet()->getColumnDimension('I')->setWidth(15); // Set width kolom H
-
-			// Set orientasi kertas jadi LANDSCAPE
-			$excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
-
-			// Set judul file excel nya
-			$excel->getActiveSheet(0)->setTitle("Laporan Pengajuan Kas Kecil");
-			$excel->setActiveSheetIndex(0);
-
-			// Proses file excel
-			header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-			header('Content-Disposition: attachment; filename="Data Pengajuan Kas Kecil.xlsx"'); // Set nama file excel nya
-			header('Cache-Control: max-age=0');
-
-			$write = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
-			ob_end_clean();
-			$write->save('php://output');
-			
 		}
 
 		/**

@@ -90,7 +90,8 @@
 			header('Content-Disposition: attachment; filename="'.$title.'".xlsx"'); // Set nama file excel nya
 			header('Cache-Control: max-age=0');
 
-			$write = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
+            $write = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
+            ob_end_clean();
 			$write->save('php://output');
 			exit;
         }

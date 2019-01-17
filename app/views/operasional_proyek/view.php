@@ -73,7 +73,7 @@
 																</tr>
 																<tr>
 																	<td><strong>Status Pengajuan</strong></td>
-																	<td><?=  $o_proyek['status_pengajuan'] ?></td>
+																	<td><?=  $o_proyek['jenis_pembayaran'] ?></td>
 																</tr>
 																<tr>
 																	<td><strong>Status Lunas</strong></td>
@@ -199,7 +199,7 @@
 													<div class="box-body">
 														<div class="form-group">
 															<!-- export -->
-															<button type="button" class="btn btn-success btn-flat" id="exportExcel_pengajuan"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+															<button type="button" class="btn btn-success btn-flat" id="exportExcel_history" onclick="export_history('<?php echo $id;?>')"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 														</div>
 														<table id="historyPembelian" class="table table-bordered table-hover" style="width: 100%;">
 															<thead>

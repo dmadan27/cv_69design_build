@@ -162,10 +162,67 @@
 		}
 
 		/**
+		* 	Get Data Operasional Proyek Untuk Di Export
+		*/
+		public function getExport($tgl_awal, $tgl_akhir) {
+			if($tgl_awal == '' && $tgl_akhir == ''){
+				$query = "SELECT * FROM v_operasional_proyek_export";
+			} else {
+				$query = "SELECT * FROM v_operasional_proyek_export WHERE TANGGAL BETWEEN :tgl_awal AND :tgl_akhir;";
+			}
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':tgl_awal' => $tgl_awal,
+					':tgl_akhir' => $tgl_akhir
+				)
+			);
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
+
+		/**
+		* 	Get Data Operasional Proyek Untuk Di Export Detail
+		*/
+		public function getExportDetail($id) {
+			
+			$query = "SELECT * FROM v_detail_operasional_proyek_export WHERE ID = :id;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id' => $id,
+				)
+			);
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
+
+		/**
+		* 	Get Data Operasional Proyek Untuk Di Export History Pembelian
+		*/
+		public function getExportHistory($id) {
+			
+			$query = "SELECT * FROM v_history_pembelian_operasionalProyek_export WHERE ID = :id;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id' => $id,
+				)
+			);
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
+
+		/**
 		* 
 		*/
 		public function insert($data){
 			$dataOperasionalProyek = $data['dataOperasionalProyek'];
+			if($dataOperasionalProyek['id_distributor'] == ''){
+				$dataOperasionalProyek['id_distributor'] = NULL;
+			}
 			$dataDetail = $data['listDetail'];
 			
 			$response = true;
@@ -428,6 +485,7 @@
 		* 
 		*/
 		public function update($data){
+			
 
 			$response = true;
 
@@ -435,6 +493,11 @@
 				$this->koneksi->beginTransaction();
 
 				if($data['dataOperasionalProyek']['status'] == "TUNAI" && $data['dataOperasionalProyek']['status_lunas'] == "LUNAS"){
+					// print_r($data['dataOperasionalProyek']);
+					// exit;
+					if($data['dataOperasionalProyek']['id_distributor'] == ''){
+						$data['dataOperasionalProyek']['id_distributor'] = NULL;
+					}
 
 					if(empty($data['dataDetail'])){
 						$id = '';
@@ -444,10 +507,18 @@
 					}
 					
 				} else if($data['dataOperasionalProyek']['status'] == "TUNAI" && $data['dataOperasionalProyek']['status_lunas'] == "BELUM LUNAS"){
-				
+					
+					if($data['dataOperasionalProyek']['id_distributor'] == ''){
+						$data['dataOperasionalProyek']['id_distributor'] = NULL;
+					}
+
 					$this->edit_OperasionalProyek_BelumLunas($data['dataOperasionalProyek']);
 
 				} else if($data['dataOperasionalProyek']['status'] == "KREDIT" && $data['dataOperasionalProyek']['status_lunas'] == "LUNAS"){
+
+					if($data['dataOperasionalProyek']['id_distributor'] == ''){
+						$data['dataOperasionalProyek']['id_distributor'] = NULL;
+					}
 
 					//Mendapatkan Total Detail Operasional Proyek
 					$sumDetail = 0;
@@ -460,8 +531,13 @@
 					if($sumDetail == $data['dataOperasionalProyek']['total']){
 
 						foreach ($data['dataDetail'] as $index => $row) {
-							if($row['aksi'] == 'edit'){
+							if($row['aksi'] == 'edit' && !$row['delete']){
 								$this->updateDetail_OperasionalProyek($row);
+							} else if($row['aksi'] == 'tambah' && !$row['delete']){
+								$this->insertDetailOperasionalProyek($row,$data['dataOperasionalProyek']['id']);
+							} else if($row['delete']){
+								$this->deleteDetailOperasionalProyek($row['id']);
+								$this->catatMutasi($row);
 							}
 						}
 
@@ -476,6 +552,10 @@
 
 
 				} else if($data['dataOperasionalProyek']['status'] == "KREDIT" && $data['dataOperasionalProyek']['status_lunas'] == "BELUM LUNAS"){
+
+					if($data['dataOperasionalProyek']['id_distributor'] == ''){
+						$data['dataOperasionalProyek']['id_distributor'] = NULL;
+					}
 
 					//Mendapatkan Total Detail Operasional Proyek
 					$sumDetail = 0;
@@ -541,11 +621,26 @@
 		* 	Edit Data Operasional Proyek Tunai Lunas
 		*/
 		private function edit_operasionalProyek($id_detail, $data) {
+			// if($data['id_distributor'] !== NULL){
+	
+			// 	$update_sql = "UPDATE operasional_proyek SET id_distributor = :id_distributor WHERE id = :id";
+			// 	$stmt = $this->koneksi->prepare($update_sql);
+			// 	$stmt->execute(
+			// 		array(
+			// 			':id' => $data['id'],
+			// 			':id_distributor' => $data['id_distributor']
+			// 		)
+			// 	);
+			// 	$stmt->closeCursor();
+
+			// }
+	
 			$query = "CALL edit_operasional_proyek (
 				:id, 
 				:id_detail,
 				:id_proyek, 
-				:id_bank, 
+				:id_bank,
+				:id_distributor, 
 				:tgl, 
 				:nama, 
 				:jenis,  
@@ -563,6 +658,7 @@
 					':id_detail' => $id_detail,
 					':id_proyek' => $data['id_proyek'],
 					':id_bank' => $data['id_bank'],
+					':id_distributor' => $data['id_distributor'],
 					':tgl' => $data['tgl'],
 					':nama' => $data['nama'],
 					':jenis' => $data['jenis'],
@@ -584,6 +680,7 @@
 			$query = "CALL edit_operasional_proyek_BelumLunas (
 				:id, 
 				:id_proyek, 
+				:id_distributor,
 				:tgl, 
 				:nama, 
 				:jenis,  
@@ -599,6 +696,7 @@
 				array(
 					':id' => $data['id'],
 					':id_proyek' => $data['id_proyek'],
+					':id_distributor' => $data['id_distributor'],
 					':tgl' => $data['tgl'],
 					':nama' => $data['nama'],
 					':jenis' => $data['jenis'],
@@ -616,9 +714,12 @@
 		* 	Edit Data Operasional Proyek Jenis Pembayaran Kredit
 		*/
 		private function edit_operasionalProyek_kredit($data) {
+			// print_r($data);
+			// exit;
 			$query = "CALL edit_operasional_proyek_kredit (
 				:id, 
 				:id_proyek, 
+				:id_distributor,
 				:tgl, 
 				:nama, 
 				:jenis,  
@@ -634,6 +735,7 @@
 				array(
 					':id' => $data['id'],
 					':id_proyek' => $data['id_proyek'],
+					':id_distributor' => $data['id_distributor'],
 					':tgl' => $data['tgl'],
 					':nama' => $data['nama'],
 					':jenis' => $data['jenis'],

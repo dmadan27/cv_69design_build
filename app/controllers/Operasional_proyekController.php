@@ -22,6 +22,7 @@
 			$this->model('Operasional_proyekModel');
 			$this->helper();
 			$this->validation();
+			$this->excel();
 		}
 
 		/**
@@ -187,6 +188,8 @@
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
 				$dataOperasionalProyek = isset($_POST['dataOperasionalProyek']) ? json_decode($_POST['dataOperasionalProyek'], true) : false;
+				// print_r($dataOperasionalProyek);
+				// exit;
 				$dataDetail = isset($_POST['listDetail']) ? json_decode($_POST['listDetail'], true) : false;
 				
 				if(!$data){
@@ -336,7 +339,6 @@
 
 		/**
 		* Method get edit
-		* Get data detail proyek dan detail skk
 		* Request berupa POST dan output berupa JSON
 		* Parameter id => id proyek
 		*/
@@ -519,18 +521,18 @@
 				'nama_kas_besar' => $dataOperasionalProyek['nama_kas_besar'],
 				'id_distributor' => $dataOperasionalProyek['id_distributor'],
 				'nama_distributor' => $dataOperasionalProyek['nama_distributor'],
-				'tgl_pengajuan' => $dataOperasionalProyek['tgl_pengajuan'],
+				'tgl_pengajuan' => $this->helper->cetakTgl($dataOperasionalProyek['tgl_pengajuan'], 'full'),
 				'nama_pengajuan' => $dataOperasionalProyek['nama_pengajuan'],
 				'jenis_pengajuan' => $dataOperasionalProyek['jenis_pengajuan'],
-				'total_pengajuan' => $dataOperasionalProyek['total_pengajuan'],
-				'sisa_pengajuan' => $dataOperasionalProyek['sisa_pengajuan'],
-				'status_pengajuan' => $dataOperasionalProyek['status_pengajuan'],
+				'total_pengajuan' => $this->helper->cetakRupiah($dataOperasionalProyek['total_pengajuan']),
+				'sisa_pengajuan' => $this->helper->cetakRupiah($dataOperasionalProyek['sisa_pengajuan']),
+				'jenis_pembayaran' => $dataOperasionalProyek['jenis_pembayaran'],
 				'status_lunas' => $dataOperasionalProyek['status_lunas'],
 				'keterangan' => $dataOperasionalProyek['keterangan'],
 				'id_bank' => $dataOperasionalProyek['id_bank'],
 				'nama_detail' => $dataOperasionalProyek['nama_detail'],
 				'tgl_detail' => $dataOperasionalProyek['tgl_detail'],
-				'total_detail' => $dataOperasionalProyek['total_detail'],
+				'total_detail' => $this->helper->cetakRupiah($dataOperasionalProyek['total_detail']),
 					
 			);
 
@@ -545,7 +547,7 @@
 				'id' => $dataHistoryPembelanjaan['id'],
 				'tgl' => $dataHistoryPembelanjaan['tgl'],
 				'nama' => $dataHistoryPembelanjaan['nama'],
-				'total' => $dataHistoryPembelanjaan['total'],
+				'total' => $this->helper->cetakRupiah($dataHistoryPembelanjaan['total']),
 				'status_lunas' => $dataHistoryPembelanjaan['status_lunas'],
 				'ID_DISTRIBUTOR' => $dataHistoryPembelanjaan['ID_DISTRIBUTOR'],
 				'NAMA_DISTRIBUTOR' => $dataHistoryPembelanjaan['NAMA_DISTRIBUTOR'],
@@ -632,171 +634,17 @@
 		*	Export data ke format Excel
 		*/
 		public function export(){
-			include ('app/library/export_phpexcel/koneksi.php');
-			
-			// Load plugin PHPExcel nya
-			require_once 'app/library/export_phpexcel/PHPExcel/PHPExcel.php';
-
-			$excel = new PHPExcel();
-
-			// Settingan awal fil excel
-			$excel->getProperties()->setCreator('69 Design Build')
-								   ->setLastModifiedBy('PC Personal')
-								   ->setTitle("Data Operasional Proyek")
-								   ->setSubject("Operasional Proyek")
-								   ->setDescription("Laporan Semua Data Operasional Proyek")
-								   ->setKeywords("Data Operasional Proyek");
-
-			// Buat sebuah variabel untuk menampung pengaturan style dari header tabel
-			$style_col = array(
-				'font' => array('bold' => true), // Set font nya jadi bold
-				'alignment' => array(
-					'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER, // Set text jadi ditengah secara horizontal (center)
-					'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER // Set text jadi di tengah secara vertical (middle)
-				),
-				'borders' => array(
-					'top' => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border top dengan garis tipis
-					'right' => array('style'  => PHPExcel_Style_Border::BORDER_THIN),  // Set border right dengan garis tipis
-					'bottom' => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border bottom dengan garis tipis
-					'left' => array('style'  => PHPExcel_Style_Border::BORDER_THIN) // Set border left dengan garis tipis
-				)
-			);
-
-			// Buat sebuah variabel untuk menampung pengaturan style dari isi tabel
-			$style_row = array(
-				'alignment' => array(
-					'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER // Set text jadi di tengah secara vertical (middle)
-				),
-				'borders' => array(
-					'top' => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border top dengan garis tipis
-					'right' => array('style'  => PHPExcel_Style_Border::BORDER_THIN),  // Set border right dengan garis tipis
-					'bottom' => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border bottom dengan garis tipis
-					'left' => array('style'  => PHPExcel_Style_Border::BORDER_THIN) // Set border left dengan garis tipis
-				)
-			);
-
-			$excel->setActiveSheetIndex(0)->setCellValue('A1', "DATA OPERASIONAL PROYEK"); // Set kolom A1 dengan tulisan "DATA SISWA"
-			$excel->getActiveSheet()->mergeCells('A1:H1'); // Set Merge Cell pada kolom A1 sampai F1
-			$excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(TRUE); // Set bold kolom A1
-			$excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(15); // Set font size 15 untuk kolom A1
-			$excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER); // Set text center untuk kolom A1
-
-			// Buat header tabel nya pada baris ke 3
-			$excel->setActiveSheetIndex(0)->setCellValue('A3', "NO"); // Set kolom A3 dengan tulisan "NO"
-			$excel->setActiveSheetIndex(0)->setCellValue('B3', "ID"); // Set kolom B3 dengan tulisan "ID"
-			$excel->setActiveSheetIndex(0)->setCellValue('C3', "ID PROYEK"); // Set kolom C3 dengan tulisan "ID PROYEK"
-			$excel->setActiveSheetIndex(0)->setCellValue('D3', "KAS BESAR"); // Set kolom D3 dengan tulisan "KAS BESAR"
-			$excel->setActiveSheetIndex(0)->setCellValue('E3', "DISTRIBUTOR"); // Set kolom E3 dengan tulisan "DISTRIBUTOR"
-			$excel->setActiveSheetIndex(0)->setCellValue('F3', "TANGGAL"); // Set kolom F3 dengan tulisan "TANGGAL"
-			$excel->setActiveSheetIndex(0)->setCellValue('G3', "JENIS"); // Set kolom G3 dengan tulisan "JENIS OPERASIONAL"
-			$excel->setActiveSheetIndex(0)->setCellValue('H3', "NAMA"); // Set kolom H3 dengan tulisan "NAMA"
-			$excel->setActiveSheetIndex(0)->setCellValue('I3', "TOTAL PENGAJUAN"); // Set kolom I3 dengan tulisan "TOTAL PENGAJUAN"
-			$excel->setActiveSheetIndex(0)->setCellValue('J3', "JENIS PEMBAYARAN"); // Set kolom J3 dengan tulisan "JENIS PEMBAYARAN"
-			$excel->setActiveSheetIndex(0)->setCellValue('K3', "STATUS PEMBAYARAN"); // Set kolom K3 dengan tulisan "STATUS PEMBAYARAN"
-
-
-
-			// Apply style header yang telah kita buat tadi ke masing-masing kolom header
-			$excel->getActiveSheet()->getStyle('A3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('B3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('C3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('D3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('E3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('F3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('G3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('H3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('I3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('J3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('K3')->applyFromArray($style_col);
-
-
-			// Set height baris ke 1, 2 dan 3
-			$excel->getActiveSheet()->getRowDimension('1')->setRowHeight(20);
-			$excel->getActiveSheet()->getRowDimension('2')->setRowHeight(20);
-			$excel->getActiveSheet()->getRowDimension('3')->setRowHeight(20);
-
 			$tgl_awal = $_GET['tgl_awal'];
 			$tgl_akhir = $_GET['tgl_akhir'];
-			
-			if($tgl_awal == '' && $tgl_akhir == ''){
-				$query = "SELECT * FROM v_operasional_proyek";
-			} else {
-				$query = "SELECT * FROM v_operasional_proyek WHERE tgl_pengajuan BETWEEN '$tgl_awal' AND '$tgl_akhir'";
-			}
 
-			// Buat query untuk menampilkan semua data operasional proyek
-			$sql = $pdo->prepare($query);
-			$sql->execute(); // Eksekusi querynya
-			// print_r($sql);
-			// exit;
-			$no = 1; // Untuk penomoran tabel, di awal set dengan 1
-			$numrow = 4; // Set baris pertama untuk isi tabel adalah baris ke 4
-			while($data = $sql->fetch()){ // Ambil semua data dari hasil eksekusi $sql
-				// print_r($data);
-				// exit;
-				$excel->setActiveSheetIndex(0)->setCellValue('A'.$numrow, $no);
-				$excel->setActiveSheetIndex(0)->setCellValue('B'.$numrow, $data['id']);
-				$excel->setActiveSheetIndex(0)->setCellValue('C'.$numrow, $data['id_proyek']);
-				$excel->setActiveSheetIndex(0)->setCellValue('D'.$numrow, $data['nama_kas_besar']);
-				$excel->setActiveSheetIndex(0)->setCellValue('E'.$numrow, $data['nama_distributor']);
-				$excel->setActiveSheetIndex(0)->setCellValue('F'.$numrow, $data['tgl_pengajuan']);
-				$excel->setActiveSheetIndex(0)->setCellValue('G'.$numrow, $data['jenis_pengajuan']);
-				$excel->setActiveSheetIndex(0)->setCellValue('H'.$numrow, $data['nama_pengajuan']);
-				$excel->setActiveSheetIndex(0)->setCellValue('I'.$numrow, $data['total_pengajuan']);
-				$excel->setActiveSheetIndex(0)->setCellValue('J'.$numrow, $data['status_pengajuan']);
-				$excel->setActiveSheetIndex(0)->setCellValue('K'.$numrow, $data['status_lunas']);
-				
-				
-				// Apply style row yang telah kita buat tadi ke masing-masing baris (isi tabel)
-				$excel->getActiveSheet()->getStyle('A'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('B'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('C'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('D'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('E'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('F'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('G'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('H'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('I'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('J'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('K'.$numrow)->applyFromArray($style_row);
-				
+			$row = $this->Operasional_proyekModel->getExport($tgl_awal, $tgl_akhir);
+			$header = array_keys($row[0]); 
+		
+			$this->excel->setProperty('Laporan Operasional Proyek','Laporan Operasional Proyek','Data Laporan Operasional Proyek');
+			$this->excel->setData($header, $row);
+			$this->excel->getData('Data Operasional Proyek', 'Data Operasional Proyek', 4, 5 );
 
-				$excel->getActiveSheet()->getRowDimension($numrow)->setRowHeight(20);
-				
-				$no++; // Tambah 1 setiap kali looping
-				$numrow++; // Tambah 1 setiap kali looping
-			}
-
-			// Set width kolom
-			$excel->getActiveSheet()->getColumnDimension('A')->setWidth(5); // Set width kolom A
-			$excel->getActiveSheet()->getColumnDimension('B')->setWidth(15); // Set width kolom B
-			$excel->getActiveSheet()->getColumnDimension('C')->setWidth(25); // Set width kolom C
-			$excel->getActiveSheet()->getColumnDimension('D')->setWidth(20); // Set width kolom D
-			$excel->getActiveSheet()->getColumnDimension('E')->setWidth(15); // Set width kolom E
-			$excel->getActiveSheet()->getColumnDimension('F')->setWidth(15); // Set width kolom F
-			$excel->getActiveSheet()->getColumnDimension('G')->setWidth(15); // Set width kolom G
-			$excel->getActiveSheet()->getColumnDimension('H')->setWidth(15); // Set width kolom H
-			$excel->getActiveSheet()->getColumnDimension('I')->setWidth(15); // Set width kolom I
-			$excel->getActiveSheet()->getColumnDimension('J')->setWidth(15); // Set width kolom J
-			$excel->getActiveSheet()->getColumnDimension('K')->setWidth(15); // Set width kolom K
-
-
-
-			// Set orientasi kertas jadi LANDSCAPE
-			$excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
-
-			// Set judul file excel nya
-			$excel->getActiveSheet(0)->setTitle("Laporan Data Operasional Proyek");
-			$excel->setActiveSheetIndex(0);
-
-			// Proses file excel
-			header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-			header('Content-Disposition: attachment; filename="Data Operasional Proyek.xlsx"'); // Set nama file excel nya
-			header('Cache-Control: max-age=0');
-
-			$write = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
-			ob_end_clean();
-			$write->save('php://output');
+			$this->excel->getExcel('Data Operasional Proyek');		
 			
 		}
 
@@ -804,141 +652,35 @@
 		*	Export data detail ke format Excel
 		*/
 		public function export_detail(){
-			include ('app/library/export_phpexcel/koneksi.php');
-			
-			// Load plugin PHPExcel nya
-			require_once 'app/library/export_phpexcel/PHPExcel/PHPExcel.php';
-
-			$excel = new PHPExcel();
-
-			// Settingan awal fil excel
-			$excel->getProperties()->setCreator('69 Design Build')
-								   ->setLastModifiedBy('PC Personal')
-								   ->setTitle("Data Detail Operasional Proyek")
-								   ->setSubject("Detail Operasional Proyek")
-								   ->setDescription("Laporan Detail Operasional Proyek")
-								   ->setKeywords("Data Detail Operasional Proyek");
-
-			// Buat sebuah variabel untuk menampung pengaturan style dari header tabel
-			$style_col = array(
-				'font' => array('bold' => true), // Set font nya jadi bold
-				'alignment' => array(
-					'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER, // Set text jadi ditengah secara horizontal (center)
-					'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER // Set text jadi di tengah secara vertical (middle)
-				),
-				'borders' => array(
-					'top' => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border top dengan garis tipis
-					'right' => array('style'  => PHPExcel_Style_Border::BORDER_THIN),  // Set border right dengan garis tipis
-					'bottom' => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border bottom dengan garis tipis
-					'left' => array('style'  => PHPExcel_Style_Border::BORDER_THIN) // Set border left dengan garis tipis
-				)
-			);
-
-			// Buat sebuah variabel untuk menampung pengaturan style dari isi tabel
-			$style_row = array(
-				'alignment' => array(
-					'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER // Set text jadi di tengah secara vertical (middle)
-				),
-				'borders' => array(
-					'top' => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border top dengan garis tipis
-					'right' => array('style'  => PHPExcel_Style_Border::BORDER_THIN),  // Set border right dengan garis tipis
-					'bottom' => array('style'  => PHPExcel_Style_Border::BORDER_THIN), // Set border bottom dengan garis tipis
-					'left' => array('style'  => PHPExcel_Style_Border::BORDER_THIN) // Set border left dengan garis tipis
-				)
-			);
-
-			$excel->setActiveSheetIndex(0)->setCellValue('A1', "DATA DETAIL OPERASIONAL PROYEK"); // Set kolom A1 dengan tulisan "DATA SISWA"
-			$excel->getActiveSheet()->mergeCells('A1:H1'); // Set Merge Cell pada kolom A1 sampai F1
-			$excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(TRUE); // Set bold kolom A1
-			$excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(15); // Set font size 15 untuk kolom A1
-			$excel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER); // Set text center untuk kolom A1
-
-			// Buat header tabel nya pada baris ke 3
-			$excel->setActiveSheetIndex(0)->setCellValue('A3', "NO"); // Set kolom A3 dengan tulisan "NO"
-			$excel->setActiveSheetIndex(0)->setCellValue('B3', "ID"); // Set kolom B3 dengan tulisan "ID"
-			$excel->setActiveSheetIndex(0)->setCellValue('C3', "ID OPERASIONAL PROYEK"); // Set kolom C3 dengan tulisan "ID OPERASIONAL PROYEK"
-			$excel->setActiveSheetIndex(0)->setCellValue('D3', "BANK"); // Set kolom D3 dengan tulisan "ID BANK"
-			$excel->setActiveSheetIndex(0)->setCellValue('E3', "NAMA"); // Set kolom E3 dengan tulisan "NAMA"
-			$excel->setActiveSheetIndex(0)->setCellValue('F3', "TANGGAL"); // Set kolom F3 dengan tulisan "TANGGAL"
-			$excel->setActiveSheetIndex(0)->setCellValue('G3', "TOTAL"); // Set kolom G3 dengan tulisan "TOTAL"
-
-			// Apply style header yang telah kita buat tadi ke masing-masing kolom header
-			$excel->getActiveSheet()->getStyle('A3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('B3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('C3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('D3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('E3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('F3')->applyFromArray($style_col);
-			$excel->getActiveSheet()->getStyle('G3')->applyFromArray($style_col);
-
-
-			// Set height baris ke 1, 2 dan 3
-			$excel->getActiveSheet()->getRowDimension('1')->setRowHeight(20);
-			$excel->getActiveSheet()->getRowDimension('2')->setRowHeight(20);
-			$excel->getActiveSheet()->getRowDimension('3')->setRowHeight(20);
 
 			$id = $_GET['id'];
 
-			// Buat query untuk menampilkan semua data operasional proyek
-			$sql = $pdo->prepare("SELECT * FROM v_detail_operasional_proyek WHERE id_operasional_proyek = '$id'");
-			$sql->execute(); // Eksekusi querynya
+			$row = $this->Operasional_proyekModel->getExportDetail($id);
+			$header = array_keys($row[0]); 
+		
+			$this->excel->setProperty('Laporan Detail Operasional Proyek','Laporan Detail Operasional Proyek','Data Laporan Detail Operasional Proyek');
+			$this->excel->setData($header, $row);
+			$this->excel->getData('Data Detail Operasional Proyek', 'Data Detail Operasional Proyek', 4, 5 );
 
-			$no = 1; // Untuk penomoran tabel, di awal set dengan 1
-			$numrow = 4; // Set baris pertama untuk isi tabel adalah baris ke 4
-			while($data = $sql->fetch()){ // Ambil semua data dari hasil eksekusi $sql
-				// print_r($data);
-				// exit;
-				$excel->setActiveSheetIndex(0)->setCellValue('A'.$numrow, $no);
-				$excel->setActiveSheetIndex(0)->setCellValue('B'.$numrow, $data['id']);
-				$excel->setActiveSheetIndex(0)->setCellValue('C'.$numrow, $data['id_operasional_proyek']);
-				$excel->setActiveSheetIndex(0)->setCellValue('D'.$numrow, $data['nama_bank']);
-				$excel->setActiveSheetIndex(0)->setCellValue('E'.$numrow, $data['nama']);
-				$excel->setActiveSheetIndex(0)->setCellValue('F'.$numrow, $data['tgl']);
-				$excel->setActiveSheetIndex(0)->setCellValue('G'.$numrow, $data['total']);
-				
-				
-				// Apply style row yang telah kita buat tadi ke masing-masing baris (isi tabel)
-				$excel->getActiveSheet()->getStyle('A'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('B'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('C'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('D'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('E'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('F'.$numrow)->applyFromArray($style_row);
-				$excel->getActiveSheet()->getStyle('G'.$numrow)->applyFromArray($style_row);
+			$this->excel->getExcel('Data Detail Operasional Proyek');		
 			
+		}
 
-				$excel->getActiveSheet()->getRowDimension($numrow)->setRowHeight(20);
-				
-				$no++; // Tambah 1 setiap kali looping
-				$numrow++; // Tambah 1 setiap kali looping
-			}
+		/**
+		*	Export data detail ke format Excel
+		*/
+		public function export_history(){
 
-			// Set width kolom
-			$excel->getActiveSheet()->getColumnDimension('A')->setWidth(5); // Set width kolom A
-			$excel->getActiveSheet()->getColumnDimension('B')->setWidth(15); // Set width kolom B
-			$excel->getActiveSheet()->getColumnDimension('C')->setWidth(25); // Set width kolom C
-			$excel->getActiveSheet()->getColumnDimension('D')->setWidth(20); // Set width kolom D
-			$excel->getActiveSheet()->getColumnDimension('E')->setWidth(15); // Set width kolom E
-			$excel->getActiveSheet()->getColumnDimension('F')->setWidth(15); // Set width kolom F
-			$excel->getActiveSheet()->getColumnDimension('G')->setWidth(15); // Set width kolom G
+			$id = $_GET['id'];
 
+			$row = $this->Operasional_proyekModel->getExportHistory($id);
+			$header = array_keys($row[0]); 
+		
+			$this->excel->setProperty('Laporan History Pembelian Operasional','Laporan History Pembelian Operasional','Laporan History Pembelian Operasional');
+			$this->excel->setData($header, $row);
+			$this->excel->getData('Laporan History Pembelian Operasional', 'Laporan History Pembelian Operasional', 4, 5 );
 
-
-			// Set orientasi kertas jadi LANDSCAPE
-			$excel->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
-
-			// Set judul file excel nya
-			$excel->getActiveSheet(0)->setTitle("Laporan Data Detail Operasional Proyek");
-			$excel->setActiveSheetIndex(0);
-
-			// Proses file excel
-			header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-			header('Content-Disposition: attachment; filename="Data Detail Operasional Proyek.xlsx"'); // Set nama file excel nya
-			header('Cache-Control: max-age=0');
-
-			$write = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
-			ob_end_clean();
-			$write->save('php://output');
+			$this->excel->getExcel('Laporan History Pembelian Operasional');		
 			
 		}
 
@@ -961,16 +703,6 @@
 
 					$id = $id_temp.sprintf("%04s", $noUrut);
 				}
-
-				// if(!$data) $id = 'PRY0001';
-				// else{
-				// 	// $data = implode('', $data);
-				// 	$kode = 'PRY';
-				// 	$noUrut = (int)substr($data, 3, 4);
-				// 	$noUrut++;
-
-				// 	$id = $kode.sprintf("%04s", $noUrut);
-				// }
 
 				echo json_encode($id);
 			}		
@@ -1139,39 +871,21 @@
 					'kolomOrder' => array('id', 'tgl', 'nama', 'total', 'status_lunas', 'ID_DISTRIBUTOR', 'NAMA_DISTRIBUTOR','pemilik'),
 					'kolomCari' => array('id', 'tgl', 'nama', 'total', 'status_lunas', 'ID_DISTRIBUTOR', 'NAMA_DISTRIBUTOR','pemilik'),
 					'orderBy' => array('id' => 'desc'),
-					'kondisi' => 'where id = "'.$id.'"',
+					'kondisi' => 'WHERE id = "'.$id.'"',
 				);
 
 				$dataHistoryPembelanjaan = $this->Operasional_proyekModel->getAllDataTable($config_dataTable);
-
+				
 				$data = array();
 				// $no_urut = $_POST['start'];
-				foreach($dataHistoryPembelanjaan as $row){
-					// $no_urut++;
-
-					// $status = (strtolower($row['status']) == "selesai") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-primary">'.$row['status'].'</span>';
-
-					// if($row['progress'] == 100)
-					// 	$progress = '<span class="label label-success">'.$row['progress'].' %</span>';
-					// else if($row['progress'] >= 50  && $row['progress'] < 100)
-					// 	$progress = '<span class="label label-primary">'.$row['progress'].' %</span>';
-					// else if($row['progress'] >= 20 && $row['progress'] < 50)
-					// 	$progress = '<span class="label label-warning">'.$row['progress'].' %</span>';
-					// else if($row['progress'] < 20)
-					// 	$progress = '<span class="label label-danger">'.$row['progress'].' %</span>';
-
-					// button aksi
-					// $aksiDetail = '<button onclick="getView('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-					// $aksiEdit = '<button onclick="getEdit('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-					// $aksiHapus = '<button onclick="getDelete('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
-					
+				foreach($dataHistoryPembelanjaan as $row){					
 					
 					$dataRow = array();
 					// $dataRow[] = $no_urut;
 					$dataRow[] = $row['id'];
-					$dataRow[] = $row['tgl'];
+					$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
 					$dataRow[] = $row['nama'];
-					$dataRow[] = $row['total'];
+					$dataRow[] = $this->helper->cetakRupiah($row['total']);
 					$dataRow[] = $row['status_lunas'];
 					$dataRow[] = $row['ID_DISTRIBUTOR'];
 					$dataRow[] = $row['NAMA_DISTRIBUTOR'];
@@ -1196,30 +910,40 @@
 		*
 		*/
 		public function get_detail_operasional_proyek($id){
+			// print_r($id);
+			// exit;
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$config_dataTable = array(
 					'tabel' => 'v_operasional_proyek',
 					'kolomOrder' => array('nama_bank', 'nama_detail', 'tgl_detail','total_detail'),
 					'kolomCari' => array('nama_bank', 'nama_detail', 'tgl_detail','total_detail'),
 					'orderBy' => array('id_bank' => 'asc'),
-					'kondisi' => 'where id = "'.$id.'"',
+					'kondisi' => 'WHERE id = "'.$id.'"',
 				);
-
+				
 				$dataDetailOperasionalProyek = $this->Operasional_proyekModel->getAllDataTable($config_dataTable);
-
+				
 				$data = array();
 				// $no_urut = $_POST['start'];
 				foreach($dataDetailOperasionalProyek as $row){
 					// $no_urut++;
-					
 					$dataRow = array();
-					// $dataRow[] = $no_urut;
-					$dataRow[] = $row['nama_bank'];					
-					$dataRow[] = $row['nama_detail'];
-					$dataRow[] = $this->helper->cetakTgl($row['tgl_detail'], 'full');
-					$dataRow[] = $this->helper->cetakRupiah($row['total_detail']);
 
-					$data[] = $dataRow;
+					if($row['nama_detail'] == ""){
+						unset($row['nama_bank']);
+						unset($row['nama_detail']);
+						unset($row['tgl_detail']);
+						unset($row['total_detail']);
+					} else {
+						$dataRow[] = $row['nama_bank'];					
+						$dataRow[] = $row['nama_detail'];
+						$dataRow[] = $this->helper->cetakTgl($row['tgl_detail'], 'full');
+						$dataRow[] = $this->helper->cetakRupiah($row['total_detail']);
+						$data[] = $dataRow;
+					}
+					
+					// $dataRow[] = $no_urut;
+					
 				}
 
 				$output = array(
@@ -1247,7 +971,16 @@
 				// id_proyek
 				$this->validation->set_rules($data['id_proyek'], 'ID proyek', 'id_proyek', 'string | 1 | 255 | required');
 				// id_distributor
-				$this->validation->set_rules($data['id_distributor'], 'ID Distributor', 'id_distributor', 'string | 1 | 255 |');
+				// $this->validation->set_rules($data['id_distributor'], 'ID Distributor', 'id_distributor', 'string | 1 | 255 |');
+				
+				// if($data['status_lunas'] == "LUNAS"){
+					//id_bank
+					// $this->validation->set_rules($data['id_bank'], 'ID Bank', 'id_bank_form', 'string | 1 | 255 | required');
+				// } else {
+					//id_bank
+					// $this->validation->set_rules($data['id_bank'], 'ID Bank', 'id_bank_form', 'string | 1 | 255 |');
+				// }
+
 				// tgl
 				$this->validation->set_rules($data['tgl'], 'Tanggal Operasional Proyek', 'tgl', 'string | 1 | 255 | required');
 				// nama
@@ -1274,7 +1007,16 @@
 				// id_proyek
 				$this->validation->set_rules($data['id_proyek'], 'ID proyek', 'id_proyek_f', 'string | 1 | 255 | required');
 				// id_distributor
-				$this->validation->set_rules($data['id_distributor'], 'ID Distributor', 'id_distributor_f', 'string | 1 | 255 |');
+				// $this->validation->set_rules($data['id_distributor'], 'ID Distributor', 'id_distributor', 'string | 1 | 255 |');
+				
+				// if($data['status_lunas'] == "LUNAS"){
+					//id_bank
+					// $this->validation->set_rules($data['id_bank'], 'ID Bank', 'id_bank_form', 'string | 1 | 255 | required');
+				// } else {
+					//id_bank
+					// $this->validation->set_rules($data['id_bank'], 'ID Bank', 'id_bank_form', 'string | 1 | 255 |');
+				// }
+				
 				// tgl
 				$this->validation->set_rules($data['tgl'], 'Tanggal Operasional Proyek', 'tgl', 'string | 1 | 255 | required');
 				// nama
@@ -1296,12 +1038,6 @@
 
 			}
 
-		
-		
-
-			
-			
-			
 		}
 
 		/**
