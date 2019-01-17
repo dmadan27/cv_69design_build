@@ -6,8 +6,10 @@
 	*/
 	class Kas_kecil extends Crud_modalsAbstract{
 
-		private $token;
-		private $status = false;
+		private $success = false;
+		private $notif = array();
+		private $error = array();
+		private $message = NULL;
 
 		/**
 		*
@@ -123,11 +125,11 @@
 				$foto = isset($_FILES['foto']) ? $_FILES['foto'] : false;
 
 				$cekFoto = true;
-				$error = $notif = array();
+				// $error = $notif = array();
 
 				if(!$data){
-					$notif = array(
-						'type' => "error",
+					$this->notif = array(
+						'type' => 'error',
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
 					);
@@ -135,12 +137,12 @@
 				else{
 					$validasi = $this->set_validation($data);
 					$cek = $validasi['cek'];
-					$error = $validasi['error'];
-
+					// $error = $validasi['error'];
+					$this->error = $validasi['error'];
 					// cek password dan konf password
-					// if($data['password'] != $data['konf_password']){
+					// if(($this->error['password'] == "") && ($data['password'] != $data['password_confirm'])){
 					// 	$cek = false;
-					// 	$error['password'] = $error['konf_password'] = 'Password dan Konfirmasi Password Berbeda';
+					// 	$this->error['password'] = $this->error['password_confirm'] = 'Password dan Konfirmasi Password Berbeda';
 					// }
 
 					// jika upload foto
@@ -156,7 +158,7 @@
 						$validasiFoto = $this->validation->validFile($configFoto);
 						if(!$validasiFoto['cek']){
 							$cek = false;
-							$error['foto'] = $validasiFoto['error'];
+							$this->error['foto'] = $validasiFoto['error'];
 						}
 						else $valueFoto = md5($data['id']).$validasiFoto['namaFile'];
 					}
@@ -180,8 +182,8 @@
 						if($foto){
 							$path = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$valueFoto;
 							if(!move_uploaded_file($foto['tmp_name'], $path)){
-								$error['foto'] = "Upload Foto Gagal";
-								$this->status = $cekFoto = false;
+								$this->error['foto'] = "Upload Foto Gagal";
+								$this->success = $cekFoto = false;
 							}
 						}
 
@@ -190,16 +192,16 @@
 							if($this->Kas_kecilModel->checkExistEmail($data['email'])){
 								// insert data
 								if($this->Kas_kecilModel->insert($data)) {
-									$this->status = true;
-									$notif = array(
-										'type' => "success",
+									$this->success = true;
+									$this->notif = array(
+										'type' => 'success',
 										'title' => "Pesan Berhasil",
-										'message' => "Tambah Data Kas Kecil Baru Berhasil",
+										'message' => "Tambah Data  Kas Kecil Baru Berhasil",
 									);
 								}
 								else {
-									$notif = array(
-										'type' => "error",
+									$this->notif = array(
+										'type' => 'error',
 										'title' => "Pesan Gagal",
 										'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 									);
@@ -208,18 +210,18 @@
 								}
 							}
 							else {
-								$notif = array(
-									'type' => "warning",
+								$this->notif = array(
+									'type' => 'warning',
 									'title' => "Pesan Pemberitahuan",
 									'message' => "Silahkan Cek Kembali Form Isian",
 								);
-								$error['email'] = "Email telah digunakan sebelumnya";
+								$this->error['email'] = "Email telah digunakan sebelumnya";
 							}
 						}
 					}
 					else{
-						$notif = array(
-							'type' => "warning",
+						$this->notif = array(
+							'type' => 'warning',
 							'title' => "Pesan Pemberitahuan",
 							'message' => "Silahkan Cek Kembali Form Isian",
 						);
@@ -227,10 +229,10 @@
 				}
 
 				$output = array(
-					'status' => $this->status,
+					'success' => $this->success,
 					'status_foto' => $cekFoto,
-					'notif' => $notif,
-					'error' => $error,
+					'notif' => $this->notif,
+					'error' => $this->error,
 					'data' => $data,
 					'foto' => $foto
 				);
@@ -557,6 +559,8 @@
 			$this->validation->set_rules($data['saldo'], 'Saldo Awal', 'saldo', 'nilai | 0 | 99999999999 | ', $required);
 			// status
 			$this->validation->set_rules($data['status'], 'Status', 'status', 'string | 1 | 255 | required');
+			// password
+			$this->validation->set_rules($data['password'], 'Password', 'password', 'string | 5 | 255 | '.$required);
 
 			return $this->validation->run();
 		}
