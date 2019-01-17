@@ -497,16 +497,18 @@ function init () {
 		$('#detail_OperasionalproyekTable tbody tr').remove();
 
 		$.each(data, function(i, item){
-			$('#detail_OperasionalproyekTable > tbody:last-child').append(
-				'<tr>'+
-					'<td></td>'+
-					'<td>'+item.nama_bank+'</td>'+
-					'<td>'+item.nama_detail+'</td>'+
-					'<td>'+item.tgl_detail_full+'</td>'+
-					'<td class="text-right">'+item.total_detail_full+'</td>'+
-					'<td>'+btnAksi_detail(item.index)+'</td>'+
-				'</tr>'
-			);
+			if(!item.delete){
+				$('#detail_OperasionalproyekTable > tbody:last-child').append(
+					'<tr>'+
+						'<td></td>'+
+						'<td>'+item.nama_bank+'</td>'+
+						'<td>'+item.nama_detail+'</td>'+
+						'<td>'+item.tgl_detail_full+'</td>'+
+						'<td class="text-right">'+item.total_detail_full+'</td>'+
+						'<td>'+btnAksi_detail(item.index)+'</td>'+
+					'</tr>'
+				);
+			}
 		});
 		
 		numbering_listDetail();	

@@ -125,7 +125,7 @@
 											<div class="row">
 												<input type="hidden" id="id" value="<?= $this->data['id']?>">
 												<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-													<!-- <input type="hidden" id="token_view" value="<?= $this->data['token']['view']; ?>"> -->
+													
 													<table id="mutasiKasKecilTable" class="table table-bordered table-hover" style="width: 100%;">
 														<thead>
 															<tr>
@@ -164,7 +164,7 @@
 											<div class="row">
 												<input type="hidden" id="id" value="<?= $this->data['id']?>">
 												<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-													<!-- <input type="hidden" id="token_view" value="<?= $this->data['token']['view']; ?>"> -->
+													
 													<table id="pengajuanKasKecilTable" class="table table-bordered table-hover" style="width: 100%;">
 														<thead>
 															<tr>
