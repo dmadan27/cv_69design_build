@@ -67,11 +67,6 @@
                                             <select class="form-control select2" name="id_distributor" id="id_distributor"></select>
                                             <span class="help-block small pesan pesan-id_distributor"></span>
                                         </div>
-                                        <div class="form-group field-id_distributor_f has-feedback">
-                                            <label for="id_distributor_f">Distributor</label>
-                                            <input type="text" class="form-control field" id="id_distributor_f" name="id_distributor_f" placeholder="Masukan Nama Kebutuhan Operasional" value="<?= $this->data['id_distributor'];?> ">
-                                            <span class="help-block small pesan pesan-id_distributor_f"></span>
-                                        </div>  
                                             
                                     <!-- Tgl -->
                                         <div class="form-group field-tgl has-feedback">
