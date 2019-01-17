@@ -323,8 +323,7 @@
 		 * @return result {array}
 		 */
 		private function insertDetail($data){
-			// butuh review
-			$ket = "";
+			$ket = "UANG MASUK SEBESAR RP ".number_format($data['total_detail'], 2, ',', '.')." DARI TRANSAKSI PROYEK (".$data['id_proyek'].") - ".$data['nama_detail'];
 			
 			// insert detail_proyek
 			$query = 'CALL tambah_detail_proyek (:id_proyek, :id_bank, :tgl_detail, :nama_detail, :total_detail, :is_DP, :ket);';
@@ -463,17 +462,18 @@
 			// butuh review
 			$ket = "";
 			
-			$query = 'CALL edit_detail_proyek (:id, :id_bank, :tgl_detail, :nama_detail, :total_detail, :is_DP, :ket)';
+			$query = 'CALL edit_detail_proyek (:id, :id_proyek, :id_bank, :tgl_detail, :nama_detail, :total_detail, :is_DP)';
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
 				array(
 					':id' => $data['id'],
+					':id_proyek' => $data['id_proyek'],
 					':id_bank' => $data['id_bank'],
 					':tgl_detail' => $data['tgl_detail'],
 					':nama_detail' => $data['nama_detail'],
 					':total_detail' => $data['total_detail'],
 					':is_DP' => $data['is_DP'],
-					':ket' => $ket
+					// ':ket' => $ket
 				)
 			);
 			$statement->closeCursor();
