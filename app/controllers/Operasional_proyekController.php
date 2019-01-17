@@ -606,14 +606,13 @@
 
 				if($delete['success']){
 					$this->success = true;
-					$_SESSION['notif'] = array(
+					$this->notif = array(
 						'type' => "success",
 						'title' => "Pesan Berhasil",
 						'message' => "Hapus Data Operasional Proyek Baru Berhasil",
 					);
-					$notif['default'] = $_SESSION['notif'];
 				} else {
-					$notif['default'] = array(
+					$this->notif = array(
 						'type' => "error",
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi kesalahan teknis, silahkan coba kembali",

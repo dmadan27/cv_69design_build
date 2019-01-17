@@ -146,10 +146,10 @@ function getDelete(id){
             success: function(output){
                 if(output.success){ 
                     console.log('%cResponse getDelete Operasional Proyek: ', 'color: green; font-weight: bold', output);
-                    //Reload ini gak jalan
+                    swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
                     $("#operasionalProyekTable").DataTable().ajax.reload(); 
                 }
-                swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
+                
                 
             },
             error: function (jqXHR, textStatus, errorThrown){ // error handling
