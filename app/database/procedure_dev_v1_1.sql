@@ -731,7 +731,7 @@
 
 
 	-- ================================================================= --
-	-- Operasional Proyek -- Versi 08 Januari 2019 -- START --
+	-- Operasional Proyek -- Versi 17 Januari 2019 -- START --
 	-- ================================================================= --
 
 	-- Procedure Tambah data Operasional Proyek Tunai Lunas (FIXED)
@@ -884,6 +884,7 @@
 		IN id_detail_param varchar(50),
 		IN id_proyek_param varchar(50),
 		IN id_bank_param int,
+		IN id_distributor_param varchar(50),
 		IN tgl_param date,
 		IN nama_param varchar(50),
 		IN jenis_param varchar(50),
@@ -973,14 +974,14 @@
 		-- Get Status Sebelum
 		SELECT status INTO get_status_sebelum FROM operasional_proyek WHERE id = id_param;
 
-		-- Update table operasional proyek
-		UPDATE operasional_proyek 
-		SET tgl = tgl_param, nama = nama_param, jenis = jenis_param, total = total_param, sisa = sisa_param, status = status_param, status_lunas = status_lunas_param, ket = ket_param 
-		WHERE id = id_param;
-
 		-- Cek apakah ada detail atau tidak
 		-- Untuk menentukan apakah ini data perubahan dari belum lunas atau bukan
 		SELECT COUNT(id) INTO jumlah_detail FROM detail_operasional_proyek WHERE id = id_detail_param;
+
+		-- Update table operasional proyek
+		UPDATE operasional_proyek 
+		SET id_distributor = id_distributor_param, tgl = tgl_param, nama = nama_param, jenis = jenis_param, total = total_param, sisa = sisa_param, status = status_param, status_lunas = status_lunas_param, ket = ket_param 
+		WHERE id = id_param;
 
 		-- Jika Detail Ada, Maka
 		IF (jumlah_detail > 0) THEN
@@ -1001,17 +1002,17 @@
 			-- Delete Table Detail Operasional Proyek
 			DELETE FROM detail_operasional_proyek WHERE id_operasional_proyek = id_param;
 
-			-- Catat Mutasi
-			INSERT INTO mutasi_bank
-			(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
-			VALUES
-			(id_bank_param, tgl_param, 0, total_param, (get_saldo - total_param),  ket_param);
-
 			-- Insert Into Operasional Proyek
 			INSERT INTO detail_operasional_proyek
 			(id_operasional_proyek, id_bank, nama, tgl, total)
 			VALUES
 			(id_param, id_bank_param, nama_param, tgl_param, total_param);
+
+			-- Catat Mutasi
+			INSERT INTO mutasi_bank
+			(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+			VALUES
+			(id_bank_param, tgl_param, 0, total_param, (get_saldo - total_param),  ket_param);
 		
 		END IF;
 
@@ -1023,6 +1024,7 @@
 	CREATE PROCEDURE edit_operasional_proyek_BelumLunas(
 		IN id_param varchar(50),
 		IN id_proyek_param varchar(50),
+		IN id_distributor_param varchar(50),
 		IN tgl_param date,
 		IN nama_param varchar(50),
 		IN jenis_param varchar(50),
@@ -1069,14 +1071,14 @@
 
 			-- Update table operasional proyek
 			UPDATE operasional_proyek 
-			SET tgl = tgl_param, nama = nama_param, jenis = jenis_param, total = total_param, sisa = sisa_param, status = status_param, status_lunas = status_lunas_param, ket = ket_param 
+			SET id_distributor = id_distributor_param, tgl = tgl_param, nama = nama_param, jenis = jenis_param, total = total_param, sisa = sisa_param, status = status_param, status_lunas = status_lunas_param, ket = ket_param 
 			WHERE id = id_param;
 
 		ELSE 
 
 			-- Update table operasional proyek
 			UPDATE operasional_proyek 
-			SET tgl = tgl_param, nama = nama_param, jenis = jenis_param, total = total_param, sisa = sisa_param, status = status_param, status_lunas = status_lunas_param, ket = ket_param 
+			SET id_distributor = id_distributor_param, tgl = tgl_param, nama = nama_param, jenis = jenis_param, total = total_param, sisa = sisa_param, status = status_param, status_lunas = status_lunas_param, ket = ket_param 
 			WHERE id = id_param;
 		
 		END IF;
@@ -1089,13 +1091,14 @@
 	CREATE PROCEDURE edit_operasional_proyek_kredit(
 		IN id_param varchar(50),
 		IN id_proyek_param varchar(50),
+		IN id_distributor_param varchar(50),
 		IN tgl_param date,
 		IN nama_param varchar(50),
 		IN jenis_param varchar(50),
+		IN total_param double(12,2),
 		IN sisa_param double(12,2),
 		IN status_param enum('TUNAI','KREDIT'),
 		IN status_lunas_param enum('LUNAS','BELUM LUNAS'),
-		IN total_param double(12,2),
 		IN ket_param text
 	)
 
@@ -1106,7 +1109,7 @@
 		
 		-- Update table operasional proyek
 		UPDATE operasional_proyek 
-		SET tgl = tgl_param, nama = nama_param, jenis = jenis_param, total = total_param, sisa = sisa_param, status = status_param, status_lunas = status_lunas_param, ket = ket_param 
+		SET id_distributor = id_distributor_param, tgl = tgl_param, nama = nama_param, jenis = jenis_param, total = total_param, status = status_param, status_lunas = status_lunas_param, ket = ket_param 
 		WHERE id = id_param;
 
 	END//
@@ -1303,7 +1306,7 @@
 	delimiter ;
 
 	-- ================================================================= --
-	-- Operasional Proyek -- Versi 08 Januari 2019 -- END --
+	-- Operasional Proyek -- Versi 17 Januari 2019 -- END --
 	-- ================================================================= --
 
 	-- ================================================================= --

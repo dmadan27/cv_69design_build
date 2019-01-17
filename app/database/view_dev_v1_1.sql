@@ -125,6 +125,14 @@ CREATE OR REPLACE VIEW v_pengajuan_kas_kecil AS
 	FROM pengajuan_kas_kecil pkk
 	JOIN kas_kecil kk ON kk.id = pkk.id_kas_kecil;
 
+-- View Pengajuan Kas Kecil (Export)
+CREATE OR REPLACE VIEW v_pengajuan_kas_kecil_export AS
+	SELECT
+		pkk.id 'ID PENGAJUAN', pkk.nama 'PENGAJUAN', pkk.tgl 'TANGGAL', pkk.total 'TOTAL PENGAJUAN', pkk.total_disetujui 'TOTAL DISETUJUI',
+		pkk.status 'STATUS', kk.id, kk.nama 'KAS KECIL'
+	FROM pengajuan_kas_kecil pkk
+	JOIN kas_kecil kk ON kk.id = pkk.id_kas_kecil;
+
 -- View Operasional Proyek
 CREATE OR REPLACE VIEW v_operasional_proyek AS
 	SELECT 
@@ -138,8 +146,21 @@ CREATE OR REPLACE VIEW v_operasional_proyek AS
     JOIN proyek pr ON pr.id = opr.id_proyek 
     JOIN kas_besar kb ON kb.id = opr.id_kas_besar
     LEFT JOIN distributor dst ON dst.id = opr.id_distributor
-    JOIN detail_operasional_proyek dopr ON dopr.id_operasional_proyek = opr.id
-	JOIN bank b ON b.id = dopr.id_bank; 
+    LEFT JOIN detail_operasional_proyek dopr ON dopr.id_operasional_proyek = opr.id
+	LEFT JOIN bank b ON b.id = dopr.id_bank; 
+
+-- View Operasional Proyek (Export Excel)
+CREATE OR REPLACE VIEW v_operasional_proyek_export AS
+	SELECT 
+        opr.id 'ID OPERASIONAL PROYEK', pr.id 'ID PROYEK', pr.pemilik 'PEMILIK', pr.pembangunan 'PROYEK',
+	    kb.id 'ID KAS BESAR', kb.nama 'KAS BESAR', 
+	    dst.id 'ID DISTRIBUTOR', dst.nama 'DISTRIBUTOR', opr.tgl 'TANGGAL', 
+	    opr.nama 'NAMA OPERASIONAL', opr.jenis 'JENIS OPERASIONAL', opr.total 'TOTAL OPERASIONAL', opr.sisa 'SISA PEMBAYARAN', 
+	    opr.status 'JENIS PEMBAYARAN',  opr.status_lunas 'STATUS PEMBAYARAN', opr.ket 'KETERANGAN'
+    FROM operasional_proyek opr
+    JOIN proyek pr ON pr.id = opr.id_proyek 
+    JOIN kas_besar kb ON kb.id = opr.id_kas_besar
+    LEFT JOIN distributor dst ON dst.id = opr.id_distributor
 
 -- View Detail Operasional Proyek
 CREATE OR REPLACE VIEW v_detail_operasional_proyek AS
@@ -148,8 +169,14 @@ SELECT  detail_operasional_proyek.id, detail_operasional_proyek.id_operasional_p
 	detail_operasional_proyek.total
   FROM detail_operasional_proyek 
   JOIN bank ON bank.id = detail_operasional_proyek.id_bank;
---   WHERE id_operasional_proyek = 'OPRY-PRY20180001-0002'
---
+
+-- View Detail Operasional Proyek Export
+CREATE OR REPLACE VIEW v_detail_operasional_proyek_export AS
+SELECT  detail_operasional_proyek.id 'ID DETAIL', detail_operasional_proyek.id_operasional_proyek 'ID',
+	bank.nama AS 'BANK', detail_operasional_proyek.nama 'DETAIL OPERASIONAL', detail_operasional_proyek.tgl 'TANGGAL',
+	detail_operasional_proyek.total 'TOTAL'
+  FROM detail_operasional_proyek 
+  JOIN bank ON bank.id = detail_operasional_proyek.id_bank;
 
 -- VIEW SUB KAS KECIL -> digunakan untuk mendapatkan informasi detail sub kas kecil
 -- LEGEND : -> vp (VIEW PEMBANTU (tidak diakses oleh sistem, tapi diakses oleh view lain))
@@ -200,8 +227,17 @@ CREATE OR REPLACE VIEW v_history_pembelian_operasionalProyek AS
         opr.id, opr.tgl, opr.nama, opr.total, opr.status_lunas,
         d.id ID_DISTRIBUTOR, d.nama NAMA_DISTRIBUTOR, d.pemilik
 	FROM operasional_proyek opr 
-    JOIN distributor d ON opr.id_distributor = d.id;
+    LEFT JOIN distributor d ON opr.id_distributor = d.id;
 
+/* VIEW HISTORY PEMBELIAN
+	LEGEND : Kebutuhan untuk export data history pembelian ke Excel
+*/
+CREATE OR REPLACE VIEW v_history_pembelian_operasionalProyek_export AS
+    SELECT
+        opr.id 'ID', opr.tgl 'TANGGAL', opr.nama 'NAMA OPERASIONAL', opr.total 'TOTAL', opr.status_lunas 'STATUS PEMBAYARAN',
+        d.id 'ID DISTRIBUTOR', d.nama 'NAMA DISTRIBUTOR', d.pemilik 'PEMILIK'
+	FROM operasional_proyek opr 
+    LEFT JOIN distributor d ON opr.id_distributor = d.id;
 
 /*  History Distributor di menu 'DATA DISTRIBUTOR '
 		
@@ -235,10 +271,3 @@ CREATE OR REPLACE VIEW v_saldo_kaskecil_and_subkaskecil AS
 			SELECT id,  pembangunan, pemilik, status, total from proyek where status = 'SELESAI';
 
 /* END BERANDA KAS BESAR VIEW*/
-
-CREATE OR REPLACE VIEW v_history_pembelian_operasionalProyek AS
-    SELECT
-	    opr.id, opr.tgl, opr.nama, opr.total, opr.status_lunas,
-        d.id ID_DISTRIBUTOR, d.nama NAMA_DISTRIBUTOR, d.pemilik
-	FROM operasional_proyek opr 
-    JOIN distributor d ON opr.id_distributor = d.id;
