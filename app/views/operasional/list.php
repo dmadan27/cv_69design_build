@@ -51,6 +51,7 @@
 											<th>Tanggal</th>
 											<th>Nama</th>
 											<th class="text-right">Nominal</th>
+											<th>Jenis</th>
 											<th>Aksi</th>
 										</tr>
 									</thead>

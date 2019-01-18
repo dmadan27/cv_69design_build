@@ -58,6 +58,10 @@
 																	<td><?=  $this->data['nominal'] ?></td>
 																</tr>
 																<tr>
+																	<td><strong>Jenis Operasional</strong></td>
+																	<td><?=  $this->data['jenis'] ?></td>
+																</tr>
+																<tr>
 																	<td><strong>Keterangan</strong></td>
 																	<td><?=  $this->data['ket'] ?></td>
 																</tr>

@@ -73,7 +73,7 @@
 		*
 		*/
 		public function getByid_fromView($id){
-			$query = "SELECT * FROM v_operasional_new WHERE id = :id;";
+			$query = "SELECT * FROM v_operasional WHERE id = :id;";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id', $id);
@@ -84,6 +84,26 @@
 
 		}
 
+		/*
+		*
+		*/
+		public function getExport($tgl_awal, $tgl_akhir){
+			if($tgl_awal == '' || $tgl_akhir == ''){
+				$query = "SELECT * FROM v_operasional_export;";
+			} else {
+				$query = "SELECT * FROM v_operasional_export WHERE TANGGAL BETWEEN :tgl_awal AND :tgl_akhir;";
+			}
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':tgl_awal' => $tgl_awal,
+					':tgl_akhir' => $tgl_akhir
+				)
+			);
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
+
 		/**
 		* 
 		*/
@@ -91,7 +111,16 @@
 			try{
 				$this->koneksi->beginTransaction();
 
-				$query = "CALL tambah_operasional (:id_bank, :id_kas_besar, :tgl, :nama, :nominal, :ket)";
+				$query = "CALL tambah_operasional (
+					:id_bank,
+					:id_kas_besar,
+					:tgl,
+					:nama,
+					:nominal,
+					:jenis,
+					:ket,
+					:ket_mutasi
+				)";
 
 				$statement = $this->koneksi->prepare($query);
 				$statement->execute(
@@ -101,7 +130,9 @@
 						':tgl' => $data['tgl'],
 						':nama' => $data['nama'],
 						':nominal' => $data['nominal'],
+						':jenis' => $data['jenis'],
 						':ket' => $data['ket'],
+						':ket_mutasi' => ''
 					)
 				);
 				$statement->closeCursor();
@@ -122,18 +153,86 @@
 		* 
 		*/
 		public function update($data){
-			$query = "UPDATE operasional SET
-			id_bank = :id_bank,  nama = :nama, nominal = :nominal, ket =:ket WHERE id = :id;";
+			try{
+				$this->koneksi->beginTransaction();
+
+				if($data['jenis'] == "UANG MASUK"){
+					$this->editMasuk($data);
+				} else if($data['jenis'] == "UANG KELUAR") {
+					$this->editKeluar($data);
+				}
+
+				$this->koneksi->commit();
+
+				return true;
+			}
+			catch(PDOException $e){
+				$this->koneksi->rollback();
+				die($e->getMessage());
+				// return false;
+			}
+		}
+
+		/**
+		* 
+		*/
+		private function editMasuk($data) {
+			$query = "CALL edit_operasional_masuk (
+				:id,
+				:id_bank,
+				:tgl,
+				:nama,
+				:nominal,
+				:jenis,
+				:ket,
+				:ket_mutasi
+			)";
 
 			$statement = $this->koneksi->prepare($query);
-			$statement->bindParam(':id_bank', $data['id_bank']);
-			$statement->bindParam(':nama', $data['nama']);
-			$statement->bindParam(':nominal', $data['nominal']);
-			$statement->bindParam(':ket', $data['ket']);
-			$statement->bindParam(':id', $data['id']);
-			$result = $statement->execute();
+			$statement->execute(
+				array(
+					':id' => $data['id'],
+					':id_bank' => $data['id_bank'],
+					':tgl' => $data['tgl'],
+					':nama' => $data['nama'],
+					':nominal' => $data['nominal'],
+					':jenis' => $data['jenis'],
+					':ket' => $data['ket'],
+					':ket_mutasi' => ''
+				)
+			);
+			$statement->closeCursor();
+		}
 
-			return $result;
+		/**
+		* 
+		*/
+		private function editKeluar($data) {
+			$query = "CALL edit_operasional_keluar (
+				:id,
+				:id_bank,
+				:tgl,
+				:nama,
+				:nominal,
+				:jenis,
+				:ket,
+				:ket_mutasi
+			)";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id' => $data['id'],
+					':id_bank' => $data['id_bank'],
+					':tgl' => $data['tgl'],
+					':nama' => $data['nama'],
+					':nominal' => $data['nominal'],
+					':jenis' => $data['jenis'],
+					':ket' => $data['ket'],
+					':ket_mutasi' => ''
+				)
+			);
+			$statement->closeCursor();
 		}
 
 		/**

@@ -6,6 +6,11 @@ $(document).ready(function(){
 		allowClear : true,
 	});
 
+	$('#jenis').select2({
+		placeholder: "Pilih Bank",
+		allowClear : true,
+	});
+
 	
 	// 
 	$('#submit_operasional').prop('disabled', true);
@@ -13,7 +18,8 @@ $(document).ready(function(){
 	// button tambah
 	$('#tambah').on('click', function(){
 		setIdBank();
-		
+		setJenis()
+
 			resetForm();
 			$('#tgl').prop('disabled', false);
 			$('#submit_operasional').prop('value', 'action-add');
@@ -81,23 +87,29 @@ function getDataForm(){
 			parseFloat($('#nominal').inputmask('unmaskedvalue')) : 
 			$('#nominal').inputmask('unmaskedvalue')
 		) : $('#nominal').val().trim();
+
+	var jenis = ($('#jenis').val() != "" && $('#jenis').val() != null) ? $('#jenis').val().trim() : "";
+	var bank = ($('#id_bank').val() != "" && $('#id_bank').val() != null) ? $('#id_bank').val().trim() : "";
 		
 	if($('#submit_operasional').val().trim().toLowerCase() == "action-edit"){
 		data.append('id', $('#id').val().trim());
-		// data.append('id_bank', $('#id_bank').val().trim());
-		data.append('tgl', $('#tgl').val().trim());
-		// data.append('nama', $('#nama').val().trim());
-		// data.append('nominal', nominal);
-		// data.append('ket', $('#ket').val().trim());
-	} 
+		data.append('id_bank',bank); // id_bank
+		data.append('tgl', $('#tgl').val().trim()); // tgl operasional
+		data.append('nama', $('#nama').val().trim()); // nama operasional
+		data.append('nominal', nominal); // nominal operasional
+		data.append('jenis', jenis); // jenis operasional
+		data.append('ket', $('#ket').val().trim()); // ket operasional
+	} else {
+		data.append('id_bank',bank); // id_bank
+		data.append('tgl', $('#tgl').val().trim()); // tgl operasional
+		data.append('nama', $('#nama').val().trim()); // nama operasional
+		data.append('nominal', nominal); // nominal operasional
+		data.append('jenis', jenis); // jenis operasional
+		data.append('ket', $('#ket').val().trim()); // ket operasional
+		data.append('action', $('#submit_operasional').val().trim()); // action
+	}
 
-	// data.append('token', $('#token_form').val().trim());
-	data.append('id_bank', $('#id_bank').val().trim()); // id_bank
-	data.append('tgl', $('#tgl').val().trim()); // tgl operasional
-	data.append('nama', $('#nama').val().trim()); // nama operasional
-	data.append('nominal', nominal); // nominal operasional
-	data.append('ket', $('#ket').val().trim()); // ket operasional
-	data.append('action', $('#submit_operasional').val().trim()); // action
+	
 
 	return data;
 }
@@ -145,35 +157,44 @@ function submit(edit_view){
 *
 */
 function getEdit(id){
-		resetForm();
-		setIdBank();
-		$('.field-id').css('display', 'none');
-		$('.field-tgl').css('display', true);
-		$('#tgl').prop('disabled', true);
-		
-		$('#submit_operasional').prop('value', 'action-edit');
-		$('#submit_operasional').prop('disabled', false);
-		$('#submit_operasional').html('Edit Data');
-
-		$.ajax({
-			url: BASE_URL+'operasional/edit/'+id.toLowerCase(),
-			type: 'post',
-			dataType: 'json',
-			data: {},
-			beforeSend: function(){
-
-			},
-			success: function(output){
-				if(output){
-					$('#modalOperasional').modal();
-					setValue(output);
-				}	
-			},
-			error: function (jqXHR, textStatus, errorThrown){ // error handling
-	            console.log(jqXHR, textStatus, errorThrown);
-	        }
-		})
+	resetForm();
+	setIdBank();
+	setJenis();
+	$('.field-id').css('display', 'none');
+	$('.field-tgl').css('display', true);
+	$('#tgl').prop('disabled', true);
 	
+	$('#submit_operasional').prop('value', 'action-edit');
+	$('#submit_operasional').prop('disabled', false);
+	$('#submit_operasional').html('Edit Data');
+
+	$.ajax({
+		url: BASE_URL+'operasional/edit/'+id.toLowerCase(),
+		type: 'post',
+		dataType: 'json',
+		data: {},
+		beforeSend: function(){
+
+		},
+		success: function(output){
+			if(output){
+				$('#modalOperasional').modal();
+				console.log('Response getEdit:','',output)
+				
+				//setValueonForm
+				$('#id').val(output.id);
+				$('#id_bank').val(output.id_bank).trigger('change');
+				$('#tgl').val(output.tgl);
+				$('#nama').val(output.nama);
+				$('#nominal').val(output.nominal);
+				$('#jenis').val(output.jenis).trigger('change');
+				$('#ket').val(output.ket);
+			}	
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+			console.log(jqXHR, textStatus, errorThrown);
+		}
+	})
 }
 
 /**
@@ -241,4 +262,20 @@ function setIdBank(){
             swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
         }
 	})
+}
+
+/**
+*
+*/
+function setJenis() {
+	var jenis = [
+		{value: "UANG MASUK", text: "UANG MASUK"},
+		{value: "UANG KELUAR", text: "UANG KELUAR"},
+	];
+
+	$.each(jenis, function(index, item){
+		var option = new Option(item.text, item.value);
+		$("#jenis").append(option);
+	});
+	// $("#jenis").val(null).trigger('change');
 }
