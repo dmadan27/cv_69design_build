@@ -436,6 +436,7 @@
 			SELECT nama INTO nama_bank_baru FROM bank WHERE id = id_bank_param;
 			SELECT nama INTO nama_bank_lama FROM bank WHERE id = id_bank_sebelum;
 
+			-- set keterangan mutasi bank lama
 			SELECT CONCAT('UANG KELUAR SEBESAR RP ', FORMAT(get_total_sebelum, 2, 'de_DE'), 
 				' DIKARENAKAN TRANSAKSI DI PROYEK (', id_proyek_param, ') - ', nama_param, 
 				' MELAKUKAN PERGANTIAN BANK KE ', nama_bank_baru) INTO ket_bank_lama_param;
@@ -452,6 +453,7 @@
 			-- update saldo bank baru
 			UPDATE bank SET saldo = (get_saldo_bank_baru + total_param) WHERE id = id_bank_param;
 
+			-- set keterangan mutasi bank baru
 			SELECT CONCAT('UANG MASUK SEBESAR RP ', FORMAT(total_param, 2, 'de_DE'), 
 				' DIKARENAKAN TRANSAKSI DI PROYEK (', id_proyek_param, ') - ', nama_param, 
 				' MELAKUKAN PERGANTIAN BANK YANG SEBELUMNYA ', nama_bank_lama) INTO ket_bank_baru_param;
@@ -472,7 +474,7 @@
 				UPDATE bank SET saldo = (get_saldo_bank_baru + (total_param - get_total_sebelum)) WHERE id = id_bank_param;
 				
 				IF total_param > get_total_sebelum THEN
-
+					-- set keterangan mutasi
 					SELECT CONCAT('UANG MASUK SEBESAR RP ', FORMAT((total_param - get_total_sebelum), 2, 'de_DE'), 
 						' DIKARENAKAN ADANYA PERUBAHAN DATA DI PROYEK (', id_proyek_param, ') - ', nama_param) INTO ket_param;
 					
@@ -483,7 +485,7 @@
 						(id_bank_param, tgl_param, (total_param - get_total_sebelum), 0, (get_saldo_bank_baru + (total_param - get_total_sebelum)), ket_param);
 				ELSE
 					IF total_param < get_total_sebelum THEN
-
+						-- set keterangan mutasi
 						SELECT CONCAT('UANG KELUAR SEBESAR RP ', FORMAT((get_total_sebelum - total_param), 2, 'de_DE'), 
 							' DIKARENAKAN ADANYA PERUBAHAN DATA DI PROYEK (', id_proyek_param, ') - ', nama_param) INTO ket_param;
 						
@@ -508,8 +510,7 @@
 	delimiter //
 	CREATE PROCEDURE hapus_detail_proyek(
 		id_param int,
-		tgl_param date,
-		ket_param text
+		tgl_param date
 	)
 	BEGIN
 		DECLARE get_id_bank int;
@@ -517,15 +518,19 @@
 		DECLARE get_tgl date;
 		DECLARE get_nama varchar(255);
 		DECLARE get_total double(12,2);
-		DECLARE get_is_DP char(1);
-
+		DECLARE ket_param text;
+		
 		-- get data detail sebelum dihapus 
+		SELECT id_proyek INTO get_id_proyek_param FROM detail_proyek WHERE id = id_param;
 		SELECT id_bank INTO get_id_bank FROM detail_proyek WHERE id = id_param;
 		SELECT tgl INTO get_tgl FROM detail_proyek WHERE id = id_param;
 		SELECT nama INTO get_nama FROM detail_proyek WHERE id = id_param;
 		SELECT total INTO get_total FROM detail_proyek WHERE id = id_param;
-		SELECT is_DP INTO get_is_DP FROM detail_proyek WHERE id = id_param;
-		
+
+		-- set keterangan mutasi
+		SELECT CONCAT('UANG KELUAR SEBESAR RP ', FORMAT((get_saldo - get_total), 2, 'de_DE'), 
+			' DIKARENAKAN ADANYA PENGHAPUSAN DATA DI PROYEK (', get_id_proyek_param, ') - ', get_nama) INTO ket_param;
+
 		-- get saldo terakhir
 		SELECT saldo INTO get_saldo FROM bank WHERE id = get_id_bank;
 
@@ -1413,4 +1418,63 @@
 	-- Pengajuan Kas Kecil -- Versi 11 Januari 2019 -- END --
 	-- ================================================================= --
 	
+	delimiter //
+	CREATE PROCEDURE acc_pengajuan_sub_kas_kecil(
+		in id_param varchar(50),
+		in id_kas_kecil_param varchar(10),
+		in tgl_param date,
+		in dana_disetujui_param double(12,2),
+		in status_param char(1)
+	)
+	BEGIN
+
+		DECLARE id_sub_kas_kecil_param varchar(10);
+		DECLARE id_proyek_param varchar(50);
+		DECLARE nama_param varchar(255);
+		DECLARE get_saldo_kas_kecil double(12,2);
+		DECLARE get_saldo_sub_kas_kecil double(12,2);
+		DECLARE ket_kas_kecil_param text;
+		DECLARE ket_sub_kas_kecil_param text;
+
+		-- get id sub kas kecil
+		SELECT id_sub_kas_kecil INTO id_sub_kas_kecil_param FROM pengajuan_sub_kas_kecil WHERE id = id_param;
+
+		-- get id proyek dan nama pengajuan
+		SELECT id_proyek INTO id_proyek_param FROM pengajuan_sub_kas_kecil WHERE id = id_param;
+		SELECT nama INTO nama_param FROM pengajuan_sub_kas_kecil WHERE id = id_param;
+
+		-- get saldo kas kecil dan saldo sub kas kecil
+		SELECT saldo INTO get_saldo_kas_kecil FROM kas_kecil WHERE id = id_kas_kecil_param;
+		SELECT saldo INTO get_saldo_sub_kas_kecil FROM sub_kas_kecil WHERE id = id_sub_kas_kecil_param;
+
+		-- set keterangan mutasi kas kecil dan sub kas kecil
+		SELECT CONCAT('UANG KELUAR SEBESAR RP ', FORMAT(dana_disetujui_param, 2, 'de_DE'), 
+			' UNTUK PENGAJUAN SUB KAS KECIL DI PROYEK (', id_proyek_param, ') - ', id_param, ': ',nama_param) INTO ket_kas_kecil_param;
+		SELECT CONCAT('UANG MASUK SEBESAR RP ', FORMAT(dana_disetujui_param, 2, 'de_DE'), 
+			' DARI PENGAJUAN ', id_param, ' - ', nama_param) INTO ket_sub_kas_kecil_param;
+
+		-- update saldo kas kecil
+		UPDATE kas_kecil SET saldo = (get_saldo_kas_kecil - dana_disetujui_param) WHERE id = id_kas_kecil_param;
+
+		-- insert mutasi kas kecil
+		INSERT INTO mutasi_saldo_kas_kecil 
+			(id_kas_kecil, tgl, uang_masuk, uang_keluar, saldo, ket) 
+		VALUES 
+			(id_kas_kecil_param, tgl_param, 0, dana_disetujui_param, (get_saldo_kas_kecil - dana_disetujui_param), ket_kas_kecil_param);
+
+		-- update pengajuan sub kas kecil
+		UPDATE pengajuan_sub_kas_kecil SET dana_disetujui = dana_disetujui_param, status = '3' WHERE id = id_param;
+
+		-- update saldo sub kas kecil
+		UPDATE sub_kas_kecil SET saldo = (get_saldo_sub_kas_kecil + dana_disetujui_param) WHERE id = id_sub_kas_kecil_param;
+
+		-- insert mutasi sub kas kecil
+		INSERT INTO mutasi_saldo_sub_kas_kecil 
+			(id_sub_kas_kecil, tgl, uang_masuk, uang_keluar, saldo, ket) 
+		VALUES 
+			(id_sub_kas_kecil_param, tgl_param, dana_disetujui_param, 0, (get_saldo_sub_kas_kecil + dana_disetujui_param), ket_sub_kas_kecil_param);
+
+	END //
+	delimeter;
+
 # =================================================================== #

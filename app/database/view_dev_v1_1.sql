@@ -113,6 +113,29 @@ CREATE OR REPLACE VIEW v_pengajuan_sub_kas_kecil_full AS
 	JOIN proyek p ON p.id = pskk.id_proyek
     JOIN sub_kas_kecil skk ON skk.id = pskk.id_sub_kas_kecil;
 
+-- View Pengajuan Sub Kas Kecil v2
+CREATE OR REPLACE VIEW v_pengajuan_sub_kas_kecil_v2 AS
+    SELECT
+        pskk.id, pskk.id_sub_kas_kecil, skk.nama nama_skk, pskk.tgl,
+        pskk.id_proyek, p.pemilik, p.pembangunan,
+        pskk.nama nama_pengajuan, pskk.total, pskk.dana_disetujui,
+        (CASE 
+            WHEN pskk.status = '1' THEN 'PENDING'
+            WHEN pskk.status = '2' THEN 'PERBAIKI'
+            WHEN pskk.status = '3' THEN 'DISETUJUI'
+            WHEN pskk.status = '4' THEN 'LANGSUNG'
+            ELSE 'DITOLAK' END
+        ) status,
+        (CASE 
+            WHEN pskk.status_laporan = '1' THEN 'PENDING'
+            WHEN pskk.status_laporan = '2' THEN 'PERBAIKI'
+            ELSE 'DISETUJUI' END
+        ) status_laporan, 
+        pskk.status status_order, pskk.status_laporan status_laporan_order
+    FROM pengajuan_sub_kas_kecil pskk
+    JOIN proyek p ON p.id = pskk.id_proyek
+    JOIN sub_kas_kecil skk ON skk.id = pskk.id_sub_kas_kecil;
+
 -- View Detail Pengajuan Sub Kas Kecil
 
 -- View Upload Laporan Pengajuan Sub Kas Kecil
@@ -160,7 +183,7 @@ CREATE OR REPLACE VIEW v_operasional_proyek_export AS
     FROM operasional_proyek opr
     JOIN proyek pr ON pr.id = opr.id_proyek 
     JOIN kas_besar kb ON kb.id = opr.id_kas_besar
-    LEFT JOIN distributor dst ON dst.id = opr.id_distributor
+    LEFT JOIN distributor dst ON dst.id = opr.id_distributor;
 
 -- View Detail Operasional Proyek
 CREATE OR REPLACE VIEW v_detail_operasional_proyek AS
