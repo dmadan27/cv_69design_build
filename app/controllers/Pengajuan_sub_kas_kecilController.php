@@ -6,7 +6,6 @@
 	 */
 	class Pengajuan_sub_kas_kecil extends Controller {
 
-		// protected $token;
 		private $success = false;
 		private $notif = array();
 		private $error = array();
@@ -116,8 +115,8 @@
 					$dataRow[] = $row['id'];
 					$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
 					$dataRow[] = $row['id_sub_kas_kecil'].' - '.$row['nama_skk'];
-					$dataRow[] = $row['nama_pengajuan'];
 					$dataRow[] = $row['id_proyek'];
+					$dataRow[] = $row['nama_pengajuan'];
 					$dataRow[] = $this->helper->cetakRupiah($row['total']);
 					$dataRow[] = $this->helper->cetakRupiah($row['dana_disetujui']);
 					$dataRow[] = $status;
@@ -331,10 +330,10 @@
 		* return berupa array, status hasil pengecekan dan error tiap validasi inputan
 		*/
 		private function set_validation($data){
-			$required = ($data['status'] == "DISETUJUI") ? 'required' : 'not_required';
+			$required = ($data['status'] == "1") ? 'required' : 'not_required';
 
 			// status
-			$this->validation->set_rules($data['status'], 'Status Pengajuan Sub Kas Kecil', 'status', 'string | 1 | 255 | required');
+			$this->validation->set_rules($data['status'], 'Status Pengajuan Sub Kas Kecil', 'status', 'string | 1 | 1 | required');
 			// dana_disetujui
 			$this->validation->set_rules($data['dana_disetujui'], 'Dana yang Disetujui', 'dana_disetujui', 'nilai | 1 | 99999999999 | '.$required);
 
