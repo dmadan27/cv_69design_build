@@ -30,7 +30,6 @@
 						<div class="row">
 							<div class="col-md-12 col-sm-12 col-xs-12">
 								<div class="btn-group">
-
 									<!-- export -->
 									<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 								</div>
@@ -40,17 +39,16 @@
 					<!-- box body -->
 					<div class="box-body">
 						<div class="row">
-							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-								<input type="hidden" id="token_list" value="<?= $this->data['token_list']; ?>">
-								<table id="UserTable" class="table table-bordered table-hover">
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">	
+								<table id="UserTable" class="table table-bordered table-hover" style="width: 100%">
 									<thead>
 										<tr>
-											<th class="text-center" style="width: 35px">No</th>
-											<th class="text-center">Username</th>
-											<th class="text-center">Nama</th>
+											<th class="text-right" style="width: 35px">No</th>
+											<th>Username</th>
+											<th>Nama</th>
 											<th class="text-center">Status</th>
-											<th class="text-center">Level</th>
-											<!-- <th class="text-center">Aksi</th> -->
+											<th>Level</th>
+											<th>Aksi</th>
 										</tr>
 									</thead>
 									<tbody>
@@ -67,7 +65,4 @@
 
 	<!-- load form -->
 	<?php include_once('form.php'); ?>
-	<script type="text/javascript">
-		var edit_view = false;
-	</script>
 </div>

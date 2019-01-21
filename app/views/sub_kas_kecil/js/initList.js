@@ -36,7 +36,7 @@ $(document).ready(function(){
         createdRow: function(row, data, dataIndex){
         	if($(data[6]).text().toLowerCase() == "nonaktif") $(row).addClass('danger');
         	for(var i = 0; i < 8; i++){
-        		if(i != 2 && i != 5) $('td:eq('+i+')', row).addClass('text-center'); 
+        		if(i == 6) $('td:eq('+i+')', row).addClass('text-center'); 
          		if(i == 5) $('td:eq('+i+')', row).addClass('text-right'); // rata kanan untuk data saldo
         	}
         }

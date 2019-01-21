@@ -23,21 +23,18 @@ $(document).ready(function(){
         ajax: {
             url: BASE_URL+"user/get-list/",
             type: 'POST',
-            data: {
-                "token_list" : $('#token_list').val().trim(),
-            }
+            data: {}
         },
         "columnDefs": [
             {
-                "targets":[0, 4], // disable order di kolom 1 dan 3
+                "targets":[0, 5], // disable order di kolom 1 dan 3
                 "orderable":false,
             }
         ],
         createdRow: function(row, data, dataIndex){
-            if($(data[3]).text().toLowerCase() == "nonaktif") $(row).addClass('danger');
+            if($(data[4]).text().toLowerCase() == "nonaktif") $(row).addClass('danger');
             for(var i = 0; i < 5; i++){
-                if(i != 1 && i != 2) $('td:eq('+i+')', row).addClass('text-center'); 
-                if(i == 2) $('td:eq('+i+')', row).addClass('text-right'); // rata kanan untuk data saldo
+                if(i == 0) $('td:eq('+i+')', row).addClass('text-right');
             }
         }
     });

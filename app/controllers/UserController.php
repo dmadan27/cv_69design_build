@@ -54,24 +54,8 @@
 				'css' => $css,
 				'js' => $js,
 			);
-			
-			// set token
-			$_SESSION['token_user'] = array(
-				'list' => md5($this->auth->getToken()),
-				'add' => md5($this->auth->getToken()),
-			);
 
-			$this->token = array(
-				'list' => password_hash($_SESSION['token_user']['list'], PASSWORD_BCRYPT),
-				'add' => password_hash($_SESSION['token_user']['add'], PASSWORD_BCRYPT),	
-			);
-
-			$data = array(
-				'token_list' => $this->token['list'],
-				'token_add' => $this->token['add'],
-			);
-
-			$this->layout('user/list', $config, $data);
+			$this->layout('user/list', $config, $data = null);
 		}	
 
 		/**
@@ -80,16 +64,11 @@
 		* generate token edit dan delete
 		* return json
 		*/
-		public function get_list(){
-			$token = isset($_POST['token_list']) ? $_POST['token_list'] : false;
-			
-			// cek token
-			$this->auth->cekToken($_SESSION['token_user']['list'], $token, 'user');
-			
+		public function get_list(){			
 			// config datatable
 			$config_dataTable = array(
 				'tabel' => 'v_user',
-				'kolomOrder' => array(null, 'username', 'nama','status', 'level'),
+				'kolomOrder' => array(null, 'username', 'nama','status', 'level', null),
 				'kolomCari' => array('username'),
 				'orderBy' => array('username' => 'asc'),
 				'kondisi' => false,
@@ -97,36 +76,26 @@
 
 			$dataUser = $this->UserModel->getAllDataTable($config_dataTable);
 
-			// set token
-			$_SESSION['token_user']['edit'] = md5($this->auth->getToken());
-			$_SESSION['token_user']['delete'] = md5($this->auth->getToken());
-			
-			$this->token = array(
-				'edit' => password_hash($_SESSION['token_user']['edit'], PASSWORD_BCRYPT),
-				'delete' => password_hash($_SESSION['token_user']['delete'], PASSWORD_BCRYPT),	
-			);
-
 			$data = array();
 			$no_urut = $_POST['start'];
 			foreach($dataUser as $row){
 				$no_urut++;
 
-				// $status = ($row['status'] == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-danger">'.$row['status'].'</span>';
+				$status = ($row['status'] == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-danger">'.$row['status'].'</span>';
 
 				// button aksi
-				// $aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-				// $aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".', '."'".$this->token["edit"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-				// $aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".', '."'".$this->token["delete"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+				$aksiEdit = '<button onclick="getEdit('."'".$row["username"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+				$aksiHapus = '<button onclick="getDelete('."'".$row["username"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 				
-				// $aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
+				$aksi = '<div class="btn-group">'.$aksiEdit.$aksiHapus.'</div>';
 				
 				$dataRow = array();
 				$dataRow[] = $no_urut;
 				$dataRow[] = $row['username'];
 				$dataRow[] = $row['nama'];
-				$dataRow[] = $row['status'];
+				$dataRow[] = $status;
 				$dataRow[] = $row['level'];
-				// $dataRow[] = $aksi;
+				$dataRow[] = $aksi;
 
 				$data[] = $dataRow;
 			}
