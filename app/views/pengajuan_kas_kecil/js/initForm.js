@@ -5,7 +5,7 @@ $(document).ready(function(){
 		resetForm();
 		generateID();
 
-		$('#id').prop('disabled', true);
+		$('#id_pengajuan').prop('disabled', true);
 		$('#submit_pengajuan_kas_kecil').prop('value', 'action-add');
 		$('#submit_pengajuan_kas_kecil').prop('disabled', false);
 		$('#submit_pengajuan_kas_kecil').html('Simpan Data');
@@ -41,7 +41,7 @@ $(document).ready(function(){
  */
 function init() {
 	// Initialize Select2 Elements
-	$('#status').select2({
+	$('#status_pengajuan').select2({
 		placeholder: "Pilih Status Pembayaran",
 		allowClear: true
 	});
@@ -74,9 +74,9 @@ function init() {
 	setStatus();
 	setNamaBank();
 	
-	$('#id').prop('disabled', true);
-	$('#id_bank').prop('disabled', true);
-	$('#total_disetujui').prop('disabled', true);
+	$('#id_pengajuan').prop('disabled', true);
+	$('#id_bank_pengajuan').prop('disabled', true);
+	$('#total_disetujui_pengajuan').prop('disabled', true);
 	$('#submit_pengajuan_kas_kecil').prop('disabled', true);
 }
 
@@ -89,42 +89,48 @@ function init() {
  */
 function getDataForm(){
 	var data = new FormData();
-
+	
 	if($('#submit_pengajuan_kas_kecil').val() == "action-add"){
+		
+		var total = ($('#total_pengajuan').inputmask) ? 
+		( parseFloat($('#total_pengajuan').inputmask('unmaskedvalue')) ?
+			parseFloat($('#total_pengajuan').inputmask('unmaskedvalue')) : 
+			$('#total_pengajuan').inputmask('unmaskedvalue')
+		) : $('#total_pengajuan').val().trim();
 
-		var total = ($('#total').inputmask) ? 
-		( parseFloat($('#total').inputmask('unmaskedvalue')) ?
-			parseFloat($('#total').inputmask('unmaskedvalue')) : 
-			$('#total').inputmask('unmaskedvalue')
-		) : $('#total').val().trim();
+		var id = $('#id_pengajuan').val().trim();
+		var tgl = $('#tgl_pengajuan').val().trim();
+		var nama = $('#nama_pengajuan').val().trim();
 
-		data.append('id', $('#id').val().trim()); // id
-		data.append('tgl', $('#tgl').val().trim()); // tgl
-		data.append('nama', $('#nama').val().trim()); // nama pengajuan
+		console.log(nama)
+
+		data.append('id', id); // id
+		data.append('tgl', tgl); // tgl
+		data.append('nama', nama); // nama pengajuan
 		data.append('total', total); // total
 		data.append('action', $('#submit_pengajuan_kas_kecil').val().trim()); // action
 
 	} else if($('#submit_pengajuan_kas_kecil').val() == "action-edit"){
 
-		var id_bank = ($('#id_bank').val() != "" && $('#id_bank').val() != null) ? $('#id_bank').val().trim() : "";
-		var status = ($('#status').val() != "" && $('#status').val() != null) ? $('#status').val().trim() : "";
+		var id_bank = ($('#id_bank_pengajuan').val() != "" && $('#id_bank_pengajuan').val() != null) ? $('#id_bank_pengajuan').val().trim() : "";
+		var status = ($('#status_pengajuan').val() != "" && $('#status_pengajuan').val() != null) ? $('#status_pengajuan').val().trim() : "";
 
-		var total_disetujui = ($('#total_disetujui').inputmask) ? 
-		( parseFloat($('#total_disetujui').inputmask('unmaskedvalue')) ?
-			parseFloat($('#total_disetujui').inputmask('unmaskedvalue')) : 
-			$('#total_disetujui').inputmask('unmaskedvalue')
-		) : $('#total_disetujui').val().trim();
+		var total_disetujui = ($('#total_disetujui_pengajuan').inputmask) ? 
+		( parseFloat($('#total_disetujui_pengajuan').inputmask('unmaskedvalue')) ?
+			parseFloat($('#total_disetujui_pengajuan').inputmask('unmaskedvalue')) : 
+			$('#total_disetujui_pengajuan').inputmask('unmaskedvalue')
+		) : $('#total_disetujui_pengajuan').val().trim();
 
-		var total = ($('#total').inputmask) ? 
-		( parseFloat($('#total').inputmask('unmaskedvalue')) ?
-			parseFloat($('#total').inputmask('unmaskedvalue')) : 
-			$('#total').inputmask('unmaskedvalue')
-		) : $('#total').val().trim();
+		var total = ($('#total_pengajuan').inputmask) ? 
+		( parseFloat($('#total_pengajuan').inputmask('unmaskedvalue')) ?
+			parseFloat($('#total_pengajuan').inputmask('unmaskedvalue')) : 
+			$('#total_pengajuan').inputmask('unmaskedvalue')
+		) : $('#total_pengajuan').val().trim();
 
-		data.append('id', $('#id').val().trim()); // id
+		data.append('id', $('#id_pengajuan').val().trim()); // id
 		data.append('id_kas_kecil', $('#id_kas_kecil').val().trim()); // id_kas_kecil
-		data.append('tgl', $('#tgl').val().trim()); // tanggal
-		data.append('nama', $('#nama').val().trim()); // nama pengajuan
+		data.append('tgl', $('#tgl_pengajuan').val().trim()); // tanggal
+		data.append('nama', $('#nama_pengajuan').val().trim()); // nama pengajuan
 		data.append('id_bank', id_bank); // id_bank
 		data.append('total', total); // total
 		data.append('total_disetujui', total_disetujui); // total_disetujui
@@ -200,19 +206,19 @@ function getEdit(id){
 			success: function(output){
 				console.log('%cgetEdit Response:','',output);
 				
-				$('#status').on('change', function(){
-					if($('#status').val() == "2"){
-						$('#id_bank').prop('disabled', false);
-						$('#total_disetujui').prop('disabled', false);
+				$('#status_pengajuan').on('change', function(){
+					if($('#status_pengajuan').val() == "2"){
+						$('#id_bank_pengajuan').prop('disabled', false);
+						$('#total_disetujui_pengajuan').prop('disabled', false);
 
 						var total_disetujui = output.total - output.saldo;
-						$('#total_disetujui').val(total_disetujui);
+						$('#total_disetujui_pengajuan').val(total_disetujui);
 
 					} else {
-						$('#id_bank').prop('disabled', true);
-						$('#id_bank').val(null).trigger('change');
-						$('#total_disetujui').prop('disabled', true);
-						$('#total_disetujui').val(null).trigger('change');
+						$('#id_bank_pengajuan').prop('disabled', true);
+						$('#id_bank_pengajuan').val(null).trigger('change');
+						$('#total_disetujui_pengajuan').prop('disabled', true);
+						$('#total_disetujui_pengajuan').val(null).trigger('change');
 					}
 				});
 
@@ -257,13 +263,13 @@ function setValue(value){
 	$.each(value, function(index, item){
 		item = (parseFloat(item)) ? (parseFloat(item)) : item;
 		$('#'+index).val(item);
-		$('#id').val(value.id);
+		$('#id_pengajuan').val(value.id);
 		$('#id_kas_kecil').val(value.id_kas_kecil);
-		$('#tgl').val(value.tgl);
-		$('#nama').val(value.nama);
-		$('#total').val(value.total);
-		$('#saldo').val(value.saldo);
-		$('#status').val(value.status).trigger('change');
+		$('#tgl_pengajuan').val(value.tgl);
+		$('#nama_pengajuan').val(value.nama);
+		$('#total_pengajuan').val(value.total);
+		$('#saldo_pengajuan').val(value.saldo);
+		$('#status_pengajuan').val(value.status).trigger('change');
 	});
 }
 
@@ -278,7 +284,7 @@ function generateID(){
 		data: {},
 		beforeSend: function(){},
 		success: function(output){
-			$('#id').val(output);	
+			$('#id_pengajuan').val(output);	
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling
             console.log(jqXHR, textStatus, errorThrown);
@@ -300,9 +306,9 @@ function setNamaBank(){
 			console.log('%cResponse setNamaBank Operasional Proyek: ', 'font-style: italic', response);
 			$.each(response, function(index, item){
 				var newOption = new Option(item.text, item.id);
-				$('#id_bank').append(newOption).trigger('change');
+				$('#id_bank_pengajuan').append(newOption).trigger('change');
 			});
-			$('#id_bank').val(null).trigger('change');
+			$('#id_bank_pengajuan').val(null).trigger('change');
 			
 		},
 		error: function (jqXHR, textStatus, errorThrown){
@@ -325,9 +331,9 @@ function setStatus(){
 
 	$.each(status, function(index, item){
 		var option = new Option(item.text, item.value);
-		$("#status").append(option);
+		$("#status_pengajuan").append(option);
 	});
-	$("#status").val("0").trigger('change');
+	$("#status_pengajuan").val("0").trigger('change');
 	
 }
 

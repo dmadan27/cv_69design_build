@@ -92,7 +92,7 @@ function getView(id){
                 $('#nama').html(output.nama);   
                 $('#total').html(output.total);
                 $('#total_disetujui').html(output.total_disetujui);
-                $('#status_pengajuan').html(output.status);            
+                $('#status').html(output.status);            
         
         },
         error: function (jqXHR, textStatus, errorThrown){ // error handling

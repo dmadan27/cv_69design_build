@@ -61,7 +61,7 @@
                                 <!-- Status -->
                                 <tr>
                                     <td><strong>Status Pengajuan</strong></td>
-                                    <td id="status_pengajuan"></td>
+                                    <td id="status"></td>
                                 </tr>
                             </table>
                         </div>
