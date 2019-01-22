@@ -32,7 +32,7 @@ $(document).ready(function(){
             }
         ],
         createdRow: function(row, data, dataIndex){
-            if($(data[7]).text().toLowerCase() == "selesai") $(row).addClass('danger');
+            if($(data[8]).text().toLowerCase() == "selesai") $(row).addClass('danger');
             for(var i = 0; i < 10; i++){
                 if(i == 0 || i == 6) $('td:eq('+i+')', row).addClass('text-right');
             }

@@ -29,9 +29,6 @@
 						<div class="row">
 							<div class="col-md-12 col-sm-12 col-xs-12">
 								<div class="btn-group">
-									<!-- tambah -->
-									<!-- <a href="<?= BASE_URL."proyek/form/" ?>" class="btn btn-default btn-flat" role="button"><i class="fa fa-plus"></i> Tambah</a> -->
-									<!-- export -->
 									<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 								</div>
 							</div>
@@ -39,19 +36,18 @@
 					</div>
 					<!-- box body -->
 					<div class="box-body">
-						<input type="hidden" id="token_list" value="<?= $this->data['token_list']; ?>">
-						<table id="pengajuan_sub_kas_kecilTable" class="table table-bordered table-hover">
+						<table id="pengajuan_sub_kas_kecilTable" class="table table-bordered table-hover" style="width: 100%">
 							<thead>
 								<tr>
-									<th class="text-right" style="width: 15px">No</th>
+									<th class="text-right" style="width: 20px">No</th>
 									<th>ID</th>
-									<th>ID Sub Kas Kecil</th>
-									<th>ID Proyek</th>
-									<!-- <th>Nama Proyek</th> -->
 									<th>Tanggal</th>
+									<th>Sub Kas Kecil</th>
+									<th>ID Proyek</th>
+									<th>Pengajuan</th>
 									<th class="text-right">Total</th>
 									<th class="text-right">Dana Disetujui</th>
-									<th>Status Pengajuan</th>
+									<th>Status</th>
 									<th>Aksi</th>
 								</tr>
 							</thead>
@@ -65,7 +61,4 @@
 	</section>
 	<!-- /.content -->
 	<?php include_once('form.php'); ?>
-	<script type="text/javascript">
-		var edit_view = false;
-	</script>
 </div>

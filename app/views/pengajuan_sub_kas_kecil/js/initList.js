@@ -23,9 +23,7 @@ $(document).ready(function(){
         ajax: {
             url: BASE_URL+"pengajuan-sub-kas-kecil/get-list/",
             type: 'POST',
-            data: {
-                "token_list" : $('#token_list').val().trim(),
-            }
+            data: {}
         },
         "columnDefs": [
             {
@@ -34,19 +32,15 @@ $(document).ready(function(){
             }
         ],
         createdRow: function(row, data, dataIndex){
-            // if($(data[7]).text().toLowerCase() == "selesai") $(row).addClass('danger');
-            // for(var i = 0; i < 9; i++){
-            //     if(i == 0 || i == 6) $('td:eq('+i+')', row).addClass('text-right');
-            // }
-            
+            for(var i = 0; i < 10; i++){
+                if(i == 0 || i == 6 || i == 7) $('td:eq('+i+')', row).addClass('text-right');
+            }
         }
     });
 
     // btn Export
     $('#exportExcel').on('click', function(){
-        // if(this.value.trim() != "") 
-            window.location.href = BASE_URL+'pengajuan-sub-kas-kecil/export/';
-       
+        window.location.href = BASE_URL+'pengajuan-sub-kas-kecil/export/';       
     });
 
     // setInterval(function(){
@@ -55,48 +49,46 @@ $(document).ready(function(){
 });
 
 /**
-*
-*/
+ * 
+ * @param {*} id 
+ */
 function getView(id){
     window.location.href = BASE_URL+'pengajuan-sub-kas-kecil/detail/'+id.toLowerCase();
 }
 
 /**
-*
-*/
-function getDelete(id, token){
-    if(token.trim() != ""){
-        swal({
-            title: "Pesan Konfirmasi",
-            text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Ya, Hapus!",
-            cancelButtonText: "Batal",
-            closeOnConfirm: false,
-        }, function(){
-            $.ajax({
-                url: BASE_URL+'pengajuan-sub-kas-kecil/delete/'+id.toLowerCase(),
-                type: 'post',
-                dataType: 'json',
-                data: {"token_delete": token},
-                beforeSend: function(){
-
-                },
-                success: function(output){
-                    console.log(output);
-                    if(output){
-                        swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
-                        $("#pengajuan_sub_kas_kecilTable").DataTable().ajax.reload();
-                    }
-                },
-                error: function (jqXHR, textStatus, errorThrown){ // error handling
-                    console.log(jqXHR, textStatus, errorThrown);
-                    swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+ * 
+ * @param {*} id 
+ */
+function getDelete(id){
+    swal({
+        title: "Pesan Konfirmasi",
+        text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Hapus!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: false,
+    }, function(){
+        $.ajax({
+            url: BASE_URL+'pengajuan-sub-kas-kecil/delete/'+id.toLowerCase(),
+            type: 'post',
+            dataType: 'json',
+            data: {},
+            beforeSend: function(){
+            },
+            success: function(output){
+                console.log(output);
+                if(output){
+                    swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
+                    $("#pengajuan_sub_kas_kecilTable").DataTable().ajax.reload();
                 }
-            })
-        });
-    }
-    else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+            },
+            error: function (jqXHR, textStatus, errorThrown){ // error handling
+                console.log(jqXHR, textStatus, errorThrown);
+                swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+            }
+        })
+    });
 }

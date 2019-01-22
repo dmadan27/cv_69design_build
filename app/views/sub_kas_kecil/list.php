@@ -44,17 +44,17 @@
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 								<input type="hidden" id="token_list" value="<?= $this->data['token_list']; ?>">
 								<div class="table-responsive">
-									<table id="skcTable" class="table table-bordered table-hover">
+									<table id="skcTable" class="table table-bordered table-hover" style="width: 100%">
 										<thead>
 											<tr>
-												<th class="text-center" style="width: 35px">No</th>
-												<th class="text-center">ID</th>
-												<th class="text-center">Nama</th>
-												<th class="text-center">No. Telepon</th>
-												<th class="text-center">Email</th>
-												<th class="text-center">Saldo</th>
-												<th class="text-center">Status</th>
-												<th class="text-center">Aksi</th>
+												<th class="text-rigth" style="width: 35px">No</th>
+												<th>ID</th>
+												<th>Nama</th>
+												<th>No. Telepon</th>
+												<th>Email</th>
+												<th class="text-right">Saldo</th>
+												<th>Status</th>
+												<th>Aksi</th>
 											</tr>
 										</thead>
 										<tbody>

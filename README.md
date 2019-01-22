@@ -1,3 +1,1 @@
-<h2>Aplikasi CV. 69 Design & Build</h2>
-
-Test
+<h1>SimakPro (Sistem Informasi Manajemen Arus Keuangan Proyek)</h1>

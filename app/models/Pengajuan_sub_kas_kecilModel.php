@@ -1,5 +1,5 @@
 <?php
-	// Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 
 	/**
 	*
@@ -14,8 +14,8 @@
 		private $queryBeforeLimitMobile;
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function __construct(){
 			$this->koneksi = $this->openConnection();
 			$this->dataTable = new Datatable();
@@ -24,8 +24,8 @@
 		// ======================= dataTable ======================= //
 
 			/**
-			*
-			*/
+			 * 
+			 */
 			public function getAllDataTable($config){
 				$this->dataTable->set_config($config);
 				$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
@@ -36,15 +36,15 @@
 			}
 
 			/**
-			*
-			*/
+			 * 
+			 */
 			public function recordFilter(){
 				return $this->dataTable->recordFilter();
 			}
 
 			/**
-			*
-			*/
+			 * 
+			 */
 			public function recordTotal(){
 				return $this->dataTable->recordTotal();
 			}
@@ -52,8 +52,8 @@
 		// ========================================================= //
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function getAll(){
 			$query = "SELECT * FROM pengajuan_sub_kas_kecil";
 
@@ -65,10 +65,10 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function getById($id){
-			$query = "SELECT * FROM pengajuan_sub_kas_kecil WHERE id = :id;";
+			$query = "SELECT * FROM v_pengajuan_sub_kas_kecil_v2 WHERE id = :id;";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id', $id);
@@ -79,8 +79,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function getAll_pending(){
 			$status = "1";
 			$query = "SELECT pskc.id, skc.id id_skc, skc.nama nama_skc, pskc.total FROM pengajuan_sub_kas_kecil pskc ";
@@ -95,10 +95,10 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function getTotal_pending(){
-			$status = "PENDING";
+			$status = "1";
 			$query = "SELECT COUNT(*) FROM pengajuan_sub_kas_kecil WHERE status = :status";
 
 			$statement = $this->koneksi->prepare($query);
@@ -110,13 +110,12 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function getLastID($id_pengajuan) {
 			// $query = "SELECT MAX(id) as id from pengajuan_sub_kas_kecil WHERE id LIKE :id_pengajuan"."%";
 			$id_pengajuan .= "%";
 			$query = "SELECT MAX(id) as id from pengajuan_sub_kas_kecil WHERE id LIKE :id_pengajuan";
-
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id_pengajuan', $id_pengajuan);
@@ -127,14 +126,15 @@
 		}
 
 		/**
-		*
-		*/
+		 * Method acc_pengajuan
+		 * @param data {array}
+		 */
 		public function acc_pengajuan($data){
 			try {
 				$this->koneksi->beginTransaction();
-
+				
 				$query	= "CALL acc_pengajuan_sub_kas_kecil (:id, :id_kas_kecil, ";
-				$query .= ":tgl, :dana_disetujui, :status, :ket_kas_kecil, :ket_sub_kas_kecil)";
+				$query .= ":tgl, :dana_disetujui, :status)";
 
 				$statment = $this->koneksi->prepare($query);
 				$statment->execute(
@@ -143,19 +143,23 @@
 						':id_kas_kecil' => $data['id_kas_kecil'],
 						':tgl' => $data['tgl'],
 						':dana_disetujui' => $data['dana_disetujui'],
-						':status' => $data['status'],
-						':ket_kas_kecil' => $data['ket_kas_kecil'],
-						':ket_sub_kas_kecil' => $data['ket_sub_kas_kecil'],
+						':status' => $data['status']
 					)
 				);
 				$statment->closeCursor();
 
 				$this->koneksi->commit();
 
-				return true;
+				return array(
+					'success' => true,
+					'error' => NULL
+				);
 			} catch (PDOException $e) {
 				$this->koneksi->rollback();
-				return $e->getMessage();
+				return array(
+					'success' => false,
+					'error' => $e->getMessage()
+				);
 			}
 		}
 
@@ -180,10 +184,16 @@
 
 				$this->koneksi->commit();
 
-				return true;
+				return array(
+					'success' => true,
+					'error' => NULL
+				);
 			} catch (PDOException $e) {
 				$this->koneksi->rollback();
-				return $e->getMessage();
+				return array(
+					'success' => false,
+					'error' => $e->getMessage()
+				);
 			}
 		}
 

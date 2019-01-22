@@ -137,14 +137,14 @@ function getEdit(id){
 		beforeSend: function(){
 		},
 		success: function(response){
-			if('Response getEdit Bank: ', response){
-				$('#modalBank').modal();
-				setValue(response);
-			}	
+			console.log('%cResponse Get Edit Bank: ', 'color: green; font-weight: bold', response);
+			setValue(response);
+			$('#modalBank').modal();
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling
             console.log('Response Error getEdit Bank: ', jqXHR, textStatus, errorThrown);
-            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+			swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+			$('#modalBank').modal('hide');
         }
 	})
 	

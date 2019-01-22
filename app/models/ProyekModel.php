@@ -459,9 +459,6 @@
 		 * @return result {array}
 		 */
 		private function updateDetail($data){
-			// butuh review
-			$ket = "";
-			
 			$query = 'CALL edit_detail_proyek (:id, :id_proyek, :id_bank, :tgl_detail, :nama_detail, :total_detail, :is_DP)';
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
@@ -472,8 +469,7 @@
 					':tgl_detail' => $data['tgl_detail'],
 					':nama_detail' => $data['nama_detail'],
 					':total_detail' => $data['total_detail'],
-					':is_DP' => $data['is_DP'],
-					// ':ket' => $ket
+					':is_DP' => $data['is_DP']
 				)
 			);
 			$statement->closeCursor();
@@ -486,17 +482,14 @@
 		 * @param id {string}
 		 */
 		private function deleteDetail($id){
-			// butuh review
-			$ket = "";
 			$tgl = date('Y-m-d');
 
-			$query = 'CALL hapus_detail_proyek (:id, :tgl, :ket)';
+			$query = 'CALL hapus_detail_proyek (:id, :tgl)';
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
 				array(
 					':id' => $id,
-					':tgl' => $tgl,
-					':ket' => $ket,
+					':tgl' => $tgl
 				)
 			);
 			$statement->closeCursor();
@@ -642,11 +635,11 @@
 
 		// ========================================================= //
 
-			/**
-			 * Method __destruct
-			 * Close connection to DB
-			 */
-			public function __destruct(){
-				$this->closeConnection($this->koneksi);
-			}
+		/**
+		 * Method __destruct
+		 * Close connection to DB
+		 */
+		public function __destruct(){
+			$this->closeConnection($this->koneksi);
+		}
 	}

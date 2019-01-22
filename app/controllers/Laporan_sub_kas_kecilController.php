@@ -1,10 +1,10 @@
 <?php
-	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	Defined("BASE_PATH") or die(ACCESS_DENIED);
 
 	/**
 	 * 
 	 */
-	class Pengajuan_sub_kas_kecil extends Controller {
+	class Laporan_sub_kas_kecil extends Controller {
 
 		private $success = false;
 		private $notif = array();
@@ -16,8 +16,9 @@
 		 */
 		public function __construct(){
 			$this->auth();
-			$this->auth->cekAuth();
-			$this->model('Pengajuan_sub_kas_kecilModel');
+            $this->auth->cekAuth();
+            $this->model('DataTableModel');
+			$this->model('Laporan_sub_kas_kecilModel');
 			$this->helper();
 			$this->validation();
 		}
@@ -48,19 +49,19 @@
 
 			$config = array(
 				'title' => array(
-					'main' => 'Data Pengajuan Sub Kas Kecil',
-					'sub' => 'List Semua Data Pengajuan Sub Kas Kecil',
+					'main' => 'Data Laporan Pengajuan Sub Kas Kecil',
+					'sub' => 'List Semua Data Laporan Pengajuan Sub Kas Kecil',
 				),
 				'css' => $css,
 				'js' => $js,
 			);
 
-			$this->layout('pengajuan_sub_kas_kecil/list', $config, $data = null);
+			$this->layout('laporan_sub_kas_kecil/list', $config, $data = null);
 		}
 
 		/**
 		 * Method get_list
-		 * Proses get data untuk list pengajuan sub kas kecil
+		 * Proses get data untuk list laporan pengajuan sub kas kecil
 		 * Data akan di parsing dalam bentuk dataTable
 		 * @return output {object} array berupa json
 		 */
@@ -69,26 +70,25 @@
 				// config datatable
 				$config_dataTable = array(
 					'tabel' => 'v_pengajuan_sub_kas_kecil_v2',
-					'kolomOrder' => array(null, 'id', 'tgl', 'id_sub_kas_kecil', 'id_proyek', 'nama_pengajuan', 'total', 'dana_disetujui', 'status', null),
-					'kolomCari' => array('id', 'id_sub_kas_kecil', 'nama_skk', 'id_proyek', 'pemilik', 'pembangunan', 'tgl', 'total', 'dana_disetujui', 'status'),
-					'orderBy' => array('status_order' => 'ASC', 'id' => 'desc'),
-					'kondisi' => false,
+					'kolomOrder' => array(null, 'id', 'tgl_laporan', 'id_sub_kas_kecil', 'id_proyek', 'nama_pengajuan', 'total', 'dana_disetujui', 'status_laporan', null),
+					'kolomCari' => array('id', 'id_sub_kas_kecil', 'nama_skk', 'id_proyek', 'pemilik', 'pembangunan', 'tgl_laporan', 'total', 'dana_disetujui', 'status_laporan'),
+					'orderBy' => array('status_laporan_order' => 'ASC', 'id' => 'desc'),
+					'kondisi' => "WHERE status_order = '3'",
 				);
 
-				$dataPengajuan = $this->Pengajuan_sub_kas_kecilModel->getAllDataTable($config_dataTable);
+				$dataLaporan = $this->DataTableModel->getAllDataTable($config_dataTable);
 
 				$data = array();
 				$no_urut = $_POST['start'];
-				foreach($dataPengajuan as $row){
+				foreach($dataLaporan as $row){
 					$no_urut++;
 
 					// button aksi
-					$aksiDetail = '<button onclick="getView('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+					$aksiDetail = '<button onclick="getEdit('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
 					$aksiEdit = '<button onclick="getEdit('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Status Pengajuan"><i class="fa fa-pencil"></i></button>';
-					$aksiHapus = '<button onclick="getDelete('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
-					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
+					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.'</div>';
 
-					switch ($row['status_order']) {
+					switch ($row['status_laporan_order']) {
 						case '1': // pending
 							$status = '<span class="label label-primary">';
 							break;
@@ -99,21 +99,20 @@
 							break;
 						
 						case '3': // disetujui
-						case '4': // langsung
-							$aksi = '<div class="btn-group">'.$aksiDetail.$aksiHapus.'</div>';
+							$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
 							$status = '<span class="label label-success">';
 							break;
 
 						default: // ditolak
-							$aksi = '<div class="btn-group">'.$aksiDetail.$aksiHapus.'</div>';
+							$aksi = '';
 							$status = '<span class="label label-danger">';
 					}
-					$status .= $row['status'].'</span>';
+					$status .= $row['status_laporan'].'</span>';
 
 					$dataRow = array();
 					$dataRow[] = $no_urut;
 					$dataRow[] = $row['id'];
-					$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
+					$dataRow[] = $this->helper->cetakTgl($row['tgl_laporan'], 'full');
 					$dataRow[] = $row['id_sub_kas_kecil'].' - '.$row['nama_skk'];
 					$dataRow[] = $row['id_proyek'];
 					$dataRow[] = $row['nama_pengajuan'];
@@ -127,8 +126,8 @@
 
 				$output = array(
 					'draw' => $_POST['draw'],
-					'recordsTotal' => $this->Pengajuan_sub_kas_kecilModel->recordTotal(),
-					'recordsFiltered' => $this->Pengajuan_sub_kas_kecilModel->recordFilter(),
+					'recordsTotal' => $this->DataTableModel->recordTotal(),
+					'recordsFiltered' => $this->DataTableModel->recordFilter(),
 					'data' => $data,
 				);
 
@@ -143,7 +142,7 @@
 		public function edit($id){
 			if($_SERVER['REQUEST_METHOD'] == 'POST') {
 				$id = strtoupper($id);
-				if(empty($id) || $id == "") { $this->redirect(BASE_URL."pengajuan-sub-kas-kecil"); }
+				if(empty($id) || $id == "") { $this->redirect(BASE_URL."laporan-sub-kas-kecil"); }
 				
 				// get data pengajuan dan saldo sub kas kecil
 				$this->model('Sub_kas_kecilModel');
@@ -182,18 +181,12 @@
 
 					if($cek){
 						// status disetujui
-						if($data['status'] == '3'){
+						if($data['status_laporan'] == '3'){
 	
 							$data = array(
 								'id' => $this->validation->validInput($data['id']),
-								'id_kas_kecil' => $_SESSION['sess_id'],
-								'tgl' => date('Y-m-d'),
-								'dana_disetujui' => $this->validation->validInput($data['dana_disetujui']),
-								'status' => $this->validation->validInput($data['status'])
+								'status_laporan' => $this->validation->validInput($data['status_laporan'])
 							);
-	
-							$this->model('Kas_kecilModel');
-							$getSaldo = $this->Kas_kecilModel->getById($_SESSION['sess_id'])['saldo'];
 	
 							if($data['dana_disetujui'] > $getSaldo){
 								$this->error['dana_disetujui'] = "Dana yang Disetujui terlalu besar dan melebihi saldo";
@@ -298,7 +291,7 @@
 		/**
 		 * 
 		 */
-		public function get_notif(){
+		public function get_notif() {
 			$notif = $this->Pengajuan_sub_kas_kecilModel->getAll_pending();
 			$jumlah = $this->Pengajuan_sub_kas_kecilModel->getTotal_pending();
 
@@ -329,13 +322,8 @@
 		* param $data didapat dari post yang dilakukan oleh user
 		* return berupa array, status hasil pengecekan dan error tiap validasi inputan
 		*/
-		private function set_validation($data){
-			$required = ($data['status'] == "1") ? 'required' : 'not_required';
-
-			// status
-			$this->validation->set_rules($data['status'], 'Status Pengajuan Sub Kas Kecil', 'status', 'string | 1 | 1 | required');
-			// dana_disetujui
-			$this->validation->set_rules($data['dana_disetujui'], 'Dana yang Disetujui', 'dana_disetujui', 'nilai | 1 | 99999999999 | '.$required);
+		private function set_validation($data) {
+			$this->validation->set_rules($data['status_laporan'], 'Status Laporan Pengajuan Sub Kas Kecil', 'status_laporan', 'string | 1 | 1 | required');
 
 			return $this->validation->run();
 		}

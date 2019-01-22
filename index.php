@@ -3,9 +3,10 @@
 	session_start();
 
 	define("BASE_PATH", true);
+	define("ACCESS_DENIED", json_encode(array('success' => false, 'message' => 'Access Denied')));
 	define('ROOT', dirname(__FILE__)); // root file web
 	define('DS', DIRECTORY_SEPARATOR); // pemisah direktori '\'
-	define('STATUS_DEV', 'DEVELOPMENT'); // DEVELOPMENT, LIVE, PRODUCTION 
+	define('STATUS_DEV', 'DEVELOPMENT'); // DEVELOPMENT, LIVE, TESTING, PRODUCTION
 
 	/** Load config */
 	require_once "app/config/config.php";
