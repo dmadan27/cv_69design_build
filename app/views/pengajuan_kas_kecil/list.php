@@ -80,7 +80,7 @@
 	</section>
 	<!-- /.content -->
 	<!-- load form -->
-<?php include_once('modal.php'); ?>
 <?php include_once('form.php'); ?>
+<?php include_once('modal.php'); ?>
 
 </div>

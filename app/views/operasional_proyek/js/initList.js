@@ -98,6 +98,12 @@ function export_excel() {
             title: 'Tanggal Akhir Harus Diisi!',
             text: 'Isi atau kosongkan keduanya !'
         })
+    } else if(new Date(tgl_awal) > new Date(tgl_akhir)){
+        swal({
+            type: 'error',
+            title: 'Kesalahan Input !',
+            text: 'Tanggal Awal Melebihi Tanggal Akhir!'
+        })
     } else {
     window.location.href = BASE_URL+'operasional-proyek/export?tgl_awal=' + tgl_awal + '&tgl_akhir=' + tgl_akhir;
     }
