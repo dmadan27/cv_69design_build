@@ -268,14 +268,12 @@
 		/**
 		 * Mengirim notifikasi menggunakan firebase.
 		 * 
-		 * @param id_skk ID Sub Kas Kecil yang ingin dikirimkan notifikasi.
-		 * @param data Data kostum yang ingin dikirimkan dalam notifikasi (berbentuk array).
-		 * @param notif_data Berisi judul, dan isi yang akan ditampilkan pada notifikasi (berbentuk array).
-		 * @param priority Setting prioritas notifikasi ('HIGH' atau 'NORMAL').
-		 * @return message_id Merupakan kode unik pemberitahuan notifikasi pesan telah dikirim, 
+		 * @param data (array) Data yang ingin dikirimkan dalam notifikasi.
+		 * @param priority (string) Setting prioritas notifikasi ('HIGH' atau 'NORMAL').
+		 * @return message_id (string) Merupakan kode unik pemberitahuan notifikasi pesan telah dikirim, 
 		 * 						Jika message_id tidak dikembalikan oleh firebase maka method akan menghasilkan nilai null.
 		 */
-		public function sendNotif($id_skk, $data, $notif_data, $priority) {
+		public function sendNotif($data, $priority) {
 			$url = "https://fcm.googleapis.com/fcm/send";
 
 			$headers = array(
@@ -284,13 +282,24 @@
 			);
 
 			$post_data = array(
-				'to' => "/topics/".$id_skk,
+				'to' => "/topics/all",
 				'notification' => array(
-					'title' => $notif_data['judul'],
-					'body' => $notif_data['isi'],
 					'sound' => "default"
 				),
-				'data' => $data,
+				'data' => [
+					'stage' => STATUS_DEV,
+					'show' => $data['show'],		// (string) "0" => TIDAK DITAMPILKAN, "1" => DITAMPILKAN
+					'id_skk' => $data['id_skk'],
+					'title' => $data['title'],
+					'body' => $data['body'],
+					'refresh' => $data['refresh']   
+							/**
+							 * (string) "0" => TIDAK ADA REFRESH, "1" => REFRESH PENGAJUAN, 
+							 * 			"2" => REFRESH LAPORAN,	  "3" => REFRESH HISTORI,
+							 * 			"4" => REFRESH MUTASI
+							 */ 
+							        
+				],
 				'priority' => $priority
 			);
 
