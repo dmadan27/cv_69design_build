@@ -932,7 +932,7 @@
 
 
 	-- ================================================================= --
-	-- Operasional Proyek -- Versi 17 Januari 2019 -- START --
+	-- Operasional Proyek -- Versi 24 Januari 2019 -- START --
 	-- ================================================================= --
 
 	-- Procedure Tambah data Operasional Proyek Tunai Lunas (FIXED)
@@ -950,7 +950,8 @@
 		IN sisa_param double(12,2),
 		IN status_param enum('TUNAI','KREDIT'),
 		IN status_lunas_param enum('LUNAS','BELUM LUNAS'),
-		IN ket_param text
+		IN ket_param text,
+		IN ket_mutasi_param text
 	)
 
 	BEGIN
@@ -978,7 +979,7 @@
 			INSERT INTO mutasi_bank
 				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 				VALUES
-				(id_bank_param, tgl_param, 0, total_param, (get_saldo - total_param),  ket_param);
+				(id_bank_param, tgl_param, 0, total_param, (get_saldo - total_param),  ket_mutasi_param);
 	END//
 	delimiter ;
 
@@ -1093,7 +1094,11 @@
 		IN sisa_param double(12,2),
 		IN status_param enum('TUNAI','KREDIT'),
 		IN status_lunas_param enum('LUNAS','BELUM LUNAS'),
-		IN ket_param text
+		IN ket_param text,
+		IN ket_mutasi_param text,
+		IN ket_mutasi_masuk_param text,
+		IN ket_mutasi_keluar_param text,
+		IN ket_mutasi_kondisi_param text
 	)
 
 	BEGIN
@@ -1123,7 +1128,7 @@
 			INSERT INTO mutasi_bank 
 				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 			VALUES 
-				(get_bank_sebelum, tgl_param, get_total_sebelum, 0, (get_saldo_bank_lama + get_total_sebelum), ket_param);
+				(get_bank_sebelum, tgl_param, get_total_sebelum, 0, (get_saldo_bank_lama + get_total_sebelum), ket_mutasi_masuk_param);
 
 			-- get saldo bank baru
 			SELECT saldo INTO get_saldo_bank_baru FROM bank WHERE id = id_bank_param;
@@ -1135,7 +1140,7 @@
 			INSERT INTO mutasi_bank 
 				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 			VALUES 
-				(id_bank_param, tgl_param, 0, total_param, (get_saldo_bank_baru - total_param), ket_param);
+				(id_bank_param, tgl_param, 0, total_param, (get_saldo_bank_baru - total_param), ket_mutasi_keluar_param);
 		ELSE
 			-- jika bank sama
 			-- jika ada perubahan di total
@@ -1152,7 +1157,7 @@
 					INSERT INTO mutasi_bank 
 						(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 					VALUES 
-						(id_bank_param, tgl_param, 0, (total_param - get_total_sebelum), (get_saldo_bank_baru - (total_param - get_total_sebelum)), ket_param);
+						(id_bank_param, tgl_param, 0, (total_param - get_total_sebelum), (get_saldo_bank_baru - (total_param - get_total_sebelum)), ket_mutasi_kondisi_param);
 				ELSE
 					IF total_param < get_total_sebelum THEN
 
@@ -1163,7 +1168,7 @@
 						INSERT INTO mutasi_bank 
 							(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 						VALUES 
-							(id_bank_param, tgl_param, (get_total_sebelum - total_param), 0, (get_saldo_bank_baru + (get_total_sebelum - total_param)), ket_param);
+							(id_bank_param, tgl_param, (get_total_sebelum - total_param), 0, (get_saldo_bank_baru + (get_total_sebelum - total_param)), ket_mutasi_kondisi_param);
 					END IF;
 
 				END IF;
@@ -1213,7 +1218,7 @@
 			INSERT INTO mutasi_bank
 			(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 			VALUES
-			(id_bank_param, tgl_param, 0, total_param, (get_saldo - total_param),  ket_param);
+			(id_bank_param, tgl_param, 0, total_param, (get_saldo - total_param),  ket_mutasi_param);
 		
 		END IF;
 
@@ -1233,7 +1238,8 @@
 		IN sisa_param double(12,2),
 		IN status_param enum('TUNAI','KREDIT'),
 		IN status_lunas_param enum('LUNAS','BELUM LUNAS'),
-		IN ket_param text
+		IN ket_param text,
+		IN ket_mutasi_param text
 	)
 
 	BEGIN
@@ -1268,7 +1274,7 @@
 			INSERT INTO mutasi_bank
 			(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 			VALUES
-			(get_id_bank, tgl_param, total_detail, 0, (get_saldo + total_detail),  ket_param);
+			(get_id_bank, tgl_param, total_detail, 0, (get_saldo + total_detail),  ket_mutasi_param);
 
 			-- Update table operasional proyek
 			UPDATE operasional_proyek 
@@ -1325,7 +1331,10 @@
 		IN tgl_detail_param date,
 		IN nama_detail_param varchar(50),
 		IN total_detail_param double(12,2),
-		IN ket_param text
+		IN ket_mutasi_param text,
+		IN ket_mutasi_masuk_param text,
+		IN ket_mutasi_keluar_param text,
+		IN ket_mutasi_kondisi_param text
 	)
 
 	BEGIN
@@ -1353,7 +1362,7 @@
 			INSERT INTO mutasi_bank 
 				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 			VALUES 
-				(get_bank_sebelum, tgl_detail_param, get_total_sebelum, 0, (get_saldo_bank_lama + get_total_sebelum), ket_param);
+				(get_bank_sebelum, tgl_detail_param, get_total_sebelum, 0, (get_saldo_bank_lama + get_total_sebelum), ket_mutasi_masuk_param);
 
 			-- get saldo bank baru
 			SELECT saldo INTO get_saldo FROM bank WHERE id = id_bank_param;
@@ -1365,7 +1374,7 @@
 			INSERT INTO mutasi_bank 
 				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 			VALUES 
-				(id_bank_param, tgl_detail_param, 0, total_detail_param, (get_saldo - total_detail_param), ket_param);
+				(id_bank_param, tgl_detail_param, 0, total_detail_param, (get_saldo - total_detail_param), ket_mutasi_keluar_param);
 		ELSE
 			-- jika bank sama
 			-- jika ada perubahan di total
@@ -1383,7 +1392,7 @@
 					INSERT INTO mutasi_bank 
 						(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 					VALUES 
-						(id_bank_param, tgl_detail_param, 0, (total_detail_param - get_total_sebelum), (get_saldo - (total_detail_param - get_total_sebelum)), ket_param);
+						(id_bank_param, tgl_detail_param, 0, (total_detail_param - get_total_sebelum), (get_saldo - (total_detail_param - get_total_sebelum)), ket_mutasi_kondisi_param);
 				
 				ELSE IF total_detail_param < get_total_sebelum THEN
 
@@ -1397,7 +1406,7 @@
 					INSERT INTO mutasi_bank 
 						(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 					VALUES 
-						(id_bank_param, tgl_detail_param, (get_total_sebelum - total_detail_param), 0, (get_saldo + (get_total_sebelum - total_detail_param)), ket_param);
+						(id_bank_param, tgl_detail_param, (get_total_sebelum - total_detail_param), 0, (get_saldo + (get_total_sebelum - total_detail_param)), ket_mutasi_kondisi_param);
 					
 					END IF;
 
