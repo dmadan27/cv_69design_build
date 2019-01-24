@@ -170,7 +170,7 @@
 						)
 					);
 				} else {
-					$query = "SELECT * FROM v_pengajuan_kas_kecil_export WHERE TANGGAL BETWEEN :tgl_awal AND :tgl_akhir AND id_kas_kecil = :id;";
+					$query = "SELECT * FROM v_pengajuan_kas_kecil_export WHERE TANGGAL BETWEEN :tgl_awal AND :tgl_akhir AND id = :id;";
 					$statement = $this->koneksi->prepare($query);
 					$statement->execute(
 						array(
