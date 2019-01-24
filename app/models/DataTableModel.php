@@ -4,7 +4,7 @@
 	/**
 	 * Class DataTableModel
 	 */
-    class BankModel extends Database
+    class DataTableModel extends Database
     {
 
 		protected $connection;
