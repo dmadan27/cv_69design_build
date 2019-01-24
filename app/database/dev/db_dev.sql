@@ -212,14 +212,15 @@ CREATE TABLE IF NOT EXISTS pengajuan_sub_kas_kecil(
 	id varchar(50) NOT NULL UNIQUE, -- pk, id+proyek+sub_kas_kecil+increment
 	id_sub_kas_kecil varchar(10), -- fk sub kecil
 	id_proyek varchar(50), -- fk proyek
-	tgl date, -- tgl dan jam
+	tgl date, -- tgl pengajuan
+	tgl_laporan date, -- tgl laporan
 	nama varchar(50),
 	total double(12,2), -- total pengajuan
 	dana_disetujui double(12,2), -- dana yg disetujui, default 0 atau sama dengan total
 	status char(1), -- status pengajuan, default 1: 'pending'
-	-- 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI', 4: 'LANGSUNG', 5: 'DITOLAK'
+					-- 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI', 4: 'LANGSUNG', 5: 'DITOLAK'
 	status_laporan char(1), -- status laporan, default set null
-	-- 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI',
+					-- 0: 'BELUM DIKERJAKAN', 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI',
 
 	CONSTRAINT pk_pengajuan_sub_kas_kecil_id PRIMARY KEY(id),
 	CONSTRAINT fk_pengajuan_sub_kas_kecil_id_sub_kas_kecil FOREIGN KEY(id_sub_kas_kecil) REFERENCES sub_kas_kecil(id)
@@ -238,10 +239,8 @@ CREATE TABLE IF NOT EXISTS detail_pengajuan_sub_kas_kecil(
 	qty int, -- jumlah barang/bahan
 	harga double(12,2), -- harga satuan per barang/bahan
 	subtotal double(12,2), -- total per detail pengajuan
-	-- status enum('TUNAI', 'KREDIT'), -- status barang/bahan dibeli secara tunai/kredit, default 'tunai'
 	harga_asli double(12,2),
 	sisa double(12,2),
-	-- status_lunas enum('LUNAS', 'BELUM LUNAS'), -- status pembayaran barang/bahan
 
 	CONSTRAINT pk_detail_pengajuan_sub_kas_kecil_id PRIMARY KEY(id),
 	CONSTRAINT fk_detail_pengajuan_sub_kas_kecil_id_pengajuan FOREIGN KEY(id_pengajuan) REFERENCES pengajuan_sub_kas_kecil(id)
@@ -277,19 +276,6 @@ CREATE TABLE IF NOT EXISTS pengajuan_kas_kecil(
 	CONSTRAINT fk_pengajuan_kas_kecil_id_bank FOREIGN KEY(id_bank) REFERENCES bank(id)
 		ON DELETE RESTRICT ON UPDATE CASCADE
 )ENGINE=InnoDb;
-
--- Tabel Detail Pengajuan Kas Kecil
--- CREATE TABLE IF NOT EXISTS detail_pengajuan_kas_kecil(
--- 	id int NOT NULL AUTO_INCREMENT, -- pk
--- 	id_pengajuan varchar(50), -- fk pengajuan kas kecil
--- 	id_pengajuan_sub_kas_kecil varchar(50), -- fk pengajuan sub kas kecil yg masih pending
-
--- 	CONSTRAINT pk_detail_pengajuan_kas_kecil_id PRIMARY KEY(id),
--- 	CONSTRAINT fk_detail_pengajuan_kas_kecil_id_pengajuan FOREIGN KEY(id_pengajuan) REFERENCES pengajuan_kas_kecil(id)
--- 		ON DELETE RESTRICT ON UPDATE CASCADE,
--- 	CONSTRAINT fk_detail_pengajuan_kas_kecil_id_pengajuan_sub_kas_kecil FOREIGN KEY(id_pengajuan_sub_kas_kecil) REFERENCES pengajuan_sub_kas_kecil(id)
--- 		ON DELETE RESTRICT ON UPDATE CASCADE
--- )ENGINE=InnoDb;
 
 -- Tabe Distributor / Toko / Supplier
 CREATE TABLE IF NOT EXISTS distributor(
@@ -328,7 +314,7 @@ CREATE TABLE IF NOT EXISTS operasional_proyek(
 		ON DELETE RESTRICT ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
--- Tabel Detail Operasional Proyek_temp
+-- Tabel Detail Operasional
 CREATE TABLE IF NOT EXISTS detail_operasional_proyek(
  	id int NOT NULL AUTO_INCREMENT, -- pk
  	id_operasional_proyek varchar(50), -- fk operasional proyek
@@ -345,3 +331,14 @@ CREATE TABLE IF NOT EXISTS detail_operasional_proyek(
 )ENGINE=InnoDb;
 
 # =================================================================== #
+
+-- Table Increment
+CREATE TABLE IF NOT EXISTS increment(
+	id int NOT NULL AUTO_INCREMENT,
+	name varchar(50) NOT NULL UNIQUE, -- nama tabel yang ingin ada increment
+	mask varchar(255), -- format increment
+	last_increment int,
+	description text,
+
+	CONSTRAINT pk_increment_id PRIMARY KEY(id)
+)ENGINE=InnoDb;
