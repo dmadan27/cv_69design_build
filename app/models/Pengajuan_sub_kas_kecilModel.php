@@ -1,9 +1,9 @@
 <?php
-	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	Defined("BASE_PATH") or die(ACCESS_DENIED);
 
 	/**
-	*
-	*/
+	 * 
+	 */
 	class Pengajuan_sub_kas_kecilModel extends Database{
 
 		protected $koneksi;
@@ -20,36 +20,6 @@
 			$this->koneksi = $this->openConnection();
 			$this->dataTable = new Datatable();
 		}
-
-		// ======================= dataTable ======================= //
-
-			/**
-			 * 
-			 */
-			public function getAllDataTable($config){
-				$this->dataTable->set_config($config);
-				$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
-				$statement->execute();
-				$result = $statement->fetchAll();
-
-				return $result;
-			}
-
-			/**
-			 * 
-			 */
-			public function recordFilter(){
-				return $this->dataTable->recordFilter();
-			}
-
-			/**
-			 * 
-			 */
-			public function recordTotal(){
-				return $this->dataTable->recordTotal();
-			}
-
-		// ========================================================= //
 
 		/**
 		 * 
@@ -70,6 +40,19 @@
 		public function getById($id){
 			$query = "SELECT * FROM v_pengajuan_sub_kas_kecil_v2 WHERE id = :id;";
 
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+
+		/**
+		 * 
+		 */
+		public function getDetailById($id) {
+			$query = "SELECT * FROM detail_pengajuan_sub_kas_kecil WHERE id_pengajuan = :id;";
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id', $id);
 			$statement->execute();

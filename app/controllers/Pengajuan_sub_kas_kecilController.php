@@ -1,8 +1,8 @@
 <?php
-	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	Defined("BASE_PATH") or die(ACCESS_DENIED);
 
 	/**
-	 * 
+	 * Class Pengajuan_sub_kas_kecil
 	 */
 	class Pengajuan_sub_kas_kecil extends Controller {
 
@@ -12,27 +12,31 @@
 		private $message = NULL;
 
 		/**
-		 * 
+		 * Method __construct
+		 * Default load saat pertama kali controller diakses
 		 */
 		public function __construct(){
 			$this->auth();
 			$this->auth->cekAuth();
 			$this->model('Pengajuan_sub_kas_kecilModel');
+			$this->model('DataTableModel');
 			$this->helper();
 			$this->validation();
 		}
 
 		/**
-		 * 
+		 * Method index
+		 * Render list pengajuan sub kas kecil
 		 */
 		public function index(){
 			$this->list();
 		}
 
 		/**
-		 * 
+		 * Method list
+		 * Proses menampilkan list semua data pengajuan sub kas kecil
 		 */
-		protected function list(){
+		private function list(){
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
 				'assets/bower_components/select2/dist/css/select2.min.css'
@@ -67,7 +71,7 @@
 		public function get_list(){
 			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				// config datatable
-				$config_dataTable = array(
+				$config = array(
 					'tabel' => 'v_pengajuan_sub_kas_kecil_v2',
 					'kolomOrder' => array(null, 'id', 'tgl', 'id_sub_kas_kecil', 'id_proyek', 'nama_pengajuan', 'total', 'dana_disetujui', 'status', null),
 					'kolomCari' => array('id', 'id_sub_kas_kecil', 'nama_skk', 'id_proyek', 'pemilik', 'pembangunan', 'tgl', 'total', 'dana_disetujui', 'status'),
@@ -75,7 +79,7 @@
 					'kondisi' => false,
 				);
 
-				$dataPengajuan = $this->Pengajuan_sub_kas_kecilModel->getAllDataTable($config_dataTable);
+				$dataPengajuan = $this->DataTableModel->getAllDataTable($config);
 
 				$data = array();
 				$no_urut = $_POST['start'];
@@ -127,8 +131,8 @@
 
 				$output = array(
 					'draw' => $_POST['draw'],
-					'recordsTotal' => $this->Pengajuan_sub_kas_kecilModel->recordTotal(),
-					'recordsFiltered' => $this->Pengajuan_sub_kas_kecilModel->recordFilter(),
+					'recordsTotal' => $this->DataTableModel->recordTotal(),
+					'recordsFiltered' => $this->DataTableModel->recordFilter(),
 					'data' => $data,
 				);
 
@@ -138,7 +142,10 @@
 		}
 
 		/**
-		 * 
+		 * Method edit
+		 * Proses get data edit pengajuan sub kas kecil
+		 * @param id {string}
+		 * @param output {object}
 		 */
 		public function edit($id){
 			if($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -147,9 +154,13 @@
 				
 				// get data pengajuan dan saldo sub kas kecil
 				$this->model('Sub_kas_kecilModel');
+				$this->model('Kas_kecilModel');
 				$dataPengajuan = $this->Pengajuan_sub_kas_kecilModel->getById($id);
-				$dataSaldoSkc = $this->Sub_kas_kecilModel->getSaldoById($dataPengajuan['id_sub_kas_kecil']);
-				$dataPengajuan['saldo'] = $dataSaldoSkc['saldo'];
+				$dataSaldoSkc = $this->Sub_kas_kecilModel->getById($dataPengajuan['id_sub_kas_kecil']);
+				$dataSaldoKK = $this->Kas_kecilModel->getById($_SESSION['sess_id']);
+				$dataPengajuan['saldo_sub_kas_kecil'] = $dataSaldoSkc['saldo'];
+				$dataPengajuan['saldo_kas_kecil'] = $dataSaldoKK['saldo'];
+				$dataPengajuan['dana_disetujui'] = $dataPengajuan['total'] - $dataSaldoSkc['saldo'];
 
 				$output = array(
 					'data' => $dataPengajuan
@@ -161,7 +172,10 @@
 		}
 
 		/**
-		 * 
+		 * Method get_edit
+		 * Proses get data detail proyek dan detail skk untuk keperluan edit proyek
+		 * @param id {string}
+		 * @return output {object} array berupa json
 		 */
 		public function action_edit(){
 			if($_SERVER['REQUEST_METHOD'] == "POST") {
@@ -271,7 +285,65 @@
 		 * 
 		 */
 		public function detail($id){
+			$id = strtoupper($id);
+			$dataPengajuan = !empty($this->Pengajuan_sub_kas_kecilModel->getById($id)) ? $this->Pengajuan_sub_kas_kecilModel->getById($id) : false;
 
+			if((empty($id) || $id == "") || !$dataPengajuan) { $this->redirect(BASE_URL."pengajuan-sub-kas-kecil/"); }
+
+			$css = array(
+				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css'
+			);
+			$js = array(
+				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
+				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'app/views/pengajuan_sub_kas_kecil/js/initView.js',
+			);
+
+			$config = array(
+				'title' => array(
+					'main' => 'Data Pengajuan Sub Kas Kecil',
+					'sub' => 'Detail Data Pengajuan',
+				),
+				'css' => $css,
+				'js' => $js,
+			);
+
+			$parsing_dataPengajuan = array(
+				'id' => $dataPengajuan['id'],
+				'skk' => $dataPengajuan['id_sub_kas_kecil'].' - '.$dataPengajuan['nama_skk'],
+				'tgl' => $this->helper->cetakTgl($dataPengajuan['tgl'], 'full'),
+				'id_proyek' => $dataPengajuan['id_proyek'].' - '.$dataPengajuan['pemilik'],
+				'nama_pengajuan' => $dataPengajuan['nama_pengajuan'],
+				'total' => $this->helper->cetakRupiah($dataPengajuan['total']),
+				'dana_disetujui' => $this->helper->cetakRupiah($dataPengajuan['dana_disetujui']),
+				'status' => $dataPengajuan['status']
+			);
+
+			$dataDetail = !empty($this->Pengajuan_sub_kas_kecilModel->getDetailById($id)) ? 
+				$this->Pengajuan_sub_kas_kecilModel->getDetailById($id) : false;
+			
+			$parsing_dataDetail = [];
+			if($dataDetail) {
+				foreach($dataDetail as $row) {
+					$dataRow = array();
+					$dataRow['nama'] = $row['nama'];
+					$dataRow['jenis'] = $row['jenis'];
+					$dataRow['satuan'] = $row['satuan'];
+					$dataRow['qty'] = $row['qty'];
+					$dataRow['harga'] = $this->helper->cetakRupiah($row['harga']);
+					$dataRow['subtotal'] = $this->helper->cetakRupiah($row['subtotal']);
+					
+					$parsing_dataDetail[] = $dataRow;
+				}
+			}
+
+			$data = array(
+				'data_pengajuan' => $parsing_dataPengajuan,
+				'data_detail' => $parsing_dataDetail
+			);
+
+			// $this->layout('pengajuan_sub_kas_kecil/view', $config, $data);
+			$this->view('pengajuan_sub_kas_kecil/view', $data);
 		}
 
 		/**

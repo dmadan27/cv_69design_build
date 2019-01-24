@@ -18,7 +18,7 @@
 			$this->auth();
             $this->auth->cekAuth();
             $this->model('DataTableModel');
-			$this->model('Laporan_sub_kas_kecilModel');
+			$this->model('Laporan_pengajuan_sub_kas_kecilModel');
 			$this->helper();
 			$this->validation();
 		}
@@ -50,13 +50,13 @@
 			$config = array(
 				'title' => array(
 					'main' => 'Data Laporan Pengajuan Sub Kas Kecil',
-					'sub' => 'List Semua Data Laporan Pengajuan Sub Kas Kecil',
+					'sub' => 'List Semua Data Laporan',
 				),
 				'css' => $css,
 				'js' => $js,
 			);
 
-			$this->layout('laporan_sub_kas_kecil/list', $config, $data = null);
+			$this->layout('laporan_pengajuan_sub_kas_kecil/list', $config, $data = null);
 		}
 
 		/**
