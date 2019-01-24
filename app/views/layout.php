@@ -56,6 +56,22 @@
 						break; 
 				}
 			}
+
+			/**
+			 * Function onChangeField
+			 * Base function untuk setiap event onchange semua field yang ada di form
+			 * @param {object} scope
+			 */
+			function onChangeField(scope) {
+				if(scope.value !== ""){
+					$('.field-'+scope.id).removeClass('has-error').addClass('has-success');
+					$(".pesan-"+scope.id).text('');
+				}
+				else{
+					$('.field-'+scope.id).removeClass('has-error').removeClass('has-success');
+					$(".pesan-"+scope.id).text('');	
+				}
+			}
 			
 		</script>
 		<?php 

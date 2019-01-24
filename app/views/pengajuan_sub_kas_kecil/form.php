@@ -72,8 +72,8 @@
                             <span class="input-group-addon">,00-</span>
                         </div>
                         <span class="help-block small pesan pesan-total"></span>
-                    </div>
-
+                    </div>    
+                        
                     <!-- status -->
                     <div class="form-group field-status_order has-feedback">
                         <label for="status_order">Status</label>
@@ -86,29 +86,39 @@
                         <div class="row">
                             <!-- sisa saldo -->
                             <div class="col-md-6">
-                                <div class="form-group field-saldo has-feedback">
-                                    <label for="saldo">Sisa Saldo Sub Kas Kecil</label>
+                                <div class="form-group field-saldo_sub_kas_kecil has-feedback">
+                                    <label for="saldo_sub_kas_kecil">Sisa Saldo Sub Kas Kecil</label>
                                      <div class="input-group">
                                         <span class="input-group-addon">Rp.</span>
-                                        <input type="text" class="form-control field input-mask-uang" id="saldo" readonly>
+                                        <input type="text" class="form-control field input-mask-uang" id="saldo_sub_kas_kecil" readonly>
                                         <span class="input-group-addon">,00-</span>
                                     </div>
-                                    <span class="help-block small pesan pesan-saldo"></span>
+                                    <span class="help-block small pesan pesan-saldo_sub_kas_kecil"></span>
                                 </div>
                             </div>
 
-                            <!-- dana disetujui -->
+                            <!-- saldo kas kecil -->
                             <div class="col-md-6">
-                                <div class="form-group field-dana_disetujui has-feedback">
-                                    <label for="dana_disetujui">Dana yang disetujui</label>
+                                <div class="form-group field-saldo_kas_kecil has-feedback">
+                                    <label for="saldo_kas_kecil">Saldo</label>
                                     <div class="input-group">
                                         <span class="input-group-addon">Rp.</span>
-                                        <input type="text" class="form-control field input-mask-uang" id="dana_disetujui" placeholder="Masukkan dana yang disetujui">
+                                        <input type="text" class="form-control field input-mask-uang" id="saldo_kas_kecil" readonly>
                                         <span class="input-group-addon">,00-</span>
                                     </div>
-                                    <span class="help-block small pesan pesan-dana_disetujui"></span>
+                                    <span class="help-block small pesan pesan-saldo_kas_kecil"></span>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="form-group field-dana_disetujui has-feedback">
+                            <label for="dana_disetujui">Dana yang disetujui</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp.</span>
+                                <input type="text" class="form-control field input-mask-uang" id="dana_disetujui" placeholder="Masukkan dana yang disetujui">
+                                <span class="input-group-addon">,00-</span>
+                            </div>
+                            <span class="help-block small pesan pesan-dana_disetujui"></span>
                         </div>
                     </div>
 

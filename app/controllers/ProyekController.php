@@ -7,15 +7,10 @@
 	 */
 	class Proyek extends CrudAbstract{
 		
-		private $token;
-		// private $status = false;
-
-		/** Penambahan beberapa property baru */
 		private $success = false;
 		private $notif = array();
 		private $error = array();
 		private $message = NULL;
-		/** end penambahan */
 
 		/**
 		 * Method __construct

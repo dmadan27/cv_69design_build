@@ -1,18 +1,18 @@
 <?php
-	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	Defined("BASE_PATH") or die(ACCESS_DENIED);
 
 	/**
-	*
-	*/
+	 * 
+	 */
 	class Lupa_password extends Controller{
 
 		protected $password_baru;
 		protected $password_konf;
-		protected $status = false;
+		protected $success = false;
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function __construct(){
 			$this->auth();
 			$this->validation();
@@ -21,13 +21,13 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function index(){
 			$jenis = isset($_POST['jenis']) ? $this->validation->validInput($_POST['jenis'], false) : false;
 
 			// cek jenis akses
-			if($jenis && $jenis == 'sub-kas-kecil') $this->lupa_password_mobile(); // jika mobile
+			if($jenis && $jenis == 'sub-kas-kecil') { $this->lupa_password_mobile(); } // jika mobile
 			else{ // jika sistem
 				if($this->auth->isLogin()) $this->redirect(BASE_URL); // jika sudah login, tidak bisa akses
 				else $this->lupa_password();
@@ -35,8 +35,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		private function lupa_password(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$email = isset($_POST['username']) ? $this->validation->validInput($_POST['username'], false) : false;
@@ -111,8 +111,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		private function lupa_password_mobile(){
 			$this->auth->mobileOnly();
 
@@ -182,8 +182,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		private function getToken($username){
 			$token = $this->auth->getToken();
 			$tokenSave = password_hash($token, PASSWORD_BCRYPT);
@@ -199,8 +199,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		private function cekToken(){
 			$token = $this->TokenModel->getToken_lupa_password($this->username);
 
@@ -208,19 +208,19 @@
 				if ( ($this->token == "") 
 					|| (!password_verify($this->token, $token['token'])) 
 					|| (time() > strtotime($token['tgl_exp'])) ) 
-					return false;
+					{ return false; }
 				else if( ($this->token != "") 
 					&& (password_verify($this->token, $token['token'])) 
 					&& (time() <= strtotime($token['tgl_exp'])) ) 
-					return true;
-				else return false;
+					{ return true; }
+				else { return false; }
 			}
-			else return false;
+			else { return false; }
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		private function sendEmail($sendTo){
 			require_once ROOT.DS.'app'.DS.'library'.DS.'PHPMailer'.DS.'PHPMailerAutoload.php';
 			$mail = new PHPMailer;
@@ -228,9 +228,9 @@
 			$status = false;
 			$error = '';
 
-			$username = 'ramadan@lordraze.com';
-			$password = 'VixyBlack27'; 
-			$cc = 'rarasta27@gmail.com';
+			$username = SEND_EMAIL['email'];
+			$password = SEND_EMAIL['password']; 
+			$cc = '';
 			$nama_pengirim = 'ADMIN 69 DESIGN BUILD';
 			$subjek = 'Reset Password';
 			
@@ -255,7 +255,7 @@
 			else $status = true;
 
 			$output = array(
-				'status' => $status,
+				'success' => $this->success,
 				'error' => $error,
 			);
 
@@ -263,8 +263,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function reset(){
 			if($this->auth->isLogin()) $this->redirect(BASE_URL);
 
@@ -286,8 +286,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		private function action_reset($username){
 			$this->password_baru = isset($_POST['password_baru']) ? $this->validation->validInput($_POST['password_baru'], false) : false;
 			$this->password_konf = isset($_POST['password_konf']) ? $this->validation->validInput($_POST['password_konf'], false) : false;
@@ -346,8 +346,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		private function set_validation($data){
 			// password baru
 			$this->validation->set_rules($data['password_baru'], 'Password Baru', 'password_baru', 'string | 5 | 255 | required');

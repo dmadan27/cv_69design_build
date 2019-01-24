@@ -11,14 +11,7 @@ $(document).ready(function(){
 
 	// event on change field
 	$('.field').on('change', function(){
-		if(this.value !== ""){
-			$('.field-'+this.id).removeClass('has-error').addClass('has-success');
-			$(".pesan-"+this.id).text('');
-		}
-		else{
-			$('.field-'+this.id).removeClass('has-error').removeClass('has-success');
-			$(".pesan-"+this.id).text('');	
-		}
+		onChangeField(this);
 	});
 
 	$('#status_order').on('change', function(){
@@ -145,7 +138,7 @@ function submit(){
 
 /**
  * 
- * @param {*} data 
+ * @param {object} data 
  */
 function sendNotif(data){
 	console.log(data);
@@ -196,7 +189,7 @@ function sendNotif(data){
 
 /**
  * 
- * @param {*} id
+ * @param {string} id
  */
 function getEdit(id){
 	resetForm();
@@ -259,14 +252,16 @@ function setError(error){
 /**
  * 
  */
-function setValue(value) {
+function setValue(value) {	
 	$('#id').val(value.id);
 	$('#id_sub_kas_kecil').val(value.id_sub_kas_kecil);
 	$('#sub_kas_kecil').val(value.id_sub_kas_kecil + " - " + value.nama_skk);
 	$('#tgl').val(value.tgl);
 	$('#nama_pengajuan').val(value.nama_pengajuan);
 	$('#total').val(value.total);
-	$('#saldo').val(value.saldo);
+	$('#saldo_sub_kas_kecil').val(value.saldo_sub_kas_kecil);
+	$('#saldo_kas_kecil').val(value.saldo_kas_kecil);
+	$('#dana_disetujui').val(value.dana_disetujui);
 	$('#status_order').val(value.status_order).trigger('change');
 }
 

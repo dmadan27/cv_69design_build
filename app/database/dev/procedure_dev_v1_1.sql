@@ -30,6 +30,7 @@
 		VALUES
 			(id_param, nama_param, alamat_param, no_telp_param,
 				email_param, foto_param, status_param);
+
 	END //
 	delimiter ;
 
@@ -129,6 +130,12 @@
 		VALUES
 			(id_param,nama_param,alamat_param,no_telp_param,
 				email_param,foto_param,saldo_param,status_param);
+
+		-- insert mutasi awal
+		INSERT INTO mutasi_saldo_kas_kecil 
+			()
+		VALUES
+			();
 	END//
 	delimiter ;
 
@@ -224,6 +231,12 @@
 		VALUES
 			(id_param,nama_param,alamat_param,no_telp_param,
 				email_param,foto_param,saldo_param,status_param);
+
+		-- insert mutasi awal
+		INSERT INTO mutasi_saldo_sub_kas_kecil 
+			()
+		VALUES
+			();
 	END//
 	delimiter ;
 
