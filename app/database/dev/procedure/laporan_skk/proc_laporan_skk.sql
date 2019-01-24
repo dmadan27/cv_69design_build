@@ -11,21 +11,35 @@ BEGIN
     DECLARE get_saldo double(12,2);
 
     -- get saldo sub kas kecil
-    SELECT saldo INTO get_saldo FROM sub_kas_kecil WHERE id = id_sub_kas_kecil_param;
+    SELECT 
+        saldo 
+    INTO get_saldo 
+    FROM sub_kas_kecil WHERE id = id_sub_kas_kecil_param;
 
-    -- 1. update tabel pengajuan sub kas kecil
-    -- update status_laporan
-    UPDATE pengajuan_sub_kas_kecil SET status_laporan = "1" WHERE id = id_pengajuan_param;
-
-    -- 2. update tabel sub kas kecil
-    -- update saldo
-    UPDATE sub_kas_kecil SET saldo = (get_saldo-sum_pengajuan_laporan_param) WHERE id = id_sub_kas_kecil_param;
-
-    -- 3. insert tabel mutasi saldo sub kas kecil
+    -- tambah tabel mutasi saldo sub kas kecil
     INSERT INTO mutasi_saldo_sub_kas_kecil
         (id_sub_kas_kecil, tgl, uang_masuk, uang_keluar, saldo, ket)
-    VALUES
-        (id_sub_kas_kecil_param, tgl_param, 0, sum_pengajuan_laporan_param, (get_saldo-sum_pengajuan_laporan_param), ket_param);
+    VALUES (
+        id_sub_kas_kecil_param, 
+        tgl_param, 
+        0, 
+        sum_pengajuan_laporan_param, 
+        (get_saldo-sum_pengajuan_laporan_param), 
+        ket_param
+    );
+
+    -- update saldo sub kas kecil
+    UPDATE sub_kas_kecil 
+    SET 
+        saldo=(get_saldo-sum_pengajuan_laporan_param) 
+    WHERE id = id_sub_kas_kecil_param;
+
+    -- update status_laporan (PENDING) dan tgl_laporan pengajuan sub kas kecil
+    UPDATE pengajuan_sub_kas_kecil 
+    SET 
+        status_laporan="1", 
+        tgl_laporan=tgl_param 
+    WHERE id = id_pengajuan_param;
 
 END//
 delimiter ;
@@ -125,10 +139,11 @@ BEGIN
         saldo=(get_saldo_terbaru-get_total_harga_asli)
     WHERE id=id_sub_kas_kecil_param;
 
-    -- update status_laporan pengajuan (PENDING)
+    -- update status_laporan (PENDING) dan tgl_laporan pengajuan sub kas kecil
     UPDATE pengajuan_sub_kas_kecil
     SET 
-        status_laporan='1'
+        status_laporan='1',
+        tgl_laporan=tgl_mutasi_param
     WHERE id=id_pengajuan_param;
 
 END//
