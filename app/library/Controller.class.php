@@ -114,7 +114,7 @@
 		 * Proses untuk load view secara langsung tanpa ada hubungan dengan layout
 		 * @param view {string}
 		 */
-		final protected function view($view){
+		final protected function view($view, $data = null){
 			$temp = explode('/', $view);
 			
 			$newView = '';
