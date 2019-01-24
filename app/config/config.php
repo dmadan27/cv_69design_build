@@ -6,6 +6,7 @@
 		'KEY_FIREBASE_NOTIFICATION',
 		'key=AAAAVowCLac:APA91bGdY5WrVjAbVfKpqoRmehjfV2wu8Zkd_rQI3kSbTtVELkWDX8kEsGbKnOpRMrF26kD8kHpwdJ781JdkWKL2_KqGt5hFdHYmfS_TJB0fc2YqW0bQy8CVPCTdPS8DqpJEpLlwUifv'
 	);
+	define('SEND_EMAIL', array('email' => '', 'password' => ''));
 
 	if(STATUS_DEV == 'DEVELOPMENT'){ // local
 		// config base url
