@@ -300,7 +300,9 @@
 
 			$dataDetail = !empty($this->Laporan_sub_kas_kecilModel->getDetailById($id)) ? 
 				$this->Laporan_sub_kas_kecilModel->getDetailById($id) : false;
-			
+			$dataBuktiLaporan = !empty($this->Laporan_sub_kas_kecilModel->getBuktiLaporanById($id)) ? 
+				$this->Laporan_sub_kas_kecilModel->getBuktiLaporanById($id) : false;
+
 			$parsing_dataDetail = array();
 			if($dataDetail) {
 				foreach($dataDetail as $row) {
@@ -320,7 +322,8 @@
 
 			$data = array(
 				'data_laporan' => $parsing_dataLaporan,
-				'data_detail' => $parsing_dataDetail
+				'data_detail' => $parsing_dataDetail,
+				'data_bukti_laporan' => $dataBuktiLaporan
 			);
 
 			// $this->layout('pengajuan_sub_kas_kecil/view', $config, $data);

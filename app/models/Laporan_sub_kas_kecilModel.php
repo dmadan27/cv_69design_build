@@ -53,6 +53,19 @@
 		/**
 		 * 
 		 */
+		public function getBuktiLaporanById($id) {
+			$query = "SELECT * FROM upload_laporan_pengajuan_sub_kas_kecil WHERE id_pengajuan = :id;";
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$statement->execute();
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+
+		/**
+		 * 
+		 */
 		public function __destruct(){
 			$this->closeConnection($this->koneksi);
 		}
