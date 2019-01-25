@@ -62,5 +62,4 @@
 		</div>			
 	</section>
 	<!-- /.content -->
-	<?php include_once('form.php'); ?>
 </div>

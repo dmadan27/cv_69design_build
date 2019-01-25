@@ -66,6 +66,73 @@
 		/**
 		 * 
 		 */
+		public function update_laporan($data) {
+			try {
+				$this->koneksi->beginTransaction();
+
+				$query	= "UPDATE pengajuan_sub_kas_kecil SET status_laporan = :status_laporan WHERE id = :id";
+
+				$statment = $this->koneksi->prepare($query);
+				$statment->execute(
+					array(
+						':id' => $data['id'],
+						':status_laporan' => $data['status_laporan'],
+					)
+				);
+				$statment->closeCursor();
+
+				$this->koneksi->commit();
+
+				return array(
+					'success' => true,
+					'error' => NULL
+				);
+			} catch (PDOException $e) {
+				$this->koneksi->rollback();
+				return array(
+					'success' => false,
+					'error' => $e->getMessage()
+				);
+			}
+		}
+
+		/**
+		 * 
+		 */
+		public function perbaiki_laporan($data) {
+			try {
+				$this->koneksi->beginTransaction();
+				
+				$query	= "CALL ganti_status_perbaiki_laporan_sub_kas_kecil (:id, :id_sub_kas_kecil, :tgl);";
+
+				$statment = $this->koneksi->prepare($query);
+				$statment->execute(
+					array(
+						':id' => $data['id'],
+						':id_kas_kecil' => $data['id_sub_kas_kecil'],
+						':tgl' => date('Y-m-d')
+					)
+				);
+				$statment->closeCursor();
+
+				$this->koneksi->commit();
+
+				return array(
+					'success' => true,
+					'error' => NULL
+				);
+			} catch (PDOException $e) {
+				$this->koneksi->rollback();
+				return array(
+					'success' => false,
+					'error' => $e->getMessage()
+				);
+			}
+		}
+
+		/**
+		 * 
+		 */
 		public function __destruct(){
 			$this->closeConnection($this->koneksi);
 		}

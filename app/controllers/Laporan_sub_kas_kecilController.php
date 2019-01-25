@@ -83,9 +83,11 @@
 				foreach($dataLaporan as $row){
 					$no_urut++;
 
+					$base64_edit = rtrim(strtr(base64_encode($row["id"].' EDIT'), '+/', '-_'), '=');
+
 					// button aksi
 					$aksiDetail = '<button onclick="getEdit('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-					$aksiEdit = '<button onclick="getEdit('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Status Pengajuan"><i class="fa fa-pencil"></i></button>';
+					$aksiEdit = '<button onclick="getEdit('."'".strtolower($row["id"])."'".', '."'".$base64_edit."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Status Pengajuan"><i class="fa fa-pencil"></i></button>';
 					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.'</div>';
 
 					switch ($row['status_order']) {
@@ -104,7 +106,7 @@
 							break;
 
 						default: // ditolak
-							$aksi = '';
+							$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
 							$status = '<span class="label label-danger">';
 					}
 					$status .= $row['status_laporan'].'</span>';
@@ -179,47 +181,41 @@
 					$this->error = $validasi['error'];
 
 					if($cek){
-						// status disetujui
-						if($data['status_laporan'] == '3'){
-	
-							$data = array(
+						// status disetujui, ditolak, atau masih pending
+						if($data['status_laporan'] != '2' && $data['status_laporan'] != '0') {
+							$data_update = array(
 								'id' => $this->validation->validInput($data['id']),
 								'status_laporan' => $this->validation->validInput($data['status_laporan'])
 							);
 	
-							if($data['dana_disetujui'] > $getSaldo){
-								$this->error['dana_disetujui'] = "Dana yang Disetujui terlalu besar dan melebihi saldo";
+							// update status
+							$update_laporan = $this->Laporan_sub_kas_kecilModel->update_laporan($data_update);
+							if($update_laporan['success']) {
+								$this->success = true;
+								$this->notif = array(
+									'type' => 'success',
+									'title' => "Pesan Berhasil",
+									'message' => "Edit Status Pengajuan Sub Kas Kecil Berhasil",
+								);
 							}
-							else{
-								// update status
-								$acc_pengajuan = $this->Pengajuan_sub_kas_kecilModel->acc_pengajuan($data);
-								if($acc_pengajuan['success']){
-									$this->success = true;
-									$this->notif = array(
-										'type' => 'success',
-										'title' => "Pesan Berhasil",
-										'message' => "Edit Status Pengajuan Sub Kas Kecil Berhasil",
-									);
-								}
-								else{
-									$this->notif = array(
-										'type' => 'error',
-										'title' => "Pesan Gagal",
-										'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
-									);
-									$this->message = $acc_pengajuan['error'];
-								}
+							else {
+								$this->notif = array(
+									'type' => 'error',
+									'title' => "Pesan Gagal",
+									'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+								);
+								$this->message = $update_laporan['error'];
 							}
 						}
-						else{ // status selain disetujui
-							$data = array(
+						else if($data['status_laporan'] == '2' && $data['status_laporan'] != '0') { // diperbaiki
+							$data_update = array(
 								'id' => $this->validation->validInput($data['id']),
-								'status' => $this->validation->validInput($data['status'])
+								'id_sub_kas_kecil' => $this->validation->validInput($data['id_sub_kas_kecil'])
 							);
 	
 							// update status
-							$update = $this->Pengajuan_sub_kas_kecilModel->update_status($data);
-							if($update['success']){
+							$update_laporan = $this->Laporan_sub_kas_kecilModel->perbaiki_laporan($data_update);
+							if($update_laporan['success']) {
 								$this->success = true;
 								$this->notif = array(
 									'type' => 'success',
@@ -233,7 +229,7 @@
 									'title' => "Pesan Gagal",
 									'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 								);
-								$this->message = $update['error'];
+								$this->message = $update_laporan['error'];
 							}
 						}
 					}
@@ -268,6 +264,14 @@
 				$this->Laporan_sub_kas_kecilModel->getById($id) : false;
 
 			if((empty($id) || $id == "") || !$dataLaporan) { $this->redirect(BASE_URL."laporan-sub-kas-kecil/"); }
+
+			$cekAction = false;
+			$action = (isset($_GET['action']) && $_GET['action'] != '') ? $_GET['action'] : false;
+			if($action) {
+				$cek = base64_decode(str_pad(strtr($action, '-_', '+/'), strlen($action) % 4, '=', STR_PAD_RIGHT));
+				$veriry = $id.' EDIT';
+				if($cek === $veriry) { $cekAction = true; }
+			}
 
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css'
@@ -323,7 +327,8 @@
 			$data = array(
 				'data_laporan' => $parsing_dataLaporan,
 				'data_detail' => $parsing_dataDetail,
-				'data_bukti_laporan' => $dataBuktiLaporan
+				'data_bukti_laporan' => $dataBuktiLaporan,
+				'action' => $cekAction
 			);
 
 			// $this->layout('pengajuan_sub_kas_kecil/view', $config, $data);

@@ -32,9 +32,9 @@ $(document).ready(function(){
             }
         ],
         createdRow: function(row, data, dataIndex){
-            if($(data[8]).text().toLowerCase() == "ditolak") $(row).addClass('danger');
+            if($(data[8]).text().toLowerCase() == "ditolak") { $(row).addClass('danger'); }
             for(var i = 0; i < 10; i++){
-                if(i == 0 || i == 6 || i == 7) $('td:eq('+i+')', row).addClass('text-right');
+                if(i == 0 || i == 6 || i == 7) { $('td:eq('+i+')', row).addClass('text-right'); }
             }
         }
     });
@@ -44,5 +44,20 @@ $(document).ready(function(){
         console.log('%cButton Export Excel Proyek clicked...', 'font-style: italic');
         getExport();
     });
-
 });
+
+/**
+ * 
+ */
+function getExport() {
+
+}
+
+/**
+ * 
+ */
+function getEdit(id, action = '') {
+    if(action === '') { window.location.href = BASE_URL+'laporan-sub-kas-kecil/detail/'+id.toLowerCase(); }
+    else if (action !== '') { window.location.href = BASE_URL+'laporan-sub-kas-kecil/detail/'+id.toLowerCase()+'?action='+action; }
+}
+
