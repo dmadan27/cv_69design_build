@@ -1,5 +1,6 @@
 $(document).ready(function(){
-	// setStatus();
+	setIdBank();
+	setJenis()
 
 	$('#id_bank').select2({
 		placeholder: "Pilih Bank",
@@ -17,10 +18,8 @@ $(document).ready(function(){
 
 	// button tambah
 	$('#tambah').on('click', function(){
-		setIdBank();
-		setJenis()
-
-			resetForm();
+		resetForm();
+			$("#jenis").val("UANG MASUK").trigger('change');
 			$('#tgl').prop('disabled', false);
 			$('#submit_operasional').prop('value', 'action-add');
 			$('#submit_operasional').prop('disabled', false);
@@ -159,7 +158,6 @@ function submit(edit_view){
 function getEdit(id){
 	resetForm();
 	setIdBank();
-	setJenis();
 	$('.field-id').css('display', 'none');
 	$('.field-tgl').css('display', true);
 	$('#tgl').prop('disabled', true);
@@ -277,5 +275,4 @@ function setJenis() {
 		var option = new Option(item.text, item.value);
 		$("#jenis").append(option);
 	});
-	// $("#jenis").val(null).trigger('change');
 }

@@ -81,7 +81,20 @@
 			$result = $statement->fetch(PDO::FETCH_ASSOC);
 
 			return $result;
+		}
 
+		/**
+		*
+		*/
+		public function getKasBesar($id){
+			$query = "SELECT * FROM kas_besar WHERE id = :id;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
 		}
 
 		/*
@@ -108,6 +121,17 @@
 		* 
 		*/
 		public function insert($data){
+			
+			$res = $this->getKasBesar($data['id_kas_besar']);
+
+			$uang = number_format($data['nominal'],2,",",".");
+
+			if($data['jenis'] == 'UANG MASUK'){
+				$ket_mutasi = "UANG MASUK SEBESAR Rp.".$uang." DARI TRANSAKSI OPERASIONAL ".$data['nama']." OLEH ".$res['nama'];
+			} else if($data['jenis'] == 'UANG KELUAR') {
+				$ket_mutasi = "UANG KELUAR SEBESAR Rp.".$uang." DARI TRANSAKSI OPERASIONAL ".$data['nama']." OLEH ".$res['nama'];
+			}
+
 			try{
 				$this->koneksi->beginTransaction();
 
@@ -132,7 +156,7 @@
 						':nominal' => $data['nominal'],
 						':jenis' => $data['jenis'],
 						':ket' => $data['ket'],
-						':ket_mutasi' => ''
+						':ket_mutasi' => $ket_mutasi
 					)
 				);
 				$statement->closeCursor();
@@ -177,6 +201,42 @@
 		* 
 		*/
 		private function editMasuk($data) {
+
+			$res = $this->getById($data['id']);
+			
+			$ket_mutasi = '';
+
+			if($res['jenis'] == 'UANG KELUAR'){
+				$ket_mutasi = "UANG MASUK SEBESAR Rp.".number_format($res['nominal'],2,",",".")." DIKARENAKAN ADANYA PERUBAHAN DATA DI OPERASIONAL DENGAN ID ".$data['id'];	
+			}
+
+			$uang = number_format($data['nominal'],2,",",".");
+
+			//Keterangan Jika Ada Perubahan Bank
+			$ket_bank_masuk = "UANG MASUK SEBESAR Rp.".$uang." DIKARENAKAN ADANYA PERUBAHAN DATA DI OPERASIONAL DENGAN ID ".$data['id'];
+			$ket_bank_keluar = "UANG KELUAR SEBESAR Rp.".number_format($res['nominal'],2,",",".")." DIKARENAKAN ADANYA PERUBAHAN DATA DI OPERASIONAL DENGAN ID ".$data['id'];
+
+			$ket_saldoChange = '';
+			$temp = 0;
+			$saldo = 0;
+
+			//Keterangan Jika Ada Perubahan Saldo
+			if($data['nominal'] > $res['nominal']){
+				
+				$temp = $data['nominal'] - $res['nominal']; 
+				$saldo = number_format($temp,2,",",".");
+
+				$ket_saldoChange = "UANG MASUK SEBESAR Rp.".$saldo." DIKARENAKAN ADANYA PERUBAHAN DATA DI OPERASIONAL DENGAN ID ".$data['id'];
+			
+			} else if($data['nominal'] < $res['nominal']){
+			
+				$temp = $res['nominal'] - $data['nominal'];
+				$saldo = number_format($temp,2,",",".");
+				
+				$ket_saldoChange = "UANG KELUAR SEBESAR Rp.".$saldo." DIKARENAKAN ADANYA PERUBAHAN DATA DI OPERASIONAL DENGAN ID ".$data['id'];
+			
+			}
+			
 			$query = "CALL edit_operasional_masuk (
 				:id,
 				:id_bank,
@@ -185,7 +245,10 @@
 				:nominal,
 				:jenis,
 				:ket,
-				:ket_mutasi
+				:ket_mutasi,
+				:ket_bank_masuk,
+				:ket_bank_keluar,
+				:ket_saldo_change
 			)";
 
 			$statement = $this->koneksi->prepare($query);
@@ -198,7 +261,10 @@
 					':nominal' => $data['nominal'],
 					':jenis' => $data['jenis'],
 					':ket' => $data['ket'],
-					':ket_mutasi' => ''
+					':ket_mutasi' => $ket_mutasi,
+					':ket_bank_masuk' => $ket_bank_masuk,
+					':ket_bank_keluar' => $ket_bank_keluar,
+					':ket_saldo_change' => $ket_saldoChange
 				)
 			);
 			$statement->closeCursor();
@@ -208,6 +274,42 @@
 		* 
 		*/
 		private function editKeluar($data) {
+
+			$res = $this->getById($data['id']);
+
+			$ket_mutasi = '';
+			
+			if($res['jenis'] == 'UANG MASUK'){
+				$ket_mutasi = "UANG KELUAR SEBESAR Rp.".number_format($res['nominal'],2,",",".")." DIKARENAKAN ADANYA PERUBAHAN DATA DI OPERASIONAL DENGAN ID ".$data['id'];	
+			}
+
+			$uang = number_format($data['nominal'],2,",",".");
+
+			//Keterangan Jika Ada Perubahan Bank
+			$ket_bank_masuk = "UANG MASUK SEBESAR Rp.".number_format($res['nominal'],2,",",".")." DIKARENAKAN ADANYA PERUBAHAN DATA DI OPERASIONAL DENGAN ID ".$data['id'];
+			$ket_bank_keluar = "UANG KELUAR SEBESAR Rp.".$uang." DIKARENAKAN ADANYA PERUBAHAN DATA DI OPERASIONAL DENGAN ID ".$data['id'];
+
+			$ket_saldoChange = '';
+			$temp = 0;
+			$saldo = 0;
+
+			//Keterangan Jika Ada Perubahan Saldo
+			if($data['nominal'] > $res['nominal']){
+				
+				$temp = $data['nominal'] - $res['nominal']; 
+				$saldo = number_format($temp,2,",",".");
+
+				$ket_saldoChange = "UANG KELUAR SEBESAR Rp.".$saldo." DIKARENAKAN ADANYA PERUBAHAN DATA DI OPERASIONAL DENGAN ID ".$data['id'];
+			
+			} else if($data['nominal'] < $res['nominal']){
+			
+				$temp = $res['nominal'] - $data['nominal'];
+				$saldo = number_format($temp,2,",",".");
+				
+				$ket_saldoChange = "UANG MASUK SEBESAR Rp.".$saldo." DIKARENAKAN ADANYA PERUBAHAN DATA DI OPERASIONAL DENGAN ID ".$data['id'];
+			
+			}
+
 			$query = "CALL edit_operasional_keluar (
 				:id,
 				:id_bank,
@@ -216,7 +318,10 @@
 				:nominal,
 				:jenis,
 				:ket,
-				:ket_mutasi
+				:ket_mutasi,
+				:ket_bank_masuk,
+				:ket_bank_keluar,
+				:ket_saldo_change
 			)";
 
 			$statement = $this->koneksi->prepare($query);
@@ -229,7 +334,10 @@
 					':nominal' => $data['nominal'],
 					':jenis' => $data['jenis'],
 					':ket' => $data['ket'],
-					':ket_mutasi' => ''
+					':ket_mutasi' => $ket_mutasi,
+					':ket_bank_masuk' => $ket_bank_masuk,
+					':ket_bank_keluar' => $ket_bank_keluar,
+					':ket_saldo_change' => $ket_saldoChange
 				)
 			);
 			$statement->closeCursor();
@@ -265,7 +373,17 @@
 		*
 		*/
 		public function hapusOperasional($data){
-			// $level = ""
+
+			$uang = number_format($data['nominal'],2,",",".");
+
+			$ket_mutasi = '';
+
+			if($data['jenis'] == 'UANG MASUK'){
+				$ket_mutasi = "UANG KELUAR SEBESAR Rp.".$uang." DIKARENAKAN ADANYA PENGHAPUSAN DATA DI OPERASIONAL DENGAN ID ".$data['id'];
+			} else if($data['jenis'] == 'UANG KELUAR') {
+				$ket_mutasi = "UANG MASUK SEBESAR Rp.".$uang." DIKARENAKAN ADANYA PENGHAPUSAN DATA DI OPERASIONAL DENGAN ID ".$data['id'];
+			}
+
 			$query = "CALL hapus_operasional (
 				:id,
 				:tgl,
@@ -275,7 +393,7 @@
 				array(
 					':id' => $data['id'],
 					':tgl' => $data['tgl'],
-					':ket' => $data['ket'],
+					':ket' => $ket_mutasi,
 				)
 			);
 			$statement->closeCursor();
