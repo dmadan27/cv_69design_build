@@ -109,7 +109,7 @@
 				$statment->execute(
 					array(
 						':id' => $data['id'],
-						':id_kas_kecil' => $data['id_sub_kas_kecil'],
+						':id_sub_kas_kecil' => $data['id_sub_kas_kecil'],
 						':tgl' => date('Y-m-d')
 					)
 				);
