@@ -15,23 +15,14 @@
 				<div class="modal-body">
 					<!-- tgl dan nama pembayaran -->
                     
-					<div class="row" style="padding:10px;">
+					<div class="row" style="padding:5px;">
                         <div class="col-lg-6">
+                            <h4> <strong>DATA PENGAJUAN </strong></h4>
                             <table class="table table-hover">
                                 <!-- ID -->
                                 <tr>
                                     <td width="45%"><strong>ID Pengajuan</strong></td>
                                     <td id="res_id"></td>
-                                </tr>
-                                <!-- ID Kas Kecil-->
-                                <tr>
-                                    <td><strong>ID Kas Kecil</strong></td>
-                                    <td id="id_kas_kecil"></td>
-                                </tr>
-                                <!-- Nama Kas Kecil -->
-                                <tr>
-                                    <td><strong>Kas Kecil</strong></td>
-                                    <td id="kas_kecil"></td>
                                 </tr>
                                 <!-- TGL -->
                                 <tr>
@@ -44,12 +35,6 @@
                                     <td id="nama"></td>
                                 </tr>
                                 <!-- Total -->
-                               
-                            </table>
-                        </div>
-
-                        <div class="col-lg-6">
-                            <table class="table table-hover">
                                 <tr>
                                     <td><strong>Total Pengajuan</strong></td>
                                     <td id="total"></td>
@@ -62,6 +47,23 @@
                                 <tr>
                                     <td><strong>Status Pengajuan</strong></td>
                                     <td id="status"></td>
+                                </tr>
+                               
+                            </table>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <h4> <strong>DATA KAS KECIL </strong></h4>
+                            <table class="table table-hover">
+                                <!-- ID Kas Kecil-->
+                                <tr>
+                                    <td><strong>ID Kas Kecil</strong></td>
+                                    <td id="id"></td>
+                                </tr>
+                                <!-- Nama Kas Kecil -->
+                                <tr>
+                                    <td><strong>Kas Kecil</strong></td>
+                                    <td id="kas_kecil"></td>
                                 </tr>
                             </table>
                         </div>

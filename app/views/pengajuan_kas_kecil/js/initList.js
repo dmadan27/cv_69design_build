@@ -92,7 +92,7 @@ function getView(id){
                 console.log('%cgetView Response:','',output);
                 
                 $('#res_id').html(output.id);
-                $('#id_kas_kecil').html(output.id_kas_kecil); 
+                $('#id').html(output.id_kas_kecil); 
                 $('#kas_kecil').html(output.kas_kecil);     
                 $('#tgl').html(output.tgl);   
                 $('#nama').html(output.nama);   

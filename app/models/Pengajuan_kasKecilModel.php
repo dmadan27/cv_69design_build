@@ -332,7 +332,12 @@
 		* 	Acc Pengajuan Kas Kecil. Dilakukkan Oleh Kas Besar
 		*/
 		private function accPengajuan($data) {
-			// insert operasional_proyek
+			
+			$uang = number_format($data['total_disetujui'],2,",",".");
+
+			$ket_mutasi = "UANG KELUAR SEBESAR Rp. ".$uang." DARI TRANSAKSI DI PENGAJUAN KAS KECIL DENGAN ID ".$data['id'];
+			$ket_mutasi_kk = "UANG MASUK SEBESAR Rp. ".$uang." DARI TRANSAKSI DI PENGAJUAN KAS KECIL DENGAN ID ".$data['id'];
+
 			$query = "CALL acc_pengajuan_kas_kecil (
 				:id, 
 				:id_kas_kecil,
@@ -351,8 +356,8 @@
 					':tgl_param'		=> $data['tgl'],
 					':id_bank'			=> $data['id_bank'],
 					':total_disetujui'	=> $data['total_disetujui'],
-					':ket_kas_kecil'	=> '',
-					':ket'				=> '',
+					':ket_kas_kecil'	=> $ket_mutasi_kk,
+					':ket'				=> $ket_mutasi,
 					':status'			=> $data['status']
 				)
 			);
