@@ -43,8 +43,8 @@
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
 				'assets/bower_components/select2/dist/js/select2.full.min.js',
-				'app/views/laporan_pengajuan_sub_kas_kecil/js/initList.js',
-				'app/views/laporan_pengajuan_sub_kas_kecil/js/initForm.js',
+				'app/views/laporan_sub_kas_kecil/js/initList.js',
+				'app/views/laporan_sub_kas_kecil/js/initForm.js',
 			);
 
 			$config = array(
@@ -144,8 +144,7 @@
 				$id = strtoupper($id);
 				if(empty($id) || $id == "") { $this->redirect(BASE_URL."laporan-sub-kas-kecil"); }
 				
-				// get data pengajuan dan saldo sub kas kecil
-				$this->model('Sub_kas_kecilModel');
+				
 				$dataPengajuan = $this->Pengajuan_sub_kas_kecilModel->getById($id);
 				$dataSaldoSkc = $this->Sub_kas_kecilModel->getSaldoById($dataPengajuan['id_sub_kas_kecil']);
 				$dataPengajuan['saldo'] = $dataSaldoSkc['saldo'];
@@ -265,7 +264,8 @@
 		 */
 		public function detail($id){
 			$id = strtoupper($id);
-			$dataLaporan = !empty($this->Laporan_sub_kas_kecilModel->getById($id)) ? $this->Laporan_sub_kas_kecilModel->getById($id) : false;
+			$dataLaporan = !empty($this->Laporan_sub_kas_kecilModel->getById($id)) ? 
+				$this->Laporan_sub_kas_kecilModel->getById($id) : false;
 
 			if((empty($id) || $id == "") || !$dataLaporan) { $this->redirect(BASE_URL."laporan-sub-kas-kecil/"); }
 
@@ -275,7 +275,7 @@
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
-				'app/views/pengajuan_sub_kas_kecil/js/initView.js',
+				'app/views/laporan_sub_kas_kecil/js/initView.js',
 			);
 
 			$config = array(
