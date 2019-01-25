@@ -6,12 +6,8 @@
 	 */
 	class Pengajuan_sub_kas_kecilModel extends Database{
 
-		protected $koneksi;
-		protected $dataTable;
-		protected $kolomCari_mobile = array('id', 'id_proyek', 'tgl', 'total', 'dana_disetujui', 'status');
-		public $queryMobile;
-
-		private $queryBeforeLimitMobile;
+		private $koneksi;
+		private $dataTable;
 
 		/**
 		 * 

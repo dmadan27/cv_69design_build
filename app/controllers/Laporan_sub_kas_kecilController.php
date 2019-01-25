@@ -18,7 +18,7 @@
 			$this->auth();
             $this->auth->cekAuth();
             $this->model('DataTableModel');
-			$this->model('Laporan_pengajuan_sub_kas_kecilModel');
+			$this->model('Laporan_sub_kas_kecilModel');
 			$this->helper();
 			$this->validation();
 		}
@@ -56,7 +56,7 @@
 				'js' => $js,
 			);
 
-			$this->layout('laporan_pengajuan_sub_kas_kecil/list', $config, $data = null);
+			$this->layout('laporan_sub_kas_kecil/list', $config, $data = null);
 		}
 
 		/**
@@ -73,7 +73,7 @@
 					'kolomOrder' => array(null, 'id', 'tgl', 'id_sub_kas_kecil', 'id_proyek', 'nama_pengajuan', 'total', 'total_asli', 'status_order', null),
 					'kolomCari' => array('id', 'id_sub_kas_kecil', 'nama_skk', 'id_proyek', 'pemilik', 'pembangunan', 'tgl', 'total', 'total_asli', 'status_laporan'),
 					'orderBy' => array('status_order' => 'ASC', 'id' => 'desc'),
-					'kondisi' => "WHERE status_order = '3'",
+					'kondisi' => false,
 				);
 
 				$dataLaporan = $this->DataTableModel->getAllDataTable($config_dataTable);
@@ -88,7 +88,7 @@
 					$aksiEdit = '<button onclick="getEdit('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Status Pengajuan"><i class="fa fa-pencil"></i></button>';
 					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.'</div>';
 
-					switch ($row['status_laporan_order']) {
+					switch ($row['status_order']) {
 						case '1': // pending
 							$status = '<span class="label label-primary">';
 							break;
@@ -112,7 +112,7 @@
 					$dataRow = array();
 					$dataRow[] = $no_urut;
 					$dataRow[] = $row['id'];
-					$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
+					$dataRow[] = (!empty($row['tgl'])) ? $this->helper->cetakTgl($row['tgl'], 'full') : '-';
 					$dataRow[] = $row['id_sub_kas_kecil'].' - '.$row['nama_skk'];
 					$dataRow[] = $row['id_proyek'];
 					$dataRow[] = $row['nama_pengajuan'];
@@ -264,7 +264,67 @@
 		 * 
 		 */
 		public function detail($id){
+			$id = strtoupper($id);
+			$dataLaporan = !empty($this->Laporan_sub_kas_kecilModel->getById($id)) ? $this->Laporan_sub_kas_kecilModel->getById($id) : false;
 
+			if((empty($id) || $id == "") || !$dataLaporan) { $this->redirect(BASE_URL."laporan-sub-kas-kecil/"); }
+
+			$css = array(
+				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css'
+			);
+			$js = array(
+				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
+				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'app/views/pengajuan_sub_kas_kecil/js/initView.js',
+			);
+
+			$config = array(
+				'title' => array(
+					'main' => 'Data Laporan Pengajuan Sub Kas Kecil',
+					'sub' => 'Detail Data Laporan',
+				),
+				'css' => $css,
+				'js' => $js,
+			);
+
+			$parsing_dataLaporan = array(
+				'id' => $dataLaporan['id'],
+				'skk' => $dataLaporan['id_sub_kas_kecil'].' - '.$dataLaporan['nama_skk'],
+				'tgl' => (!empty($dataLaporan['tgl'])) ? $this->helper->cetakTgl($dataLaporan['tgl'], 'full') : '-',
+				'id_proyek' => $dataLaporan['id_proyek'].' - '.$dataLaporan['pemilik'],
+				'nama_pengajuan' => $dataLaporan['nama_pengajuan'],
+				'total' => $this->helper->cetakRupiah($dataLaporan['total']),
+				'total_asli' => $this->helper->cetakRupiah($dataLaporan['total_asli']),
+				'status' => $dataLaporan['status_laporan']
+			);
+
+			$dataDetail = !empty($this->Laporan_sub_kas_kecilModel->getDetailById($id)) ? 
+				$this->Laporan_sub_kas_kecilModel->getDetailById($id) : false;
+			
+			$parsing_dataDetail = array();
+			if($dataDetail) {
+				foreach($dataDetail as $row) {
+					$dataRow = array();
+					$dataRow['nama'] = $row['nama'];
+					$dataRow['jenis'] = $row['jenis'];
+					$dataRow['satuan'] = $row['satuan'];
+					$dataRow['qty'] = $row['qty'];
+					$dataRow['harga'] = $this->helper->cetakRupiah($row['harga']);
+					$dataRow['subtotal'] = $this->helper->cetakRupiah($row['subtotal']);
+					$dataRow['subtotal_asli'] = $this->helper->cetakRupiah($row['harga_asli']);
+					$dataRow['sisa'] = $this->helper->cetakRupiah($row['sisa']);
+					
+					$parsing_dataDetail[] = $dataRow;
+				}
+			}
+
+			$data = array(
+				'data_laporan' => $parsing_dataLaporan,
+				'data_detail' => $parsing_dataDetail
+			);
+
+			// $this->layout('pengajuan_sub_kas_kecil/view', $config, $data);
+			$this->view('laporan_sub_kas_kecil/view', $data);
 		}
 
 		/**

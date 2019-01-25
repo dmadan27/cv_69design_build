@@ -2,7 +2,7 @@
 CREATE OR REPLACE VIEW v_laporan_pengajuan_sub_kas_kecil AS
 SELECT 
 	pskk.id, pskk.id_sub_kas_kecil, skk.nama nama_skk, pskk.id_proyek, p.pemilik, p.pembangunan, p.kota,
-	pskk.nama nama_pengajuan, pskk.total, SUM(dpskk.harga_asli) total_asli, 
+	psll.tgl_laporan tgl, pskk.nama nama_pengajuan, pskk.total, SUM(dpskk.harga_asli) total_asli, 
 	(CASE 
       WHEN pskk.status_laporan = '1' THEN 'PENDING'
       WHEN pskk.status_laporan = '2' THEN 'PERBAIKI'
