@@ -322,7 +322,7 @@
 			$dataDetail = !empty($this->Pengajuan_sub_kas_kecilModel->getDetailById($id)) ? 
 				$this->Pengajuan_sub_kas_kecilModel->getDetailById($id) : false;
 			
-			$parsing_dataDetail = [];
+			$parsing_dataDetail = array();
 			if($dataDetail) {
 				foreach($dataDetail as $row) {
 					$dataRow = array();

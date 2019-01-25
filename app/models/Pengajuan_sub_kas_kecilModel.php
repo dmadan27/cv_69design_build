@@ -56,7 +56,7 @@
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id', $id);
 			$statement->execute();
-			$result = $statement->fetch(PDO::FETCH_ASSOC);
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 			return $result;
 		}

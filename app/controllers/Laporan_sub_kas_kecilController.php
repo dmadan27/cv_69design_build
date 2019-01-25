@@ -43,8 +43,8 @@
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
 				'assets/bower_components/select2/dist/js/select2.full.min.js',
-				'app/views/pengajuan_sub_kas_kecil/js/initList.js',
-				'app/views/pengajuan_sub_kas_kecil/js/initForm.js',
+				'app/views/laporan_pengajuan_sub_kas_kecil/js/initList.js',
+				'app/views/laporan_pengajuan_sub_kas_kecil/js/initForm.js',
 			);
 
 			$config = array(
@@ -69,10 +69,10 @@
 			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				// config datatable
 				$config_dataTable = array(
-					'tabel' => 'v_pengajuan_sub_kas_kecil_v2',
-					'kolomOrder' => array(null, 'id', 'tgl_laporan', 'id_sub_kas_kecil', 'id_proyek', 'nama_pengajuan', 'total', 'dana_disetujui', 'status_laporan', null),
-					'kolomCari' => array('id', 'id_sub_kas_kecil', 'nama_skk', 'id_proyek', 'pemilik', 'pembangunan', 'tgl_laporan', 'total', 'dana_disetujui', 'status_laporan'),
-					'orderBy' => array('status_laporan_order' => 'ASC', 'id' => 'desc'),
+					'tabel' => 'v_laporan_pengajuan_sub_kas_kecil',
+					'kolomOrder' => array(null, 'id', 'tgl', 'id_sub_kas_kecil', 'id_proyek', 'nama_pengajuan', 'total', 'total_asli', 'status_order', null),
+					'kolomCari' => array('id', 'id_sub_kas_kecil', 'nama_skk', 'id_proyek', 'pemilik', 'pembangunan', 'tgl', 'total', 'total_asli', 'status_laporan'),
+					'orderBy' => array('status_order' => 'ASC', 'id' => 'desc'),
 					'kondisi' => "WHERE status_order = '3'",
 				);
 
@@ -112,12 +112,12 @@
 					$dataRow = array();
 					$dataRow[] = $no_urut;
 					$dataRow[] = $row['id'];
-					$dataRow[] = $this->helper->cetakTgl($row['tgl_laporan'], 'full');
+					$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
 					$dataRow[] = $row['id_sub_kas_kecil'].' - '.$row['nama_skk'];
 					$dataRow[] = $row['id_proyek'];
 					$dataRow[] = $row['nama_pengajuan'];
 					$dataRow[] = $this->helper->cetakRupiah($row['total']);
-					$dataRow[] = $this->helper->cetakRupiah($row['dana_disetujui']);
+					$dataRow[] = $this->helper->cetakRupiah($row['total_asli']);
 					$dataRow[] = $status;
 					$dataRow[] = $aksi;
 
