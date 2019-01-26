@@ -126,6 +126,7 @@ function submit(){
 			else{
 				resetForm();
 				$("#modalSkc").modal('hide');
+				$("#skcTable").DataTable().ajax.reload();
 			}
 			toastr.warning(response.notif.message, response.notif.title);
 		},

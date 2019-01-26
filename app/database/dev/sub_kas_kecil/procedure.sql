@@ -49,7 +49,7 @@
 		DECLARE email_param varchar(50);
 
 		-- get email kas kecil
-		SELECT email INTO email_param FROM kas_kecil WHERE id = id_param;
+		SELECT email INTO email_param FROM sub_kas_kecil WHERE id = id_param;
 
 		-- 1. hapus detail pengajuan sub kas kecil
 		DELETE FROM detail_pengajuan_sub_kas_kecil WHERE id_pengajuan IN (
