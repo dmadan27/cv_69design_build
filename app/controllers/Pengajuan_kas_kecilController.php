@@ -122,32 +122,24 @@
 					// // button aksi
 					$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
 					
-					if($row['status'] == "DISETUJUI") {
-						$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" disabled class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-						$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" disabled class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
-					} if($row['status'] == "DITOLAK") {
+					if($row['status'] == "DISETUJUI" || $row['status'] == "DIPERBAIKI"){
+						$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" style="display: none;" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+						$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" style="display: none;" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+					} else if($row['status'] == "DITOLAK") {
+						$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" style="display: none;" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+						$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+					} else if($row['status'] == "PENDING") {
+						if($level == "KAS BESAR"){
+							$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button"  class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+							$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')"  type="button" style="display: none;" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+							$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+						} else if($level == "KAS KECIL"){
+							$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" style="display: none;" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+							$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" style="display: none;" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+							$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" style="display: none;" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+						}
 						
-					} else {
-						$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-						$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 					}
-
-					if($row['status'] == "DISETUJUI") {
-						$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-						$aksiEdit = '';
-						$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" disabled class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
-					} if($row['status'] == "DITOLAK") {
-						$aksiEdit = '';
-						$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
-					} if($row['status'] == "DIPERBAIKI"){
-						$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-						$aksiEdit = '';
-						$aksiHapus = '';
-					} if($row['status'] == "PENDING") {
-						$aksiDetail = '';
-						$aksiEdit = '';
-						$aksiHapus = '';
-					}	
 	
 					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
 					
