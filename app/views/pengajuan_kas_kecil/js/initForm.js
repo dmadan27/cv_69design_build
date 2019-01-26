@@ -46,7 +46,7 @@ function init() {
 		allowClear: true
 	});
 
-	$('#id_bank').select2({
+	$('#id_bank_pengajuan').select2({
 		placeholder: "Pilih Bank",
 		allowClear: true
 	});

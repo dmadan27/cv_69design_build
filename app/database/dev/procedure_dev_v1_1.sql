@@ -663,7 +663,10 @@
 		in nominal_param double(12,2), -- nominal operasional,
 		in jenis_param enum('UANG MASUK', 'UANG KELUAR'),
 		in ket_param text, -- ket operasional
-		in ket_mutasi_param text
+		in ket_mutasi_param text,
+		in ket_bank_masuk_param text,
+		in ket_bank_keluar_param text,
+		in ket_saldo_change_param text
 	)
 	BEGIN
 		DECLARE id_bank_sebelum int;
@@ -692,7 +695,7 @@
 			INSERT INTO mutasi_bank 
 				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 			VALUES 
-				(id_bank_sebelum, tgl_param, nominal_sebelum, 0, (get_saldo_bank_lama + nominal_sebelum), ket_param);
+				(id_bank_sebelum, tgl_param, nominal_sebelum, 0, (get_saldo_bank_lama + nominal_sebelum), ket_mutasi_param);
 		
 		END IF;
 
@@ -709,7 +712,7 @@
 				INSERT INTO mutasi_bank 
 					(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 				VALUES 
-					(id_bank_sebelum, tgl_param, 0, nominal_sebelum, (get_saldo_bank_lama - nominal_sebelum), ket_param);
+					(id_bank_sebelum, tgl_param, 0, nominal_sebelum, (get_saldo_bank_lama - nominal_sebelum), ket_bank_keluar_param);
 
 				-- get saldo bank baru
 				SELECT saldo INTO get_saldo_bank FROM bank WHERE id = id_bank_param;
@@ -721,7 +724,7 @@
 				INSERT INTO mutasi_bank 
 					(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 				VALUES 
-					(id_bank_param, tgl_param, nominal_param, 0, (get_saldo_bank + nominal_param), ket_param);
+					(id_bank_param, tgl_param, nominal_param, 0, (get_saldo_bank + nominal_param), ket_bank_masuk_param);
 			
 			 -- jika ada perubahan nominal
 			ELSE IF nominal_sebelum != nominal_param THEN
@@ -738,7 +741,7 @@
 					INSERT INTO mutasi_bank 
 						(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 					VALUES 
-						(id_bank_param, tgl_param, (nominal_param - nominal_sebelum), 0, (get_saldo_bank + (nominal_param - nominal_sebelum)), ket_param);
+						(id_bank_param, tgl_param, (nominal_param - nominal_sebelum), 0, (get_saldo_bank + (nominal_param - nominal_sebelum)), ket_saldo_change_param);
 				
 				ELSE IF nominal_param < nominal_sebelum THEN
 
@@ -752,7 +755,7 @@
 					INSERT INTO mutasi_bank 
 						(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 					VALUES 
-						(id_bank_param, tgl_param, 0, (nominal_sebelum - nominal_param), (get_saldo_bank - (nominal_sebelum - nominal_param)), ket_param);
+						(id_bank_param, tgl_param, 0, (nominal_sebelum - nominal_param), (get_saldo_bank - (nominal_sebelum - nominal_param)), ket_saldo_change_param);
 
 						END IF;
 
@@ -781,7 +784,10 @@
 		in nominal_param double(12,2), -- nominal operasional,
 		in jenis_param enum('UANG MASUK', 'UANG KELUAR'),
 		in ket_param text, -- ket operasional
-		in ket_mutasi_param text
+		in ket_mutasi_param text,
+		in ket_bank_masuk_param text,
+		in ket_bank_keluar_param text,
+		in ket_saldo_change_param text
 	)
 	BEGIN
 		DECLARE id_bank_sebelum int;
@@ -810,7 +816,7 @@
 			INSERT INTO mutasi_bank 
 				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 			VALUES 
-				(id_bank_sebelum, tgl_param, 0, nominal_sebelum, (get_saldo_bank_lama - nominal_sebelum), ket_param);
+				(id_bank_sebelum, tgl_param, 0, nominal_sebelum, (get_saldo_bank_lama - nominal_sebelum), ket_mutasi_param);
 		
 		END IF;
 
@@ -827,7 +833,7 @@
 				INSERT INTO mutasi_bank 
 					(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 				VALUES 
-					(id_bank_sebelum, tgl_param, nominal_sebelum, 0, (get_saldo_bank_lama + nominal_sebelum), ket_param);
+					(id_bank_sebelum, tgl_param, nominal_sebelum, 0, (get_saldo_bank_lama + nominal_sebelum), ket_bank_masuk_param);
 
 				-- get saldo bank baru
 				SELECT saldo INTO get_saldo_bank FROM bank WHERE id = id_bank_param;
@@ -839,7 +845,7 @@
 				INSERT INTO mutasi_bank 
 					(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 				VALUES 
-					(id_bank_param, tgl_param, 0, nominal_param, (get_saldo_bank - nominal_param), ket_param);
+					(id_bank_param, tgl_param, 0, nominal_param, (get_saldo_bank - nominal_param), ket_bank_keluar_param);
 			
 			 -- jika ada perubahan nominal
 			ELSE IF nominal_sebelum != nominal_param THEN
@@ -856,7 +862,7 @@
 					INSERT INTO mutasi_bank 
 						(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 					VALUES 
-						(id_bank_param, tgl_param, 0, (nominal_param - nominal_sebelum), (get_saldo_bank - (nominal_param - nominal_sebelum)), ket_param);
+						(id_bank_param, tgl_param, 0, (nominal_param - nominal_sebelum), (get_saldo_bank - (nominal_param - nominal_sebelum)), ket_saldo_change_param);
 				
 				ELSE IF nominal_param < nominal_sebelum THEN
 
@@ -870,7 +876,7 @@
 					INSERT INTO mutasi_bank 
 						(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
 					VALUES 
-						(id_bank_param, tgl_param, (nominal_sebelum - nominal_param), 0, (get_saldo_bank + (nominal_sebelum - nominal_param)), ket_param);
+						(id_bank_param, tgl_param, (nominal_sebelum - nominal_param), 0, (get_saldo_bank + (nominal_sebelum - nominal_param)), ket_saldo_change_param);
 
 						END IF;
 
@@ -1533,7 +1539,7 @@
 	-- ================================================================= --
 
 	-- ================================================================= --
-	-- Pengajuan Kas Kecil -- Versi 11 Januari 2019 -- START --
+	-- Pengajuan Kas Kecil -- Versi 25 Januari 2019 -- START --
 	-- ================================================================= --
 
 	-- Tambah Data Pengajuan Kas Kecil (FIXED) 

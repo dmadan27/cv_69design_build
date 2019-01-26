@@ -383,13 +383,14 @@
 		public function delete($id){
 			$id = strtoupper($id);
 			
-			$getNamaOperasional = $this->OperasionalModel->getById($id)['nama'];
-			$ket = 'Data Operasional Bank '.$getNamaOperasional. 'telah Dihapus';
+			$dataOperasional = $this->OperasionalModel->getById($id);
 
 			$data = array(
 				'id' => $id,
+				'jenis' => $dataOperasional['jenis'],
+				'nominal' => $dataOperasional['nominal'],
 				'tgl' => date('Y-m-d'),
-				'ket' => $ket,	
+				'ket' => '',	
 			);
 
 			if($this->OperasionalModel->delete($data)) $this->status = true;
