@@ -21,6 +21,7 @@
 			$this->auth();
 			$this->auth->cekAuth();
 			$this->model('Kas_besarModel');
+			$this->model('DataTableModel');
 			$this->helper();
 			$this->validation();
 			$this->excel();
@@ -81,7 +82,7 @@
 					'kondisi' => false,
 				);
 
-				$dataKasBesar = $this->Kas_besarModel->getAllDataTable($config_dataTable);
+				$dataKasBesar = $this->DataTableModel->getAllDataTable($config_dataTable);
 
 				$data = array();
 				$no_urut = $_POST['start'];
@@ -112,8 +113,8 @@
 
 				$output = array(
 					'draw' => $_POST['draw'],
-					'recordsTotal' => $this->Kas_besarModel->recordTotal(),
-					'recordsFiltered' => $this->Kas_besarModel->recordFilter(),
+					'recordsTotal' => $this->DataTableModel->recordTotal(),
+					'recordsFiltered' => $this->DataTableModel->recordFilter(),
 					'data' => $data,
 				);
 
@@ -185,7 +186,7 @@
 
 						// jika upload foto
 						if($foto){
-							$path = ROOT.DS.'assets'.DS.'images'.DS.'user'.$valueFoto;
+							$path = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$valueFoto;
 							if(!move_uploaded_file($foto['tmp_name'], $path)){
 								$this->error['foto'] = "Upload Foto Gagal";
 								$this->success = $cekFoto = false;
@@ -276,11 +277,9 @@
 		public function action_edit(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
-				
-				$error = $notif = array();
 
 				if(!$data){
-					$notif = array(
+					$this->notif = array(
 						'type' => "error",
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
@@ -290,7 +289,7 @@
 					// validasi data
 					$validasi = $this->set_validation($data);
 					$cek = $validasi['cek'];
-					$error = $validasi['error'];
+					$this->error = $validasi['error'];
 
 					if($cek){
 						// validasi inputan
@@ -305,15 +304,15 @@
 
 						// update db
 						if($this->Kas_besarModel->update($data)) {
-							$this->status = true;
-							$notif = array(
+							$this->success = true;
+							$this->notif = array(
 								'type' => "success",
 								'title' => "Pesan Berhasil",
 								'message' => "Edit Data Kas Besar Berhasil",
 							);
 						}
 						else {
-							$notif = array(
+							$this->notif = array(
 								'type' => "error",
 								'title' => "Pesan Gagal",
 								'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
@@ -321,7 +320,7 @@
 						}
 					}
 					else {
-						$notif = array(
+						$this->notif = array(
 							'type' => "warning",
 							'title' => "Pesan Pemberitahuan",
 							'message' => "Silahkan Cek Kembali Form Isian",
@@ -330,9 +329,9 @@
 				}
 
 				$output = array(
-					'status' => $this->status,
-					'notif' => $notif,
-					'error' => $error,
+					'success' => $this->success,
+					'notif' => $this->notif,
+					'error' => $this->error,
 					'data' => $data
 				);
 
@@ -340,20 +339,6 @@
 			}
 			else $this->redirect();
 				
-		}
-
-		/**
-		*
-		*/
-		public function update_foto($id){
-
-		}
-
-		/**
-		*
-		*/
-		public function hapus_foto($id){
-			
 		}
 
 		/**
@@ -369,14 +354,15 @@
 
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
-				'assets/bower_components/dropify/dist/css/dropify.min.css'
+				'assets/bower_components/dropify/dist/css/dropify.min.css',
+				'assets/bower_components/Magnific-Popup-master/dist/magnific-popup.css',
 			);
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 				'assets/bower_components/dropify/dist/js/dropify.min.js',
+				'assets/bower_components/Magnific-Popup-master/dist/jquery.magnific-popup.min.js',
 				'app/views/kas_besar/js/initView.js',
-				// 'app/views/kas_besar/js/initForm.js',
 			);
 
 			$config = array(
@@ -423,13 +409,33 @@
 		* return json
 		*/
 		public function delete($id){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+			if($_SERVER['REQUEST_METHOD'] == "POST" && $id != ''){
 				$id = strtoupper($id);
-				if(empty($id) || $id == "") $this->redirect(BASE_URL."bank/");
+				if(empty($id) || $id == "") $this->redirect(BASE_URL."kas-besar/");
 				
-				if($this->Kas_besarModel->delete($id)) $this->status = true;
+				$delete_kasBesar = $this->Kas_besarModel->delete($id);
+				if($delete_kasBesar['success']) {
+					$this->success = true;
+					$this->notif = array(
+						'type' => 'success',
+						'title' => 'Pesan Sukses',
+						'message' => 'Data Berhasil Dihapus',
+					);
+				}
+				else {
+					$this->message = $delete_kasBesar['error'];
+					$this->notif = array(
+						'type' => 'error',
+						'title' => 'Pesan Error',
+						'message' => 'Terjadi Kesalahan Teknis, Silahkan Coba Kembali',
+					);
+				}
 
-				echo json_encode($this->status);
+				echo json_encode(array(
+					'success' => $this->success,
+					'message' => $this->message,
+					'notif' => $this->notif
+				));
 			}
 			else $this->redirect();
 		}

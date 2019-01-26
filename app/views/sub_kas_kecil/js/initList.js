@@ -24,7 +24,6 @@ $(document).ready(function(){
             url: BASE_URL+"sub-kas-kecil/get-list/",
             type: 'POST',
             data: {
-                "token_list" : $('#token_list').val().trim(),
             }
         },
         "columnDefs": [
@@ -63,36 +62,35 @@ function getView(id){
 */
 function getDelete(id){
 
-		swal({
-			title: "Pesan Konfirmasi",
-			text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
-			type: "warning",
-	        showCancelButton: true,
-	        confirmButtonColor: "#DD6B55",
-	        confirmButtonText: "Ya, Hapus!",
-	        cancelButtonText: "Batal",
-	        closeOnConfirm: false,
-		}, function(){
-			$.ajax({
-				url: BASE_URL+'sub-kas-kecil/delete/'+id.toLowerCase(),
-				type: 'post',
-				dataType: 'json',
-				data: {},
-				beforeSend: function(){
-
-				},
-				success: function(output){
-					console.log(output);
-					if(output){
-						swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
-						$("#skcTable").DataTable().ajax.reload();
-					}
-				},
-				error: function (jqXHR, textStatus, errorThrown){ // error handling
-		            console.log(jqXHR, textStatus, errorThrown);
-                    swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
-		        }
-			})
-		});
+    swal({
+        title: "Pesan Konfirmasi",
+        text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Hapus!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: false,
+    }, function(){
+        $.ajax({
+            url: BASE_URL+'sub-kas-kecil/delete/'+id.toLowerCase(),
+            type: 'post',
+            dataType: 'json',
+            data: {},
+            beforeSend: function(){
+            },
+            success: function(response){
+                console.log(response);
+                if(response.success){
+                    swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
+                    $("#skcTable").DataTable().ajax.reload();
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown){ // error handling
+                console.log(jqXHR, textStatus, errorThrown);
+                swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+            }
+        })
+    });
 	
 }

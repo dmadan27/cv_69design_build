@@ -204,10 +204,11 @@
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$id = strtoupper($id);
 				$data = !empty($this->BankModel->getById($id)) ? $this->BankModel->getById($id) : false;
-				
+
 				echo json_encode($data);
 			}
 			else { $this->redirect(); }
+			
 		}
 
 		/**
@@ -294,16 +295,12 @@
 
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
-				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
-				'assets/bower_components/select2/dist/css/select2.min.css',
 			);
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
-				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
-				'assets/bower_components/select2/dist/js/select2.full.min.js',
 				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
-				'app/views/bank/js/initView.js'
+				'app/views/bank/js/initView.js',
 			);
 
 			$config = array(

@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	var mutasiKasKecilTable = $("#mutasiKasKecilTable").DataTable({
+    var mutasiKasKecilTable = $("#mutasiKasKecilTable").DataTable({
         "language" : {
             "lengthMenu": "Tampilkan _MENU_ data/page",
             "zeroRecords": "Data Tidak Ada",
@@ -42,10 +42,7 @@ $(document).ready(function(){
             // console.log(data);
         }
     });
-
-});
-
-$(document).ready(function(){
+    
     var pengajuanKasKecilTable = $("#pengajuanKasKecilTable").DataTable({
         "language" : {
             "lengthMenu": "Tampilkan _MENU_ data/page",
@@ -88,6 +85,21 @@ $(document).ready(function(){
             // console.log(data);
         }
     });
+
+    $('.image-popup').magnificPopup({
+		type: 'image',
+		closeOnContentClick: true,
+		closeBtnInside: false,
+		fixedContentPos: true,
+		mainClass: 'mfp-no-margins mfp-with-zoom', // class to remove default margin from left and right side
+		image: {
+			verticalFit: true
+		},
+		zoom: {
+			enabled: true,
+			duration: 300 // don't foget to change the duration also in CSS
+		}
+	});
 
 });
 

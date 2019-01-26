@@ -104,7 +104,7 @@
 						
 						case '3': // disetujui
 						case '4': // langsung
-							$aksi = '<div class="btn-group">'.$aksiDetail.$aksiHapus.'</div>';
+							$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
 							$status = '<span class="label label-success">';
 							break;
 

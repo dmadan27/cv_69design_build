@@ -297,23 +297,27 @@
 	-- View Sub Kas Kecil -- END --
 	-- ================================================================= --
 
+
     -- ================================================================= --
-	-- View Bank -- START --
+	-- View User -- START --
 	-- ================================================================= --
 
-    CREATE OR REPLACE VIEW v_mutasi_bank_export AS
-    SELECT 
-        mutasi_bank.id ID,
-        mutasi_bank.id_bank,
-        bank.nama 'BANK',
-        mutasi_bank.tgl TANGGAL,
-        mutasi_bank.uang_masuk 'UANG MASUK',
-        mutasi_bank.uang_keluar 'UANG KELUAR',
-        mutasi_bank.saldo SALDO,
-        mutasi_bank.ket KETERANGAN
-    FROM mutasi_bank
-    JOIN bank ON bank.id = mutasi_bank.id_bank
+    -- View User
+	-- view untuk semua user yang terdapat di sistem
+	CREATE OR REPLACE VIEW v_user AS
+		SELECT
+			u.username, kb.nama, u.status, u.level FROM user u JOIN kas_besar kb  ON u.username=kb.email
+
+		UNION
+
+		SELECT
+			u.username, kk.nama, u.status, u.level FROM user u JOIN kas_kecil kk  ON u.username=kk.email
+
+		UNION
+
+		SELECT
+			u.username, skk.nama, u.status, u.level FROM user u JOIN sub_kas_kecil skk  ON u.username=skk.email;
 
     -- ================================================================= --
-	-- View Bank -- END --
+	-- View User -- END --
 	-- ================================================================= --
