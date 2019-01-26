@@ -1,3 +1,18 @@
+-- Procedure Tambah Data Bank
+    delimiter //
+    
+    CREATE TRIGGER tambah_bank AFTER INSERT ON bank FOR EACH ROW
+    BEGIN
+
+        INSERT INTO mutasi_bank 
+            (id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+        VALUES 
+            (NEW.id, CURRENT_DATE(), NEW.saldo, 0, NEW.saldo, 'SALDO AWAL');
+
+    END //
+		
+    delimiter ;
+
 -- Procedure Hapus Data Bank (FIX)
 	delimiter //
 	CREATE PROCEDURE hapus_bank(
