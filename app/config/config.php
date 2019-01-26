@@ -11,7 +11,7 @@
 	if(STATUS_DEV == 'DEVELOPMENT'){ // local
 		// config base url
 		define('BASE_URL', 'http://localhost/cv_69design_build/'); // isi path dari web
-		define('BASE_API_MOBLIE', 'http://localhost/api-69/');
+		define('BASE_API_MOBLIE', 'http://localhost/api_69/');
 		define('SITE_URL', BASE_URL.'index.php/'); // hilangkan index.php atau komentari SITE_URL jika sudah memakai .htaccess
 		define('DEFAULT_CONTROLLER', 'home'); // default controller yg diakses pertama kali
 		define('VERSION', 'Beta v1.0');
