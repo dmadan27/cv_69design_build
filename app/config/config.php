@@ -11,6 +11,7 @@
 	if(STATUS_DEV == 'DEVELOPMENT'){ // local
 		// config base url
 		define('BASE_URL', 'http://localhost/cv_69design_build/'); // isi path dari web
+		define('BASE_API_MOBLIE', 'http://localhost/api-69/');
 		define('SITE_URL', BASE_URL.'index.php/'); // hilangkan index.php atau komentari SITE_URL jika sudah memakai .htaccess
 		define('DEFAULT_CONTROLLER', 'home'); // default controller yg diakses pertama kali
 		define('VERSION', 'Beta v1.0');
@@ -23,6 +24,7 @@
 	}
 	else if(STATUS_DEV == 'LIVE'){ // dev live
 		define('BASE_URL', 'https://dev.69designbuild.com/v1/web/'); 
+		define('BASE_API_MOBLIE', 'https:///dev.69designbuild.com/v1/api/');
 		define('SITE_URL', BASE_URL.'index.php/'); 
 		define('DEFAULT_CONTROLLER', 'home');
 		define('VERSION', 'Beta v1.0');
@@ -33,7 +35,8 @@
 		define('DB_NAME', 'designbu_69design_build.sql');
 	}
 	else if(STATUS_DEV == 'TESTING'){ // testing before production
-		define('BASE_URL', 'https://test.69designbuild.com/'); 
+		define('BASE_URL', 'https://test.69designbuild.com/');
+		define('BASE_API_MOBLIE', 'https:///api-test.69designbuild.com/'); 
 		define('SITE_URL', BASE_URL.'index.php/'); 
 		define('DEFAULT_CONTROLLER', 'home');
 		define('VERSION', 'v1.0');
@@ -45,6 +48,7 @@
 	}
 	else if(STATUS_DEV == 'PRODUCTION'){ // production
 		define('BASE_URL', 'https://system.69design-build.com/');
+		define('BASE_API_MOBLIE', 'https:///api.69designbuild.com/');
 		define('SITE_URL', BASE_URL.'index.php/');
 		define('DEFAULT_CONTROLLER', 'home');
 		define('VERSION', 'v1.0');

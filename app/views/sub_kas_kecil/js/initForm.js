@@ -19,7 +19,8 @@ $(document).ready(function(){
 	// submit skc
 	$('#form_skc').submit(function(e){
 		e.preventDefault();
-		submit();
+		// submit();
+		save_foto();
 
 		return false;
 	});
@@ -55,8 +56,8 @@ $(document).ready(function(){
 });
 
 /**
-*
-*/
+ * 
+ */
 function getDataForm(){
 	var data = new FormData();
 	// var saldo = parseFloat($('#saldo').val().trim()) ? parseFloat($('#saldo').val().trim()) : $('#saldo').val().trim();
@@ -129,6 +130,51 @@ function submit(){
 				$("#skcTable").DataTable().ajax.reload();
 			}
 			toastr.warning(response.notif.message, response.notif.title);
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+			console.log(jqXHR, textStatus, errorThrown);
+			swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+			$('#submit_skc').prop('disabled', false);
+			$('#submit_skc').html($('#submit_skc').text());
+        }
+	});
+}
+
+/**
+ * 
+ */
+function save_foto() {
+	var data = new FormData();
+	data.append('id', $('#id').val().trim()); // id
+	data.append('foto', $("#foto")[0].files[0]); // foto
+	
+	$.ajax({
+		url: BASE_API_MOBILE+'form/update_foto_profil/',
+		type: 'POST',
+		dataType: 'json',
+		data: data,
+		contentType: false,
+		cache: false,
+		processData: false,
+		beforeSend: function(){
+			$('#submit_skc').prop('disabled', true);
+			$('#submit_skc').prepend('<i class="fa fa-spin fa-refresh"></i> ');
+		},
+		success: function(response){
+			// console.log(response);
+			// if(!response.success) {
+			// 	$('#submit_skc').prop('disabled', false);
+			// 	$('#submit_skc').html($('#submit_skc').text());
+			// 	setError(response.error);
+			// }
+			// else{
+			// 	resetForm();
+			// 	$("#modalSkc").modal('hide');
+			// 	$("#skcTable").DataTable().ajax.reload();
+			// }
+			// toastr.warning(response.notif.message, response.notif.title);
+
+			console.log('%cResponse save foto: ', 'color: green; font-weight: bold', response);
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling
 			console.log(jqXHR, textStatus, errorThrown);

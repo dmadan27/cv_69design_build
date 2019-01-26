@@ -31,8 +31,9 @@
 
 		<!-- load default js -->
 		<script type="text/javascript">
-		    var BASE_URL = "<?php print BASE_URL; ?>";
-		    var urlParams = <?php echo json_encode($_GET, JSON_HEX_TAG);?>;
+		    const BASE_URL = "<?php print BASE_URL; ?>";
+			const BASE_API_MOBLIE = "<?php print BASE_API_MOBLIE; ?>";
+			var urlParams = <?php echo json_encode($_GET, JSON_HEX_TAG);?>;
 		    var level = "<?php print $_SESSION['sess_level']; ?>";
 
 		    /**
