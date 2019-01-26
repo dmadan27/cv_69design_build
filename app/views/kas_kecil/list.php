@@ -40,8 +40,7 @@
 					</div>
 					<!-- box body -->
 					<div class="box-body">
-						<input type="hidden" id="token" value="">
-						<table id="kasKecilTable" class="table table-bordered table-hover">
+						<table id="kasKecilTable" class="table table-bordered table-hover" style="width: 100%">
 							<thead>
 								<tr>
 									<th style="width: 35px">No</th>

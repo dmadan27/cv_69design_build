@@ -95,6 +95,7 @@ function getDataForm(){
 	 	data.append('foto', $('#foto')[0].files[0]); //foto
 	 	data.append('email', $('#email').val().trim()); // email kas kecil
 		data.append('password', $('#password').val().trim()); // password kas kecil
+		data.append('password_confirm', $('#password_confirm').val().trim()); // password kas kecil
 	 	data.append('saldo',saldo); //saldo awal
 	 }
 
@@ -106,6 +107,8 @@ function getDataForm(){
 		data.append('email', $('#email').val().trim()); // email kas kecil
 		data.append('status', $('#status').val().trim()); // status kas kecil
 		data.append('saldo',saldo); //saldo awal
+		data.append('password', ''); // password kas kecil
+		data.append('password_confirm', ''); // password kas kecil
 	 } 
 	 
 
@@ -166,7 +169,6 @@ function submit(){
 *
 */
 function getEdit(id){
-
 	resetForm();
 	$('.field-saldo').css('display', 'none');
 	$('.field-password').css('display', 'none');

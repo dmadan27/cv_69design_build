@@ -74,10 +74,10 @@
 								</div>
 
 								<!-- field confirm password -->
-								<div class="form-group field-konf_password has-feedback">
-									<label for="konf_password">Konfirmasi Password</label>
-									<input type="password" name="konf_password" id="konf_password" class="form-control field" placeholder="Masukkan Konfirmasi Password">
-									<span class="help-block small pesan pesan-konf_password"></span>
+								<div class="form-group field-password_confirm has-feedback">
+									<label for="password_confirm">Konfirmasi Password</label>
+									<input type="password" name="password_confirm" id="password_confirm" class="form-control field" placeholder="Masukkan Konfirmasi Password">
+									<span class="help-block small pesan pesan-password_confirm"></span>
 								</div>
 
 								<!-- saldo awal -->

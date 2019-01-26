@@ -6,20 +6,20 @@ $(document).ready(function(){
 
 	// btn tambah
 	$('#tambah').on('click', function(){
-			resetForm();
-			$('.field-saldo').css('display', 'block');
-			$('#submit_skc').prop('value', 'action-add');
-			$('#submit_skc').prop('disabled', false);
-			$('#submit_skc').html('Simpan Data');
-			// $('#token_form').val(this.value);
-			generateID();
-			$('#modalSkc').modal();
+		resetForm();
+		$('.field-saldo').css('display', 'block');
+		$('#submit_skc').prop('value', 'action-add');
+		$('#submit_skc').prop('disabled', false);
+		$('#submit_skc').html('Simpan Data');
+		// $('#token_form').val(this.value);
+		generateID();
+		$('#modalSkc').modal();
 	});
 
 	// submit skc
 	$('#form_skc').submit(function(e){
 		e.preventDefault();
-		submit(edit_view);
+		submit();
 
 		return false;
 	});
@@ -69,20 +69,20 @@ function getDataForm(){
 
 	if($('#submit_skc').val().trim().toLowerCase() == 'action-add'){
 		data.append('foto', $("#foto")[0].files[0]); // foto
-		data.append('password', $('#password').val().trim()); // password
-		data.append('konf_password', $('#konf_password').val().trim()); // konf_password
+		data.append('password', $('#password').val().trim()); // password kas kecil
+		data.append('password_confirm', $('#password_confirm').val().trim()); // password kas kecil
 		data.append('saldo', saldo); // saldo awal	
 	}
 
 	if($('#submit_skc').val().trim().toLowerCase() == 'action-edit'){
-	data.append('nama', $('#nama').val().trim()); // nama
-	data.append('alamat', $('#alamat').val().trim()); // alamat
-	data.append('no_telp', $('#no_telp').val().trim()); // no_telp
-	data.append('email', $('#email').val().trim()); // email
-	data.append('saldo', saldo);
-	data.append('password', $('#password').val().trim()); // password
-	data.append('konf_password', $('#konf_password').val().trim()); // konf_password
-	data.append('status', $('#status').val().trim()); // status
+		data.append('nama', $('#nama').val().trim()); // nama
+		data.append('alamat', $('#alamat').val().trim()); // alamat
+		data.append('no_telp', $('#no_telp').val().trim()); // no_telp
+		data.append('email', $('#email').val().trim()); // email
+		data.append('saldo', saldo);
+		data.append('password', ''); // password kas kecil
+		data.append('password_confirm', ''); // password kas kecil
+		data.append('status', $('#status').val().trim()); // status
 
 	}
 
@@ -92,9 +92,6 @@ function getDataForm(){
 	data.append('alamat', $('#alamat').val().trim()); // alamat
 	data.append('no_telp', $('#no_telp').val().trim()); // no_telp
 	data.append('email', $('#email').val().trim()); // email
-	// data.append('saldo', saldo);
-	// data.append('password', $('#password').val().trim()); // password
-	// data.append('konf_password', $('#konf_password').val().trim()); // konf_password
 	data.append('status', $('#status').val().trim()); // status
 	data.append('action', $('#submit_skc').val().trim()); // action
 
@@ -104,7 +101,7 @@ function getDataForm(){
 /**
 *
 */
-function submit(edit_view){
+function submit(){
 	var data = getDataForm();
 
 	$.ajax({
@@ -119,28 +116,24 @@ function submit(edit_view){
 			$('#submit_skc').prop('disabled', true);
 			$('#submit_skc').prepend('<i class="fa fa-spin fa-refresh"></i> ');
 		},
-		success: function(output){
-			console.log(output);
-			if(!output.status) {
+		success: function(response){
+			console.log(response);
+			if(!response.success) {
 				$('#submit_skc').prop('disabled', false);
 				$('#submit_skc').html($('#submit_skc').text());
-				setError(output.error);
-				toastr.warning(output.notif.message, output.notif.title);
+				setError(response.error);
 			}
 			else{
-				toastr.success(output.notif.message, output.notif.title);
 				resetForm();
 				$("#modalSkc").modal('hide');
-				if(!edit_view) $("#skcTable").DataTable().ajax.reload();
-				else {
-					setTimeout(function(){ 
-						location.reload(); 
-					}, 1000);
-				}
 			}
+			toastr.warning(response.notif.message, response.notif.title);
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling
-            console.log(jqXHR, textStatus, errorThrown);
+			console.log(jqXHR, textStatus, errorThrown);
+			swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+			$('#submit_skc').prop('disabled', false);
+			$('#submit_skc').html($('#submit_skc').text());
         }
 	})
 }
@@ -149,37 +142,34 @@ function submit(edit_view){
 *
 */
 function getEdit(id){
-	// if(token != ""){
-		resetForm();
-		$('.field-saldo').css('display', 'none');
-		$('.field-password').css('display', 'none');
-		$('.field-konf_password').css('display', 'none');
-		$('.field-foto').css('display', 'none');
-		$('#submit_skc').prop('value', 'action-edit');
-		$('#submit_skc').prop('disabled', false);
-		$('#submit_skc').html('Edit Data');
+	resetForm();
+	$('.field-saldo').css('display', 'none');
+	$('.field-password').css('display', 'none');
+	$('.field-password_confirm').css('display', 'none');
+	$('.field-foto').css('display', 'none');
+	$('#submit_skc').prop('value', 'action-edit');
+	$('#submit_skc').prop('disabled', false);
+	$('#submit_skc').html('Edit Data');
 
-		$.ajax({
-			url: BASE_URL+'sub-kas-kecil/edit/'+id.toLowerCase(),
-			type: 'post',
-			dataType: 'json',
-			data: {},
-			beforeSend: function(){
+	$.ajax({
+		url: BASE_URL+'sub-kas-kecil/edit/'+id.toLowerCase(),
+		type: 'post',
+		dataType: 'json',
+		data: {},
+		beforeSend: function(){
 
-			},
-			success: function(output){
-				if(output){
-					$('#modalSkc').modal();
-					// $('#token_form').val(token);
-					setValue(output);
-				}	
-			},
-			error: function (jqXHR, textStatus, errorThrown){ // error handling
-	            console.log(jqXHR, textStatus, errorThrown);
-	        }
-		})
-	// }
-	// else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+		},
+		success: function(output){
+			if(output){
+				$('#modalSkc').modal();
+				// $('#token_form').val(token);
+				setValue(output);
+			}	
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+			console.log(jqXHR, textStatus, errorThrown);
+		}
+	});
 }
 
 /**

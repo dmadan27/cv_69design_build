@@ -1,55 +1,25 @@
 <?php
-	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	Defined("BASE_PATH") or die(ACCESS_DENIED);
 
 	/**
-	* 
-	*/
+	 * 
+	 */
 	class Kas_kecilModel extends Database implements ModelInterface{
 
 		protected $koneksi;
 		protected $dataTable;
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		public function __construct(){
 			$this->koneksi = $this->openConnection();
 			$this->dataTable = new Datatable();
 		}
 
-		// ======================= dataTable ======================= //
-
-			/**
-			*
-			*/
-			public function getAllDataTable($config){
-				$this->dataTable->set_config($config);
-				$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
-				$statement->execute();
-				$result = $statement->fetchAll();
-
-				return $result;
-			}
-
-			/**
-			* 
-			*/
-			public function recordFilter(){
-				return $this->dataTable->recordFilter();
-			}
-
-			/**
-			* 
-			*/
-			public function recordTotal(){
-				return $this->dataTable->recordTotal();
-			}
-
-		// ========================================================= //
-
 		/**
-		* 
-		*/
+		 * 
+		 */
 		public function getAll(){
 			$query = "SELECT * FROM kas_kecil";
 			$statement = $this->koneksi->prepare($query);
@@ -60,8 +30,8 @@
 		}
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		public function getById($id){
 			$query = "SELECT * FROM kas_kecil WHERE id = :id;";
 			$statement = $this->koneksi->prepare($query);
@@ -74,8 +44,8 @@
 		}
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		public function insert($data){
 			try{
 				$this->koneksi->beginTransaction();
@@ -94,11 +64,11 @@
 		}
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		private function insertKasKecil($data){
 			$level = "KAS KECIL";
-			$query = "CALL tambah_kas_kecil (:id, :nama, :alamat, :no_telp, :email, :foto, :saldo, :status, :password, :level);";
+			$query = "CALL tambah_kas_kecil (:id, :nama, :alamat, :no_telp, :email, :foto, :saldo, :tgl, :status, :password, :level);";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
@@ -110,6 +80,7 @@
 					':email' => $data['email'],
 					':foto' => $data['foto'],
 					':saldo' => $data['saldo'],
+					':tgl' => date('Y-m-d'),
 					':status' => $data['status'],
 					':password' => $data['password'],
 					':level' => $level,
@@ -119,8 +90,8 @@
 		}
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		public function update($data){
 			$query = "UPDATE kas_kecil SET nama = :nama, alamat = :alamat, no_telp = :no_telp, email = :email, status = :status WHERE id = :id;";
 
@@ -138,8 +109,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function updateProfil($data){
 			$query = "UPDATE kas_kecil SET nama = :nama, alamat = :alamat, no_telp = :no_telp WHERE id = :id;";
 
@@ -169,8 +140,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function updateFoto($data){
 			$query = "UPDATE kas_kecil SET foto = :foto WHERE id = :id";
 
@@ -199,21 +170,39 @@
 		}
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		public function delete($id){
-			$query = "DELETE FROM kas_kecil WHERE id = :id";
-			
-			$statement = $this->koneksi->prepare($query);
-			$statement->bindParam(':id', $id);
-			$result = $statement->execute();
+			try {
+				$query = "CALL hapus_kas_kecil (:id)";
 
-			return $result;
+				$this->koneksi->beginTransaction();
+
+				$statement = $this->koneksi->prepare($query);
+				$statement->execute(
+					array(':id' => $id)
+				);
+				$statement->closeCursor();
+
+				$this->koneksi->commit();
+
+				return array(
+					'success' => true,
+					'error' => NULL
+				);
+			}	
+			catch(PDOException $e){
+				$this->koneksi->rollback();
+				return array(
+					'success' => false,
+					'error' => $e->getMessage()
+				);
+			}		
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function getLastID(){
 			$query = "SELECT MAX(id) id FROM kas_kecil;";
 
@@ -226,8 +215,8 @@
 
 		
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function checkExistEmail($email){
 			$query = "SELECT COUNT(*) total FROM kas_kecil WHERE email =:email";
 
@@ -241,8 +230,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function export(){
 			$query = "SELECT id ID, nama NAMA, alamat ALAMAT, no_telp NO_TELP, email EMAIL, saldo SALDO, status STATUS FROM kas_kecil ";
 			$statement = $this->koneksi->prepare($query);
@@ -253,19 +242,8 @@
 		}
 
 		/**
-		*
-		*/
-		public function countKasKecil(){
-			$query = "SELECT count(id) FROM kas_kecil";
-			$statement = $this->koneksi->prepare($query);
-			$statement->execute();
-			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
-			return $result;			 
-		}
-
-		/**
-		* 
-		*/
+		 * 
+		 */
 		public function __destruct(){
 			$this->closeConnection($this->koneksi);
 		}

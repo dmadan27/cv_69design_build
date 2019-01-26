@@ -18,6 +18,7 @@
 			$this->auth();
 			$this->auth->cekAuth();
 			$this->model('Kas_kecilModel');
+			$this->model('DataTableModel');
 			$this->helper();	
 			$this->validation();
 			$this->excel();
@@ -75,7 +76,7 @@
 					'kondisi' => false,
 				);
 
-				$datakaskecil = $this->Kas_kecilModel->getAllDataTable($config_dataTable);
+				$datakaskecil = $this->DataTableModel->getAllDataTable($config_dataTable);
 
 				$data = array();
 				$no_urut = $_POST['start'];
@@ -106,8 +107,8 @@
 
 				$output = array(
 					'draw' => $_POST['draw'],
-					'recordsTotal' => $this->Kas_kecilModel->recordTotal(),
-					'recordsFiltered' => $this->Kas_kecilModel->recordFilter(),
+					'recordsTotal' => $this->DataTableModel->recordTotal(),
+					'recordsFiltered' => $this->DataTableModel->recordFilter(),
 					'data' => $data,
 				);
 
@@ -125,7 +126,6 @@
 				$foto = isset($_FILES['foto']) ? $_FILES['foto'] : false;
 
 				$cekFoto = true;
-				// $error = $notif = array();
 
 				if(!$data){
 					$this->notif = array(
@@ -137,13 +137,13 @@
 				else{
 					$validasi = $this->set_validation($data);
 					$cek = $validasi['cek'];
-					// $error = $validasi['error'];
 					$this->error = $validasi['error'];
+					
 					// cek password dan konf password
-					// if(($this->error['password'] == "") && ($data['password'] != $data['password_confirm'])){
-					// 	$cek = false;
-					// 	$this->error['password'] = $this->error['password_confirm'] = 'Password dan Konfirmasi Password Berbeda';
-					// }
+					if(($this->error['password'] == "") && ($data['password'] != $data['password_confirm'])){
+						$cek = false;
+						$this->error['password'] = $this->error['password_confirm'] = 'Password dan Konfirmasi Password Berbeda';
+					}
 
 					// jika upload foto
 					if($foto){
@@ -205,7 +205,7 @@
 										'title' => "Pesan Gagal",
 										'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 									);
-									$path = ROOT.DS.'assets'.DS.'images'.DS.'user'.$valueFoto;
+									$path = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$valueFoto;
 									$this->helper->rollback_file($path, false);
 								}
 							}
@@ -267,10 +267,9 @@
 		public function action_edit(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
-				$error = $notif = array();
-
+		
 				if(!$data){
-					$notif = array(
+					$this->notif = array(
 						'type' => "error",
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
@@ -280,7 +279,7 @@
 					// validasi data
 					$validasi = $this->set_validation($data);
 					$cek = $validasi['cek'];
-					$error = $validasi['error'];
+					$this->error = $validasi['error'];
 
 					if($cek){
 						// validasi inputan
@@ -295,15 +294,15 @@
 
 						// update db
 						if($this->Kas_kecilModel->update($data)) {
-							$this->status = true;
-							$notif = array(
+							$this->success = true;
+							$this->notif = array(
 								'type' => "success",
 								'title' => "Pesan Berhasil",
 								'message' => "Edit Data Kas Kecil Berhasil",
 							);
 						}
 						else {
-							$notif = array(
+							$this->notif = array(
 								'type' => "error",
 								'title' => "Pesan Gagal",
 								'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
@@ -311,7 +310,7 @@
 						}
 					}
 					else {
-						$notif = array(
+						$this->notif = array(
 							'type' => "warning",
 							'title' => "Pesan Pemberitahuan",
 							'message' => "Silahkan Cek Kembali Form Isian",
@@ -320,29 +319,15 @@
 				}
 
 				$output = array(
-					'status' => $this->status,
-					'notif' => $notif,
-					'error' => $error,
+					'success' => $this->success,
+					'notif' => $this->notif,
+					'error' => $this->error,
 					'data' => $data
 				);
 
 				echo json_encode($output);
 			}
 			else $this->redirect();
-		}
-
-		/**
-		*
-		*/
-		public function update_foto($id){
-
-		}
-
-		/**
-		*
-		*/
-		public function hapus_foto($id){
-			
 		}
 		
 		/**
@@ -358,12 +343,14 @@
 
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
-				'assets/bower_components/dropify/dist/css/dropify.min.css'
+				'assets/bower_components/dropify/dist/css/dropify.min.css',
+				'assets/bower_components/Magnific-Popup-master/dist/magnific-popup.css',
 			);
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 				'assets/bower_components/dropify/dist/js/dropify.min.js',
+				'assets/bower_components/Magnific-Popup-master/dist/jquery.magnific-popup.min.js',
 				'app/views/kas_kecil/js/initView.js',
 			);
 
@@ -396,7 +383,7 @@
 				'no_telp' => $data_detail['no_telp'],
 				'email' => $data_detail['email'],
 				'foto' => $foto,
-				'saldo' => $data_detail['saldo'],
+				'saldo' => $this->helper->cetakRupiah($data_detail['saldo']),
 				'status' => $status,
 			);
 
@@ -407,13 +394,33 @@
 		*
 		*/
 		public function delete($id){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+			if($_SERVER['REQUEST_METHOD'] == "POST" && $id != ''){
 				$id = strtoupper($id);
 				if(empty($id) || $id == "") $this->redirect(BASE_URL."kas-kecil/");
 
-				if($this->Kas_kecilModel->delete($id)) $this->status = true;
+				$delete_kasKecil = $this->Kas_kecilModel->delete($id);
+				if($delete_kasKecil['success']) {
+					$this->success = true;
+					$this->notif = array(
+						'type' => 'success',
+						'title' => 'Pesan Sukses',
+						'message' => 'Data Berhasil Dihapus',
+					);
+				}
+				else {
+					$this->message = $delete_kasKecil['error'];
+					$this->notif = array(
+						'type' => 'error',
+						'title' => 'Pesan Error',
+						'message' => 'Terjadi Kesalahan Teknis, Silahkan Coba Kembali',
+					);
+				}
 
-				echo json_encode($this->status);
+				echo json_encode(array(
+					'success' => $this->success,
+					'message' => $this->message,
+					'notif' => $this->notif
+				));
 			}
 			else $this->redirect();
 		}
@@ -460,7 +467,6 @@
 		*/
 		public function get_mutasi($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
-				$this->model('Mutasi_saldo_kas_kecilModel');
 				
 				// config datatable
 				$config_dataTable = array(
@@ -471,7 +477,7 @@
 					'kondisi' => 'WHERE id_kas_kecil = "'.$id.'"',
 				);
 
-				$dataMutasi = $this->Mutasi_saldo_kas_kecilModel->getAllDataTable($config_dataTable);
+				$dataMutasi = $this->DataTableModel->getAllDataTable($config_dataTable);
 
 				$data = array();
 				$no_urut = $_POST['start'];
@@ -491,8 +497,8 @@
 
 				$output = array(
 					'draw' => $_POST['draw'],
-					'recordsTotal' => $this->Mutasi_saldo_kas_kecilModel->recordTotal(),
-					'recordsFiltered' => $this->Mutasi_saldo_kas_kecilModel->recordFilter(),
+					'recordsTotal' => $this->DataTableModel->recordTotal(),
+					'recordsFiltered' => $this->DataTableModel->recordFilter(),
 					'data' => $data,
 				);
 
@@ -503,7 +509,6 @@
 
 		public function get_history_pengajuan($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
-				$this->model('Pengajuan_kasKecilModel');
 				
 				// config datatable
 				$config_dataTable = array(
@@ -514,7 +519,7 @@
 					'kondisi' => 'WHERE id_kas_kecil = "'.$id.'"',
 				);
 
-				$dataMutasi = $this->Pengajuan_kasKecilModel->getAllDataTable($config_dataTable);
+				$dataMutasi = $this->DataTableModel->getAllDataTable($config_dataTable);
 				$data = array();
 				$no_urut = $_POST['start'];
 				foreach($dataMutasi as $row){
@@ -532,8 +537,8 @@
 
 				$output = array(
 					'draw' => $_POST['draw'],
-					'recordsTotal' => $this->Pengajuan_kasKecilModel->recordTotal(),
-					'recordsFiltered' => $this->Pengajuan_kasKecilModel->recordFilter(),
+					'recordsTotal' => $this->DataTableModel->recordTotal(),
+					'recordsFiltered' => $this->DataTableModel->recordFilter(),
 					'data' => $data,
 				);
 
@@ -561,6 +566,8 @@
 			$this->validation->set_rules($data['status'], 'Status', 'status', 'string | 1 | 255 | required');
 			// password
 			$this->validation->set_rules($data['password'], 'Password', 'password', 'string | 5 | 255 | '.$required);
+			// password_confirm
+			$this->validation->set_rules($data['password_confirm'], 'Password Confirm', 'password_confirm', 'string | 5 | 255 | '.$required);
 
 			return $this->validation->run();
 		}

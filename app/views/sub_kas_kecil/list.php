@@ -73,7 +73,4 @@
 
 	<!-- load form -->
 	<?php include_once('form.php'); ?>
-	<script type="text/javascript">
-		var edit_view = false;
-	</script>
 </div>

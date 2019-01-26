@@ -301,7 +301,6 @@
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
 				'app/views/bank/js/initView.js',
-				'app/views/bank/js/initForm.js',
 			);
 
 			$config = array(

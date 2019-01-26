@@ -10,8 +10,6 @@
 		protected $koneksi;
 		protected $dataTable;
 
-		private $queryBeforeLimitMobile;
-
 		/**
 		 * Method __construct
 		 * Open connection to DB
@@ -543,97 +541,6 @@
 				);
 			}
 		}
-
-		// ======================== mobile = ======================= //
-
-			/**
-			 * Method querySelectBuilder_mobile
-			 * 
-			 * @param queryKondisi {}
-			 * @param kolomCari {}
-			 * @param cari {} default NULL
-			 * @param page {int} default 1
-			 * @return query {string}
-			 */
-			private function querySelectBuilder_mobile($queryKondisi, $kolomCari, $cari=null, $page=1) {
-				$mulai = ($page > 1) ? ($page * 10) - 10 : 0;
-
-				$query = "SELECT * FROM v_proyek_logistik ";
-
-				$i = 0;
-				foreach ($kolomCari as $value) {
-					if ($cari != null) {
-						if ($i === 0)
-							$queryKondisi .= " AND (".$value." LIKE '%".$cari."%' ";
-						else
-							$queryKondisi .= "OR ".$value." LIKE '%".$cari."%' ";
-						$i++;
-					}
-				}
-
-				if ($cari != null)
-					$queryKondisi .= ")";
-
-				$query .= "$queryKondisi ";
-				$this->queryBeforeLimitMobile = $query;
-				$query .= "LIMIT $mulai, 10";
-				return $query;
-			}
-
-			/**
-			 * Method getAllByIdSubKasKecil_mobile
-			 * 
-			 * @param data {array}
-			 * @return result {array}
-			 */
-			public function getAllByIdSubKasKecil_mobile($data) {
-				$id = $data["id_sub_kas_kecil"];
-				$cari = $data["cari"];
-				$page = $data["page"];
-
-				$queryKondisi = "WHERE id_sub_kas_kecil='".$id."'";
-				$kolomCari = array("pemilik","tgl","alamat","kota","status");
-				$query = $this->querySelectBuilder_mobile($queryKondisi, $kolomCari, $cari, $page);
-
-				$statement = $this->koneksi->prepare($query);
-				$statement->execute();
-				return $statement->fetchAll(PDO::FETCH_ASSOC);
-			}
-
-			/**
-			 * Method getAllStatusBerjalan_mobile
-			 * 
-			 * @param data {array}
-			 * @return result {array}
-			 */
-			public function getAllStatusBerjalan_mobile($data) {
-				$id = $data["id_sub_kas_kecil"];
-				$cari = $data["cari"];
-				$page = $data["page"];
-
-				$queryKondisi = "WHERE (id_sub_kas_kecil='".$id."' AND status='BERJALAN')";
-				$kolomCari = array("pemilik","tgl","alamat","kota");
-				$query = $this->querySelectBuilder_mobile($queryKondisi, $kolomCari, $cari, $page);
-
-				$statement = $this->koneksi->prepare($query);
-				$statement->execute();
-				return $statement->fetchAll(PDO::FETCH_ASSOC);
-			}
-
-			/**
-			 * Method getRecordFilter_mobile
-			 * 
-			 * @return result {int}
-			 */
-			public function getRecordFilter_mobile(){
-				$koneksi = $this->openConnection();
-				$statement = $koneksi->prepare($this->queryBeforeLimitMobile);
-				$statement->execute();
-
-				return $statement->rowCount();
-			}
-
-		// ========================================================= //
 
 		/**
 		 * Method __destruct

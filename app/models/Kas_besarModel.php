@@ -17,37 +17,6 @@
 			$this->dataTable = new Datatable();
 		}
 
-		// ======================= dataTable ======================= //
-
-			/**
-			* 
-			*/
-			public function getAllDataTable($config){
-				$this->dataTable->set_config($config);
-				$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
-				$statement->execute();
-				$result = $statement->fetchAll();
-
-				return $result;
-			}
-
-			/**
-			* 
-			*/
-			public function recordFilter(){
-				return $this->dataTable->recordFilter();
-
-			}
-
-			/**
-			* 
-			*/
-			public function recordTotal(){
-				return $this->dataTable->recordTotal();
-			}
-
-		// ========================================================= //
-
 		/**
 		* 
 		*/
@@ -204,14 +173,31 @@
 		* 
 		*/
 		public function delete($id){
-			$query = "DELETE FROM kas_besar WHERE id = :id";
-			
-			$statement = $this->koneksi->prepare($query);
-			$statement->bindParam(':id', $id);
-			$result = $statement->execute();
+			try {
+				$query = "CALL hapus_kas_besar (:id)";
 
-			return $result;
-			
+				$this->koneksi->beginTransaction();
+
+				$statement = $this->koneksi->prepare($query);
+				$statement->execute(
+					array(':id' => $id)
+				);
+				$statement->closeCursor();
+
+				$this->koneksi->commit();
+
+				return array(
+					'success' => true,
+					'error' => NULL
+				);
+			}	
+			catch(PDOException $e){
+				$this->koneksi->rollback();
+				return array(
+					'success' => false,
+					'error' => $e->getMessage()
+				);
+			}			
 		}
 
 		/**

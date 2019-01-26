@@ -81,6 +81,8 @@ function getDataForm(){
 		data.append('no_telp', $('#no_telp').val().trim()); // no_telp kas besar
 		data.append('email', $('#email').val().trim()); // email kas besar
 		data.append('status', $('#status').val().trim()); // status kas besar
+		data.append('password', ''); // password kas besar
+		data.append('password_confirm', ''); // password kas besar
 	} 
 	 
 	data.append('id', $('#id').val().trim()); // id kas besar
