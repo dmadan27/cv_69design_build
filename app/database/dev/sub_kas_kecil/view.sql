@@ -1,3 +1,16 @@
+-- VIEW SUB KAS KECIL -> digunakan untuk mendapatkan informasi detail sub kas kecil
+-- LEGEND : -> vp (VIEW PEMBANTU (tidak diakses oleh sistem, tapi diakses oleh view lain))
+
+-- untuk mendapatkan estimasi pengeluaran yang mungkin dilakukan oleh sub kas kecil
+
+CREATE OR REPLACE VIEW vp_estimasi_pengeluaran_skk AS
+	SELECT
+		pskk.id_sub_kas_kecil, SUM(dpskk.subtotal) estimasi_pengeluaran_saldo
+	FROM detail_pengajuan_sub_kas_kecil dpskk
+	RIGHT JOIN pengajuan_sub_kas_kecil pskk ON dpskk.id_pengajuan=pskk.id
+	WHERE (pskk.status='3' OR pskk.status='4') AND (pskk.status_laporan IS NULL)
+	GROUP BY pskk.id_sub_kas_kecil;
+
 -- untuk mendapatkan informasi detai sub kas kecil
 CREATE OR REPLACE VIEW v_sub_kas_kecil AS
 	SELECT

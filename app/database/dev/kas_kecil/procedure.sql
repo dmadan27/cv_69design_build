@@ -9,6 +9,7 @@
 		in email_param varchar(50),
 		in foto_param text,
 		in saldo_param double(12,2),
+		in tgl_param date,
 		in status_param varchar(20),
 		in password_param text,
 		in level_param varchar(20)
@@ -30,9 +31,9 @@
 
 		-- insert mutasi awal
 		INSERT INTO mutasi_saldo_kas_kecil 
-			()
+			(id_kas_kecil, tgl, uang_masuk, uang_keluar, saldo, ket)
 		VALUES
-			();
+			(id_param, tgl_param, saldo_param, 0, saldo_param, 'SALDO AWAL');
 	END//
 	delimiter ;
 
