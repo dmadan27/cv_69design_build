@@ -313,7 +313,7 @@ function init(){
 				if(action == 'tambah') {
 					if(response.status){
 						// tambah data ke list
-						listDetail.push(data);
+						listDetail.push(response.data);
 
 						// tambah data ke tabel
 						renderTableDetailPembayaran(response.data);
@@ -346,6 +346,7 @@ function init(){
 							if(!item.delete) {
 								renderTableDetailPembayaran(item);
 							}
+							console.log(item);
 						});
 
 						$("#modalDetail").modal('hide');

@@ -306,6 +306,8 @@
 					$data['tgl_detail_full'] = $this->helper->cetakTgl($data['tgl_detail'], 'full');
 					$data['total_detail_full'] = $this->helper->cetakRupiah($data['total_detail']);
 				}
+				
+				$data['delete'] = ($data['delete'] == "false") ? false : true;
 
 				$output = array(
 					'status' => $this->success,

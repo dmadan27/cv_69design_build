@@ -556,7 +556,7 @@
 			// email
 			$this->validation->set_rules($data['email'], 'Email', 'email', 'email | 1 | 255 | required');
 			// saldo awal
-			$this->validation->set_rules($data['saldo'], 'Saldo Awal', 'saldo', 'nilai | 0 | 99999999999 | '.$required);
+			$this->validation->set_rules($data['saldo'], 'Saldo Awal', 'saldo', 'nilai | 0 | 99999999999 | not_required');
 			// status
 			$this->validation->set_rules($data['status'], 'Status Sub Kas Kecil', 'status', 'string | 1 | 255 | required');
 			// password
