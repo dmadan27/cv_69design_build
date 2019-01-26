@@ -449,7 +449,6 @@
 			$this->excel->getData('Data Mutasi Bank', 'Data Mutasi Bank', 4, 5 );
 
 			$this->excel->getExcel('Data Mutasi Bank');		
-			
 		}
 
 		/**
