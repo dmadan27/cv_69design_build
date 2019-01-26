@@ -381,14 +381,15 @@
 		public function get_last_id(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = !empty($this->DistributorModel->getLastID()['id']) ? $this->DistributorModel->getLastID()['id'] : false;
-
+				print_r($data);
+				exit;
 				if(!$data) $id = 'DIS0001';
 				else{
 					$kode = 'DIS';
-					$noUrut = (int)substr($data, 3, 4);
+					$noUrut = (int)substr($data, 3, 5);
 					$noUrut++;
 
-					$id = $kode.sprintf("%04s", $noUrut);
+					$id = $kode.sprintf("%05s", $noUrut);
 				}
 
 				echo json_encode($id);

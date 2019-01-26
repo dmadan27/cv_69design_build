@@ -1,4 +1,8 @@
--- Tambah Data Pengajuan Kas Kecil (FIXED) 
+	-- ================================================================= --
+	-- Pengajuan Kas Kecil -- Versi 25 Januari 2019 -- START --
+	-- ================================================================= --
+
+	-- Tambah Data Pengajuan Kas Kecil (FIXED) 
 	delimiter //
 	CREATE PROCEDURE tambah_pengajuan_kas_kecil(
 		IN id_param varchar(50),
@@ -12,15 +16,15 @@
 	BEGIN
 
 		-- insert ke pengajuan kas kecil
-			INSERT into pengajuan_kas_kecil 
-			(id, id_kas_kecil, tgl, nama, total, status)
-				VALUES
-			(id_param, id_kas_kecil_param, tgl_param, nama_param, total_param, status_param);
+		INSERT into pengajuan_kas_kecil 
+		(id, id_kas_kecil, tgl, nama, total, status)
+			VALUES
+		(id_param, id_kas_kecil_param, tgl_param, nama_param, total_param, status_param);
 			
 	END//
 	delimiter ;
 
--- Procedure Acc Pengajuan Kas Kecil (FIXED)
+	-- Procedure Acc Pengajuan Kas Kecil (FIXED)
 	delimiter //
 	CREATE PROCEDURE acc_pengajuan_kas_kecil(
 		IN id_param varchar(50),
@@ -65,3 +69,7 @@
 
 	END//
 	delimiter ;
+
+	-- ================================================================= --
+	-- Pengajuan Kas Kecil -- Versi 25 Januari 2019 -- END --
+	-- ================================================================= --

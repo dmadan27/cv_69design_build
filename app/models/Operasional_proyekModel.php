@@ -177,7 +177,7 @@
 		*
 		*/
 		public function getBYid_fromHistoryPembelian($id){
-			$query = "SELECT * FROM v_history_pembelian_operasionalproyek WHERE id = :id;";
+			$query = "SELECT * FROM v_history_pembelian_operasionalProyek WHERE id = :id;";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id', $id);
