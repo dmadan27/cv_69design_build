@@ -204,11 +204,10 @@
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$id = strtoupper($id);
 				$data = !empty($this->BankModel->getById($id)) ? $this->BankModel->getById($id) : false;
-
+				
 				echo json_encode($data);
 			}
 			else { $this->redirect(); }
-			
 		}
 
 		/**
@@ -295,13 +294,16 @@
 
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
+				'assets/bower_components/select2/dist/css/select2.min.css',
 			);
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
+				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/bower_components/select2/dist/js/select2.full.min.js',
 				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
-				'app/views/bank/js/initView.js',
-				'app/views/bank/js/initForm.js',
+				'app/views/bank/js/initView.js'
 			);
 
 			$config = array(
@@ -427,6 +429,26 @@
 			$this->excel->getData('Bank', 'Bank', 2, 3);
 
 			$this->excel->getExcel('Data Bank');
+			
+		}
+
+		/**
+		*	Export data ke format Excel
+		*/
+		public function export_mutasi(){
+			$tgl_awal = $_GET['tgl_awal'];
+			$tgl_akhir = $_GET['tgl_akhir'];
+			$id = $_GET['id'];
+
+			$row = $this->BankModel->export_mutasi($id, $tgl_awal, $tgl_akhir);
+			$header = array_keys($row[0]);
+			$header[1] = 'ID BANK';
+		
+			$this->excel->setProperty('Mutasi Bank','Mutasi Bank','Data Mutasi Bank');
+			$this->excel->setData($header, $row);
+			$this->excel->getData('Data Mutasi Bank', 'Data Mutasi Bank', 4, 5 );
+
+			$this->excel->getExcel('Data Mutasi Bank');		
 			
 		}
 

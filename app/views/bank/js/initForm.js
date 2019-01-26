@@ -123,6 +123,7 @@ function submit(){
  * @return {object} response
  */
 function getEdit(id){
+	console.log('edit clicked');
 	resetForm();
 	$('.field-saldo').css('display', 'none');
 	$('#submit_bank').prop('value', 'action-edit');
