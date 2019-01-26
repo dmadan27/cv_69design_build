@@ -86,7 +86,12 @@ function export_excel() {
     var tgl_awal = $('#tgl_awal').val().trim();
     var tgl_akhir = $('#tgl_akhir').val().trim();
 
-    if(tgl_awal == '' && tgl_akhir != ''){
+    if(tgl_awal == '' && tgl_akhir == ''){
+        swal({
+            type: 'error',
+            title: 'Tanggal Tidak Boleh Kosong!',
+        })
+    } else if(tgl_awal == '' && tgl_akhir != ''){
         swal({
             type: 'error',
             title: 'Tanggal Awal Harus Diisi!',
