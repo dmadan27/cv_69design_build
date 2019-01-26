@@ -1,7 +1,7 @@
 <?php Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung"); ?>
 
 <!-- menu beranda -->
-<li class="menu-beranda"><a href="<?= BASE_URL ."beranda-kas-besar/"; ?>"><i class="fa fa-link"></i> <span>Beranda</span></a></li>
+<li class="menu-beranda"><a href="<?= BASE_URL; ?>"><i class="fa fa-link"></i> <span>Beranda</span></a></li>
 <!-- menu data proyek -->
 <li class="menu-proyek"><a href="<?= BASE_URL."proyek/"; ?>"><i class="fa fa-link"></i> <span>Data Proyek</span></a></li>
 <!-- menu data bank -->
