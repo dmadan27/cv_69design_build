@@ -66,9 +66,14 @@ $(document).ready(function(){
 		// menu pengajuan sub kas kecil
 		case 'pengajuan-sub-kas-kecil':
 			$('.menu-pengajuan-sub-kas-kecil').addClass('active');
-			if(urlNew[4] == 'laporan') $('.menu-laporan').addClass('active');
-			else $('.menu-pengajuan').addClass('active');
-			break;		
+			$('.menu-pengajuan').addClass('active');
+			break;
+			
+		// menu laporan pengajuan sub kas kecil
+		case 'laporan-sub-kas-kecil':
+			$('.menu-pengajuan-sub-kas-kecil').addClass('active');
+			$('.menu-laporan').addClass('active');
+			break;
 		
 		default:
 			$('.menu-beranda').addClass('active');

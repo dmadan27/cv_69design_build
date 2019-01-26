@@ -73,7 +73,7 @@
 					'kolomOrder' => array(null, 'id', 'tgl', 'id_sub_kas_kecil', 'id_proyek', 'nama_pengajuan', 'total', 'total_asli', 'status_order', null),
 					'kolomCari' => array('id', 'id_sub_kas_kecil', 'nama_skk', 'id_proyek', 'pemilik', 'pembangunan', 'tgl', 'total', 'total_asli', 'status_laporan'),
 					'orderBy' => array('status_order' => 'ASC', 'id' => 'desc'),
-					'kondisi' => false,
+					'kondisi' => "WHERE status_order IS NOT NULL",
 				);
 
 				$dataLaporan = $this->DataTableModel->getAllDataTable($config_dataTable);
