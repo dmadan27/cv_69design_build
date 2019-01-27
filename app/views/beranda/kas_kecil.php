@@ -82,7 +82,7 @@
             <!-- /.box-header -->
             <div class="box-body">
 						<div class="table-responsive">
-                <table class="table no-margin">
+                <table id="listLaporan" class="table table-bordered table-hover">
                   <thead>
                   <tr>
                     <th>Order ID</th>
@@ -139,7 +139,7 @@
             </div>
             <!-- /.box-body -->
             <div class="box-footer clearfix">
-              <a href="javascript:void(0)" class="btn btn-sm btn-default btn-flat pull-right">View All Data</a>
+              <a href="javascript:void(0)" class="btn btn-sm btn-default btn-flat pull-right">More Info</a>
             </div>
             <!-- /.box-footer -->
           </div>
@@ -160,7 +160,7 @@
             <!-- /.box-header -->
             <div class="box-body">
               <div class="table-responsive">
-                <table class="table no-margin">
+                <table id="listSKK" class="table table-bordered table-hover">
                   <thead>
                   <tr>
                     <th>Order ID</th>
@@ -217,7 +217,7 @@
             </div>
             <!-- /.box-body -->
             <div class="box-footer clearfix">
-              <a href="javascript:void(0)" class="btn btn-sm btn-default btn-flat pull-right">View All Data</a>
+              <a href="javascript:void(0)" class="btn btn-sm btn-default btn-flat pull-right">More Info</a>
             </div>
             <!-- /.box-footer -->
           </div>

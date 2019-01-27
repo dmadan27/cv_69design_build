@@ -48,8 +48,17 @@
 		*/
 		private function beranda_owner(){
 			// config css-js
-			$css = array();
-			$js = array();
+			$css = array(
+				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+				'assets/bower_components/dropify/dist/css/dropify.min.css'
+
+			);
+			$js = array(
+				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
+				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/bower_components/dropify/dist/js/dropify.min.js'
+					
+			);
 
 			$config = array(
 				'title' => array(
@@ -70,8 +79,17 @@
 		*/
 		private function beranda_kasBesar(){
 			// config css-js
-			$css = array();
-			$js = array();
+			$css = array(
+				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+				'assets/bower_components/dropify/dist/css/dropify.min.css'
+
+			);
+			$js = array(
+				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
+				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/bower_components/dropify/dist/js/dropify.min.js',
+				'app/views/beranda/js/initKasbesar.js'
+			);
 
 			$config = array(
 				'title' => array(
@@ -92,8 +110,18 @@
 		*/
 		private function beranda_kasKecil(){
 			// config css-js
-			$css = array();
-			$js = array();
+			$css = array(
+				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+				'assets/bower_components/dropify/dist/css/dropify.min.css'
+
+			);
+			$js = array(
+				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
+				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/bower_components/dropify/dist/js/dropify.min.js',
+				'app/views/beranda/js/initKaskecil.js'
+					
+			);
 
 			$config = array(
 				'title' => array(
