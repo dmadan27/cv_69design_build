@@ -24,9 +24,9 @@
           <!-- small box -->
           <div class="small-box bg-aqua">
             <div class="inner text-center">
-              <h3>150</h3>
+              <h3><?= $this->data['pending_pkk']; ?></h3>
 
-              <p>New Orders</p>
+              <h5>PENGAJUAN KAS KECIL PENDING</h5>
             </div>
           </div>
         </div>
@@ -35,9 +35,9 @@
           <!-- small box -->
           <div class="small-box bg-green">
             <div class="inner text-center">
-              <h3>53<sup style="font-size: 20px">%</sup></h3>
+              <h3><?= $this->data['acc_pkk']; ?></h3>
 
-              <p>Bounce Rate</p>
+              <h5>PENGAJUAN KAS KECIL DISETUJUI</h5>
             </div>
           </div>
         </div>
@@ -46,9 +46,9 @@
           <!-- small box -->
           <div class="small-box bg-yellow">
             <div class="inner text-center">
-              <h3>44</h3>
+              <h3><?= $this->data['jml_transaksi_masuk']; ?></h3>
 
-              <p>User Registrations</p>
+              <h5>JUMLAH OPERASIONAL(UANG MASUK)</h5>
             </div>
           </div>
         </div>
@@ -57,9 +57,9 @@
           <!-- small box -->
           <div class="small-box bg-red">
             <div class="inner text-center">
-              <h3>65</h3>
+            <h3><?= $this->data['jml_transaksi_keluar']; ?></h3>
 
-              <p>Unique Visitors</p>
+              <h5>JUMLAH OPERASIONAL(UANG KELUAR)</h5>
             </div>
           </div>
         </div>
@@ -163,54 +163,11 @@
                 <table id="listBank" class="table table-bordered table-hover">
                   <thead>
                   <tr>
-                    <th>Order ID</th>
-                    <th>Popularity</th>
+                    <th style="width: 55px">Bank</th>
+                    <th>Saldo</th>
                   </tr>
                   </thead>
-                  <tbody>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR9842</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#00a65a" data-height="20">90,80,90,-70,61,-83,63</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#f39c12" data-height="20">90,80,-90,70,61,-83,68</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#f56954" data-height="20">90,-80,90,70,-61,83,63</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#00c0ef" data-height="20">90,80,-90,70,-61,83,63</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#f39c12" data-height="20">90,80,-90,70,61,-83,68</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#f56954" data-height="20">90,-80,90,70,-61,83,63</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR9842</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#00a65a" data-height="20">90,80,90,-70,61,-83,63</div>
-                    </td>
-                  </tr>
-                  </tbody>
+                  <tbody></tbody>
                 </table>
               </div>
               <!-- /.table-responsive -->

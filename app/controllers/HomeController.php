@@ -15,6 +15,8 @@
 		public function __construct(){
 			$this->auth();
 			$this->auth->cekAuth();
+			$this->model('HomeModel');
+			$this->helper();
 		}
 
 		/**
@@ -78,6 +80,15 @@
 		* Beranda Kas Besar
 		*/
 		private function beranda_kasBesar(){
+
+			$countUser = $this->HomeModel->getCountUser();
+
+			$countAccpkk = $this->HomeModel->getAccpkk();
+			$countPendingpkk = $this->HomeModel->getPendingpkk();
+
+			$countOprMasuk = $this->HomeModel->getOprMasuk();
+			$countOprKeluar = $this->HomeModel->getOprKeluar();
+			
 			// config css-js
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
@@ -100,15 +111,72 @@
 				'js' => $js,
 			);
 
-			$data = null;
+			$data = array(
+				'user_aktif' => $countUser['user_aktif'],
+				'acc_pkk' => $countAccpkk['jml_transaksi_disetujui'],
+				'pending_pkk' => $countPendingpkk['jml_transaksi_pending'],
+				'jml_transaksi_masuk' => $countOprMasuk['jml_uang_masuk'],
+				'jml_transaksi_keluar' => $countOprKeluar['jml_uang_keluar']
+			);
 
 			$this->layout('beranda/kas_besar', $config, $data);
+		}
+
+		/**
+		* Table Bank Beranda Kas Besar
+		*/
+		public function get_bank_list() {
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				// config datatable
+				$config_dataTable = array(
+					'tabel' => 'bank',
+					'kolomOrder' => array(null, 'nama', 'saldo', null),
+					'kolomCari' => array('nama', 'saldo'),
+					'orderBy' => array('nama' => 'asc'),
+					'kondisi' => false,
+				);
+
+				$dataBank = $this->HomeModel->getAllDataTable($config_dataTable);
+	
+				$data = array();
+				foreach($dataBank as $row){	
+					$dataRow = array();
+					$dataRow[] = $row['nama'];
+					$dataRow[] = $this->helper->cetakRupiah($row['saldo']);
+					$data[] = $dataRow;
+				}
+
+				$output = array(
+					'draw' => $_POST['draw'],
+					'recordsTotal' => $this->HomeModel->recordTotal(),
+					'recordsFiltered' => $this->HomeModel->recordFilter(),
+					'data' => $data,
+				);
+				echo json_encode($output);
+			} else { 
+				$this->redirect();
+			}		
+		}
+
+		/**
+		* Table Proyek Beranda Kas Besar
+		*/
+		public function get_proyek_list() {
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+			
+			}
 		}
 
 		/**
 		* Beranda Kas Kecil
 		*/
 		private function beranda_kasKecil(){
+
+			$sumAccspkk = $this->HomeModel->getSumAccspkk();
+			$countPendingspkk = $this->HomeModel->getPendingspkk();
+			$sumPendingspkk = $this->HomeModel->getSumPendingspkk();
+			$countPkk = $this->HomeModel->getPkk();
+
 			// config css-js
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
@@ -119,8 +187,7 @@
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 				'assets/bower_components/dropify/dist/js/dropify.min.js',
-				'app/views/beranda/js/initKaskecil.js'
-					
+				'app/views/beranda/js/initKaskecil.js'		
 			);
 
 			$config = array(
@@ -132,8 +199,83 @@
 				'js' => $js,
 			);
 
-			$data = null;
+			$data = array(
+				'sum_acc_spkk' => $sumAccspkk['dana_disetujui'],
+				'pending_spkk' => $countPendingspkk['jml_transaksi_pending_spkk'],
+				'sum_pending_spkk' => $sumPendingspkk['dana_transaksi_pending'],
+				'jml_transaksi_pkk' => $countPkk['jml_transaksi_pkk']
+			);
 
 			$this->layout('beranda/kas_kecil', $config, $data);
+		}
+
+		/**
+		* Table SKK Beranda Kas Kecil
+		*/
+		public function get_skk_list() {
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				// config datatable
+				$config_dataTable = array(
+					'tabel' => 'sub_kas_kecil',
+					'kolomOrder' => array(null, 'id', 'nama', 'saldo', null),
+					'kolomCari' => array('id', 'nama', 'saldo'),
+					'orderBy' => array('id' => 'asc'),
+					'kondisi' => 'WHERE saldo < 0',
+				);
+
+				$dataSkk = $this->HomeModel->getAllDataTable($config_dataTable);
+
+				$data = array();
+				foreach($dataSkk as $row){	
+					$dataRow = array();
+					$dataRow[] = $row['id'];
+					$dataRow[] = $row['nama'];
+					$dataRow[] = $this->helper->cetakRupiah($row['saldo']);
+					$data[] = $dataRow;
+				}
+
+				$output = array(
+					'draw' => $_POST['draw'],
+					'recordsTotal' => $this->HomeModel->recordTotal(),
+					'recordsFiltered' => $this->HomeModel->recordFilter(),
+					'data' => $data,
+				);
+				echo json_encode($output);
+			} else { 
+				$this->redirect();
+			}		
+		}
+
+		public function get_lskk_list() {
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				// config datatable
+				$config_dataTable = array(
+					'tabel' => 'pengajuan_sub_kas_kecil',
+					'kolomOrder' => array(null, 'id', 'saldo', null),
+					'kolomCari' => array('id', 'saldo'),
+					'orderBy' => array('id' => 'asc'),
+					'kondisi' => 'WHERE status_laporan = 1',
+				);
+
+				$dataLpskk = $this->HomeModel->getAllDataTable($config_dataTable);
+
+				$data = array();
+				foreach($dataLpskk as $row){	
+					$dataRow = array();
+					$dataRow[] = $row['id'];
+					$dataRow[] = $this->helper->cetakRupiah($row['total']);
+					$data[] = $dataRow;
+				}
+
+				$output = array(
+					'draw' => $_POST['draw'],
+					'recordsTotal' => $this->HomeModel->recordTotal(),
+					'recordsFiltered' => $this->HomeModel->recordFilter(),
+					'data' => $data,
+				);
+				echo json_encode($output);
+			} else { 
+				$this->redirect();
+			}		
 		}
 	}

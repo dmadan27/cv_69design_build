@@ -24,9 +24,9 @@
           <!-- small box -->
           <div class="small-box bg-aqua">
             <div class="inner text-center">
-              <h3>150</h3>
+              <h3><?= $this->data['sum_acc_spkk']; ?></h3>
 
-              <p>New Orders</p>
+              <p>DANA SKK DISETUJUI</p>
             </div>
           </div>
         </div>
@@ -35,9 +35,9 @@
           <!-- small box -->
           <div class="small-box bg-green">
             <div class="inner text-center">
-              <h3>53<sup style="font-size: 20px">%</sup></h3>
+              <h3><?= $this->data['pending_spkk']; ?></h3>
 
-              <p>Bounce Rate</p>
+              <p>PENGAJUAN SKK PENDING</p>
             </div>
           </div>
         </div>
@@ -46,9 +46,9 @@
           <!-- small box -->
           <div class="small-box bg-yellow">
             <div class="inner text-center">
-              <h3>44</h3>
+            <h3><?= $this->data['sum_pending_spkk']; ?></h3>
 
-              <p>User Registrations</p>
+            <p>DANA SKK PENDING</p>
             </div>
           </div>
         </div>
@@ -57,9 +57,9 @@
           <!-- small box -->
           <div class="small-box bg-red">
             <div class="inner text-center">
-              <h3>65</h3>
+            <h3><?= $this->data['jml_transaksi_pkk']; ?></h3>
 
-              <p>Unique Visitors</p>
+            <p>TRANSAKSI PENGAJUAN KAS KECIL</p>
             </div>
           </div>
         </div>
@@ -71,7 +71,7 @@
 				 <!-- TABLE: LATEST ORDERS -->
 				 <div class="box box-info">
             <div class="box-header with-border">
-              <h3 class="box-title">List Laporan Pengajuan Yang Belum Dikerjakan </h3>
+              <h3 class="box-title">List Sub Kas Kecil </h3>
 
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -82,57 +82,15 @@
             <!-- /.box-header -->
             <div class="box-body">
 						<div class="table-responsive">
-                <table id="listLaporan" class="table table-bordered table-hover">
+                <table id="listSKK" class="table table-bordered table-hover">
                   <thead>
                   <tr>
-                    <th>Order ID</th>
-                    <th>Popularity</th>
+                    <th>ID</th>
+                    <th>Nama</th>
+                    <th>Saldo</th>
                   </tr>
                   </thead>
-                  <tbody>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR9842</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#00a65a" data-height="20">90,80,90,-70,61,-83,63</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#f39c12" data-height="20">90,80,-90,70,61,-83,68</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#f56954" data-height="20">90,-80,90,70,-61,83,63</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#00c0ef" data-height="20">90,80,-90,70,-61,83,63</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#f39c12" data-height="20">90,80,-90,70,61,-83,68</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#f56954" data-height="20">90,-80,90,70,-61,83,63</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR9842</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#00a65a" data-height="20">90,80,90,-70,61,-83,63</div>
-                    </td>
-                  </tr>
-                  </tbody>
+                  <tbody></tbody>
                 </table>
               </div>
               <!-- /.table-responsive -->
@@ -149,7 +107,7 @@
 				 <!-- TABLE: LATEST ORDERS -->
 				 <div class="box box-info">
             <div class="box-header with-border">
-              <h3 class="box-title">List Sub Kas Kecil</h3>
+              <h3 class="box-title">List Laporan Pengajua Sub Kas Kecil Pending</h3>
 
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -160,57 +118,14 @@
             <!-- /.box-header -->
             <div class="box-body">
               <div class="table-responsive">
-                <table id="listSKK" class="table table-bordered table-hover">
+              <table id="listLaporan" class="table table-bordered table-hover">
                   <thead>
                   <tr>
-                    <th>Order ID</th>
-                    <th>Popularity</th>
+                    <th>ID</th>
+                    <th>Total</th>
                   </tr>
                   </thead>
-                  <tbody>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR9842</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#00a65a" data-height="20">90,80,90,-70,61,-83,63</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#f39c12" data-height="20">90,80,-90,70,61,-83,68</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#f56954" data-height="20">90,-80,90,70,-61,83,63</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#00c0ef" data-height="20">90,80,-90,70,-61,83,63</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#f39c12" data-height="20">90,80,-90,70,61,-83,68</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#f56954" data-height="20">90,-80,90,70,-61,83,63</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR9842</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#00a65a" data-height="20">90,80,90,-70,61,-83,63</div>
-                    </td>
-                  </tr>
-                  </tbody>
+                  <tbody></tbody>
                 </table>
               </div>
               <!-- /.table-responsive -->
