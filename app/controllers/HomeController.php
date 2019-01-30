@@ -88,7 +88,12 @@
 
 			$countOprMasuk = $this->HomeModel->getOprMasuk();
 			$countOprKeluar = $this->HomeModel->getOprKeluar();
-			
+
+			$countOprKredit = $this->HomeModel->getOprProyekKredit();
+			$countOprTunai = $this->HomeModel->getOprProyekTunai();
+
+			$countSpkk = $this->HomeModel->getSpkk();
+
 			// config css-js
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
@@ -114,9 +119,13 @@
 			$data = array(
 				'user_aktif' => $countUser['user_aktif'],
 				'acc_pkk' => $countAccpkk['jml_transaksi_disetujui'],
+				'pskk' => $countSpkk['jml_transaksi_spkk'],
+				'pending_pkk' => $countPendingpkk['jml_transaksi_pending'],
 				'pending_pkk' => $countPendingpkk['jml_transaksi_pending'],
 				'jml_transaksi_masuk' => $countOprMasuk['jml_uang_masuk'],
-				'jml_transaksi_keluar' => $countOprKeluar['jml_uang_keluar']
+				'jml_transaksi_keluar' => $countOprKeluar['jml_uang_keluar'],
+				'jml_transaksi_tunai' => $countOprTunai['jml_transaksi_tunai'],
+				'jml_transaksi_kredit' => $countOprKredit['jml_transaksi_kredit']
 			);
 
 			$this->layout('beranda/kas_besar', $config, $data);
@@ -163,9 +172,36 @@
 		*/
 		public function get_proyek_list() {
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
-			
-			}
-		}
+				// config datatable
+				$config_dataTable = array(
+					'tabel' => 'v_proyek_dashboard',
+					'kolomOrder' => array(null, 'id_proyek', 'total', null),
+					'kolomCari' => array('id_proyek', 'total'),
+					'orderBy' => array('id_proyek' => 'asc'),
+					'kondisi' => "WHERE status = 'BERJALAN'",
+				);
+
+				$dataProyek = $this->HomeModel->getAllDataTable($config_dataTable);
+	
+				$data = array();
+				foreach($dataProyek as $row){	
+					$dataRow = array();
+					$dataRow[] = $row['id_proyek'];
+					$dataRow[] = $this->helper->cetakRupiah($row['total']);
+					$data[] = $dataRow;
+				}
+
+				$output = array(
+					'draw' => $_POST['draw'],
+					'recordsTotal' => $this->HomeModel->recordTotal(),
+					'recordsFiltered' => $this->HomeModel->recordFilter(),
+					'data' => $data,
+				);
+				echo json_encode($output);
+			} else { 
+				$this->redirect();
+			}		
+	}
 
 		/**
 		* Beranda Kas Kecil

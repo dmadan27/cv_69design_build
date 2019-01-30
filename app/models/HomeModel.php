@@ -188,6 +188,45 @@
 			$result = $statement->fetch(PDO::FETCH_ASSOC);
 
 			return $result;
+		}
+
+		 /**
+		*   Total Transaksi Pengajuan Sub Kas Kecil Yang Di Acc
+        */
+        public function getSpkk() {
+            $query = "SELECT COUNT(id) AS 'jml_transaksi_spkk' FROM pengajuan_sub_kas_kecil";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+		
+		/**
+		*   Jumlah Transaksi Pengajuan Operasional Proyek Kredit
+        */
+        public function getOprProyekKredit() {
+            $query = "SELECT COUNT(id) AS 'jml_transaksi_kredit' FROM operasional_proyek WHERE status = 'KREDIT'";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+		
+		/**
+		*   Jumlah Transaksi Pengajuan Operasional Proyek Tunai
+        */
+        public function getOprProyekTunai() {
+            $query = "SELECT COUNT(id) AS 'jml_transaksi_tunai' FROM operasional_proyek WHERE status = 'TUNAI'";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
         }
 
         // ========================================================= //

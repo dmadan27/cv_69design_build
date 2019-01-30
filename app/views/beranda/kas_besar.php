@@ -48,7 +48,7 @@
             <div class="inner text-center">
               <h3><?= $this->data['jml_transaksi_masuk']; ?></h3>
 
-              <h5>JUMLAH OPERASIONAL(UANG MASUK)</h5>
+              <h5>JML OPERASIONAL(UANG MASUK)</h5>
             </div>
           </div>
         </div>
@@ -59,7 +59,7 @@
             <div class="inner text-center">
             <h3><?= $this->data['jml_transaksi_keluar']; ?></h3>
 
-              <h5>JUMLAH OPERASIONAL(UANG KELUAR)</h5>
+              <h5>JML OPERASIONAL(UANG KELUAR)</h5>
             </div>
           </div>
         </div>
@@ -85,54 +85,11 @@
                 <table id="listProyek" class="table table-bordered table-hover no-margin">
                   <thead>
                   <tr>
-                    <th>Order ID</th>
-                    <th>Popularity</th>
+                    <th width="150px">ID Proyek</th>
+                    <th class="text-right">Total Pemasukan</th>
                   </tr>
                   </thead>
-                  <tbody>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR9842</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#00a65a" data-height="20">90,80,90,-70,61,-83,63</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#f39c12" data-height="20">90,80,-90,70,61,-83,68</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#f56954" data-height="20">90,-80,90,70,-61,83,63</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#00c0ef" data-height="20">90,80,-90,70,-61,83,63</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR1848</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#f39c12" data-height="20">90,80,-90,70,61,-83,68</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR7429</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#f56954" data-height="20">90,-80,90,70,-61,83,63</div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">OR9842</a></td>
-                    <td>
-                      <div class="sparkbar" data-color="#00a65a" data-height="20">90,80,90,-70,61,-83,63</div>
-                    </td>
-                  </tr>
-                  </tbody>
+                  <tbody></tbody>
                 </table>
               </div>
               <!-- /.table-responsive -->
@@ -163,8 +120,8 @@
                 <table id="listBank" class="table table-bordered table-hover">
                   <thead>
                   <tr>
-                    <th style="width: 55px">Bank</th>
-                    <th>Saldo</th>
+                    <th width="150px">Nama Bank</th>
+                    <th class="text-right"> Jumlah Saldo</th>
                   </tr>
                   </thead>
                   <tbody></tbody>
@@ -183,15 +140,15 @@
 		</div>
 
 		<div class="row">
-			<div class="col-xs-12 col-lg-6 col-md-6 col-sm-6">
-			<div class="box box-solid">
+			<!-- <div class="col-xs-12 col-lg-6 col-md-6 col-sm-6"> -->
+			<!-- <div class="box box-solid">
             <div class="box-header with-border">
               <h3 class="box-title">Collapsible Accordion</h3>
             </div>
-            <!-- /.box-header -->
+            
             <div class="box-body">
               <div class="box-group">
-                <!-- we are adding the .panel class so bootstrap.js collapse plugin detects it -->
+                
                 <div class="panel box box-primary"  id="accordion1">
                   <div class="box-header with-border">
                     <h4 class="box-title">
@@ -254,49 +211,49 @@
                 </div>
               </div>
             </div>
-            <!-- /.box-body -->
-          </div>
-          <!-- /.box -->
-			</div>
-			<div class="col-xs-12 col-lg-6 col-md-6 col-sm-6">
-				<div class="row">
-					<div class="col-xs-12 col-lg-6 col-md-6 col-sm-6">
+            
+          </div> -->
+          
+			<!-- </div> -->
+			<div class="col-xs-12 col-lg-12 col-md-12 col-sm-12">
+				<!-- <div class="row"> -->
+					<div class="col-xs-12 col-lg-3 col-md-3 col-sm-3">
 						<div class="small-box bg-aqua">
 							<div class="inner text-center">
-								<h3>150</h3>
+              <h3><?= $this->data['user_aktif']; ?></h3>
 
-								<p>New Orders</p>
+              <h5>JML TOTAL USER AKTIF</h5>
 							</div>
 						</div>
 					</div>
-					<div class="col-xs-12 col-lg-6 col-md-6 col-sm-6">
+					<div class="col-xs-12 col-lg-3 col-md-3 col-sm-3">
 						<div class="small-box bg-red">
 							<div class="inner text-center">
-								<h3>150</h3>
+              <h3><?= $this->data['pskk']; ?></h3>
 
-								<p>New Orders</p>
+              <h5>JML PENGAJUAN SUB KAS KECIL</h5>
 							</div>
 						</div>
 					</div>
-					<div class="col-xs-12 col-lg-6 col-md-6 col-sm-6">
+					<div class="col-xs-12 col-lg-3 col-md-3 col-sm-3">
 						<div class="small-box bg-green">
 							<div class="inner text-center">
-								<h3>150</h3>
+              <h3><?= $this->data['jml_transaksi_kredit']; ?></h3>
 
-								<p>New Orders</p>
+              <h5>JML OPERASIONAL PROYEK KREDIT</h5>
 							</div>
 						</div>
 					</div>
-					<div class="col-xs-12 col-lg-6 col-md-6 col-sm-6">
+					<div class="col-xs-12 col-lg-3 col-md-3 col-sm-3">
 						<div class="small-box bg-blue">
 							<div class="inner text-center">
-								<h3>150</h3>
+              <h3><?= $this->data['jml_transaksi_tunai']; ?></h3>
 
-								<p>New Orders</p>
+              <h5>JML OPERASIONAL PROYEK TUNAI</h5>
 							</div>
 						</div>
 					</div>
-				</div>
+				<!-- </div> -->
 			</div>
 		</div>
 
