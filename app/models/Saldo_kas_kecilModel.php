@@ -41,6 +41,25 @@
 
 			return $data;
 		}
+		
+		/*
+		*
+		*/
+		public function getExport($tgl_awal, $tgl_akhir){
+			$id = $_SESSION['sess_id'];
+			$query = "SELECT * FROM v_saldo_kas_kecil_export WHERE TANGGAL BETWEEN :tgl_awal AND :tgl_akhir AND ID_KAS_KECIL = :id;";
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':tgl_awal' => $tgl_awal,
+					':tgl_akhir' => $tgl_akhir,
+					':id' => $id
+				)
+			);
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
+
 
 		/**
 		* 

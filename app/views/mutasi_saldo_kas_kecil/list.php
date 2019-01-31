@@ -68,3 +68,44 @@
 	</section>
 	<!-- /.content -->
 </div>
+
+<div class="modal fade" id="modalTanggalExport">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <!-- header modal -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Export Data Mutasi Saldo Kas Kecil ke Excel</h4>
+            </div>
+            
+            <form id="form_tanggal_export" role="form">
+                
+                <!-- body modal -->
+                <div class="modal-body">
+                    <!-- field Dari Tanggal -->
+                    <div class="form-group field-tgl_awal has-feedback">
+                        <label for="tgl_awal">Dari Tanggal</label>
+                        <input type="text" name="tgl_awal" id="tgl_awal" class="form-control datepicker field" placeholder="Dari Tanggal">
+                        <span class="help-block small pesan pesan-tgl_awal"></span>
+                    </div>
+                    <!-- field Sampai Tanggal -->
+                    <div class="form-group field-tgl_akhir has-feedback">
+                        <label for="tgl_akhir">Sampai Tanggal</label>
+                        <input type="text" name="tgl_akhir" id="tgl_akhir" class="form-control datepicker field" placeholder="Sampai Tanggal">
+                        <span class="help-block small pesan pesan-tgl_akhir"></span>
+                    </div>
+                    
+                </div>
+            
+                <!-- modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Kembali</button>
+                    <button type="button" id="submit_export" onclick="export_excel()" class="btn btn-primary" value="tambah">Export Detail</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

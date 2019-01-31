@@ -210,14 +210,16 @@
 		/**
 		* 	Get Data Operasional Proyek Untuk Di Export Detail
 		*/
-		public function getExportDetail($id) {
+		public function getExportDetail($id, $tgl_awal, $tgl_akhir) {
 			
-			$query = "SELECT * FROM v_detail_operasional_proyek_export WHERE ID = :id;";
+			$query = "SELECT * FROM v_detail_operasional_proyek_export WHERE TANGGAL BETWEEN :tgl_awal AND :tgl_akhir AND ID = :id;";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
 				array(
 					':id' => $id,
+					':tgl_awal' => $tgl_awal,
+					':tgl_akhir' => $tgl_akhir
 				)
 			);
 			$result = $statement->fetchAll(PDO::FETCH_ASSOC);

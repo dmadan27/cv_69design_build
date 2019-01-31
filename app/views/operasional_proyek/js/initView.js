@@ -1,5 +1,23 @@
 $(document).ready(function(){
 
+      //Date picker
+	$('#tgl_awal').datepicker({
+		autoclose: true,
+		format: "yyyy-mm-dd",
+		todayHighlight: true,
+		orientation:"bottom auto",
+		todayBtn: true,
+	  });
+
+	  //Date picker
+	$('#tgl_akhir').datepicker({
+		autoclose: true,
+		format: "yyyy-mm-dd",
+		todayHighlight: true,
+		orientation:"bottom auto",
+		todayBtn: true,
+	  });
+
 	// tabel history pembelian
 	var historyPembelian = $("#historyPembelian").DataTable({
         "language" : {
@@ -86,14 +104,56 @@ $(document).ready(function(){
         }
     });
 
+    // btn Export
+    $('#exportExcel').on('click', function(){
+        // if(this.value.trim() != "") 
+        $('#modalTanggalExport').modal()         
+        console.log('Button exportExcel Clicked');
+    });
+
 });
 
-function export_detail(id) {
-    console.log(id);
-    window.location.href = BASE_URL+'operasional-proyek/export-detail/?id=' + id;
+/**
+*
+*/
+function export_excel(id) {
+   
+    console.log('Export Detail Clicked');
+
+    var tgl_awal = $('#tgl_awal').val().trim();
+    var tgl_akhir = $('#tgl_akhir').val().trim();
+
+    if(tgl_awal == '' && tgl_akhir == ''){
+        swal({
+            type: 'error',
+            title: 'Tanggal Tidak Boleh Kosong!',
+        })
+    } else if(tgl_awal == '' && tgl_akhir != ''){
+        swal({
+            type: 'error',
+            title: 'Tanggal Awal Harus Diisi!',
+        })
+    } else if(tgl_awal != '' && tgl_akhir == ''){
+        swal({
+            type: 'error',
+            title: 'Tanggal Akhir Harus Diisi!',
+        })
+    } else if(new Date(tgl_awal) > new Date(tgl_akhir)){
+        swal({
+            type: 'error',
+            title: 'Kesalahan Input !',
+        })
+    } else {
+    window.location.href = BASE_URL+'operasional-proyek/export-detail?tgl_awal=' + tgl_awal + '&tgl_akhir=' + tgl_akhir + '&id=' + id;
+    }
 }
 
-function export_history(id) {
-    console.log(id);
-    window.location.href = BASE_URL+'operasional-proyek/export-history/?id=' + id;
-}
+// function export_detail(id) {
+//     console.log(id);
+//     window.location.href = BASE_URL+'operasional-proyek/export-detail/?id=' + id;
+// }
+
+// function export_history(id) {
+//     console.log(id);
+//     window.location.href = BASE_URL+'operasional-proyek/export-history/?id=' + id;
+// }

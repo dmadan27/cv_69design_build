@@ -494,11 +494,16 @@
 			
 
 			$css = array(
-				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css'
+				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
+				'assets/bower_components/select2/dist/css/select2.min.css',
 			);
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
+				'assets/bower_components/select2/dist/js/select2.full.min.js',
+				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
 				'app/views/operasional_proyek/js/initView.js',
 			);
 
@@ -653,8 +658,10 @@
 		public function export_detail(){
 
 			$id = $_GET['id'];
+			$tgl_awal = $_GET['tgl_awal'];
+			$tgl_akhir = $_GET['tgl_akhir'];
 
-			$row = $this->Operasional_proyekModel->getExportDetail($id);
+			$row = $this->Operasional_proyekModel->getExportDetail($id, $tgl_awal, $tgl_akhir);
 			$header = array_keys($row[0]); 
 		
 			$this->excel->setProperty('Laporan Detail Operasional Proyek','Laporan Detail Operasional Proyek','Data Laporan Detail Operasional Proyek');

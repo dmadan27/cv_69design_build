@@ -22,9 +22,11 @@
 			$this->auth();
 			$this->auth->cekAuth();
 			$this->model('Mutasi_saldo_kas_kecilModel');
+			$this->model('Saldo_kas_kecilModel');
 			$this->model('UserModel');
 			$this->helper();
 			$this->validation();
+			$this->excel();
 		}	
 
 		/**
@@ -39,10 +41,16 @@
 		*/
 		protected function list(){
 			$saldo_kasKecil = $this->UserModel->getKasKecil($_SESSION['sess_email']);
-			$css = array('assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css');
+			$css = array(
+				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
+				'assets/bower_components/select2/dist/css/select2.min.css'
+			);
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
+				'assets/bower_components/select2/dist/js/select2.full.min.js',
 				'app/views/mutasi_saldo_kas_kecil/js/initList.js',
 			);
 
@@ -130,9 +138,23 @@
 
 		}
 
+		/**
+		*	Export data ke format Excel
+		*/
 		public function export(){
+			$tgl_awal = $_GET['tgl_awal'];
+			$tgl_akhir = $_GET['tgl_akhir'];
 
+			$row = $this->Saldo_kas_kecilModel->getExport($tgl_awal, $tgl_akhir);
+			$header = array_keys($row[0]); 
+			$header[1] = 'ID KAS KECIL';
+			$this->excel->setProperty('Laporan Mutasi Saldo Kas Kecil','Laporan Mutasi Saldo Kas Kecil','Data Laporan Mutasi Saldo Kas Kecil');
+			$this->excel->setData($header, $row);
+			$this->excel->getData('Data Mutasi Saldo Kas Kecil', 'Data Mutasi Saldo Kas Kecil', 4, 5 );
+
+			$this->excel->getExcel('Data Mutasi Saldo Kas Kecil');	
 		}
+
 		
 		/**
 		*	Export data ke format Excel

@@ -1,5 +1,23 @@
 $(document).ready(function(){
 
+    //Date picker
+	$('#tgl_awal').datepicker({
+		autoclose: true,
+		format: "yyyy-mm-dd",
+		todayHighlight: true,
+		orientation:"bottom auto",
+		todayBtn: true,
+	  });
+
+    //Date picker
+	$('#tgl_akhir').datepicker({
+		autoclose: true,
+		format: "yyyy-mm-dd",
+		todayHighlight: true,
+		orientation:"bottom auto",
+		todayBtn: true,
+	  });
+
 	var mutasi_saldo_kas_kecilTable = $("#mutasi_saldo_kas_kecilTable").DataTable({
         "language" : {
             "lengthMenu": "Tampilkan _MENU_ data/page",
@@ -34,4 +52,41 @@ $(document).ready(function(){
         ]
     });
 
+     // btn Export
+     $('#exportExcel').on('click', function(){
+        // if(this.value.trim() != "") 
+        $('#modalTanggalExport').modal()         
+        console.log('Button exportExcel Clicked');
+    });
+
 });
+
+/**
+*
+*/
+function export_excel() {
+   
+    console.log('Export Detail Clicked');
+
+    var tgl_awal = $('#tgl_awal').val().trim();
+    var tgl_akhir = $('#tgl_akhir').val().trim();
+
+    if(tgl_awal == '' && tgl_akhir == ''){
+        swal({
+            type: 'error',
+            title: 'Tanggal Harus Diisi!',
+        })
+    } else if(tgl_awal == '' && tgl_akhir != ''){
+        swal({
+            type: 'error',
+            title: 'Tanggal Awal Harus Diisi!',
+        })
+    } else if(tgl_awal != '' && tgl_akhir == ''){
+        swal({
+            type: 'error',
+            title: 'Tanggal Akhir Harus Diisi!',
+        })
+    } else {
+    window.location.href = BASE_URL+'saldo-kas-kecil/export?tgl_awal=' + tgl_awal + '&tgl_akhir=' + tgl_akhir;
+    }
+}

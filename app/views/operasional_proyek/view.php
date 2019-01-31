@@ -32,7 +32,7 @@
 									<ul class="nav nav-tabs">
 										<li class="active"><a href="#tab_1" data-toggle="tab">Pengajuan Operasional Proyek</a></li>
 										<li class=""><a href="#tab_detail_operasionalProyek" data-toggle="tab">Detail Operasional Proyek</a></li>
-										<li class=""><a href="#tab_history_pembelian" data-toggle="tab">History Pembelian</a></li>
+										<!-- <li class=""><a href="#tab_history_pembelian" data-toggle="tab">History Pembelian</a></li> -->
 										
 										
 									</ul>
@@ -163,7 +163,7 @@
 														<div class="form-group">
 															<!-- export -->
 															<?php $id = $this->data['id_operasional_proyek']; ?>
-															<button type="button" class="btn btn-success btn-flat" id="exportExcel_detail" onclick="export_detail('<?php echo $id;?>')"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+															<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 														</div>
 														<table id="detailOperasionalProyek" class="table table-bordered table-hover" style="width: 100%;">
 															<thead>
@@ -184,10 +184,51 @@
 
 										</div>
 
+										<div class="modal fade" id="modalTanggalExport">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <!-- header modal -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Export Data Operasional Proyek ke Excel</h4>
+            </div>
+            
+            <form id="form_tanggal_export" role="form">
+                
+                <!-- body modal -->
+                <div class="modal-body">
+                    <!-- field Dari Tanggal -->
+                    <div class="form-group field-tgl_awal has-feedback">
+                        <label for="tgl_awal">Dari Tanggal</label>
+                        <input type="text" name="tgl_awal" id="tgl_awal" class="form-control datepicker field" placeholder="Dari Tanggal">
+                        <span class="help-block small pesan pesan-tgl_awal"></span>
+                    </div>
+                    <!-- field Sampai Tanggal -->
+                    <div class="form-group field-tgl_akhir has-feedback">
+                        <label for="tgl_akhir">Sampai Tanggal</label>
+                        <input type="text" name="tgl_akhir" id="tgl_akhir" class="form-control datepicker field" placeholder="Sampai Tanggal">
+                        <span class="help-block small pesan pesan-tgl_akhir"></span>
+                    </div>
+                    
+                </div>
+            
+                <!-- modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Kembali</button>
+                    <button type="button" id="submit_export" onclick="export_excel('<?= $id ?>')" class="btn btn-primary" value="tambah">Export Detail</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
 										<!-- Tab 3 : Data History Pembelian  -->
-										<div class="tab-pane" id="tab_history_pembelian">
+										<!-- <div class="tab-pane" id="tab_history_pembelian"> -->
 											<!-- tabel history pembelian -->
-											<div class="panel box box-primary">
+											<!-- <div class="panel box box-primary">
 												<div class="box-header with-border">
 													<h6 class="box-title">
                       									<a data-toggle="collapse" data-parent="#accordion" href="#collapse_historyPembelian">
@@ -197,15 +238,15 @@
 												</div>
 												<div id="collapse_historyPembelian" class="panel-collapse collapse in">
 													<div class="box-body">
-														<div class="form-group">
+														<div class="form-group"> -->
 															<!-- export -->
-															<button type="button" class="btn btn-success btn-flat" id="exportExcel_history" onclick="export_history('<?php echo $id;?>')"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+															<!-- <button type="button" class="btn btn-success btn-flat" id="exportExcel_history" onclick="export_history('<?php echo $id;?>')"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 														</div>
 														<table id="historyPembelian" class="table table-bordered table-hover" style="width: 100%;">
-															<thead>
-																<tr><!-- 
-																	<th class="text-right">No</th> -->
-																	<th>ID</th>
+															<thead> -->
+																<!-- <tr>  -->
+																	<!--<th class="text-right">No</th> -->
+																	<!-- <th>ID</th>
 																	<th>Tanggal</th>
 																	<th>Nama</th>
 																	<th>Total</th>
@@ -223,7 +264,7 @@
 											</div>
 
 								
-										</div>
+										</div> -->
 
 									</div>
 								</div>
