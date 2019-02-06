@@ -1,26 +1,26 @@
 <?php 
-	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	Defined("BASE_PATH") or die(ACCESS_DENIED);
 
 	/**
-	*
-	*/
+	 * 
+	 */
 	class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 
-		private $token;
 		private $success = false;
 		private $notif = array();
 		private $error = array();
 		private $message = NULL;
 
 		/**
-		* load auth, cekAuth
-		* load default model, BankModel
-		* load helper dan validation
-		*/
+		 * load auth, cekAuth
+		 * load default model, BankModel
+		 * load helper dan validation
+		 */
 		public function __construct(){
 			$this->auth();
 			$this->auth->cekAuth();
 			$this->model('Pengajuan_kasKecilModel');
+			$this->model('DataTableModel');
 			$this->model('UserModel');
 			$this->helper();
 			$this->validation();
@@ -28,18 +28,18 @@
 		}	
 
 		/**
-		* Function index
-		* menjalankan method list
-		*/
+		 * Function index
+		 * menjalankan method list
+		 */
 		public function index(){
 			$this->list();
 		}
 
 		/**
-		* Function list
-		* setting layouting list utama
-		* generate token list dan add
-		*/
+		 * Function list
+		 * setting layouting list utama
+		 * generate token list dan add
+		 */
 		protected function list(){
 			// set config untuk layouting
 			$saldo_kasKecil = $this->UserModel->getKasKecil($_SESSION['sess_email']);
@@ -75,11 +75,11 @@
 		}	
 
 		/**
-		* Function get_list
-		* method khusus untuk datatable
-		* generate token edit dan delete
-		* return json
-		*/
+		 * Function get_list
+		 * method khusus untuk datatable
+		 * generate token edit dan delete
+		 * return json
+		 */
 		public function get_list(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				
@@ -100,7 +100,7 @@
 
 				$status_pengajuan = null;
 
-				$dataPengajuanKasKecil = $this->Pengajuan_kasKecilModel->getAllDataTable($config_dataTable);
+				$dataPengajuanKasKecil = $this->DataTableModel->getAllDataTable($config_dataTable);
 
 				$data = array();
 				$no_urut = $_POST['start'];
@@ -158,8 +158,8 @@
 
 				$output = array(
 					'draw' => $_POST['draw'],
-					'recordsTotal' => $this->Pengajuan_kasKecilModel->recordTotal(),
-					'recordsFiltered' => $this->Pengajuan_kasKecilModel->recordFilter(),
+					'recordsTotal' => $this->DataTableModel->recordTotal(),
+					'recordsFiltered' => $this->DataTableModel->recordFilter(),
 					'data' => $data,
 				);
 
@@ -170,13 +170,13 @@
 		}
 
 		/**
-		* Function action_add
-		* method untuk aksi tambah data
-		* return berupa json
-		* status => status berhasil atau gagal proses tambah
-		* notif => pesan yang akan ditampilkan disistem
-		* error => error apa saja yang ada dari hasil validasi
-		*/
+		 * Function action_add
+		 * method untuk aksi tambah data
+		 * return berupa json
+		 * status => status berhasil atau gagal proses tambah
+		 * notif => pesan yang akan ditampilkan disistem
+		 * error => error apa saja yang ada dari hasil validasi
+		 */
 		public function action_add(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
@@ -250,11 +250,11 @@
 		}
 
 		/**
-		* Function edit
-		* method untuk get data edit
-		* param $id didapat dari url
-		* return berupa json
-		*/
+		 * Function edit
+		 * method untuk get data edit
+		 * param $id didapat dari url
+		 * return berupa json
+		 */
 		public function edit($id){
 			$data = !empty($this->Pengajuan_kasKecilModel->getById($id)) ? $this->Pengajuan_kasKecilModel->getById($id) : false;
 			$saldo = $this->Pengajuan_kasKecilModel->getSaldoKK($data['id_kas_kecil']);
@@ -264,14 +264,13 @@
 		}
 
 		/**
-		* Function action_edit
-		* method untuk aksi edit data
-		* return berupa json
-		* status => status berhasil atau gagal proses edit
-		* notif => pesan yang akan ditampilkan disistem
-		* error => error apa saja yang ada dari hasil validas
-		i
-		*/
+		 * Function action_edit
+		 * method untuk aksi edit data
+		 * return berupa json
+		 * status => status berhasil atau gagal proses edit
+		 * notif => pesan yang akan ditampilkan disistem
+		 * error => error apa saja yang ada dari hasil validasi
+		 */
 		public function action_edit(){
 			$data = isset($_POST) ? $_POST : false;
 			$level = $_SESSION['sess_level'];
@@ -359,10 +358,10 @@
 		}
 
 		/**
-		* Function detail
-		* method untuk get data detail dan setting layouting detail
-		* param $id didapat dari url
-		*/
+		 * Function detail
+		 * method untuk get data detail dan setting layouting detail
+		 * param $id didapat dari url
+		 */
 		public function detail($id){
 			$id = strtoupper($id);
 			$data_detail = !empty($this->Pengajuan_kasKecilModel->getById($id)) ? $this->Pengajuan_kasKecilModel->getById($id) : false;
@@ -422,11 +421,11 @@
 		}
 
 		/**
-		* Function delete
-		* method yang berfungsi untuk menghapus data
-		* param $id didapat dari url
-		* return json
-		*/
+		 * Function delete
+		 * method yang berfungsi untuk menghapus data\
+		 * param $id didapat dari url
+		 * return json
+		 */
 		public function delete($id){			
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$id = strtoupper($id);
@@ -440,17 +439,17 @@
 		}
 
 		/**
-		* Function get_mutasi
-		* method yang berfungsi untuk get data mutasi bank sesuai dengan id
-		* dipakai di detail data
-		*/
+		 * Function get_mutasi
+		 * method yang berfungsi untuk get data mutasi bank sesuai dengan id
+		 * dipakai di detail data
+		 */
 		public function get_mutasi(){
 			
 		}
 
 		/**
-		*	Export data ke format Excel
-		*/
+		 * Export data ke format Excel
+		 */
 		public function export(){
 			
 			$tgl_awal = $_GET['tgl_awal'];
@@ -468,11 +467,11 @@
 		}
 
 		/**
-		* Fungsi set_validation
-		* method yang berfungsi untuk validasi inputan secara server side
-		* param $data didapat dari post yang dilakukan oleh user
-		* return berupa array, status hasil pengecekan dan error tiap validasi inputan
-		*/
+		 * Fungsi set_validation
+		 * method yang berfungsi untuk validasi inputan secara server side
+		 * param $data didapat dari post yang dilakukan oleh user
+		 * return berupa array, status hasil pengecekan dan error tiap validasi inputan
+		 */
 		private function set_validation($data){
 			// $required = ($action =="action-add") ? 'not_required' : 'required';
 		
@@ -505,8 +504,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function get_notif(){
 			$notif = $this->Pengajuan_kasKecilModel->getAll_pending();
 			$jumlah = $this->Pengajuan_kasKecilModel->getTotal_pending();
@@ -530,10 +529,9 @@
 			echo json_encode($output);
 		}
 		
-
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function get_nama_kas_kecil(){
 			$this->model('Kas_kecilModel');
 			$data_kas_kecil =  $this->Kas_kecilModel->getAll();
@@ -553,8 +551,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function get_nama_bank(){
 			$this->model('BankModel');
 			$data_nama_bank = $this->BankModel->getAll();
@@ -571,6 +569,9 @@
 			echo json_encode($data);
 		}
 
+		/**
+		 * 
+		 */
 		public function get_id_pengajuan(){
 			$this->model('Pengajuan_sub_kas_kecilModel');
 
@@ -588,8 +589,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function get_last_id(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = !empty($this->Pengajuan_kasKecilModel->getLastID()['id']) ? $this->Pengajuan_kasKecilModel->getLastID()['id'] : false;
@@ -609,8 +610,8 @@
 		}
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		public function count_pengajuan_kas_kecil_disetujui(){
 			$this->model('Pengajuan_kasKecilModel');
 			$data_pkk_disetujui = $this->Pengajuan_kasKecilModel->getTotal_setujui();
@@ -623,9 +624,11 @@
 
 		}
 
+		/**
+		 * 
+		 */
 		public function get_pengajuan_sub_kas_kecil(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
-				$this->model('Pengajuan_sub_kas_kecilModel');
 				
 				// config datatable
 				$config_dataTable = array(
@@ -636,7 +639,7 @@
 					'kondisi' => false,
 				);
 
-				$dataPengajuanFull = $this->Pengajuan_sub_kas_kecilModel->getAllDataTable($config_dataTable);
+				$dataPengajuanFull = $this->DataTableModel->getAllDataTable($config_dataTable);
 
 				$data = array();
 				$no_urut = $_POST['start'];
@@ -658,8 +661,8 @@
 
 				$output = array(
 					'draw' => $_POST['draw'],
-					'recordsTotal' => $this->Pengajuan_sub_kas_kecilModel->recordTotal(),
-					'recordsFiltered' => $this->Pengajuan_sub_kas_kecilModel->recordFilter(),
+					'recordsTotal' => $this->DataTableModel->recordTotal(),
+					'recordsFiltered' => $this->DataTableModel->recordFilter(),
 					'data' => $data,
 				);
 

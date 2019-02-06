@@ -1,6 +1,5 @@
 <?php
-	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
-	// namespace app\controllers;
+	Defined("BASE_PATH") or die(ACCESS_DENIED);
 
 	/**
 	 * Class login
@@ -32,18 +31,11 @@
 		 * Proses pengecekan sudah login atau belum
 		 */
 		public function index(){
-			$jenis = isset($_POST['jenis']) ? $this->validation->validInput($_POST['jenis'], false) : false;
-
-			// cek jenis login
-			if($jenis && $jenis == 'sub-kas-kecil') $this->loginMobile(); // jika mobile
-			else{ // jika sistem
-				if($this->auth->isLogin()) { $this->redirect(BASE_URL); } // jika sudah login, tidak bisa akses
-				else{ // jika belum login
-					$_SESSION['sess_lockscreen'] = false;
-
-					if($_SERVER['REQUEST_METHOD'] == "POST") { $this->loginSistem(); } // jika request post login
-					else { $this->view('login'); } // jika bukan, atau hanya menampilkan halaman login
-				}
+			if($this->auth->isLogin()) { $this->redirect(BASE_URL); } // jika sudah login, tidak bisa akses
+			else { // jika belum login
+				$_SESSION['sess_lockscreen'] = false;
+				if($_SERVER['REQUEST_METHOD'] == "POST") { $this->loginSistem(); } // jika request post login
+				else { $this->view('login'); } // jika bukan, atau hanya menampilkan halaman login
 			}
 		}
 
@@ -105,88 +97,6 @@
 			);
 
 			echo json_encode($output);
-		}
-
-		/**
-		 * Method loginMobile
-		 * Proses pengecekan login untuk mobile app
-		 * Jika login baru, maka akan generate token baru dan disimpan ke db
-		 * Token baru yg sudah digenerate akan di hash md5 dan bycrpt ke db
-		 * Sedangkan yg dikirim ke mobile adalah hash md5
-		 * @return output {object} array berupa json
-		 */
-		private function loginMobile(){
-			$this->auth->mobileOnly();
-			$this->model('Sub_kas_kecilModel');
-
-			$status = false;
-			$token = null;
-
-			// validasi pengguna
-			$user = isset($_POST['username']) ? $this->validation->validInput($_POST['username'], false) : false;
-			$pass = isset($_POST['password']) ? $this->validation->validInput($_POST['password'], false) : false;
-
-			$dataUser = $this->UserModel->getUser($user);
-			$id = null;
-
-			// if(!$dataUser || $dataUser['level'] != 'SUB KAS KECIL'){
-			// 	$token = null;
-			// 	$status = false;
-			// }
-			if($dataUser && $dataUser['level'] == 'SUB KAS KECIL' && $dataUser['status'] == 'AKTIF'){
-				$id = $this->UserModel->getSubKasKecil($user)['id'];
-				if(password_verify($pass, $dataUser['password'])) {
-					// generate token
-					$token = md5($this->auth->getToken());
-					$tokenSave = password_hash($token, PASSWORD_BCRYPT);
-					$dataToken = array(
-						'username' => $dataUser['username'],
-						'token' => $tokenSave,
-						'tgl_buat' => date('Y-m-d H:i:s'),
-						'tgl_exp' => date('Y-m-d H:i:s', time()+(60*60*24*30)),
-					);
-
-					$this->model('TokenModel');
-
-					if($this->TokenModel->setToken_mobile($dataToken)) $status = true;
-					else $token = null;
-
-					// // get data token lama dan hapus
-					// $this->tokenModel->delete_mobile($dataUser['id']);
-
-					// // tambah token baru
-					// $this->tokenModel->insert_mobile($dataToken);
-				}
-			}
-
-			// $output = array(
-			// 	'id' => $id,
-			// 	'token' => $token,
-			// 	'status' => $status,
-			// );
-
-			$output = array(
-				'status' => $status,
-				'profil' => null,
-			);
-			if ($status) {
-				$output['profil'] = $this->Sub_kas_kecilModel->getByIdFromV($id);
-				$output['profil']['token'] = $token;
-
-				// cek kondisi foto
-				if(!empty($output['profil']['foto'])){
-					// cek foto di storage
-					$filename = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$output['profil']['foto'];
-					if(!file_exists($filename))
-						$foto = null;
-					else
-						$foto = BASE_URL.'assets/images/user/'.$output['profil']['foto'];
-				} else $foto = null;
-
-				$output['profil']['foto'] = $foto;
-			}
-
-			echo json_encode($output, JSON_PRETTY_PRINT);
 		}
 
 		/**

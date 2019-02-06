@@ -1,9 +1,9 @@
 <?php
-	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	Defined("BASE_PATH") or die(ACCESS_DENIED);
 	
 	/**
-	*
-	*/
+	 * 
+	 */
 	class Kas_kecil extends Crud_modalsAbstract{
 
 		private $success = false;
@@ -12,8 +12,8 @@
 		private $message = NULL;
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function __construct(){
 			$this->auth();
 			$this->auth->cekAuth();
@@ -25,15 +25,15 @@
 		}	
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function index(){
 			$this->list();
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		protected function list(){
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
@@ -63,8 +63,8 @@
 		}	
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function get_list(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				// config datatable
@@ -118,8 +118,8 @@
 		}
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		public function action_add(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
@@ -244,11 +244,11 @@
 		}
 
 		/**
-		* Function edit
-		* method untuk get data edit
-		* param $id didapat dari url
-		* return berupa json
-		*/
+		 * Function edit
+		 * method untuk get data edit
+		 * param $id didapat dari url
+		 * return berupa json
+		 */
 		public function edit($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$id = strtoupper($id);
@@ -262,8 +262,8 @@
 		}
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		public function action_edit(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
@@ -331,10 +331,10 @@
 		}
 		
 		/**
-		* Function detail
-		* method untuk get data detail dan setting layouting detail
-		* param $id didapat dari url
-		*/
+		 * Function detail
+		 * method untuk get data detail dan setting layouting detail
+		 * param $id didapat dari url
+		 */
 		public function detail($id){
 			$id = strtoupper($id);
 			$data_detail = !empty($this->Kas_kecilModel->getById($id)) ? $this->Kas_kecilModel->getById($id) : false;
@@ -391,8 +391,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function delete($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST" && $id != ''){
 				$id = strtoupper($id);
@@ -426,8 +426,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function get_last_id(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = !empty($this->Kas_kecilModel->getLastID()['id']) ? $this->Kas_kecilModel->getLastID()['id'] : false;
@@ -447,8 +447,8 @@
 		}
 
 		/**
-		*	Export data ke format Excel
-		*/
+		 * Export data ke format Excel
+		 */
 		public function export(){
 			$row = $this->Kas_kecilModel->export();
 			$header = array_keys($row[0]); 
@@ -461,10 +461,10 @@
 		}
 
 		/**
-		* Function get_mutasi
-		* method yang berfungsi untuk get data mutasi bank sesuai dengan id
-		* dipakai di detail data
-		*/
+		 * Function get_mutasi
+		 * method yang berfungsi untuk get data mutasi bank sesuai dengan id
+		 * dipakai di detail data
+		 */
 		public function get_mutasi($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				
@@ -559,9 +559,9 @@
 			// no_telp
 			$this->validation->set_rules($data['no_telp'], 'Nomor Telepon', 'no_telp', 'angka | 1 | 255 | required');
 			// email
-			$this->validation->set_rules($data['email'], 'Alamat Email', 'email', 'email | 1 | 255 |', $required);
+			$this->validation->set_rules($data['email'], 'Alamat Email', 'email', 'email | 1 | 255 |'.$required);
 			// saldo
-			$this->validation->set_rules($data['saldo'], 'Saldo Awal', 'saldo', 'nilai | 0 | 99999999999 | ', $required);
+			$this->validation->set_rules($data['saldo'], 'Saldo Awal', 'saldo', 'nilai | 0 | 99999999999 | '.$required);
 			// status
 			$this->validation->set_rules($data['status'], 'Status', 'status', 'string | 1 | 255 | required');
 			// password

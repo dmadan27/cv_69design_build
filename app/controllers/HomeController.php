@@ -1,17 +1,16 @@
 <?php
-	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
-	// namespace app\controllers;
+	Defined("BASE_PATH") or die(ACCESS_DENIED);
 
 	/**
-	* Class home, default controller
-	* load class auth
-	* cek auth
-	*/
+	 * Class home, default controller
+	 * load class auth
+	 * cek auth
+	 */
 	class Home extends Controller{
 
 		/**
-		* Load class auth, cek auth
-		*/
+		 * Load class auth, cek auth
+		 */
 		public function __construct(){
 			$this->auth();
 			$this->auth->cekAuth();
@@ -20,8 +19,8 @@
 		}
 
 		/**
-		* Fungsi index, cek session level dan arahkan beranda sesuai dengan session level
-		*/
+		 * Fungsi index, cek session level dan arahkan beranda sesuai dengan session level
+		 */
 		public function index(){
 			// cek jenis user
 			switch (strtolower($_SESSION['sess_level'])) {
@@ -46,8 +45,8 @@
 		}
 
 		/**
-		* Beranda owner
-		*/
+		 * Beranda owner
+		 */
 		private function beranda_owner(){
 			// config css-js
 			$css = array(
@@ -77,8 +76,8 @@
 		}
 
 		/**
-		* Beranda Kas Besar
-		*/
+		 * Beranda Kas Besar
+		 */
 		private function beranda_kasBesar(){
 
 			$countUser = $this->HomeModel->getCountUser();
@@ -132,8 +131,8 @@
 		}
 
 		/**
-		* Table Bank Beranda Kas Besar
-		*/
+		 * Table Bank Beranda Kas Besar
+		 */
 		public function get_bank_list() {
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				// config datatable
@@ -168,8 +167,8 @@
 		}
 
 		/**
-		* Table Proyek Beranda Kas Besar
-		*/
+		 * Table Proyek Beranda Kas Besar
+		 */
 		public function get_proyek_list() {
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				// config datatable
@@ -204,8 +203,8 @@
 	}
 
 		/**
-		* Beranda Kas Kecil
-		*/
+		 * Beranda Kas Kecil
+		 */
 		private function beranda_kasKecil(){
 
 			$sumAccspkk = $this->HomeModel->getSumAccspkk();
@@ -246,8 +245,8 @@
 		}
 
 		/**
-		* Table SKK Beranda Kas Kecil
-		*/
+		 * Table SKK Beranda Kas Kecil
+		 */
 		public function get_skk_list() {
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				// config datatable
@@ -282,6 +281,9 @@
 			}		
 		}
 
+		/**
+		 * 
+		 */
 		public function get_lskk_list() {
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				// config datatable

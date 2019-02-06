@@ -396,11 +396,11 @@
 		}
 
 		/**
-		* Fungsi set_validation
-		* method yang berfungsi untuk validasi inputan secara server side
-		* param $data didapat dari post yang dilakukan oleh user
-		* return berupa array, status hasil pengecekan dan error tiap validasi inputan
-		*/
+		 * Fungsi set_validation
+		 * method yang berfungsi untuk validasi inputan secara server side
+		 * param $data didapat dari post yang dilakukan oleh user
+		 * return berupa array, status hasil pengecekan dan error tiap validasi inputan
+		 */
 		private function set_validation($data){
 			$required = ($data['status'] == "1") ? 'required' : 'not_required';
 

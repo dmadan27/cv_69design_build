@@ -1,39 +1,38 @@
 <?php
-	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	Defined("BASE_PATH") or die(ACCESS_DENIED);
 
 	/**
-	* Class Distributor extend ke abstract crud modals
-	*/
+	 * Class Distributor extend ke abstract crud modals
+	 */
 	class Distributor extends Crud_modalsAbstract{
 		private $token;
 		private $status = false;
 
 		/**
-		*	Default load saat pertama kali controller diakses
-		*/
-
+		 * Default load saat pertama kali controller diakses
+		 */
 		public function __construct(){
 			$this->auth();
 			$this->auth->cekAuth();
 			$this->model('DistributorModel');
+			$this->model('DataTableModel');
 			$this->helper();
 			$this->validation();
 			$this->excel();
-
 		}
 
 		/**
-		* Method pertama kali yang diakses
-		*/
+		 * Method pertama kali yang diakses
+		 */
 		public function index(){
 			$this->list();
 		}
 
 		/**
-		* Method List
-		* Menampilkan list semua data proyek
-		* Passing data css dan js yang dibutuhkan di list distributor
-		*/
+		 * Method List
+		 * Menampilkan list semua data proyek
+		 * Passing data css dan js yang dibutuhkan di list distributor
+		 */
 		protected function list(){
 			// set config untuk layouting
 			$css = array(
@@ -60,10 +59,10 @@
 		}
 
 		/**
-		* Method get list
-		* Get data semua list distributor yang akan di passing ke dataTable
-		* Request berupa POST dan output berupa JSON
-		*/
+		 * Method get list
+		 * Get data semua list distributor yang akan di passing ke dataTable
+		 * Request berupa POST dan output berupa JSON
+		 */
 		public function get_list(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				// config datatable
@@ -75,7 +74,7 @@
 					'kondisi' => false,
 				);
 
-				$dataDistributor = $this->DistributorModel->getAllDataTable($config_dataTable);
+				$dataDistributor = $this->DataTableModel->getAllDataTable($config_dataTable);
 
 				$data = array();
 				$no_urut = $_POST['start'];
@@ -104,8 +103,8 @@
 
 				$output = array(
 					'draw' => $_POST['draw'],
-					'recordsTotal' => $this->DistributorModel->recordTotal(),
-					'recordsFiltered' => $this->DistributorModel->recordFilter(),
+					'recordsTotal' => $this->DataTableModel->recordTotal(),
+					'recordsFiltered' => $this->DataTableModel->recordFilter(),
 					'data' => $data,
 				);
 
@@ -116,13 +115,13 @@
 		}
 
 		/**
-		* Function action_add
-		* method untuk aksi tambah data
-		* return berupa json
-		* status => status berhasil atau gagal proses tambah
-		* notif => pesan yang akan ditampilkan disistem
-		* error => error apa saja yang ada dari hasil validasi
-		*/
+		 * Function action_add
+		 * method untuk aksi tambah data
+		 * return berupa json
+		 * status => status berhasil atau gagal proses tambah
+		 * notif => pesan yang akan ditampilkan disistem
+		 * error => error apa saja yang ada dari hasil validasi
+		 */
 		public function action_add(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
@@ -195,11 +194,11 @@
 		}
 
 		/**
-		* Function edit
-		* method untuk get data edit
-		* param $id didapat dari url
-		* return berupa json
-		*/
+		 * Function edit
+		 * method untuk get data edit
+		 * param $id didapat dari url
+		 * return berupa json
+		 */
 		public function edit($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$id = strtoupper($id);
@@ -212,13 +211,13 @@
 		}
 
 		/**
-		* Function action_edit
-		* method untuk aksi edit data
-		* return berupa json
-		* status => status berhasil atau gagal proses edit
-		* notif => pesan yang akan ditampilkan disistem
-		* error => error apa saja yang ada dari hasil validasi
-		*/
+		 * Function action_edit
+		 * method untuk aksi edit data
+		 * return berupa json
+		 * status => status berhasil atau gagal proses edit
+		 * notif => pesan yang akan ditampilkan disistem
+		 * error => error apa saja yang ada dari hasil validasi
+		 */
 		public function action_edit(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
@@ -290,10 +289,10 @@
 		}
 
 		/**
-		* Function detail
-		* method untuk get data detail dan setting layouting detail
-		* param $id didapat dari url
-		*/
+		 * Function detail
+		 * method untuk get data detail dan setting layouting detail
+		 * param $id didapat dari url
+		 */
 		public function detail($id){
 			$id = strtoupper($id);
 
@@ -341,11 +340,11 @@
 		}
 
 		/**
-		* Function delete
-		* method yang berfungsi untuk menghapus data
-		* param $id didapat dari url
-		* return json
-		*/
+		 * Function delete
+		 * method yang berfungsi untuk menghapus data
+		 * param $id didapat dari url
+		 * return json
+		 */
 		public function delete($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$id = strtoupper($id);
@@ -360,8 +359,8 @@
 		}
 
 		/**
-		*	Export data ke format Excel
-		*/
+		 * Export data ke format Excel
+		 */
 		public function export(){
 			$row = $this->DistributorModel->export();
 			$header = array_keys($row[0]); 
@@ -376,8 +375,8 @@
 		}
 
 		/**
-		* Fungsi generate id otomatis
-		*/
+		 * Fungsi generate id otomatis
+		 */
 		public function get_last_id(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = !empty($this->DistributorModel->getLastID()['id']) ? $this->DistributorModel->getLastID()['id'] : false;
@@ -400,12 +399,11 @@
 		}
 
 		/**
-		*	Fungsi history pembelian
-		*	di menu Distributor
-		*/
+		 * Fungsi history pembelian
+		 * di menu Distributor
+		 */
 		public function get_history_distributor($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
-				$this->model('DistributorModel');
 				
 				// config datatable
 				$config_dataTable = array(
@@ -416,9 +414,7 @@
 					'kondisi' => 'where id = "'.$id.'"',
 				);
 
-				$dataHistory = $this->DistributorModel->getAllDataTable($config_dataTable);
-
-
+				$dataHistory = $this->DataTableModel->getAllDataTable($config_dataTable);
 
 				$data = array();
 				// $no_urut = $_POST['start'];
@@ -438,8 +434,8 @@
 
 				$output = array(
 					'draw' => $_POST['draw'],
-					'recordsTotal' => $this->DistributorModel->recordTotal(),
-					'recordsFiltered' => $this->DistributorModel->recordFilter(),
+					'recordsTotal' => $this->DataTableModel->recordTotal(),
+					'recordsFiltered' => $this->DataTableModel->recordFilter(),
 					'data' => $data,
 				);
 
@@ -450,11 +446,11 @@
 		}
 
 		/**
-		* Fungsi set_validation
-		* method yang berfungsi untuk validasi inputan secara server side
-		* param $data didapat dari post yang dilakukan oleh user
-		* return berupa array, status hasil pengecekan dan error tiap validasi inputan
-		*/
+		 * Fungsi set_validation
+		 * method yang berfungsi untuk validasi inputan secara server side
+		 * param $data didapat dari post yang dilakukan oleh user
+		 * return berupa array, status hasil pengecekan dan error tiap validasi inputan
+		 */
 		private function set_validation($data){
 
 			// nama
@@ -468,10 +464,7 @@
 			// status
 			$this->validation->set_rules($data['status'], 'Status Distributor', 'status', 'string | 1 | 255 | required');
 
-			return $this->validation->run();
-			
-			
+			return $this->validation->run();	
 		}
-
 
 	}

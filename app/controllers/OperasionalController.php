@@ -1,41 +1,42 @@
 <?php 
-	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	Defined("BASE_PATH") or die(ACCESS_DENIED);
 
 	/**
-	*
-	*/
+	 * 
+	 */
 	class Operasional extends Crud_modalsAbstract{
 
 		private $token;
 		private $status = false;
 
 		/**
-		* load auth, cekAuth
-		* load default model, BankModel
-		* load helper dan validation
-		*/
+		 * load auth, cekAuth
+		 * load default model, BankModel
+		 * load helper dan validation
+		 */
 		public function __construct(){
 			$this->auth();
 			$this->auth->cekAuth();
 			$this->model('OperasionalModel');
+			$this->model('DataTableModel');
 			$this->helper();
 			$this->validation();
 			$this->excel();
 		}	
 
 		/**
-		* Function index
-		* menjalankan method list
-		*/
+		 * Function index
+		 * menjalankan method list
+		 */
 		public function index(){
 			$this->list();
 		}
 
 		/**
-		* Function list
-		* setting layouting list utama
-		* generate token list dan add
-		*/
+		 * Function list
+		 * setting layouting list utama
+		 * generate token list dan add
+		 */
 		protected function list(){
 			// set config untuk layouting
 			$css = array(
@@ -67,11 +68,11 @@
 		}	
 
 		/**
-		* Function get_list
-		* method khusus untuk datatable
-		* generate token edit dan delete
-		* return json
-		*/
+		 * Function get_list
+		 * method khusus untuk datatable
+		 * generate token edit dan delete
+		 * return json
+		 */
 		public function get_list(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				// config datatable
@@ -83,7 +84,7 @@
 					'kondisi' => false,
 				);
 
-				$dataOperasional = $this->OperasionalModel->getAllDataTable($config_dataTable);
+				$dataOperasional = $this->DataTableModel->getAllDataTable($config_dataTable);
 
 				$data = array();
 				$no_urut = $_POST['start'];
@@ -113,8 +114,8 @@
 
 				$output = array(
 					'draw' => $_POST['draw'],
-					'recordsTotal' => $this->OperasionalModel->recordTotal(),
-					'recordsFiltered' => $this->OperasionalModel->recordFilter(),
+					'recordsTotal' => $this->DataTableModel->recordTotal(),
+					'recordsFiltered' => $this->DataTableModel->recordFilter(),
 					'data' => $data,
 				);
 
@@ -127,13 +128,13 @@
 		}
 
 		/**
-		* Function action_add
-		* method untuk aksi tambah data
-		* return berupa json
-		* status => status berhasil atau gagal proses tambah
-		* notif => pesan yang akan ditampilkan disistem
-		* error => error apa saja yang ada dari hasil validasi
-		*/
+		 * Function action_add
+		 * method untuk aksi tambah data
+		 * return berupa json
+		 * status => status berhasil atau gagal proses tambah
+		 * notif => pesan yang akan ditampilkan disistem
+		 * error => error apa saja yang ada dari hasil validasi
+		 */
 		public function action_add(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
@@ -216,11 +217,11 @@
 		}
 
 		/**
-		* Function edit
-		* method untuk get data edit
-		* param $id didapat dari url
-		* return berupa json
-		*/
+		 * Function edit
+		 * method untuk get data edit
+		 * param $id didapat dari url
+		 * return berupa json
+		 */
 		public function edit($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$id = strtoupper($id);
@@ -236,14 +237,14 @@
 				
 		}
 
-		// /**
-		// * Function action_edit
-		// * method untuk aksi edit data
-		// * return berupa json
-		// * status => status berhasil atau gagal proses edit
-		// * notif => pesan yang akan ditampilkan disistem
-		// * error => error apa saja yang ada dari hasil validasi
-		// */
+		/**
+		 * Function action_edit
+		 * method untuk aksi edit data
+		 * return berupa json
+		 * status => status berhasil atau gagal proses edit
+		 * notif => pesan yang akan ditampilkan disistem
+		 * error => error apa saja yang ada dari hasil validasi
+		 */
 		public function action_edit(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
@@ -324,10 +325,10 @@
 		}
 
 		/**
-		* Function detail
-		* method untuk get data detail dan setting layouting detail
-		* param $id didapat dari url
-		*/
+		 * Function detail
+		 * method untuk get data detail dan setting layouting detail
+		 * param $id didapat dari url
+		 */
 		public function detail($id){
 			$id = strtoupper($id);
 			if(empty($id) || $id == "") $this->redirect(BASE_URL."operasional/");
@@ -375,11 +376,11 @@
 		}
 
 		/**
-		* Function delete
-		* method yang berfungsi untuk menghapus data
-		* param $id didapat dari url
-		* return json
-		*/
+		 * Function delete
+		 * method yang berfungsi untuk menghapus data
+		 * param $id didapat dari url
+		 * return json
+		 */
 		public function delete($id){
 			$id = strtoupper($id);
 			
@@ -399,17 +400,17 @@
 		}
 
 		/**
-		* Function get_mutasi
-		* method yang berfungsi untuk get data mutasi bank sesuai dengan id
-		* dipakai di detail data
-		*/
+		 * Function get_mutasi
+		 * method yang berfungsi untuk get data mutasi bank sesuai dengan id
+		 * dipakai di detail data
+		 */
 		public function get_mutasi(){
 		
 		}
 
 		/**
-		*	Export data ke format Excel
-		*/
+		 * Export data ke format Excel
+		 */
 		public function export(){
 			$tgl_awal = $_GET['tgl_awal'];
 			$tgl_akhir = $_GET['tgl_akhir'];
@@ -424,8 +425,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function get_bank(){
 			$this->model('BankModel');
 
@@ -444,11 +445,11 @@
 		}
 
 		/**
-		* Fungsi set_validation
-		* method yang berfungsi untuk validasi inputan secara server side
-		* param $data didapat dari post yang dilakukan oleh user
-		* return berupa array, status hasil pengecekan dan error tiap validasi inputan
-		*/
+		 * Fungsi set_validation
+		 * method yang berfungsi untuk validasi inputan secara server side
+		 * param $data didapat dari post yang dilakukan oleh user
+		 * return berupa array, status hasil pengecekan dan error tiap validasi inputan
+		 */
 		private function set_validation($data){
 		
 			// id_bank

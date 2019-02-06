@@ -1,5 +1,5 @@
 <?php 
-	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	Defined("BASE_PATH") or die(ACCESS_DENIED);
 
 	/**
 	 * Class Bank
@@ -7,15 +7,10 @@
 	 */
 	class Bank extends Crud_modalsAbstract{
 
-		private $token;
-		// private $status = false;
-
-		/** Penambahan beberapa property baru */
 		private $success = false;
 		private $notif = array();
 		private $error = array();
 		private $message = NULL;
-		/** end penambahan */
 
 		/**
 		 * Method __construct
@@ -25,6 +20,7 @@
 			$this->auth();
 			$this->auth->cekAuth();
 			$this->model('BankModel');
+			$this->model('DataTableModel');
 			$this->helper();
 			$this->validation();
 			$this->excel();
@@ -85,7 +81,7 @@
 					'kondisi' => false,
 				);
 
-				$dataBank = $this->BankModel->getAllDataTable($config_dataTable);
+				$dataBank = $this->DataTableModel->getAllDataTable($config_dataTable);
 
 				$data = array();
 				$no_urut = $_POST['start'];
@@ -114,8 +110,8 @@
 
 				$output = array(
 					'draw' => $_POST['draw'],
-					'recordsTotal' => $this->BankModel->recordTotal(),
-					'recordsFiltered' => $this->BankModel->recordFilter(),
+					'recordsTotal' => $this->DataTableModel->recordTotal(),
+					'recordsFiltered' => $this->DataTableModel->recordFilter(),
 					'data' => $data,
 				);
 

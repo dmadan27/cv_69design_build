@@ -1,23 +1,22 @@
 <?php
-	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	Defined("BASE_PATH") or die(ACCESS_DENIED);
 
 	/**
-	* Class Saldo Kas Kecil
-	* Extend Abstract Crud_modalsAbstract
-	*/
-	class Saldo_kas_kecil extends Crud_modalsAbstract{
+	 * Class Saldo Kas Kecil
+	 * Extend Abstract Crud_modalsAbstract
+	 */
+	class Saldo_kas_kecil extends Controller {
 
-		private $token;
-		// private $status = false;
-		// private $success = false;
-		// private $notif = array();
-		// private $error = array();
-		// private $message = NULL;
+		private $status = false;
+		private $success = false;
+		private $notif = array();
+		private $error = array();
+		private $message = NULL;
 
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function __construct(){
 			$this->auth();
 			$this->auth->cekAuth();
@@ -30,15 +29,15 @@
 		}	
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function index(){
 			$this->list();
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		protected function list(){
 			$saldo_kasKecil = $this->UserModel->getKasKecil($_SESSION['sess_email']);
 			$css = array(
@@ -71,8 +70,8 @@
 		}	
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		public function get_list(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				// config datatable
@@ -117,30 +116,9 @@
 			else $this->redirect();
 		}
 
-		public function action_add(){
-
-		}
-
-		public function edit($id){
-
-		}
-
-
-		public function action_edit(){
-
-		}
-
-		public function detail($id){
-
-		}
-
-		public function delete($id){
-
-		}
-
 		/**
-		*	Export data ke format Excel
-		*/
+		 * Export data ke format Excel
+		 */
 		public function export(){
 			$tgl_awal = $_GET['tgl_awal'];
 			$tgl_akhir = $_GET['tgl_akhir'];
@@ -154,10 +132,5 @@
 
 			$this->excel->getExcel('Data Mutasi Saldo Kas Kecil');	
 		}
-
-		
-		/**
-		*	Export data ke format Excel
-		*/
 
 	}

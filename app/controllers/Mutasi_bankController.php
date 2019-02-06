@@ -1,17 +1,16 @@
 <?php
-	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	Defined("BASE_PATH") or die(ACCESS_DENIED);
 
 	/**
-	*
-	*/
+	 * 
+	 */
 	class Mutasi_bank extends Controller{
 
-		private $token;
 		private $status = false;
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function __construct(){
 			$this->auth();
 			$this->auth->cekAuth();
@@ -20,15 +19,15 @@
 		}	
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function index(){
 			$this->list();
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		private function list(){
 			$css = array('assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css');
 			$js = array(
@@ -50,8 +49,8 @@
 		}	
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		public function get_list(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				// config datatable

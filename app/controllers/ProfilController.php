@@ -1,17 +1,17 @@
 <?php
-	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	Defined("BASE_PATH") or die(ACCESS_DENIED);
 
 	/**
-	*
-	*/
+	 * 
+	 */
 	class Profil extends Controller{
 
 		private $token;
 		private $status = false;
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function __construct(){
 			$this->auth();
 			$this->auth->cekAuth();
@@ -21,15 +21,15 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function index(){
 			$this->detail();
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		private function detail(){
 			$css = array(
 				'assets/bower_components/Magnific-Popup-master/dist/magnific-popup.css',
@@ -68,8 +68,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function edit(){
 			$username = $_SESSION['sess_email'];
 
@@ -104,8 +104,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function action_edit(){
 			$id = $_SESSION['sess_id'];
 			$data = isset($_POST) ? $_POST : false;
@@ -197,8 +197,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function edit_foto(){
 			$id = $_SESSION['sess_id'];
 			$foto = isset($_FILES['foto']) ? $_FILES['foto'] : false;
@@ -310,8 +310,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function hapus_foto(){
 			$id = $_SESSION['sess_id'];
 			$notif = array();
@@ -394,8 +394,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function ganti_password(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 
@@ -481,8 +481,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		private function set_validation($data){
 			// nama
 			$this->validation->set_rules($data['nama'], 'Nama', 'nama', 'string | 1 | 255 | required');
@@ -495,8 +495,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		private function set_validation_ganti_password($data){
 			// password lama
 			$this->validation->set_rules($data['password_lama'], 'Password Lama', 'password_lama', 'string | 5 | 255 | required');

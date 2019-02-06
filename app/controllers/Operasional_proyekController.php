@@ -1,40 +1,39 @@
 <?php
-	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	Defined("BASE_PATH") or die(ACCESS_DENIED);
 
 	/**
-	*
-	*/
+	 * 
+	 */
 	class Operasional_proyek extends CrudAbstract{
 
-		// private $token;
-		// private $status = false;
 		private $success = false;
 		private $notif = array();
 		private $error = array();
 		private $message = NULL;
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function __construct(){
 			$this->auth();
 			$this->auth->cekAuth();
 			$this->model('Operasional_proyekModel');
+			$this->model('DataTableModel');
 			$this->helper();
 			$this->validation();
 			$this->excel();
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function index(){
 			$this->list();
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		protected function list(){
 			// set config untuk layouting
 			$css = array(
@@ -64,8 +63,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function get_list(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				// config datatable
@@ -77,7 +76,7 @@
 					'kondisi' => false,
 				);
 
-				$dataOperasionalProyek = $this->Operasional_proyekModel->getAllDataTable($config_dataTable);
+				$dataOperasionalProyek = $this->DataTableModel->getAllDataTable($config_dataTable);
 
 				$data = array();
 				$no_urut = $_POST['start'];
@@ -109,8 +108,8 @@
 
 				$output = array(
 					'draw' => $_POST['draw'],
-					'recordsTotal' => $this->Operasional_proyekModel->recordTotal(),
-					'recordsFiltered' => $this->Operasional_proyekModel->recordFilter(),
+					'recordsTotal' => $this->DataTableModel->recordTotal(),
+					'recordsFiltered' => $this->DataTableModel->recordFilter(),
 					'data' => $data,
 				);
 
@@ -124,8 +123,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function form($id){
 			if($id)	$this->edit(strtoupper($id));
 			else $this->add();
@@ -133,8 +132,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		protected function add(){
 			$css = array(
   				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
@@ -173,17 +172,15 @@
 				'sisa' => '',
 				'status' => '',
 				'status_lunas' => '',
-				'ket' => '',
-				
-					
+				'ket' => '',	
 			);
 
 			$this->layout('operasional_proyek/form', $config, $data);
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function action_add(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
@@ -285,8 +282,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		protected function edit($id){
 			$id = strtoupper($id);
 
@@ -338,10 +335,10 @@
 		}
 
 		/**
-		* Method get edit
-		* Request berupa POST dan output berupa JSON
-		* Parameter id => id proyek
-		*/
+		 * Method get edit
+		 * Request berupa POST dan output berupa JSON
+		 * Parameter id => id proyek
+		 */
 		public function get_edit($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$id = strtoupper($id);
@@ -374,10 +371,10 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function action_edit(){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				$data = isset($_POST) ? $_POST :false;
 				$dataOperasionalProyek = isset($_POST['dataOperasionalProyek']) ? json_decode($_POST['dataOperasionalProyek'], true) : false;
 				$dataDetail = isset($_POST['listDetail']) ? json_decode($_POST['listDetail'], true) : false;	
@@ -386,20 +383,18 @@
 				$toEditList = isset($_POST['toEdit']) ? json_decode($_POST['toEdit'], true) : false;
 
 				$error = $notif = array();
-				if(!$data){
+				if(!$data) {
 					$notif = array(
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
 					);
 				}
-				else{
+				else {
 					$validasi = $this->set_validation($dataOperasionalProyek, $data['action']);
 					$cek = $validasi['cek'];
 					$error = $validasi['error'];
 
-					
-
-					if($cek){
+					if($cek) {
 						$keterangan = 'OPERASIONAL PROYEK ['.$dataOperasionalProyek['id'].'] - '.strtoupper($dataOperasionalProyek['nama']);
 						
 						$dataOperasionalProyek = array(
@@ -419,64 +414,65 @@
 							'keterangan' => $keterangan,
 						);
 
-					$dataUpdate = array(
-							'dataOperasionalProyek' => $dataOperasionalProyek,
-							'dataDetail' => $dataDetail,
-							'dataDetailTambahan' => $dataDetailTambahan,
-							'toDelete' => $toDeleteList,
-							'toEdit' => $toEditList
-					);
-					$res = $this->Operasional_proyekModel->update($dataUpdate);
-					// update data
-					if($res['success']){
+						$dataUpdate = array(
+								'dataOperasionalProyek' => $dataOperasionalProyek,
+								'dataDetail' => $dataDetail,
+								'dataDetailTambahan' => $dataDetailTambahan,
+								'toDelete' => $toDeleteList,
+								'toEdit' => $toEditList
+						);
+						$res = $this->Operasional_proyekModel->update($dataUpdate);
+						// update data
+						if($res['success']){
 
-						$this->success = true;
-							$_SESSION['notif'] = array(
-								'type' => "success",
-								'title' => "Pesan Berhasil",
-								'message' => "Edit Data Proyek Berhasil",
+							$this->success = true;
+								$_SESSION['notif'] = array(
+									'type' => "success",
+									'title' => "Pesan Berhasil",
+									'message' => "Edit Data Proyek Berhasil",
+								);
+								$notif['default'] = $_SESSION['notif'];
+
+						} 
+						else if($res['invalidtotaldetail'] == "invalidTotal") {
+
+							$this->notif['default'] = array(
+								'type' => "warning",
+								'title' => "Pesan Pemberitahuan",
+								'message' => "Cek Kembali List Detail / Total Detail Anda",
 							);
-							$notif['default'] = $_SESSION['notif'];
 
-					} else if($res['invalidtotaldetail'] == "invalidTotal") {
+						} 
+						else {
 
-						$this->notif['default'] = array(
-							'type' => "warning",
-							'title' => "Pesan Pemberitahuan",
-							'message' => "Cek Kembali List Detail / Total Detail Anda",
-						);
+							$this->notif['default'] = array(
+								'type' => "error",
+								'title' => "Pesan Gagal",
+								'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
+							);
 
-					} else {
-
-						$this->notif['default'] = array(
-							'type' => "error",
-							'title' => "Pesan Gagal",
-							'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
-						);
-
+						}
 					}
 
 				}
 
-			}
+				$output = array(
+					'status' => $this->success,
+					'notif' => $this->notif,
+					'error' => $this->error,
+					'cek' => array(
+						'cek' => $cek,
+					),
+					'dataOperasionalProyek' => $dataOperasionalProyek,
+				);
 
-			$output = array(
-				'status' => $this->success,
-				'notif' => $this->notif,
-				'error' => $this->error,
-				'cek' => array(
-					'cek' => $cek,
-				),
-				'dataOperasionalProyek' => $dataOperasionalProyek,
-			);
-
-			echo json_encode($output);			
-		} else $this->redirect();
-	}
+				echo json_encode($output);			
+			} else $this->redirect();
+		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function detail($id){
 			$id = strtoupper($id);
 			$dataOperasionalProyek = !empty($this->Operasional_proyekModel->getById_fromView($id)) ? $this->Operasional_proyekModel->getById_fromView($id) : false;
@@ -591,8 +587,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function delete($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST" && $id != ''){
 				$id = strtoupper($id);
@@ -635,8 +631,8 @@
 		}
 
 		/**
-		*	Export data ke format Excel
-		*/
+		 * Export data ke format Excel
+		 */
 		public function export(){
 			$tgl_awal = $_GET['tgl_awal'];
 			$tgl_akhir = $_GET['tgl_akhir'];
@@ -653,8 +649,8 @@
 		}
 
 		/**
-		*	Export data detail ke format Excel
-		*/
+		 * Export data detail ke format Excel
+		 */
 		public function export_detail(){
 
 			$id = $_GET['id'];
@@ -673,8 +669,8 @@
 		}
 
 		/**
-		*	Export data detail ke format Excel
-		*/
+		 * Export data detail ke format Excel
+		 */
 		public function export_history(){
 
 			$id = $_GET['id'];
@@ -692,8 +688,8 @@
 
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function get_last_id(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$proyek = isset($_POST['get_proyek']) ? $this->validation->validInput($_POST['get_proyek']) : false;
@@ -716,8 +712,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function get_nama_proyek_lama($id = false){
 			$this->model('ProyekModel');
 			$data_nama_proyek = (!$id) ? $this->ProyekModel->getAll() : $this->ProyekModel->getById($id);
@@ -746,8 +742,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function get_nama_proyek(){
 			$this->model('ProyekModel');
 			$data_nama_proyek = $this->ProyekModel->getAll();
@@ -789,8 +785,8 @@
 		
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function get_nama_kas_besar($id = false){
 			$this->model('Kas_besarModel');
 			$data_kas_besar = (!$id) ? $this->Kas_besarModel->getAll() : $this->Kas_besarModel->getById($id);
@@ -815,9 +811,10 @@
 
 			echo json_encode($data);
 		}
+		
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function get_nama_distributor(){
 			$this->model('DistributorModel');
 			$data_distributor = $this->DistributorModel->getAll();
@@ -835,8 +832,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function action_add_detail(){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$data = isset($_POST) ? $_POST : false;
@@ -868,8 +865,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function get_list_history_pembelian($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$config_dataTable = array(
@@ -880,7 +877,7 @@
 					'kondisi' => 'WHERE id = "'.$id.'"',
 				);
 
-				$dataHistoryPembelanjaan = $this->Operasional_proyekModel->getAllDataTable($config_dataTable);
+				$dataHistoryPembelanjaan = $this->DataTableModel->getAllDataTable($config_dataTable);
 				
 				$data = array();
 				// $no_urut = $_POST['start'];
@@ -902,8 +899,8 @@
 
 				$output = array(
 					'draw' => $_POST['draw'],
-					'recordsTotal' => $this->Operasional_proyekModel->recordTotal(),
-					'recordsFiltered' => $this->Operasional_proyekModel->recordFilter(),
+					'recordsTotal' => $this->DataTableModel->recordTotal(),
+					'recordsFiltered' => $this->DataTableModel->recordFilter(),
 					'data' => $data,
 				);
 
@@ -913,8 +910,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function get_detail_operasional_proyek($id){
 			// print_r($id);
 			// exit;
@@ -927,7 +924,7 @@
 					'kondisi' => 'WHERE id = "'.$id.'"',
 				);
 				
-				$dataDetailOperasionalProyek = $this->Operasional_proyekModel->getAllDataTable($config_dataTable);
+				$dataDetailOperasionalProyek = $this->DataTableModel->getAllDataTable($config_dataTable);
 				
 				$data = array();
 				// $no_urut = $_POST['start'];
@@ -954,8 +951,8 @@
 
 				$output = array(
 					'draw' => $_POST['draw'],
-					'recordsTotal' => $this->Operasional_proyekModel->recordTotal(),
-					'recordsFiltered' => $this->Operasional_proyekModel->recordFilter(),
+					'recordsTotal' => $this->DataTableModel->recordTotal(),
+					'recordsFiltered' => $this->DataTableModel->recordFilter(),
 					'data' => $data,
 				);
 
@@ -965,8 +962,8 @@
 		}
 
 		/**
-		* Function validasi form utama
-		*/
+		 * Function validasi form utama
+		 */
 		private function set_validation($data, $action){
 			// $required = ($action =="action-add") ? 'not_required' : 'required';
 
@@ -1047,8 +1044,8 @@
 		}
 
 		/**
-		* Function validasi form detail
-		*/
+		 * Function validasi form detail
+		 */
 		private function set_validation_detail($data){
 			//id_bank
 			$this->validation->set_rules($data['id_bank'], 'ID Bank', 'id_bank', 'string | 1 | 255 | required');

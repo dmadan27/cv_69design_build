@@ -12,8 +12,8 @@
 		private $message = NULL;
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function __construct(){
 			$this->auth();
 			$this->auth->cekAuth();
@@ -243,8 +243,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function edit($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$id = strtoupper($id);
@@ -258,8 +258,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function action_edit(){
 			$data = isset($_POST) ? $_POST : false;
 
@@ -322,10 +322,10 @@
 		}
 
 		/**
-		* Function detail
-		* method untuk get data detail dan setting layouting detail
-		* param $id didapat dari url
-		*/
+		 * Function detail
+		 * method untuk get data detail dan setting layouting detail
+		 * param $id didapat dari url
+		 */
 		public function detail($id){
 			$id = strtoupper($id);
 			if(empty($id) || $id == "") $this->redirect(BASE_URL."sub-kas-kecil/");
@@ -383,8 +383,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function delete($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST" && $id != ''){
 				$id = strtoupper($id);
@@ -418,8 +418,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function get_last_id(){
 			$data = !empty($this->Sub_kas_kecilModel->getLastID()['id']) ? $this->Sub_kas_kecilModel->getLastID()['id'] : false;
 
@@ -436,8 +436,8 @@
 		}
 
 		/**
-		*	Export data ke format Excel
-		*/
+		 * Export data ke format Excel
+		 */
 		public function export(){
 			$row = $this->Sub_kas_kecilModel->export();
 			$header = array_keys($row[0]); 
@@ -451,6 +451,9 @@
 			
 		}
 
+		/**
+		 * 
+		 */
 		public function get_mutasi($id){
 			$id = strtoupper($id);
 			
@@ -492,6 +495,9 @@
 			echo json_encode($output);
 		}
 
+		/**
+		 * 
+		 */
 		public function get_history_pengajuan($id){
 			$id = strtoupper($id);
 			
@@ -537,11 +543,11 @@
 		}
 
 		/**
-		* Fungsi set_validation
-		* method yang berfungsi untuk validasi inputan secara server side
-		* param $data didapat dari post yang dilakukan oleh user
-		* return berupa array, status hasil pengecekan dan error tiap validasi inputan
-		*/
+		 * Fungsi set_validation
+		 * method yang berfungsi untuk validasi inputan secara server side
+		 * param $data didapat dari post yang dilakukan oleh user
+		 * return berupa array, status hasil pengecekan dan error tiap validasi inputan
+		 */
 		private function set_validation($data){
 			$required = ($data['action'] == "action-edit") ? 'not_required' : 'required';
 
