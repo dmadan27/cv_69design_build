@@ -37,6 +37,15 @@
 		}
 
 		/**
+		 * Method excel v2
+		 * Proses untuk load library Excel_v2.class.php
+		 * @param excel {string} default excel_v2
+		 */
+		final protected function excel_v2($excel = 'excel_v2') {					
+			$this->$excel = new Excel_v2();
+		}
+
+		/**
 		 * Method auth
 		 * Proses untuk load library Auth.class.php
 		 * @param auth {string} default auth

@@ -19,6 +19,7 @@
 	require_once "app/library/Helper.class.php";
 	require_once "app/library/Validation.class.php";
 	require_once "app/library/Excel.class.php";
+	require_once "app/library/Excel_v2.class.php";
 
 	// load abstract
 	require_once "app/abstracts/CrudAbstract.php";

@@ -28,6 +28,7 @@
 			$this->helper();
 			$this->validation();
 			$this->excel();
+			$this->excel_v2();
 		}	
 
 		/**
@@ -422,14 +423,38 @@
 		 */
 		public function export(){
 			$row = $this->BankModel->export();
-			$header = array_keys($row[0]); 
+			$column = array_keys($row[0]);
 
-			$this->excel->setProperty('Data Bank Cv. 69 Design Build', 'Data Bank', 'List Semua Data Bank CV. 69 Design Build');
-			$this->excel->setData($header, $row);
-			$this->excel->getData('Bank', 'Bank', 2, 3);
+			$detailRow = $this->BankModel->export_mutasi(3, '2018-01-01', '2019-02-27');
+			$detailColumn = array_keys($detailRow[0]);
+			$detailColumn[1] = 'ID BANK';
+			$detail = array(
+				array(
+					'row' => $detailRow,
+					'column' => $detailColumn,
+					'sheet' => 'Data Mutasi'
+				)
+			);
 
-			$this->excel->getExcel('Data Bank');
+			$config = array(
+				'data' => array(
+					'main' => array(
+						'row' => $row,
+						'column' => $column,
+						'sheet' => 'Data Bank'
+					),
+					'detail' => $detail
+				),
+				'property' => array(
+					'title' => 'Data Bank',
+					'subject' => 'Data Bank Cv. 69 Design Build',
+					'description' => 'List Semua Data Bank CV. 69 Design Build' 
+				)
+			); 
 			
+			$this->excel_v2->setProperty($config['property']);
+			$this->excel_v2->setData($config['data']['main'], $config['data']['detail']);
+			$this->excel_v2->getExcel(1, 2);
 		}
 
 		/**
