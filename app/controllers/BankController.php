@@ -179,7 +179,7 @@
 				}
 
 				$output = array(
-					'status' => $this->success,
+					'success' => $this->success,
 					'notif' => $this->notif,
 					'error' => $this->error,
 					'message' => $this->message
@@ -266,7 +266,7 @@
 				}
 
 				$output = array(
-					'status' => $this->success,
+					'success' => $this->success,
 					'notif' => $this->notif,
 					'error' => $this->error,
 					'message' => $this->message
@@ -373,7 +373,6 @@
 		 */
 		public function get_mutasi($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
-				$this->model('Mutasi_bankModel');
 				
 				// config datatable
 				$config_dataTable = array(
@@ -384,7 +383,7 @@
 					'kondisi' => 'WHERE id_bank = '.$id.' ',
 				);
 
-				$dataMutasi = $this->Mutasi_bankModel->getAllDataTable($config_dataTable);
+				$dataMutasi = $this->DataTableModel->getAllDataTable($config_dataTable);
 
 				$data = array();
 				$no_urut = $_POST['start'];
@@ -404,8 +403,8 @@
 
 				$output = array(
 					'draw' => $_POST['draw'],
-					'recordsTotal' => $this->Mutasi_bankModel->recordTotal(),
-					'recordsFiltered' => $this->Mutasi_bankModel->recordFilter(),
+					'recordsTotal' => $this->DataTableModel->recordTotal(),
+					'recordsFiltered' => $this->DataTableModel->recordFilter(),
 					'data' => $data,
 				);
 

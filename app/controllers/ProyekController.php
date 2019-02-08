@@ -20,6 +20,7 @@
 			$this->auth();
 			$this->auth->cekAuth();
 			$this->model('ProyekModel');
+			$this->model('DataTableModel');
 			$this->helper();
 			$this->validation();
 			$this->excel();
@@ -74,7 +75,7 @@
 					'kondisi' => false,
 				);
 
-				$dataProyek = $this->ProyekModel->getAllDataTable($config_dataTable);
+				$dataProyek = $this->DataTableModel->getAllDataTable($config_dataTable);
 
 				$data = array();
 				$no_urut = $_POST['start'];
@@ -116,8 +117,8 @@
 
 				$output = array(
 					'draw' => $_POST['draw'],
-					'recordsTotal' => $this->ProyekModel->recordTotal(),
-					'recordsFiltered' => $this->ProyekModel->recordFilter(),
+					'recordsTotal' => $this->DataTableModel->recordTotal(),
+					'recordsFiltered' => $this->DataTableModel->recordFilter(),
 					'data' => $data,
 				);
 
@@ -650,8 +651,7 @@
 					'kondisi' => 'WHERE id_proyek = "'.$id.'"',
 				);
 
-				$this->model('Pengajuan_sub_kas_kecilModel');
-				$dataPengajuan = $this->Pengajuan_sub_kas_kecilModel->getAllDataTable($config_dataTable);
+				$dataPengajuan = $this->DataTableModel->getAllDataTable($config_dataTable);
 
 				$data = array();
 				$no_urut = $_POST['start'];
@@ -695,8 +695,8 @@
 
 				$output = array(
 					'draw' => $_POST['draw'],
-					'recordsTotal' => $this->Pengajuan_sub_kas_kecilModel->recordTotal(),
-					'recordsFiltered' => $this->Pengajuan_sub_kas_kecilModel->recordFilter(),
+					'recordsTotal' => $this->DataTableModel->recordTotal(),
+					'recordsFiltered' => $this->DataTableModel->recordFilter(),
 					'data' => $data,
 				);
 
@@ -723,8 +723,7 @@
 					'kondisi' => 'WHERE id_proyek = "'.$proyek.'"',
 				);
 
-				$this->model('Operasional_proyekModel');
-				$dataOperasional = $this->Operasional_proyekModel->getAllDataTable($config_dataTable);
+				$dataOperasional = $this->DataTableModel->getAllDataTable($config_dataTable);
 
 				$data = array();
 				$no_urut = $_POST['start'];
@@ -756,8 +755,8 @@
 
 				$output = array(
 					'draw' => $_POST['draw'],
-					'recordsTotal' => $this->Operasional_proyekModel->recordTotal(),
-					'recordsFiltered' => $this->Operasional_proyekModel->recordFilter(),
+					'recordsTotal' => $this->DataTableModel->recordTotal(),
+					'recordsFiltered' => $this->DataTableModel->recordFilter(),
 					'data' => $data,
 				);
 

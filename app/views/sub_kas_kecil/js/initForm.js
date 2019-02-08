@@ -19,8 +19,8 @@ $(document).ready(function(){
 	// submit skc
 	$('#form_skc').submit(function(e){
 		e.preventDefault();
-		// submit();
-		save_foto();
+		submit();
+		// save_foto();
 
 		return false;
 	});

@@ -208,7 +208,7 @@ function submit(){
 		},
 		success: function(response){
 			console.log('Response submit Bank: ', response);
-			if(!response.status) {
+			if(!response.success) {
 				$('#submit_bank').prop('disabled', false);
 				$('#submit_bank').html($('#submit_bank').text());
 				setError(response.error);

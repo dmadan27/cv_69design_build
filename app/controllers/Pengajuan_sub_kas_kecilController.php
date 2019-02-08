@@ -307,6 +307,25 @@
 				'css' => $css,
 				'js' => $js,
 			);
+			
+			switch ($dataPengajuan['status_order']) {
+				case '1': // pending
+					$status = '<span class="label label-primary">';
+					break;
+
+				case '2': // perbaiki
+					$status = '<span class="label label-warning">';
+					break;
+				
+				case '3': // disetujui
+				case '4': // langsung
+					$status = '<span class="label label-success">';
+					break;
+
+				default: // ditolak
+					$status = '<span class="label label-danger">';
+			}
+			$status .= $dataPengajuan['status'].'</span>';
 
 			$parsing_dataPengajuan = array(
 				'id' => $dataPengajuan['id'],
@@ -316,7 +335,7 @@
 				'nama_pengajuan' => $dataPengajuan['nama_pengajuan'],
 				'total' => $this->helper->cetakRupiah($dataPengajuan['total']),
 				'dana_disetujui' => $this->helper->cetakRupiah($dataPengajuan['dana_disetujui']),
-				'status' => $dataPengajuan['status']
+				'status' => $status
 			);
 
 			$dataDetail = !empty($this->Pengajuan_sub_kas_kecilModel->getDetailById($id)) ? 
@@ -324,8 +343,12 @@
 			
 			$parsing_dataDetail = array();
 			if($dataDetail) {
+				$no_urut = 0;
 				foreach($dataDetail as $row) {
 					$dataRow = array();
+
+					$no_urut++;
+					$dataRow['no_urut'] = $no_urut;
 					$dataRow['nama'] = $row['nama'];
 					$dataRow['jenis'] = $row['jenis'];
 					$dataRow['satuan'] = $row['satuan'];
@@ -342,8 +365,8 @@
 				'data_detail' => $parsing_dataDetail
 			);
 
-			// $this->layout('pengajuan_sub_kas_kecil/view', $config, $data);
-			$this->view('pengajuan_sub_kas_kecil/view', $data);
+			$this->layout('pengajuan_sub_kas_kecil/view', $config, $data);
+			// $this->view('pengajuan_sub_kas_kecil/view', $data);
 		}
 
 		/**
