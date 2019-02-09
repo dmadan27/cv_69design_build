@@ -189,6 +189,13 @@
         JOIN bank b ON b.id = dp.id_bank;
         -- WHERE p.id = ''
 
+	-- View proyek untuk dashboard
+		CREATE OR REPLACE VIEW v_proyek_dashboard AS
+		SELECT detail_proyek.id_proyek, SUM(detail_proyek.total)  AS total, proyek.status AS status 
+			FROM detail_proyek
+			JOIN proyek ON proyek.id = detail_proyek.id_proyek
+		GROUP BY detail_proyek.id_proyek;
+
     -- ================================================================= --
 	-- View Proyek -- END --
 	-- ================================================================= --
@@ -243,7 +250,8 @@
     FROM pengajuan_sub_kas_kecil pskk
     LEFT JOIN detail_pengajuan_sub_kas_kecil dpskk ON dpskk.id_pengajuan = pskk.id
     JOIN sub_kas_kecil skk ON skk.id = pskk.id_sub_kas_kecil
-    JOIN proyek p ON p.id = pskk.id_proyek;
+    JOIN proyek p ON p.id = pskk.id_proyek
+	GROUP BY pskk.id;
 
     -- ================================================================= --
 	-- View Laporan Pengajuan Sub Kas Kecil -- END --
@@ -329,8 +337,29 @@
     SELECT mskk.id , mskk.id_kas_kecil ID_KAS_KECIL, mskk.tgl TANGGAL, 
         mskk.uang_masuk  'UANG MASUK', mskk.uang_keluar 'UANG KELUAR',
         mskk.ket KETERANGAN
-    FROM mutasi_saldo_kas_kecil mskk
+    FROM mutasi_saldo_kas_kecil mskk;
 
 	-- ================================================================= --
 	-- View Mutasi Saldo Kas Kecil -- END --
+	-- ================================================================= --
+
+	-- ================================================================= --
+	-- View Bank -- START --
+	-- ================================================================= --
+
+	CREATE OR REPLACE VIEW v_mutasi_bank_export AS
+	SELECT 
+		mutasi_bank.id ID,
+		mutasi_bank.id_bank,
+		bank.nama 'BANK',
+		mutasi_bank.tgl TANGGAL,
+		mutasi_bank.uang_masuk 'UANG MASUK',
+		mutasi_bank.uang_keluar 'UANG KELUAR',
+		mutasi_bank.saldo SALDO,
+		mutasi_bank.ket KETERANGAN
+	FROM mutasi_bank
+	JOIN bank ON bank.id = mutasi_bank.id_bank;
+
+		-- ================================================================= --
+	-- View Bank -- END --
 	-- ================================================================= --

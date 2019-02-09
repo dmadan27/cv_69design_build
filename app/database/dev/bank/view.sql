@@ -9,4 +9,4 @@ SELECT
     mutasi_bank.saldo SALDO,
     mutasi_bank.ket KETERANGAN
 FROM mutasi_bank
-JOIN bank ON bank.id = mutasi_bank.id_bank
+JOIN bank ON bank.id = mutasi_bank.id_bank;
