@@ -334,7 +334,7 @@
 					$dataRow = array();
 
 					$no_urut++;
-					$dataRow['no_urut'] = $row['no_urut'];
+					$dataRow['no_urut'] = $no_urut;
 					$dataRow['nama'] = $row['nama'];
 					$dataRow['jenis'] = $row['jenis'];
 					$dataRow['satuan'] = $row['satuan'];

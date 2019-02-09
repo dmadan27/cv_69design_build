@@ -143,9 +143,11 @@
                     <div class="box-body">
                         <?php
                             if(!empty($bukti_laporan)) {
+                                $i = 0;
                                 foreach($bukti_laporan as $item) {
-                                    echo '<a href="'.$item.'" class="image-popup" title="Bukti Laporan "'.$i.'>';
-                                    echo '<img src="'.$item.'" class="profile-user-img img-responsive margin">';
+                                    $i++;
+                                    echo '<a href="'.$item['foto'].'" class="image-popup" title="Bukti Laporan "'.$i.'>';
+                                    echo '<img src="'.$item['foto'].'" class="profile-user-img img-responsive margin">';
                                     echo '</a>';
                                 }
                             }
