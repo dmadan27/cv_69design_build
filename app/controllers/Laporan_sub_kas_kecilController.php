@@ -274,9 +274,11 @@
 			}
 
 			$css = array(
+				'assets/bower_components/Magnific-Popup-master/dist/magnific-popup.css',
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css'
 			);
 			$js = array(
+				'assets/bower_components/Magnific-Popup-master/dist/jquery.magnific-popup.min.js',
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 				'app/views/laporan_sub_kas_kecil/js/initView.js',
@@ -291,6 +293,24 @@
 				'js' => $js,
 			);
 
+			switch ($dataLaporan['status_order']) {
+				case '1': // pending
+					$status = '<span class="label label-primary">';
+					break;
+
+				case '2': // perbaiki
+					$status = '<span class="label label-warning">';
+					break;
+				
+				case '3': // disetujui
+					$status = '<span class="label label-success">';
+					break;
+
+				default: // ditolak
+					$status = '<span class="label label-danger">';
+			}
+			$status .= $dataLaporan['status_laporan'].'</span>';
+
 			$parsing_dataLaporan = array(
 				'id' => $dataLaporan['id'],
 				'skk' => $dataLaporan['id_sub_kas_kecil'].' - '.$dataLaporan['nama_skk'],
@@ -299,7 +319,7 @@
 				'nama_pengajuan' => $dataLaporan['nama_pengajuan'],
 				'total' => $this->helper->cetakRupiah($dataLaporan['total']),
 				'total_asli' => $this->helper->cetakRupiah($dataLaporan['total_asli']),
-				'status' => $dataLaporan['status_laporan']
+				'status' => $status
 			);
 
 			$dataDetail = !empty($this->Laporan_sub_kas_kecilModel->getDetailById($id)) ? 
@@ -309,8 +329,12 @@
 
 			$parsing_dataDetail = array();
 			if($dataDetail) {
+				$no_urut = 0;
 				foreach($dataDetail as $row) {
 					$dataRow = array();
+
+					$no_urut++;
+					$dataRow['no_urut'] = $row['no_urut'];
 					$dataRow['nama'] = $row['nama'];
 					$dataRow['jenis'] = $row['jenis'];
 					$dataRow['satuan'] = $row['satuan'];
@@ -331,8 +355,8 @@
 				'action' => $cekAction
 			);
 
-			// $this->layout('pengajuan_sub_kas_kecil/view', $config, $data);
-			$this->view('laporan_sub_kas_kecil/view', $data);
+			$this->layout('laporan_sub_kas_kecil/view', $config, $data);
+			// $this->view('laporan_sub_kas_kecil/view', $data);
 		}
 
 		/**
