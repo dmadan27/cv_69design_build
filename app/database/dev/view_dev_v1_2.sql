@@ -189,13 +189,6 @@
         JOIN bank b ON b.id = dp.id_bank;
         -- WHERE p.id = ''
 
-	-- View proyek untuk dashboard
-		CREATE OR REPLACE VIEW v_proyek_dashboard AS
-		SELECT detail_proyek.id_proyek, SUM(detail_proyek.total)  AS total, proyek.status AS status 
-			FROM detail_proyek
-			JOIN proyek ON proyek.id = detail_proyek.id_proyek
-		GROUP BY detail_proyek.id_proyek;
-
     -- ================================================================= --
 	-- View Proyek -- END --
 	-- ================================================================= --
@@ -360,6 +353,21 @@
 	FROM mutasi_bank
 	JOIN bank ON bank.id = mutasi_bank.id_bank;
 
-		-- ================================================================= --
+	-- ================================================================= --
+	-- View Bank -- END --
+	-- ================================================================= --
+
+	-- ================================================================= --
+	-- View Dashboard -- START --
+	-- ================================================================= --
+
+	-- View proyek untuk dashboard
+	CREATE OR REPLACE VIEW v_proyek_dashboard AS
+	SELECT detail_proyek.id_proyek, SUM(detail_proyek.total)  AS total, proyek.status AS status 
+		FROM detail_proyek
+		JOIN proyek ON proyek.id = detail_proyek.id_proyek
+	GROUP BY detail_proyek.id_proyek;
+
+	-- ================================================================= --
 	-- View Bank -- END --
 	-- ================================================================= --
