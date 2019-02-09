@@ -1884,7 +1884,7 @@
 				email_param,foto_param,saldo_param,status_param);
 
 		-- insert mutasi awal
-		INSERT INTO mutasi_saldo_kas_kecil 
+		INSERT INTO mutasi_saldo_sub_kas_kecil 
 			(id_sub_kas_kecil, tgl, uang_masuk, uang_keluar, saldo, ket)
 		VALUES
 			(id_param, tgl_param, saldo_param, 0, saldo_param, 'SALDO AWAL');
