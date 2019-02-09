@@ -291,11 +291,14 @@
 			if((empty($id) || $id == "") || !$dataPengajuan) { $this->redirect(BASE_URL."pengajuan-sub-kas-kecil/"); }
 
 			$css = array(
+				'assets/bower_components/select2/dist/css/select2.min.css',
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css'
 			);
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
+				'assets/bower_components/select2/dist/js/select2.full.min.js',
 				'app/views/pengajuan_sub_kas_kecil/js/initView.js',
 			);
 

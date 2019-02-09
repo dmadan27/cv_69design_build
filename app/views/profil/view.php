@@ -123,7 +123,7 @@
 
 	                					<!-- Password Baru -->
 	                					<div class="form-group field-password_baru has-feedback">
-	                						<label for="password_baru" class="col-sm-2 control-label">Password Lama</label>
+	                						<label for="password_baru" class="col-sm-2 control-label">Password Baru</label>
 	                						<div class="col-sm-10">
 	                							<input type="password" id="password_baru" class="form-control field" placeholder="Masukkan Password Baru">
 	                							<span class="help-block small pesan pesan-password_baru"></span>
@@ -132,7 +132,7 @@
 
 	                					<!-- Konfirmasi Password -->
 	                					<div class="form-group field-password_konf has-feedback">
-	                						<label for="password_konf" class="col-sm-2 control-label">Password Lama</label>
+	                						<label for="password_konf" class="col-sm-2 control-label">Konfirmasi Password</label>
 	                						<div class="col-sm-10">
 	                							<input type="password" id="password_konf" class="form-control field" placeholder="Masukkan Konfrimasi Password">
 	                							<span class="help-block small pesan pesan-password_konf"></span>

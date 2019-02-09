@@ -73,8 +73,8 @@ $(document).ready(function(){
 });
 
 /**
-*
-*/
+ * 
+ */
 function getEdit(){
 	resetForm();
 	$.ajax({
@@ -102,8 +102,8 @@ function getEdit(){
 }
 
 /**
-*
-*/
+ * 
+ */
 function submit_profil(){
 	var data = {
 		'nama' : $('#nama').val().trim(),
@@ -148,8 +148,8 @@ function submit_profil(){
 }
 
 /**
-*
-*/
+ * 
+ */
 function submit_foto(){
 	var data = new FormData();
 	data.append('foto', $("#foto")[0].files[0]);
@@ -195,8 +195,8 @@ function submit_foto(){
 }
 
 /**
-*
-*/
+ * 
+ */
 function delete_foto(){
 	swal({
 		title: "Pesan Konfirmasi",
@@ -243,8 +243,8 @@ function delete_foto(){
 }
 
 /**
-*
-*/
+ * 
+ */
 function submit_ganti_password(){
 	$.ajax({
 		url: BASE_URL+'profil/ganti-password/',
@@ -284,8 +284,9 @@ function submit_ganti_password(){
 }
 
 /**
-*
-*/
+ * 
+ * @param {*} value 
+ */
 function setValue(value){
 	$.each(value, function(index, item){
 		item = (parseFloat(item)) ? (parseFloat(item)) : item;
@@ -294,8 +295,9 @@ function setValue(value){
 }
 
 /**
-*
-*/
+ * 
+ * @param {*} error 
+ */
 function setError(error){
 	$.each(error, function(index, item){
 		console.log(index);
@@ -312,8 +314,8 @@ function setError(error){
 }
 
 /**
-*
-*/
+ * 
+ */
 function resetForm(){
 	// trigger reset form
 	$('#form_edit_profil').trigger('reset');
@@ -326,8 +328,8 @@ function resetForm(){
 }
 
 /**
-*
-*/
+ * 
+ */
 function resetForm_ganti_password(){
 	$('#form_ganti_password').trigger('reset');
 
@@ -339,8 +341,8 @@ function resetForm_ganti_password(){
 }
 
 /**
-*
-*/
+ * 
+ */
 function clearDropify(){
 	var foto = $('#foto').dropify();
 	foto = foto.data('dropify');

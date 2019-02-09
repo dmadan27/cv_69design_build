@@ -38,6 +38,11 @@
                             echo "</pre>";
                         ?> -->
                         <table class="table table-hover">
+                            <!-- ID -->
+                            <tr>
+                                <td><strong>ID</strong></td>
+                                <td><?= $laporan['id'] ?></td>
+                            </tr>
                             <!-- SKK -->
                             <tr>
                                 <td><strong>Sub Kas Kecil</strong></td>
@@ -80,8 +85,14 @@
                                 <td><?= $laporan['status'] ?></td>
                             </tr>
                         </table>
-                        </br>
-                        <button class="btn btn-success btn-block">Edit Status Pengajuan</button>	
+                        <?php
+                            if($this->data['action']) {
+                                ?>
+                                </br>
+                                <button class="btn btn-success btn-block" onclick="getEdit('<?= strtolower($laporan['id']); ?>')">Edit Status Pengajuan</button>
+                                <?php
+                            }
+                        ?>	
 					</div>
 				</div>
 			</div>
@@ -94,7 +105,7 @@
                     </div>
                     <div class="box-body">
                         <div class="table-responsive">
-                            <table class="table table-hover table-border" style="width: 100%">
+                            <table id="table_detail" class="table table-hover table-border" style="width: 100%">
                                 <thead>
                                     <tr>
                                         <th class="text-right" style="width: 35px">No</th>
@@ -147,9 +158,12 @@
                                 foreach($bukti_laporan as $item) {
                                     $i++;
                                     echo '<a href="'.$item['foto'].'" class="image-popup" title="Bukti Laporan "'.$i.'>';
-                                    echo '<img src="'.$item['foto'].'" class="profile-user-img img-responsive margin">';
+                                    echo '<img src="'.$item['foto'].'" class="profile-user-img margin">';
                                     echo '</a>';
                                 }
+                            }
+                            else {
+                                echo '<p class="text-center">Tidak Ada Bukti Laporan</p>';
                             }
                         ?>
                     </div>
@@ -176,5 +190,5 @@
   		</div>			
 	</section>
 	<!-- /.content -->
-
+    <?php include_once('form.php'); ?>
 </div>

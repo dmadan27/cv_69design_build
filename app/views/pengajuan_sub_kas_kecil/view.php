@@ -37,6 +37,11 @@
                             echo "</pre>";
                         ?> -->
                         <table class="table table-hover">
+                            <!-- ID -->
+                            <tr>
+                                <td><strong>ID</strong></td>
+                                <td><?= $pengajuan['id'] ?></td>
+                            </tr>
                             <!-- SKK -->
                             <tr>
                                 <td><strong>Sub Kas Kecil</strong></td>
@@ -80,7 +85,7 @@
                             </tr>
                         </table>
                         </br>
-                        <button class="btn btn-success btn-block">Edit Status Pengajuan</button>	
+                        <button class="btn btn-success btn-block" onclick="getEdit('<?= strtolower($pengajuan['id']); ?>')">Edit Status Pengajuan</button>	
 					</div>
 				</div>
 			</div>
@@ -93,7 +98,7 @@
                     </div>
                     <div class="box-body">
                         <div class="table-responsive">
-                            <table class="table table-hover table-border" style="width: 100%">
+                            <table id="table_detail" class="table table-hover table-border" style="width: 100%">
                                 <thead>
                                     <tr>
                                         <th class="text-right" style="width: 35px">No</th>
@@ -148,5 +153,5 @@
   		</div>			
 	</section>
 	<!-- /.content -->
-
+    <?php include_once('form.php'); ?>
 </div>

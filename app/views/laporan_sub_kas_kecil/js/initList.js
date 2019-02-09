@@ -56,8 +56,7 @@ function getExport() {
 /**
  * 
  */
-function getEdit(id, action = '') {
-    if(action === '') { window.location.href = BASE_URL+'laporan-sub-kas-kecil/detail/'+id.toLowerCase(); }
-    else if (action !== '') { window.location.href = BASE_URL+'laporan-sub-kas-kecil/detail/'+id.toLowerCase()+'?action='+action; }
+function getEdit(id) {
+    window.location.href = BASE_URL+'laporan-sub-kas-kecil/detail/'+id.toLowerCase();
 }
 

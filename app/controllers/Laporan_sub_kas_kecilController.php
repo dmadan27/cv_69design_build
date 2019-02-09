@@ -83,12 +83,12 @@
 				foreach($dataLaporan as $row){
 					$no_urut++;
 
-					$base64_edit = rtrim(strtr(base64_encode($row["id"].' EDIT'), '+/', '-_'), '=');
+					// $base64_edit = rtrim(strtr(base64_encode($row["id"].' EDIT'), '+/', '-_'), '=');
 
 					// button aksi
-					$aksiDetail = '<button onclick="getEdit('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-					$aksiEdit = '<button onclick="getEdit('."'".strtolower($row["id"])."'".', '."'".$base64_edit."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Status Pengajuan"><i class="fa fa-pencil"></i></button>';
-					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.'</div>';
+					// $aksiDetail = '<button onclick="getEdit('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+					$aksiEdit = '<button onclick="getEdit('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+					$aksi = '<div class="btn-group">'.$aksiEdit.'</div>';
 
 					switch ($row['status_order']) {
 						case '1': // pending
@@ -96,17 +96,17 @@
 							break;
 
 						case '2': // perbaiki
-							$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
+							// $aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
 							$status = '<span class="label label-warning">';
 							break;
 						
 						case '3': // disetujui
-							$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
+							// $aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
 							$status = '<span class="label label-success">';
 							break;
 
 						default: // ditolak
-							$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
+							// $aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
 							$status = '<span class="label label-danger">';
 					}
 					$status .= $row['status_laporan'].'</span>';
@@ -147,12 +147,10 @@
 				if(empty($id) || $id == "") { $this->redirect(BASE_URL."laporan-sub-kas-kecil"); }
 				
 				
-				$dataPengajuan = $this->Pengajuan_sub_kas_kecilModel->getById($id);
-				$dataSaldoSkc = $this->Sub_kas_kecilModel->getSaldoById($dataPengajuan['id_sub_kas_kecil']);
-				$dataPengajuan['saldo'] = $dataSaldoSkc['saldo'];
+				$dataLaporan = $this->Laporan_sub_kas_kecilModel->getById($id);
 
 				$output = array(
-					'data' => $dataPengajuan
+					'data' => $dataLaporan
 				);
 
 				echo json_encode($output);
@@ -266,21 +264,23 @@
 			if((empty($id) || $id == "") || !$dataLaporan) { $this->redirect(BASE_URL."laporan-sub-kas-kecil/"); }
 
 			$cekAction = false;
-			$action = (isset($_GET['action']) && $_GET['action'] != '') ? $_GET['action'] : false;
-			if($action) {
-				$cek = base64_decode(str_pad(strtr($action, '-_', '+/'), strlen($action) % 4, '=', STR_PAD_RIGHT));
-				$veriry = $id.' EDIT';
-				if($cek === $veriry) { $cekAction = true; }
-			}
+			// $action = (isset($_GET['action']) && $_GET['action'] != '') ? $_GET['action'] : false;
+			// if($action) {
+				// $cek = base64_decode(str_pad(strtr($action, '-_', '+/'), strlen($action) % 4, '=', STR_PAD_RIGHT));
+				// $veriry = $id.' EDIT';
+				if($dataLaporan['status_order'] == '1' ) { $cekAction = true; }
+			// }
 
 			$css = array(
 				'assets/bower_components/Magnific-Popup-master/dist/magnific-popup.css',
+				'assets/bower_components/select2/dist/css/select2.min.css',
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css'
 			);
 			$js = array(
 				'assets/bower_components/Magnific-Popup-master/dist/jquery.magnific-popup.min.js',
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/bower_components/select2/dist/js/select2.full.min.js',
 				'app/views/laporan_sub_kas_kecil/js/initView.js',
 			);
 
