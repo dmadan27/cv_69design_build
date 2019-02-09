@@ -12,4 +12,5 @@ SELECT
 FROM pengajuan_sub_kas_kecil pskk
 LEFT JOIN detail_pengajuan_sub_kas_kecil dpskk ON dpskk.id_pengajuan = pskk.id
 JOIN sub_kas_kecil skk ON skk.id = pskk.id_sub_kas_kecil
-JOIN proyek p ON p.id = pskk.id_proyek;
+JOIN proyek p ON p.id = pskk.id_proyek
+GROUP BY pskk.id;

@@ -44,7 +44,13 @@
 			(id_kas_kecil_param, tgl_param, 0, dana_disetujui_param, (get_saldo_kas_kecil - dana_disetujui_param), ket_kas_kecil_param);
 
 		-- update pengajuan sub kas kecil
-		UPDATE pengajuan_sub_kas_kecil SET dana_disetujui = dana_disetujui_param, status = '3' WHERE id = id_param;
+		UPDATE 
+			pengajuan_sub_kas_kecil 
+		SET 
+			dana_disetujui = dana_disetujui_param, 
+			status = '3',
+			status_laporan = '0' 
+		WHERE id = id_param;
 
 		-- update saldo sub kas kecil
 		UPDATE sub_kas_kecil SET saldo = (get_saldo_sub_kas_kecil + dana_disetujui_param) WHERE id = id_sub_kas_kecil_param;
