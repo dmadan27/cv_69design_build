@@ -22,9 +22,9 @@ CREATE TABLE IF NOT EXISTS user(
 	status enum('AKTIF', 'NONAKTIF'), -- status aktif username
 
 	CONSTRAINT pk_user_username PRIMARY KEY(username),
-	CONSTRAINT fk_user_created_by FOREIGN KEY(created_by) ON REFERENCES user(username)
+	CONSTRAINT fk_user_created_by FOREIGN KEY(created_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_user_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_user_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
@@ -45,9 +45,9 @@ CREATE TABLE IF NOT EXISTS menu(
 	position tinyint,
 
 	CONSTRAINT pk_menu_id PRIMARY KEY(id),
-	CONSTRAINT fk_menu_created_by FOREIGN KEY(created_by) ON REFERENCES user(username)
-		ON DELETE SET NULL ON UPDATE CASCADE
-	CONSTRAINT fk_menu_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_menu_created_by FOREIGN KEY(created_by) REFERENCES user(username)
+		ON DELETE SET NULL ON UPDATE CASCADE,
+	CONSTRAINT fk_menu_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
@@ -66,11 +66,11 @@ CREATE TABLE IF NOT EXISTS detail_menu(
 	-- 1: Read, 2: Add, 3: Update, 4: Delete, 5: Export
 
 	CONSTRAINT pk_detail_menu_id PRIMARY KEY(id),
-	CONSTRAINT fk_detail_menu_menu_id FOREIGN KEY(menu_id) ON REFERENCES menu(id)
+	CONSTRAINT fk_detail_menu_menu_id FOREIGN KEY(menu_id) REFERENCES menu(id)
 		ON DELETE RESTRICT ON UPDATE CASCADE,
-	CONSTRAINT fk_detail_menu_created_by FOREIGN KEY(created_by) ON REFERENCES user(username)
+	CONSTRAINT fk_detail_menu_created_by FOREIGN KEY(created_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_detail_menu_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_detail_menu_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
@@ -88,13 +88,13 @@ CREATE TABLE IF NOT EXISTS access_right(
 	access_menu int, -- fk
 
 	CONSTRAINT pk_access_right_id PRIMARY KEY(id),
-	CONSTRAINT fk_access_right_user FOREIGN KEY(user) ON REFERENCES user(username)
+	CONSTRAINT fk_access_right_user FOREIGN KEY(user) REFERENCES user(username)
 		ON DELETE RESTRICT ON UPDATE CASCADE,
-	CONSTRAINT fk_access_right_access_menu FOREIGN KEY(detail_menu) ON REFERENCES detail_menu(id)
+	CONSTRAINT fk_access_right_access_menu FOREIGN KEY(detail_menu) REFERENCES detail_menu(id)
 		ON DELETE RESTRICT ON UPDATE CASCADE,
-	CONSTRAINT fk_access_right_created_by FOREIGN KEY(created_by) ON REFERENCES user(username)
+	CONSTRAINT fk_access_right_created_by FOREIGN KEY(created_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_access_right_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_access_right_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
@@ -114,9 +114,9 @@ CREATE TABLE IF NOT EXISTS increment(
 	description text,
 
 	CONSTRAINT pk_increment_id PRIMARY KEY(id),
-	CONSTRAINT fk_increment_created_by FOREIGN KEY(created_by) ON REFERENCES user(username)
+	CONSTRAINT fk_increment_created_by FOREIGN KEY(created_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_increment_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_increment_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
@@ -140,9 +140,9 @@ CREATE TABLE IF NOT EXISTS kas_besar(
 	CONSTRAINT pk_kas_besar_id PRIMARY KEY(id),
 	CONSTRAINT fk_kas_besar_email FOREIGN KEY(email) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_kas_besar_created_by FOREIGN KEY(created_by) ON REFERENCES user(username)
+	CONSTRAINT fk_kas_besar_created_by FOREIGN KEY(created_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_kas_besar_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_kas_besar_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
@@ -167,9 +167,9 @@ CREATE TABLE IF NOT EXISTS kas_kecil(
 	CONSTRAINT pk_kas_kecil_id PRIMARY KEY(id),
 	CONSTRAINT fk_kas_kecil_email FOREIGN KEY(email) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_kas_kecil_created_by FOREIGN KEY(created_by) ON REFERENCES user(username)
+	CONSTRAINT fk_kas_kecil_created_by FOREIGN KEY(created_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_kas_kecil_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_kas_kecil_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
@@ -194,9 +194,9 @@ CREATE TABLE IF NOT EXISTS sub_kas_kecil(
 	CONSTRAINT pk_sub_kas_kecil_id PRIMARY KEY(id),
 	CONSTRAINT fk_sub_kas_kecil_email FOREIGN KEY(email) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_sub_kas_kecil_created_by FOREIGN KEY(created_by) ON REFERENCES user(username)
+	CONSTRAINT fk_sub_kas_kecil_created_by FOREIGN KEY(created_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_sub_kas_kecil_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_sub_kas_kecil_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
@@ -218,9 +218,9 @@ CREATE TABLE IF NOT EXISTS token_mobile(
 	CONSTRAINT pk_token_mobile PRIMARY KEY(id),
 	CONSTRAINT fk_token_mobile_username FOREIGN KEY(username) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE RESTRICT,
-	CONSTRAINT fk_token_mobile_created_by FOREIGN KEY(created_by) ON REFERENCES user(username)
+	CONSTRAINT fk_token_mobile_created_by FOREIGN KEY(created_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_token_mobile_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_token_mobile_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
@@ -242,9 +242,9 @@ CREATE TABLE IF NOT EXISTS token_lupa_password(
 	CONSTRAINT pk_token_lupa_password PRIMARY KEY(id),
 	CONSTRAINT fk_token_lupa_password FOREIGN KEY(username) REFERENCES user(username)
 		ON DELETE RESTRICT ON UPDATE RESTRICT,
-	CONSTRAINT fk_token_lupa_password_created_by FOREIGN KEY(created_by) ON REFERENCES user(username)
+	CONSTRAINT fk_token_lupa_password_created_by FOREIGN KEY(created_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_token_lupa_password_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_token_lupa_password_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
@@ -263,9 +263,9 @@ CREATE TABLE IF NOT EXISTS bank(
 	status enum('AKTIF', 'NONAKTIF'), -- status aktif bank
 
 	CONSTRAINT pk_bank_id PRIMARY KEY(id),
-	CONSTRAINT fk_bank_created_by FOREIGN KEY(created_by) ON REFERENCES user(username)
+	CONSTRAINT fk_bank_created_by FOREIGN KEY(created_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_bank_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_bank_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
@@ -293,9 +293,9 @@ CREATE TABLE IF NOT EXISTS proyek(
 	status enum('SELESAI', 'BERJALAN'), -- status proyek
 
 	CONSTRAINT pk_proyek_id PRIMARY KEY(id),
-	CONSTRAINT fk_proyek_created_by FOREIGN KEY(created_by) ON REFERENCES user(username)
+	CONSTRAINT fk_proyek_created_by FOREIGN KEY(created_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_proyek_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_proyek_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
@@ -321,7 +321,7 @@ CREATE TABLE IF NOT EXISTS detail_proyek(
 		ON DELETE RESTRICT ON UPDATE CASCADE,
 	CONSTRAINT fk_detail_proyek_id_bank FOREIGN KEY(id_bank) REFERENCES bank(id)
 		ON DELETE RESTRICT ON UPDATE CASCADE,
-	CONSTRAINT fk_detail_proyek_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_detail_proyek_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
@@ -343,9 +343,9 @@ CREATE TABLE IF NOT EXISTS logistik_proyek(
 		ON DELETE RESTRICT ON UPDATE CASCADE,
 	CONSTRAINT fk_logistik_proyek_id_sub_kas_kecil FOREIGN KEY(id_sub_kas_kecil) REFERENCES sub_kas_kecil(id)
 		ON DELETE RESTRICT ON UPDATE CASCADE,
-	CONSTRAINT fk_logistik_proyek_created_by FOREIGN KEY(created_by) ON REFERENCES user(username)
+	CONSTRAINT fk_logistik_proyek_created_by FOREIGN KEY(created_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_logistik_proyek_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_logistik_proyek_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
@@ -372,9 +372,9 @@ CREATE TABLE IF NOT EXISTS operasional(
 		ON DELETE RESTRICT ON UPDATE CASCADE,
 	CONSTRAINT fk_operasional_id_kas_besar FOREIGN KEY(id_kas_besar) REFERENCES kas_besar(id)
 		ON DELETE RESTRICT ON UPDATE CASCADE,
-	CONSTRAINT fk_operasional_created_by FOREIGN KEY(created_by) ON REFERENCES user(username)
+	CONSTRAINT fk_operasional_created_by FOREIGN KEY(created_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_operasional_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_operasional_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
@@ -398,9 +398,9 @@ CREATE TABLE IF NOT EXISTS mutasi_bank(
 	CONSTRAINT pk_mutasi_bank_id PRIMARY KEY(id),
 	CONSTRAINT fk_mutasi_bank_id_bank FOREIGN KEY(id_bank) REFERENCES bank(id)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_mutasi_bank_created_by FOREIGN KEY(created_by) ON REFERENCES user(username)
+	CONSTRAINT fk_mutasi_bank_created_by FOREIGN KEY(created_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_mutasi_bank_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_mutasi_bank_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
@@ -424,7 +424,7 @@ CREATE TABLE IF NOT EXISTS mutasi_saldo_kas_kecil(
 	CONSTRAINT pk_mutasi_saldo_kas_kecil_id PRIMARY KEY(id),
 	CONSTRAINT fk_mutasi_saldo_kas_kecil_id_kas_kecil FOREIGN KEY(id_kas_kecil) REFERENCES kas_kecil(id)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_mutasi_saldo_kas_kecil_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_mutasi_saldo_kas_kecil_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
@@ -448,7 +448,7 @@ CREATE TABLE IF NOT EXISTS mutasi_saldo_sub_kas_kecil(
 	CONSTRAINT pk_mutasi_saldo_sub_kas_kecil_id PRIMARY KEY(id),
 	CONSTRAINT fk_mutasi_saldo_sub_kas_kecil_id_sub_kas_kecil FOREIGN KEY(id_sub_kas_kecil) REFERENCES sub_kas_kecil(id)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_mutasi_saldo_sub_kas_kecil_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_mutasi_saldo_sub_kas_kecil_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
@@ -479,7 +479,7 @@ CREATE TABLE IF NOT EXISTS pengajuan_sub_kas_kecil(
 		ON DELETE RESTRICT ON UPDATE CASCADE,
 	CONSTRAINT fk_pengajuan_sub_kas_kecil_id_proyek FOREIGN KEY(id_proyek) REFERENCES proyek (id)
 		ON DELETE RESTRICT ON UPDATE CASCADE,
-	CONSTRAINT fk_pengajuan_sub_kas_kecil_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_pengajuan_sub_kas_kecil_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
@@ -506,9 +506,9 @@ CREATE TABLE IF NOT EXISTS detail_pengajuan_sub_kas_kecil(
 	CONSTRAINT pk_detail_pengajuan_sub_kas_kecil_id PRIMARY KEY(id),
 	CONSTRAINT fk_detail_pengajuan_sub_kas_kecil_id_pengajuan FOREIGN KEY(id_pengajuan) REFERENCES pengajuan_sub_kas_kecil(id)
 		ON DELETE RESTRICT ON UPDATE CASCADE,
-	CONSTRAINT fk_detail_pengajuan_sub_kas_kecil_created_by FOREIGN KEY(created_by) ON REFERENCES user(username)
+	CONSTRAINT fk_detail_pengajuan_sub_kas_kecil_created_by FOREIGN KEY(created_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_detail_pengajuan_sub_kas_kecil_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_detail_pengajuan_sub_kas_kecil_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
@@ -528,9 +528,9 @@ CREATE TABLE IF NOT EXISTS upload_laporan_pengajuan_sub_kas_kecil(
 	CONSTRAINT pk_upload_laporan_pengajuan_sub_kas_kecil PRIMARY KEY(id),
 	CONSTRAINT fk_upload_laporan_pengajuan_sub_kas_kecil_id_pengajuan FOREIGN KEY(id_pengajuan) REFERENCES pengajuan_sub_kas_kecil(id)
 		ON DELETE RESTRICT ON UPDATE CASCADE,
-	CONSTRAINT fk_upload_laporan_pengajuan_sub_kas_kecil_created_by FOREIGN KEY(created_by) ON REFERENCES user(username)
+	CONSTRAINT fk_upload_laporan_pengajuan_sub_kas_kecil_created_by FOREIGN KEY(created_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_upload_laporan_pengajuan_sub_kas_kecil_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_upload_laporan_pengajuan_sub_kas_kecil_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
@@ -558,7 +558,7 @@ CREATE TABLE IF NOT EXISTS pengajuan_kas_kecil(
 		ON DELETE RESTRICT ON UPDATE CASCADE,
 	CONSTRAINT fk_pengajuan_kas_kecil_id_bank FOREIGN KEY(id_bank) REFERENCES bank(id)
 		ON DELETE RESTRICT ON UPDATE CASCADE,
-	CONSTRAINT fk_pengajuan_kas_kecil_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_pengajuan_kas_kecil_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
@@ -579,9 +579,9 @@ CREATE TABLE IF NOT EXISTS distributor(
 	status enum('AKTIF','NONAKTIF'),
 
 	CONSTRAINT pk_distributor_id PRIMARY KEY(id),
-	CONSTRAINT fk_distributor_created_by FOREIGN KEY(created_by) ON REFERENCES user(username)
+	CONSTRAINT fk_distributor_created_by FOREIGN KEY(created_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_distributor_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_distributor_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
@@ -615,9 +615,9 @@ CREATE TABLE IF NOT EXISTS operasional_proyek(
 		ON DELETE RESTRICT ON UPDATE CASCADE,
 	CONSTRAINT fk_operasional_proyek_id_distributor FOREIGN KEY(id_distributor) REFERENCES distributor(id)
 		ON DELETE RESTRICT ON UPDATE CASCADE,
-	CONSTRAINT fk_operasional_proyek_created_by FOREIGN KEY(created_by) ON REFERENCES user(username)
+	CONSTRAINT fk_operasional_proyek_created_by FOREIGN KEY(created_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_operasional_proyek_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_operasional_proyek_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
@@ -642,9 +642,9 @@ CREATE TABLE IF NOT EXISTS detail_operasional_proyek(
  		ON DELETE RESTRICT ON UPDATE CASCADE,
  	CONSTRAINT fk_detail_operasional_proyek_id_operasional FOREIGN KEY(id_operasional_proyek) REFERENCES operasional_proyek(id)
 		ON DELETE RESTRICT ON UPDATE CASCADE,
-	CONSTRAINT fk_detail_operasional_proyek_created_by FOREIGN KEY(created_by) ON REFERENCES user(username)
+	CONSTRAINT fk_detail_operasional_proyek_created_by FOREIGN KEY(created_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE,
-	CONSTRAINT fk_detail_operasional_proyek_modified_by FOREIGN KEY(modified_by) ON REFERENCES user(username)
+	CONSTRAINT fk_detail_operasional_proyek_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 		ON DELETE SET NULL ON UPDATE CASCADE
 )ENGINE=InnoDb;
 
