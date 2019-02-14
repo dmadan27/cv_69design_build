@@ -2,7 +2,7 @@
 	Defined("BASE_PATH") or die(ACCESS_DENIED);
 
 	/**
-	 * 
+	 * Class Laporan_sub_kas_kecil
 	 */
 	class Laporan_sub_kas_kecil extends Controller {
 
@@ -56,7 +56,7 @@
 				'js' => $js,
 			);
 
-			$this->layout('laporan_sub_kas_kecil/list', $config, $data = null);
+			$this->layout('laporan_sub_kas_kecil/list', $config);
 		}
 
 		/**
@@ -83,10 +83,7 @@
 				foreach($dataLaporan as $row){
 					$no_urut++;
 
-					// $base64_edit = rtrim(strtr(base64_encode($row["id"].' EDIT'), '+/', '-_'), '=');
-
 					// button aksi
-					// $aksiDetail = '<button onclick="getEdit('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
 					$aksiEdit = '<button onclick="getEdit('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
 					$aksi = '<div class="btn-group">'.$aksiEdit.'</div>';
 
@@ -96,17 +93,14 @@
 							break;
 
 						case '2': // perbaiki
-							// $aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
 							$status = '<span class="label label-warning">';
 							break;
 						
 						case '3': // disetujui
-							// $aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
 							$status = '<span class="label label-success">';
 							break;
 
 						default: // ditolak
-							// $aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
 							$status = '<span class="label label-danger">';
 					}
 					$status .= $row['status_laporan'].'</span>';
@@ -126,14 +120,14 @@
 					$data[] = $dataRow;
 				}
 
-				$output = array(
+				$result = array(
 					'draw' => $_POST['draw'],
 					'recordsTotal' => $this->DataTableModel->recordTotal(),
 					'recordsFiltered' => $this->DataTableModel->recordFilter(),
 					'data' => $data,
 				);
 
-				echo json_encode($output);
+				echo json_encode($result);
 			}
 			else { $this->redirect(); }
 		}
@@ -146,14 +140,13 @@
 				$id = strtoupper($id);
 				if(empty($id) || $id == "") { $this->redirect(BASE_URL."laporan-sub-kas-kecil"); }
 				
-				
 				$dataLaporan = $this->Laporan_sub_kas_kecilModel->getById($id);
 
-				$output = array(
+				$result = array(
 					'data' => $dataLaporan
 				);
 
-				echo json_encode($output);
+				echo json_encode($result);
 			}
 			else { $this->redirect(); }
 		}
@@ -161,7 +154,7 @@
 		/**
 		 * 
 		 */
-		public function action_edit(){
+		public function action_edit_status(){
 			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				$data = isset($_POST) ? $_POST : false;
 				

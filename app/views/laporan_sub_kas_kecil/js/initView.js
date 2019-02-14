@@ -61,7 +61,7 @@ function init() {
 		}
     });
     
-    $('#status_order').select2({
+    $('#status_laporan').select2({
     	placeholder: "Pilih Status Pengajuan",
 		allowClear: true
 	});
@@ -99,6 +99,39 @@ function getEdit(id){
 /**
  * 
  */
+function submit() {
+	$.ajax({
+		url: BASE_URL+'laporan-sub-kas-kecil/action-edit-status/',
+		type: 'post',
+		dataType: 'json',
+		data: {
+			id: $('#id').val().trim(),
+			status_laporan: $('#status_laporan').val().trim()
+		},
+		beforeSend: function() {
+			$('#submit_laporan_skc').prop('disabled', true);
+			$('#submit_laporan_skc').prepend('<i class="fa fa-spin fa-refresh"></i>');
+		},
+		success: function(response){
+			console.log('%cResponse Submit Laporan Pengajuan Sub Kas Kecil:', 'color: green; font-weight: bold', response);
+			setValue(response.data);
+			$('#modalLaporanSKC').modal();
+			$('#submit_laporan_skc').prop('disabled', false);
+			$('#submit_laporan_skc').html($('#submit_laporan_skc').text());
+		},
+		error: function (jqXHR, textStatus, errorThrown){ // error handling
+			console.log('%cError Response Submit Laporan Pengajuan Sub Kas Kecil:', 'color: red; font-weight: bold', jqXHR, textStatus, errorThrown);
+			swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+			$('#modalLaporanSKC').modal('hide');
+			$('#submit_laporan_skc').prop('disabled', false);
+			$('#submit_laporan_skc').html($('#submit_laporan_skc').text());
+		}
+	});
+}
+
+/**
+ * 
+ */
 function setStatus() {
     var status = [
 		{value: "1", text: "PENDING"},
@@ -109,9 +142,9 @@ function setStatus() {
 
 	$.each(status, function(index, item){
 		var option = new Option(item.text, item.value);
-		$("#status_order").append(option).trigger('change');
+		$("#status_laporan").append(option).trigger('change');
 	});
-	$('#status_order').val(null).trigger('change');
+	$('#status_laporan').val(null).trigger('change');
 }
 
 /**
@@ -119,7 +152,7 @@ function setStatus() {
  */
 function setValue(value) {	
 	$('#id').val(value.id);
-	$('#status_order').val(value.status_order).trigger('change');
+	$('#status_laporan').val(value.status_laporan).trigger('change');
 }
 
 /**

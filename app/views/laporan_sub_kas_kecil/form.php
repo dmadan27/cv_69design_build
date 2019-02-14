@@ -16,10 +16,10 @@
                 <div class="modal-body">    
                         
                     <!-- status -->
-                    <div class="form-group field-status_order has-feedback">
-                        <label for="status_order">Status</label>
-                        <select id="status_order" class="form-control field select2" style="width: 100%"></select>
-                        <span class="help-block small pesan pesan-status_order"></span>
+                    <div class="form-group field-status_laporan has-feedback">
+                        <label for="status_laporan">Status</label>
+                        <select id="status_laporan" class="form-control field select2" style="width: 100%"></select>
+                        <span class="help-block small pesan pesan-status_laporan"></span>
                     </div>
 
                 </div>
