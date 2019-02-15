@@ -4,7 +4,8 @@
 	/**
 	 * 
 	 */
-	class Kas_kecil extends Crud_modalsAbstract{
+	class Kas_kecil extends Crud_modalsAbstract
+	{
 
 		private $success = false;
 		private $notif = array();
@@ -14,7 +15,7 @@
 		/**
 		 * 
 		 */
-		public function __construct(){
+		public function __construct() {
 			$this->auth();
 			$this->auth->cekAuth();
 			$this->model('Kas_kecilModel');
@@ -27,14 +28,14 @@
 		/**
 		 * 
 		 */
-		public function index(){
+		public function index() {
 			$this->list();
 		}
 
 		/**
 		 * 
 		 */
-		protected function list(){
+		protected function list() {
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
 				'assets/bower_components/dropify/dist/css/dropify.min.css'
@@ -65,8 +66,8 @@
 		/**
 		 * 
 		 */
-		public function get_list(){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+		public function get_list() {
+			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				// config datatable
 				$config_dataTable = array(
 					'tabel' => 'kas_kecil',
@@ -114,39 +115,39 @@
 
 				echo json_encode($output);
 			}
-			else $this->redirect();
+			else { $this->redirect(); }
 		}
 
 		/**
 		 * 
 		 */
-		public function action_add(){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+		public function action_add() {
+			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				$data = isset($_POST) ? $_POST : false;
 				$foto = isset($_FILES['foto']) ? $_FILES['foto'] : false;
 
 				$cekFoto = true;
 
-				if(!$data){
+				if(!$data) {
 					$this->notif = array(
 						'type' => 'error',
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
 					);
 				}
-				else{
+				else {
 					$validasi = $this->set_validation($data);
 					$cek = $validasi['cek'];
 					$this->error = $validasi['error'];
 					
 					// cek password dan konf password
-					if(($this->error['password'] == "") && ($data['password'] != $data['password_confirm'])){
+					if(($this->error['password'] == "") && ($data['password'] != $data['password_confirm'])) {
 						$cek = false;
 						$this->error['password'] = $this->error['password_confirm'] = 'Password dan Konfirmasi Password Berbeda';
 					}
 
 					// jika upload foto
-					if($foto){
+					if($foto) {
 						$configFoto = array(
 							'jenis' => 'gambar',
 							'error' => $foto['error'],
@@ -156,15 +157,15 @@
 							'max' => 2*1048576,
 						);
 						$validasiFoto = $this->validation->validFile($configFoto);
-						if(!$validasiFoto['cek']){
+						if(!$validasiFoto['cek']) {
 							$cek = false;
 							$this->error['foto'] = $validasiFoto['error'];
 						}
-						else $valueFoto = md5($data['id']).$validasiFoto['namaFile'];
+						else { $valueFoto = md5($data['id']).$validasiFoto['namaFile']; }
 					}
-					else $valueFoto = NULL;
+					else { $valueFoto = NULL; }
 
-					if($cek){
+					if($cek) {
 						// validasi inputan
 						$data = array(
 							'id' => $this->validation->validInput($data['id']),
@@ -175,23 +176,25 @@
 							'foto' => $this->validation->validInput($valueFoto, false),
 							'saldo' => $this->validation->validInput($data['saldo']),
 							'status' => $this->validation->validInput($data['status']),
-							'password' =>  password_hash($this->validation->validInput($data['password'], false), PASSWORD_BCRYPT),
+							'password' => password_hash($this->validation->validInput($data['password'], false), PASSWORD_BCRYPT),
+							'created_by' => $_SESSION['sess_email']
 						);
 
 						// jika upload foto
-						if($foto){
+						if($foto) {
 							$path = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$valueFoto;
-							if(!move_uploaded_file($foto['tmp_name'], $path)){
+							if(!move_uploaded_file($foto['tmp_name'], $path)) {
 								$this->error['foto'] = "Upload Foto Gagal";
 								$this->success = $cekFoto = false;
 							}
 						}
 
-						if($cekFoto){
-							// cek email
-							if($this->Kas_kecilModel->checkExistEmail($data['email'])){
+						if($cekFoto) {
+							// cek email 
+							if($this->Kas_kecilModel->checkExistEmail($data['email'])) {
 								// insert data
-								if($this->Kas_kecilModel->insert($data)) {
+								$insert = $this->Kas_kecilModel->insert($data);
+								if($insert['success']) {
 									$this->success = true;
 									$this->notif = array(
 										'type' => 'success',
@@ -200,6 +203,7 @@
 									);
 								}
 								else {
+									$this->message = $insert['error'];
 									$this->notif = array(
 										'type' => 'error',
 										'title' => "Pesan Gagal",
@@ -219,7 +223,7 @@
 							}
 						}
 					}
-					else{
+					else {
 						$this->notif = array(
 							'type' => 'warning',
 							'title' => "Pesan Pemberitahuan",
@@ -233,6 +237,7 @@
 					'status_foto' => $cekFoto,
 					'notif' => $this->notif,
 					'error' => $this->error,
+					'message' => $this->message,
 					'data' => $data,
 					'foto' => $foto
 				);
@@ -240,7 +245,7 @@
 				echo json_encode($output);
 
 			}
-			else $this->redirect();
+			else { $this->redirect(); }
 		}
 
 		/**
@@ -249,39 +254,39 @@
 		 * param $id didapat dari url
 		 * return berupa json
 		 */
-		public function edit($id){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+		public function edit($id) {
+			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				$id = strtoupper($id);
 				$data = !empty($this->Kas_kecilModel->getById($id)) ? $this->Kas_kecilModel->getById($id) : false;
 
-				if((empty($id) || $id == "") || !$data) $this->redirect(BASE_URL."kas-kecil/");
+				if((empty($id) || $id == "") || !$data) { $this->redirect(BASE_URL."kas-kecil/"); }
 
 				echo json_encode($data);
 			}
-			else $this->redirect();
+			else { $this->redirect(); }
 		}
 
 		/**
 		 * 
 		 */
-		public function action_edit(){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+		public function action_edit() {
+			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				$data = isset($_POST) ? $_POST : false;
 		
-				if(!$data){
+				if(!$data) {
 					$this->notif = array(
 						'type' => "error",
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
 					);
 				}
-				else{
+				else {
 					// validasi data
 					$validasi = $this->set_validation($data);
 					$cek = $validasi['cek'];
 					$this->error = $validasi['error'];
 
-					if($cek){
+					if($cek) {
 						// validasi inputan
 						$data = array(
 							'id' =>  $this->validation->validInput($data['id']),
@@ -290,10 +295,12 @@
 							'no_telp' =>  $this->validation->validInput($data['no_telp']),
 							'email' =>  $this->validation->validInput($data['email'], false),
 							'status' =>  $this->validation->validInput($data['status']),
+							'modified_by' => $_SESSION['sess_email']
 						);
 
 						// update db
-						if($this->Kas_kecilModel->update($data)) {
+						$update = $this->Kas_kecilModel->update($data);
+						if($update['success']) {
 							$this->success = true;
 							$this->notif = array(
 								'type' => "success",
@@ -302,6 +309,7 @@
 							);
 						}
 						else {
+							$this->message = $update['error'];
 							$this->notif = array(
 								'type' => "error",
 								'title' => "Pesan Gagal",
@@ -322,12 +330,13 @@
 					'success' => $this->success,
 					'notif' => $this->notif,
 					'error' => $this->error,
+					'message' => $this->message,
 					'data' => $data
 				);
 
 				echo json_encode($output);
 			}
-			else $this->redirect();
+			else { $this->redirect(); }
 		}
 		
 		/**
@@ -335,11 +344,11 @@
 		 * method untuk get data detail dan setting layouting detail
 		 * param $id didapat dari url
 		 */
-		public function detail($id){
+		public function detail($id) {
 			$id = strtoupper($id);
 			$data_detail = !empty($this->Kas_kecilModel->getById($id)) ? $this->Kas_kecilModel->getById($id) : false;
 
-			if((empty($id) || $id == "") || !$data_detail) $this->redirect(BASE_URL."kas-kecil/");
+			if((empty($id) || $id == "") || !$data_detail) { $this->redirect(BASE_URL."kas-kecil/"); }
 
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
@@ -366,15 +375,15 @@
 			$status = ($data_detail['status'] == "AKTIF") ? '<span class="label label-success">'.$data_detail['status'].'</span>' : '<span class="label label-danger">'.$data_detail['status'].'</span>';
 
 			// validasi foto
-			if(!empty($data_detail['foto'])){
+			if(!empty($data_detail['foto'])) {
 				// cek foto di storage
 				$filename = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$data_detail['foto'];
 				if(!file_exists($filename)) 
-					$foto = BASE_URL.'assets/images/user/default.jpg';
+					{ $foto = BASE_URL.'assets/images/user/default.jpg'; }
 				else
-					$foto = BASE_URL.'assets/images/user/'.$data_detail['foto'];
+					{ $foto = BASE_URL.'assets/images/user/'.$data_detail['foto']; }
 			}
-			else $foto = BASE_URL.'assets/images/user/default.jpg';
+			else { $foto = BASE_URL.'assets/images/user/default.jpg'; }
 
 			$data = array(
 				'id' => $data_detail['id'],
@@ -393,8 +402,8 @@
 		/**
 		 * 
 		 */
-		public function delete($id){
-			if($_SERVER['REQUEST_METHOD'] == "POST" && $id != ''){
+		public function delete($id) {
+			if($_SERVER['REQUEST_METHOD'] == "POST" && $id != '') {
 				$id = strtoupper($id);
 				if(empty($id) || $id == "") $this->redirect(BASE_URL."kas-kecil/");
 
@@ -422,18 +431,18 @@
 					'notif' => $this->notif
 				));
 			}
-			else $this->redirect();
+			else { $this->redirect(); }
 		}
 
 		/**
 		 * 
 		 */
-		public function get_last_id(){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+		public function get_last_id() {
+			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				$data = !empty($this->Kas_kecilModel->getLastID()['id']) ? $this->Kas_kecilModel->getLastID()['id'] : false;
 
-				if(!$data) $id = 'KK001';
-				else{
+				if(!$data) { $id = 'KK001'; }
+				else {
 					$kode = 'KK';
 					$noUrut = (int)substr($data, 2, 3);
 					$noUrut++;
@@ -443,13 +452,13 @@
 
 				echo json_encode($id);			
 			}
-			else $this->redirect();
+			else { $this->redirect(); }
 		}
 
 		/**
 		 * Export data ke format Excel
 		 */
-		public function export(){
+		public function export() {
 			$row = $this->Kas_kecilModel->export();
 			$header = array_keys($row[0]); 
 
@@ -465,8 +474,8 @@
 		 * method yang berfungsi untuk get data mutasi bank sesuai dengan id
 		 * dipakai di detail data
 		 */
-		public function get_mutasi($id){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+		public function get_mutasi($id) {
+			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				
 				// config datatable
 				$config_dataTable = array(
@@ -507,8 +516,8 @@
 			else $this->redirect();
 		}
 
-		public function get_history_pengajuan($id){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+		public function get_history_pengajuan($id) {
+			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				
 				// config datatable
 				$config_dataTable = array(
@@ -544,10 +553,10 @@
 
 				echo json_encode($output);
 			}
-			else $this->redirect();
+			else { $this->redirect(); }
 		}
 
-		private function set_validation($data){
+		private function set_validation($data) {
 			$required = ($data['action'] =="action-edit") ? 'not_required' : 'required';
 
 			// ID
