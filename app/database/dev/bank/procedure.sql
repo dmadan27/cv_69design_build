@@ -45,12 +45,14 @@
     CREATE PROCEDURE p_edit_bank(
         in id_param int,
         in nama_param varchar(255),
+        in status_param enum('AKTIF', 'NONAKTIF'),
         in modified_by_param varchar(50)
     )
     BEGIN
 
         UPDATE bank SET
             nama = nama_param,
+            status = status_param,
             modified_by = modified_by_param
         WHERE id = id_param;
 

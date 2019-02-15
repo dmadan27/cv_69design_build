@@ -5,62 +5,25 @@
 	 * Class BankModel
 	 * Implements ModelInterface
 	 */
-	class BankModel extends Database implements ModelInterface{
+	class BankModel extends Database implements ModelInterface
+	{
 
-		protected $koneksi;
-		protected $dataTable;
+		private $koneksi;
 
 		/**
 		 * Method __construct
 		 * Open connection to DB
-		 * Access library dataTable
 		 */
-		public function __construct(){
+		public function __construct() {
 			$this->koneksi = $this->openConnection();
-			$this->dataTable = new Datatable();
 		}
-
-		// ======================= dataTable ======================= //
-		
-			/**
-			 * Method getAllDataTable
-			 * @param config {array}
-			 * @return result {array}
-			 */
-			public function getAllDataTable($config){
-				$this->dataTable->set_config($config);
-				$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
-				$statement->execute();
-				$result = $statement->fetchAll();
-
-				return $result;
-			}
-
-			/**
-			 * Method recordFilter
-			 * @return result {int}
-			 */
-			public function recordFilter(){
-				return $this->dataTable->recordFilter();
-
-			}
-
-			/**
-			 * Method recordTotal
-			 * @return result {int}
-			 */
-			public function recordTotal(){
-				return $this->dataTable->recordTotal();
-			}
-
-		// ========================================================= //
 
 		/**
 		 * Method getAll
 		 * Proses get semua data bank
 		 * @return result {array}
 		 */
-		public function getAll(){
+		public function getAll() {
 			$query = "SELECT * FROM bank";
 
 			$statement = $this->koneksi->prepare($query);
@@ -76,7 +39,7 @@
 		 * @param id {string}
 		 * @return result {array}
 		 */
-		public function getById($id){
+		public function getById($id) {
 			$query = "SELECT * FROM bank WHERE id = :id;";
 
 			$statement = $this->koneksi->prepare($query);
@@ -92,7 +55,7 @@
 		 * Proses get data bank khusus untuk export
 		 * @return result {array}
 		 */
-		public function export_mutasi($id, $tgl_awal, $tgl_akhir){
+		public function export_mutasi($id, $tgl_awal, $tgl_akhir) {
 			$query = "SELECT * FROM v_mutasi_bank_export WHERE TANGGAL BETWEEN :tgl_awal AND :tgl_akhir AND id_bank = :id;";
 
 			$statement = $this->koneksi->prepare($query);
@@ -105,7 +68,6 @@
 			);
 			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
 			return $result;
-
 		}
 
 		/**
@@ -114,10 +76,11 @@
 		 * @param data {array}
 		 * @return result {array}
 		 */
-		public function insert($data){
-			$query = "INSERT INTO bank (nama, saldo, status) VALUES (:nama, :saldo, :status);";
+		public function insert($data) {
+			// $query = "INSERT INTO bank (nama, saldo, status) VALUES (:nama, :saldo, :status);";
+			$query = "CALL p_tambah_bank (:nama, :saldo, :status, :created_by);";
 
-			try{
+			try {
 				$this->koneksi->beginTransaction();
 
 				$statement = $this->koneksi->prepare($query);
@@ -125,7 +88,8 @@
 					array(
 						':nama' => $data['nama'],
 						':saldo' => $data['saldo'],
-						':status' => $data['status']
+						':status' => $data['status'],
+						'created_by' => $data['created_by']
 					)
 				);
 				$statement->closeCursor();
@@ -137,7 +101,7 @@
 					'error' => null
 				);
 			}
-			catch(PDOException $e){
+			catch(PDOException $e) {
 				$this->koneksi->rollback();
 				return array(
 					'success' => false,
@@ -152,18 +116,19 @@
 		 * @param data {array}
 		 * @return result {array}
 		 */
-		public function update($data){
-			$query = "UPDATE bank SET nama = :nama, status = :status WHERE id = :id;";
-
-			try{
+		public function update($data) {
+			// $query = "UPDATE bank SET nama = :nama, status = :status WHERE id = :id;";
+			$query = "CALL p_edit_bank (:id, :nama, :status, :modified_by)"
+			try {
 				$this->koneksi->beginTransaction();
 
 				$statement = $this->koneksi->prepare($query);
 				$statement->execute(
 					array(
+						':id' => $data['id'],
 						':nama' => $data['nama'],
 						':status' => $data['status'],
-						':id' => $data['id'],
+						':modified_by' => $data['modified_by'],
 					)
 				);
 				$statement->closeCursor();
@@ -175,7 +140,7 @@
 					'error' => null
 				);
 			}
-			catch(PDOException $e){
+			catch(PDOException $e) {
 				$this->koneksi->rollback();
 				return array(
 					'success' => false,
@@ -190,10 +155,10 @@
 		 * @param id {string}
 		 * @return result {array}
 		 */
-		public function delete($id){
-			$query = "CALL hapus_bank (:id);";
+		public function delete($id) {
+			$query = "CALL p_hapus_bank (:id);";
 			
-			try{
+			try {
 				$this->koneksi->beginTransaction();
 
 				$statement = $this->koneksi->prepare($query);
@@ -211,7 +176,7 @@
 					'error' => null
 				);
 			}
-			catch(PDOException $e){
+			catch(PDOException $e) {
 				$this->koneksi->rollback();
 				return array(
 					'success' => false,
@@ -225,28 +190,19 @@
 		 * Proses get data bank khusus untuk export
 		 * @return result {array}
 		 */
-		public function export(){
+		public function export() {
 			$query = "SELECT id ID, nama NAMA, saldo SALDO, status STATUS FROM bank ";
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute();
 			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
 			return $result;
-
-		}
-
-		public function countBank(){
-			$query = "SELECT count(id) FROM bank";
-			$statement = $this->koneksi->prepare($query);
-			$statement->execute();
-			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
-			return $result;			 
 		}
 
 		/**
 		 * Method __destruct
 		 * Close connection to DB
 		 */
-		public function __destruct(){
+		public function __destruct() {
 			$this->closeConnection($this->koneksi);
 		}
 

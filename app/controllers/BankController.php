@@ -5,7 +5,8 @@
 	 * Class Bank
 	 * Extend Abstract Crud_modalsAbstract
 	 */
-	class Bank extends Crud_modalsAbstract{
+	class Bank extends Crud_modalsAbstract
+	{
 
 		private $success = false;
 		private $notif = array();
@@ -16,7 +17,7 @@
 		 * Method __construct
 		 * Default load saat pertama kali controller diakses
 		 */
-		public function __construct(){
+		public function __construct() {
 			$this->auth();
 			$this->auth->cekAuth();
 			$this->model('BankModel');
@@ -31,15 +32,17 @@
 		 * Method index
 		 * Render list bank
 		 */
-		public function index(){
-			$this->list();
+		public function index() {
+			if($_SESSION['sess_level'] === 'KAS BESAR' 
+				|| $_SESSION['sess_level'] === 'OWNER') { $this->list(); } 
+			else { die(ACCESS_DENIED); }
 		}
 
 		/**
 		 * Method list
 		 * Proses menampilkan list semua data bank
 		 */
-		protected function list(){
+		private function list() {
 			// set config untuk layouting
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
@@ -70,8 +73,9 @@
 		 * Data akan di parsing dalam bentuk dataTable
 		 * @return output {object} array berupa json
 		 */
-		public function get_list(){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+		public function get_list() {
+			if($_SERVER['REQUEST_METHOD'] == "POST" && ($_SESSION['sess_level'] === 'KAS BESAR' 
+				|| $_SESSION['sess_level'] === 'OWNER')) {
 				// config datatable
 				$config_dataTable = array(
 					'tabel' => 'bank',
@@ -125,11 +129,11 @@
 		 * Proses penambahan data bank
 		 * @return output {object} array berupa json
 		 */
-		public function action_add(){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+		public function action_add() {
+			if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
 				$data = isset($_POST) ? $_POST : false;
 
-				if(!$data){
+				if(!$data) {
 					$this->notif = array(
 						'type' => 'error',
 						'title' => "Pesan Gagal",
@@ -148,6 +152,7 @@
 							'nama' => $this->validation->validInput($data['nama']),
 							'saldo' => $this->validation->validInput($data['saldo']),
 							'status' => $this->validation->validInput($data['status']),
+							'created_by' => $_SESSION['sess_id']
 						);
 
 						// insert bank
@@ -197,8 +202,8 @@
 		 * @param id {string}
 		 * @return data {object} array berupa json
 		 */
-		public function edit($id){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+		public function edit($id) {
+			if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
 				$id = strtoupper($id);
 				$data = !empty($this->BankModel->getById($id)) ? $this->BankModel->getById($id) : false;
 				
@@ -213,28 +218,29 @@
 		 * @return output {object} array berupa json
 		 */
 		public function action_edit(){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+			if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
 				$data = isset($_POST) ? $_POST : false;
 
-				if(!$data){
+				if(!$data) {
 					$notif = array(
 						'type' => 'error',
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
 					);
 				}
-				else{
+				else {
 					// validasi data
 					$validasi = $this->set_validation($data);
 					$cek = $validasi['cek'];
 					$this->error = $validasi['error'];
 
-					if($cek){
+					if($cek) {
 						// validasi inputan
 						$data = array(
 							'id' => $this->validation->validInput($data['id']),
 							'nama' => $this->validation->validInput($data['nama']),
-							'status' => $this->validation->validInput($data['status'])
+							'status' => $this->validation->validInput($data['status']),
+							'modified_by' => $_SESSION['sess_id']
 						);
 
 						// update bank
@@ -283,47 +289,50 @@
 		 * Proses get data detail bank dan di render langsung ke view
 		 * @param id {string}
 		 */
-		public function detail($id){
-			$id = strtoupper($id);
-			$data_detail = !empty($this->BankModel->getById($id)) ? $this->BankModel->getById($id) : false;
+		public function detail($id) {
+			if($_SESSION['sess_level'] === 'KAS BESAR') {
+				$id = strtoupper($id);
+				$data_detail = !empty($this->BankModel->getById($id)) ? $this->BankModel->getById($id) : false;
 
-			if((empty($id) || $id == "") || !$data_detail) { $this->redirect(BASE_URL."bank/"); }
+				if((empty($id) || $id == "") || !$data_detail) { $this->redirect(BASE_URL."bank/"); }
 
-			$css = array(
-				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
-				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
-				'assets/bower_components/select2/dist/css/select2.min.css',
-			);
-			$js = array(
-				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
-				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
-				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
-				'assets/bower_components/select2/dist/js/select2.full.min.js',
-				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
-				'app/views/bank/js/initView.js'
-			);
+				$css = array(
+					'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+					'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
+					'assets/bower_components/select2/dist/css/select2.min.css',
+				);
+				$js = array(
+					'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
+					'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
+					'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+					'assets/bower_components/select2/dist/js/select2.full.min.js',
+					'assets/plugins/input-mask/jquery.inputmask.bundle.js',
+					'app/views/bank/js/initView.js'
+				);
 
-			$config = array(
-				'title' => array(
-					'main' => 'Data Bank',
-					'sub' => 'Detail Data Bank',
-				),
-				'css' => $css,
-				'js' => $js,
-			);
+				$config = array(
+					'title' => array(
+						'main' => 'Data Bank',
+						'sub' => 'Detail Data Bank',
+					),
+					'css' => $css,
+					'js' => $js,
+				);
 
-			$status = ($data_detail['status'] == "AKTIF") ? 
-				'<span class="label label-success">'.$data_detail['status'].'</span>' : 
-				'<span class="label label-danger">'.$data_detail['status'].'</span>';
+				$status = ($data_detail['status'] == "AKTIF") ? 
+					'<span class="label label-success">'.$data_detail['status'].'</span>' : 
+					'<span class="label label-danger">'.$data_detail['status'].'</span>';
 
-			$data = array(
-				'id_bank' => $data_detail['id'],
-				'nama' => $data_detail['nama'],
-				'saldo' => $this->helper->cetakRupiah($data_detail['saldo']),
-				'status' => $status,
-			);
+				$data = array(
+					'id_bank' => $data_detail['id'],
+					'nama' => $data_detail['nama'],
+					'saldo' => $this->helper->cetakRupiah($data_detail['saldo']),
+					'status' => $status,
+				);
 
-			$this->layout('bank/view', $config, $data);
+				$this->layout('bank/view', $config, $data);
+			}
+			else { die(ACCESS_DENIED); }
 		}
 
 		/**
@@ -333,7 +342,7 @@
 		 * @return result 
 		 */
 		public function delete($id){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+			if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
 				$id = strtoupper($id);
 				if(empty($id) || $id == "") { $this->redirect(BASE_URL."bank/"); }
 
@@ -372,7 +381,8 @@
 		 * @return result {object} array berupa json
 		 */
 		public function get_mutasi($id){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+			if($_SERVER['REQUEST_METHOD'] == "POST" && ($_SESSION['sess_level'] === 'KAS BESAR' 
+				|| $_SESSION['sess_level'] === 'OWNER')) {
 				
 				// config datatable
 				$config_dataTable = array(
@@ -416,59 +426,65 @@
 		/**
 		 * Method export
 		 */
-		public function export(){
-			$row = $this->BankModel->export();
-			$column = array_keys($row[0]);
+		public function export() {
+			if($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER') {
+				$row = $this->BankModel->export();
+				$column = array_keys($row[0]);
 
-			$detailRow = $this->BankModel->export_mutasi(3, '2018-01-01', '2019-02-27');
-			$detailColumn = array_keys($detailRow[0]);
-			$detailColumn[1] = 'ID BANK';
-			$detail = array(
-				array(
-					'row' => $detailRow,
-					'column' => $detailColumn,
-					'sheet' => 'Data Mutasi'
-				)
-			);
+				$detailRow = $this->BankModel->export_mutasi(3, '2018-01-01', '2019-02-27');
+				$detailColumn = array_keys($detailRow[0]);
+				$detailColumn[1] = 'ID BANK';
+				$detail = array(
+					array(
+						'row' => $detailRow,
+						'column' => $detailColumn,
+						'sheet' => 'Data Mutasi'
+					)
+				);
 
-			$config = array(
-				'data' => array(
-					'main' => array(
-						'row' => $row,
-						'column' => $column,
-						'sheet' => 'Data Bank'
+				$config = array(
+					'data' => array(
+						'main' => array(
+							'row' => $row,
+							'column' => $column,
+							'sheet' => 'Data Bank'
+						),
+						'detail' => $detail
 					),
-					'detail' => $detail
-				),
-				'property' => array(
-					'title' => 'Data Bank',
-					'subject' => 'Data Bank Cv. 69 Design Build',
-					'description' => 'List Semua Data Bank CV. 69 Design Build' 
-				)
-			); 
-			
-			$this->excel_v2->setProperty($config['property']);
-			$this->excel_v2->setData($config['data']['main'], $config['data']['detail']);
-			$this->excel_v2->getExcel(1, 2);
+					'property' => array(
+						'title' => 'Data Bank',
+						'subject' => 'Data Bank Cv. 69 Design Build',
+						'description' => 'List Semua Data Bank CV. 69 Design Build' 
+					)
+				); 
+				
+				$this->excel_v2->setProperty($config['property']);
+				$this->excel_v2->setData($config['data']['main'], $config['data']['detail']);
+				$this->excel_v2->getExcel(1, 2);
+			}
+			else { die(ACCESS_DENIED); }
 		}
 
 		/**
 		*	Export data ke format Excel
 		*/
-		public function export_mutasi(){
-			$tgl_awal = $_GET['tgl_awal'];
-			$tgl_akhir = $_GET['tgl_akhir'];
-			$id = $_GET['id'];
+		public function export_mutasi() {
+			if($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER') {
+				$tgl_awal = $_GET['tgl_awal'];
+				$tgl_akhir = $_GET['tgl_akhir'];
+				$id = $_GET['id'];
 
-			$row = $this->BankModel->export_mutasi($id, $tgl_awal, $tgl_akhir);
-			$header = array_keys($row[0]);
-			$header[1] = 'ID BANK';
-		
-			$this->excel->setProperty('Mutasi Bank','Mutasi Bank','Data Mutasi Bank');
-			$this->excel->setData($header, $row);
-			$this->excel->getData('Data Mutasi Bank', 'Data Mutasi Bank', 4, 5 );
+				$row = $this->BankModel->export_mutasi($id, $tgl_awal, $tgl_akhir);
+				$header = array_keys($row[0]);
+				$header[1] = 'ID BANK';
+			
+				$this->excel->setProperty('Mutasi Bank','Mutasi Bank','Data Mutasi Bank');
+				$this->excel->setData($header, $row);
+				$this->excel->getData('Data Mutasi Bank', 'Data Mutasi Bank', 4, 5 );
 
-			$this->excel->getExcel('Data Mutasi Bank');		
+				$this->excel->getExcel('Data Mutasi Bank');
+			}
+			else { die(ACCESS_DENIED); }
 		}
 
 		/**
@@ -477,7 +493,7 @@
 		 * @param data {array}
 		 * @return result {array}
 		 */
-		private function set_validation($data){
+		private function set_validation($data) {
 			$required = ($data['action'] == "action-edit") ? 'not_required' : 'required';
 
 			// nama bank
