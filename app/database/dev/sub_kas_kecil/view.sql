@@ -6,10 +6,11 @@
 -- View Estimasi pengeluaran sub kas kecil
     -- untuk mendapatkan estimasi pengeluaran yang mungkin dilakukan oleh sub kas kecil
     CREATE OR REPLACE VIEW vp_estimasi_pengeluaran_skk AS
-	SELECT
-	    id_sub_kas_kecil, total as estimasi_pengeluaran_saldo
+    SELECT 
+	    id_sub_kas_kecil, sum(total) estimasi_pengeluaran_saldo
     FROM pengajuan_sub_kas_kecil
-    WHERE status=4 AND (status_laporan=0 OR status_laporan=2);
+    WHERE (status=3 or status=4) AND (status_laporan!=3 && status_laporan!=4)
+    GROUP BY id_sub_kas_kecil;
 -- End View Estiamsi pengeluaran sub kas kecil
 
 -- View pembantu dana pengajuan sub kas kecil
