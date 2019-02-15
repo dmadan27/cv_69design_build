@@ -4,15 +4,18 @@
 	/**
 	 * 
 	 */
-	class Profil extends Controller{
+	class Profil extends Controller
+	{
 
-		private $token;
-		private $status = false;
+		private $success = false;
+		private $notif = array();
+		private $error = array();
+		private $message = NULL;
 
 		/**
 		 * 
 		 */
-		public function __construct(){
+		public function __construct() {
 			$this->auth();
 			$this->auth->cekAuth();
 			$this->model('UserModel');
@@ -23,14 +26,14 @@
 		/**
 		 * 
 		 */
-		public function index(){
+		public function index() {
 			$this->detail();
 		}
 
 		/**
 		 * 
 		 */
-		private function detail(){
+		private function detail() {
 			$css = array(
 				'assets/bower_components/Magnific-Popup-master/dist/magnific-popup.css',
 				'assets/bower_components/dropify/dist/css/dropify.min.css'
@@ -70,7 +73,7 @@
 		/**
 		 * 
 		 */
-		public function edit(){
+		public function edit() {
 			$username = $_SESSION['sess_email'];
 
 			switch ($_SESSION['sess_level']) {
@@ -106,7 +109,7 @@
 		/**
 		 * 
 		 */
-		public function action_edit(){
+		public function action_edit() {
 			$id = $_SESSION['sess_id'];
 			$data = isset($_POST) ? $_POST : false;
 			$error = $notif = array();
@@ -135,8 +138,8 @@
 					break;
 			}
 
-			if(!$data){
-				$notif = array(
+			if(!$data) {
+				$this->notif = array(
 					'type' => "error",
 					'title' => "Pesan Gagal",
 					'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
@@ -146,40 +149,43 @@
 				// validasi data
 				$validasi = $this->set_validation($data);
 				$cek = $validasi['cek'];
-				$error = $validasi['error'];
+				$this->error = $validasi['error'];
 
-				if($cek){
+				if($cek ){
 					$data = array(
 						'id' => $id,
 						'nama' => $this->validation->validInput($data['nama']),
 						'alamat' => $this->validation->validInput($data['alamat']),
 						'no_telp' => $this->validation->validInput($data['no_telp']),
+						'modified_by' => $_SESSION['sess_email']
 					);
 
 					// update profil
-					if($model->updateProfil($data)){
-						$this->status = true;
+					$update = $model->updateProfil($data);
+					if($update['success']) {
+						$this->success = true;
 						
 						$_SESSION['sess_nama'] = $data['nama'];
 						$_SESSION['sess_alamat'] = $data['alamat'];
 						$_SESSION['sess_telp'] = $data['no_telp'];
 
-						$notif = array(
+						$this->notif = array(
 							'type' => "success",
 							'title' => "Pesan Berhasil",
 							'message' => "Edit Data Profil Berhasil",
 						);
 					}
-					else{
-						$notif = array(
+					else {
+						$this->message = $update['error'];
+						$this->notif = array(
 							'type' => "error",
 							'title' => "Pesan Gagal",
 							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 						);
 					}
 				}
-				else{
-					$notif = array(
+				else {
+					$this->notif = array(
 						'type' => "warning",
 						'title' => "Pesan Pemberitahuan",
 						'message' => "Silahkan Cek Kembali Form Isian",
@@ -188,9 +194,10 @@
 			}
 
 			$output = array(
-				'status' => $this->status,
-				'notif' => $notif,
-				'error' => $error,
+				'status' => $this->success,
+				'notif' => $this->notif,
+				'error' => $this->error,
+				'message' => $this->message
 			);
 
 			echo json_encode($output);
@@ -199,11 +206,10 @@
 		/**
 		 * 
 		 */
-		public function edit_foto(){
+		public function edit_foto() {
 			$id = $_SESSION['sess_id'];
 			$foto = isset($_FILES['foto']) ? $_FILES['foto'] : false;
 
-			$error = $notif = array();
 			$status_upload = $status_hapus = false;
 
 			switch ($_SESSION['sess_level']) {
@@ -237,7 +243,7 @@
 			}
 
 			// validasi foto
-			if($foto){
+			if($foto) {
 				$configFoto = array(
 					'jenis' => 'gambar',
 					'error' => $foto['error'],
@@ -249,8 +255,8 @@
 				$validasiFoto = $this->validation->validFile($configFoto);
 				if(!$validasiFoto['cek']){
 					$cek = false;
-					$error['foto'] = $validasiFoto['error'];
-					$notif = array(
+					$this->error['foto'] = $validasiFoto['error'];
+					$this->notif = array(
 						'type' => "warning",
 						'title' => "Pesan Pemberitahuan",
 						'message' => "Silahkan Cek Kembali Form Isian",
@@ -262,8 +268,8 @@
 				}
 			}
 			else{
-				$error['foto'] = 'Anda Belum Memilih Foto';
-				$notif = array(
+				$this->error['foto'] = 'Anda Belum Memilih Foto';
+				$this->notif = array(
 					'type' => "warning",
 					'title' => "Pesan Pemberitahuan",
 					'message' => "Silahkan Cek Kembali Form Isian",
@@ -272,25 +278,31 @@
 			}
 
 			// cek validasi
-			if($cek){
+			if($cek) {
 				// upload foto ke server
 				$path = ROOT.DS.'assets'.DS.'images'.DS.'user'.DS.$fotoBaru;
-				if(!move_uploaded_file($foto['tmp_name'], $path)){
-					$error['foto'] = "Upload Foto Gagal";
+				if(!move_uploaded_file($foto['tmp_name'], $path)) {
+					$this->error['foto'] = "Upload Foto Gagal";
 				}
-				else $status_upload = true;
+				else { $status_upload = true; }
 
-				if($status_upload){
+				if($status_upload) {
 					// update db
-					if($model->updateFoto(array('id' => $id, 'foto' => $fotoBaru))) $status_hapus = true;
-					else $this->helper->rollback_file($path);
+					$update = $model->updateFoto(array(
+						'id' => $id, 'foto' => $fotoBaru, 'modified_by' => $_SESSION['sess_email']
+					));
+					if($update['success']) { $status_hapus = true; }
+					else { 
+						$this->message = $update['error'];
+						$this->helper->rollback_file($path); 
+					}
 				}
 
 				if($status_hapus){
-					if($fotoLama && file_exists($fotoLama)) unlink($fotoLama);
+					if($fotoLama && file_exists($fotoLama)) { unlink($fotoLama); }
 
-					$this->status = true;
-					$notif = array(
+					$this->success = true;
+					$this->notif = array(
 						'type' => "success",
 						'title' => "Pesan Berhasil",
 						'message' => "Foto Profil Anda Berhasil Diganti",
@@ -300,9 +312,10 @@
 			}
 
 			$output = array(
-				'status' => $this->status,
-				'error' => $error,
-				'notif' => $notif,
+				'status' => $this->success,
+				'error' => $this->error,
+				'notif' => $this->notif,
+				'message' => $this->message,
 				'foto' => $foto,
 			);
 
@@ -312,7 +325,7 @@
 		/**
 		 * 
 		 */
-		public function hapus_foto(){
+		public function hapus_foto() {
 			$id = $_SESSION['sess_id'];
 			$notif = array();
 
@@ -347,37 +360,42 @@
 			}
 
 			// update foto jadikan null
-			if($model->updateFoto(array('id' => $id, 'foto' => null))){
+			$update = $model->updateFoto(array(
+				'id' => $id, 'foto' => null, 'modified_by' => $_SESSION['sess_email']
+			));
+			if($update['success']) {
 				// hapus foto lama
-				if($fotoLama){
-					if(file_exists($fotoLama)){
-						if(unlink($fotoLama)){
-							$notif = array(
+				if($fotoLama) {
+					if(file_exists($fotoLama)) {
+						if(unlink($fotoLama)) {
+							$this->notif = array(
 								'title' => "Pesan Berhasil",
 								'message' => "Foto Berhasil Dihapus",
 								'type' => 'success',
 							);
-							$this->status = true;
+							$this->success = true;
 							$_SESSION['sess_foto'] = BASE_URL.'assets/images/user/default.jpg';	
 						}
-						else{
-							$model->updateFoto(array('id' => $id, 'foto' => $fotoLama));
-							$notif = array(
+						else {
+							$model->updateFoto(array(
+								'id' => $id, 'foto' => $fotoLama, 'modified_by' => $_SESSION['sess_email']
+							));
+							$this->notif = array(
 								'title' => "Pesan Gagal",
 								'message' => "Foto Gagal Dihapus",
 								'type' => 'error',
 							);
 						}
 					}
-					else{
-						$model->updateFoto(array('id' => $id, 'foto' => null));
-						$this->status = true;
+					else {
+						$model->updateFoto(array('id' => $id, 'foto' => null, 'modified_by' => $_SESSION['sess_email']));
+						$this->success = true;
 						$_SESSION['sess_foto'] = BASE_URL.'assets/images/user/default.jpg';
 					}		
 				}
 				else{
-					$this->status = true;
-					$notif = array(
+					$this->success = true;
+					$this->notif = array(
 						'title' => "Pesan Pemberitahuan",
 						'message' => "Tidak Ada Foto yang Dihapus",
 						'type' => 'warning',
@@ -386,8 +404,9 @@
 			}
 
 			$output = array(
-				'status' => $this->status,
+				'status' => $this->success,
 				'notif' => $notif,
+				'message' => $this->message
 			);
 
 			echo json_encode($output);
@@ -396,8 +415,8 @@
 		/**
 		 * 
 		 */
-		public function ganti_password(){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+		public function ganti_password() {
+			if($_SERVER['REQUEST_METHOD'] == "POST") {
 
 				$username = isset($_SESSION['sess_email']) ? $this->validation->validInput($_SESSION['sess_email'], false) : false;
 				$password_lama = isset($_POST['password_lama']) ? $this->validation->validInput($_POST['password_lama'], false) : false;
@@ -415,41 +434,41 @@
 				);
 
 				$cek = $validasi['cek'];
-				$error = $validasi['error'];
+				$this->error = $validasi['error'];
 
 				$verify_password = $this->UserModel->getById($username)['password'];
 
-				if(password_verify($password_lama, $verify_password)){
+				if(password_verify($password_lama, $verify_password)) {
 
-					if($password_baru !== $password_konf){
+					if($password_baru !== $password_konf) {
 						$cek = false;
-						$error['password_baru'] = $error['password_konf'] = 'Konfirmasi Password dan Password Baru Tidak Sama !';
+						$this->error['password_baru'] = $this->error['password_konf'] = 'Konfirmasi Password dan Password Baru Tidak Sama !';
 					}
 
-					if($cek){
+					if($cek) {
 						$data = array(
 							'username' => $username,
 							'password' => password_hash($password_baru, PASSWORD_BCRYPT),
 						);
 
-						if($this->UserModel->updatePassword($data)){
-							$this->status = true;
-							$notif = array(
+						if($this->UserModel->updatePassword($data)) {
+							$this->success = true;
+							$this->notif = array(
 								'type' => "success",
 								'title' => "Pesan Berhasil",
 								'message' => "Password Anda Berhasil di Ganti",
 							);
 						}
-						else{
-							$notif = array(
+						else {
+							$this->notif = array(
 								'type' => "error",
 								'title' => "Pesan Gagal",
 								'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
 							);
 						}
 					}
-					else{
-						$notif = array(
+					else {
+						$this->notif = array(
 							'type' => "warning",
 							'title' => "Pesan Pemberitahuan",
 							'message' => "Silahkan Cek Kembali Form Isian",
@@ -458,8 +477,8 @@
 
 				}
 				else{
-					$error['password_lama'] = 'Password Lama Anda Salah';
-					$notif = array(
+					$this->error['password_lama'] = 'Password Lama Anda Salah';
+					$this->notif = array(
 						'type' => "warning",
 						'title' => "Pesan Pemberitahuan",
 						'message' => "Silahkan Cek Kembali Form Isian",
@@ -467,23 +486,23 @@
 				}
 
 				$output = array(
-					'status' => $this->status,
-					'notif' => $notif,
-					'error' => $error,
+					'status' => $this->success,
+					'notif' => $this->notif,
+					'error' => $this->error,
 					// 'data' => $data
 				);
 
 				echo json_encode($output);
 
 			}
-			else $this->redirect();
+			else { $this->redirect(); }
 
 		}
 
 		/**
 		 * 
 		 */
-		private function set_validation($data){
+		private function set_validation($data) {
 			// nama
 			$this->validation->set_rules($data['nama'], 'Nama', 'nama', 'string | 1 | 255 | required');
 			// alamat
@@ -497,7 +516,7 @@
 		/**
 		 * 
 		 */
-		private function set_validation_ganti_password($data){
+		private function set_validation_ganti_password($data) {
 			// password lama
 			$this->validation->set_rules($data['password_lama'], 'Password Lama', 'password_lama', 'string | 5 | 255 | required');
 			// password baru

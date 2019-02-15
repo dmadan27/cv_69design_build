@@ -152,7 +152,7 @@
 							'nama' => $this->validation->validInput($data['nama']),
 							'saldo' => $this->validation->validInput($data['saldo']),
 							'status' => $this->validation->validInput($data['status']),
-							'created_by' => $_SESSION['sess_id']
+							'created_by' => $_SESSION['sess_email']
 						);
 
 						// insert bank
@@ -217,7 +217,7 @@
 		 * Proses pengeditan data bank
 		 * @return output {object} array berupa json
 		 */
-		public function action_edit(){
+		public function action_edit() {
 			if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
 				$data = isset($_POST) ? $_POST : false;
 
@@ -240,7 +240,7 @@
 							'id' => $this->validation->validInput($data['id']),
 							'nama' => $this->validation->validInput($data['nama']),
 							'status' => $this->validation->validInput($data['status']),
-							'modified_by' => $_SESSION['sess_id']
+							'modified_by' => $_SESSION['sess_email']
 						);
 
 						// update bank

@@ -49,8 +49,11 @@
 		 * @return output {object} array berupa json
 		 */
 		private function loginSistem($callback = false){
+			// $this->username = isset($_POST['username']) ? $this->validation->validInput($_POST['username'], false) : false;
+			// $this->password = isset($_POST['password']) ? $this->validation->validInput($_POST['password'], false) : false;
+
 			$this->username = isset($_POST['username']) ? $this->validation->validInput($_POST['username'], false) : false;
-			$this->password = isset($_POST['password']) ? $this->validation->validInput($_POST['password'], false) : false;
+			$this->password = isset($_POST['password']) ? $_POST['password'] : false;
 
 			$errorUser = $errorPass = $notif = '';
 

@@ -84,7 +84,7 @@
 				$this->koneksi->beginTransaction();
 
 				$statement = $this->koneksi->prepare($query);
-				$result = $statement->execute(
+				$statement->execute(
 					array(
 						':nama' => $data['nama'],
 						':saldo' => $data['saldo'],

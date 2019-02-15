@@ -151,7 +151,7 @@
 							'no_telp' => $this->validation->validInput($data['no_telp']),
 							'pemilik' => $this->validation->validInput($data['pemilik']),
 							'status' => $this->validation->validInput($data['status']),
-							'created_by' => $_SESSION['sess_id']										
+							'created_by' => $_SESSION['sess_email']										
 						);
 
 						// insert bank
@@ -248,7 +248,7 @@
 							'no_telp' => $this->validation->validInput($data['no_telp']),
 							'pemilik' => $this->validation->validInput($data['pemilik']),
 							'status' => $this->validation->validInput($data['status']),
-							'modified_by' => $_SESSION['sess_id']
+							'modified_by' => $_SESSION['sess_email']
 						);
 
 						// update bank
