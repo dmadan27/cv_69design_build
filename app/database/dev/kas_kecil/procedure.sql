@@ -1,11 +1,7 @@
 # Procedure, Function, and Trigger Kas Kecil #
 
-
-
-# End Procedure, Function, and Trigger Kas Kecil #
-
 -- Procedure Tambah Data Kas Kecil
-	DROP PROCEDURE p_tambah_kas_kecil;
+	DROP PROCEDURE IF EXISTS p_tambah_kas_kecil;
 	delimiter //
 
 	CREATE PROCEDURE p_tambah_kas_kecil(
@@ -49,7 +45,7 @@
 -- End Procedure Tambah Data Kas Kecil
 
 -- Procedure Edit Data Kas Kecil
-	DROP PROCEDURE p_edit_kas_kecil;
+	DROP PROCEDURE IF EXISTS p_edit_kas_kecil;
 	delimiter //
 
 	CREATE PROCEDURE p_edit_kas_kecil(
@@ -76,7 +72,7 @@
 -- End Procedure Edit Data Kas Kecil
 
 -- Procedure Hapus Data Kas Kecil
-	DROP PROCEDURE p_hapus_kas_kecil;
+	DROP PROCEDURE IF EXISTS p_hapus_kas_kecil;
 	delimiter //
 
 	CREATE PROCEDURE p_hapus_kas_kecil(
@@ -104,7 +100,7 @@
 -- End Procedure Hapus Data Kas Kecil
 
 -- Procedure Edit Status Kas Kecil
-	DROP PROCEDURE p_edit_status_kas_kecil;
+	DROP PROCEDURE IF EXISTS p_edit_status_kas_kecil;
 	delimiter //
 
 	CREATE PROCEDURE p_edit_status_kas_kecil(
@@ -149,3 +145,6 @@
 
 	delimiter ;
 -- End Procedure Edit Status Kas Kecil
+
+# End Procedure, Function, and Trigger Kas Kecil #
+

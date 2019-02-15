@@ -1,10 +1,10 @@
-	-- ================================================================= --
-	-- Operasional -- Versi 25 Januari 2019 -- START --
-	-- ================================================================= --
+# Procedure, Function, and Trigger Operasional #
 
-	-- Procedure Tambah Data Operasional (FIX)
+-- Procedure Tambah Operasional
+	DROP PROCEDURE IF EXISTS p_tambah_operasional;
 	delimiter //
-	CREATE PROCEDURE tambah_operasional(
+	
+	CREATE PROCEDURE p_tambah_operasional(
 		in id_bank_param int, -- id bank
 		in id_kas_besar_param varchar(10), -- id kas besar
 		in tgl_param date,  -- tanggal operasional
@@ -12,7 +12,8 @@
 		in nominal_param double(12,2), -- nominal operasional,
 		in jenis_param enum('UANG MASUK', 'UANG KELUAR'),
 		in ket_param text, -- ket operasional
-		in ket_mutasi_param text
+		in ket_mutasi_param text,
+		in created_by_param varchar(50)
 	)
 	BEGIN
         
@@ -20,9 +21,10 @@
 
 		-- 1. insert ke tabel operasional
 		INSERT into operasional
-			(id_bank, id_kas_besar, tgl, nama, nominal, jenis, ket)
+			(id_bank, id_kas_besar, tgl, nama, nominal, jenis, ket, created_by, modified_by)
 		VALUES
-			(id_bank_param, id_kas_besar_param, tgl_param, nama_param, nominal_param, jenis_param, ket_param);
+			(id_bank_param, id_kas_besar_param, tgl_param, nama_param, nominal_param, 
+			jenis_param, ket_param, created_by_param, created_by_param);
 
 		-- 2. ambil saldo terahir
 		SELECT saldo INTO get_saldo FROM bank WHERE id= id_bank_param;
@@ -31,32 +33,43 @@
 
 			-- 3. insert mutasi operasional
 			INSERT into mutasi_bank
-				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket, created_by, modified_by)
 			VALUES
-				(id_bank_param, tgl_param, nominal_param, 0, (get_saldo + nominal_param), ket_mutasi_param);
+				(id_bank_param, tgl_param, nominal_param, 0, (get_saldo + nominal_param), 
+				ket_mutasi_param, created_by_param, created_by_param);
 
 			-- 4. update saldo bank
-			UPDATE bank SET saldo = (get_saldo + nominal_param) WHERE  id = id_bank_param;
+			UPDATE bank SET 
+				saldo = (get_saldo + nominal_param),
+				modified_by = created_by_param 
+			WHERE id = id_bank_param;
 		
 		ELSE
 
 			-- 3. insert mutasi operasional
 			INSERT into mutasi_bank
-				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket, created_by, modified_by)
 			VALUES
-				(id_bank_param, tgl_param, 0, nominal_param, (get_saldo - nominal_param), ket_mutasi_param);
+				(id_bank_param, tgl_param, 0, nominal_param, (get_saldo - nominal_param), 
+				ket_mutasi_param, created_by_param, created_by_param);
 
 			-- 4. update saldo bank
-			UPDATE bank SET saldo = (get_saldo - nominal_param) WHERE  id = id_bank_param;
+			UPDATE bank SET 
+				saldo = (get_saldo - nominal_param),
+				modified_by = created_by_param 
+			WHERE  id = id_bank_param;
 		END IF;
 
-	END//
+	END //
+
 	delimiter ;
+-- End Procedure Tambah Operasional
 
-
-	-- Procedure Edit Data Operasional masuk (FIX)
+-- Procedure Edit Operasional Masuk
+	DROP PROCEDURE IF EXISTS p_edit_operasional_masuk;
 	delimiter //
-	CREATE PROCEDURE edit_operasional_masuk(
+
+	CREATE PROCEDURE p_edit_operasional_masuk(
 		in id_param int,
 		in id_bank_param int, -- id bank
 		in tgl_param date,  -- tanggal operasional
@@ -67,7 +80,8 @@
 		in ket_mutasi_param text,
 		in ket_bank_masuk_param text,
 		in ket_bank_keluar_param text,
-		in ket_saldo_change_param text
+		in ket_saldo_change_param text,
+		in modified_by_param varchar(50)
 	)
 	BEGIN
 		DECLARE id_bank_sebelum int;
@@ -90,75 +104,93 @@
 			SELECT saldo INTO get_saldo_bank_lama FROM bank WHERE id = id_bank_sebelum;
 			
 			-- normalisasi saldo bank sebelum
-			UPDATE bank SET saldo = (get_saldo_bank_lama + nominal_sebelum) WHERE id = id_bank_sebelum;
+			UPDATE bank SET 
+				saldo = (get_saldo_bank_lama + nominal_sebelum),
+				modified_by = modified_by_param
+			WHERE id = id_bank_sebelum;
 
 			-- insert mutasi bank lama
 			INSERT INTO mutasi_bank 
-				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket, created_by, modified_by)
 			VALUES 
-				(id_bank_sebelum, tgl_param, nominal_sebelum, 0, (get_saldo_bank_lama + nominal_sebelum), ket_mutasi_param);
+				(id_bank_sebelum, tgl_param, nominal_sebelum, 0, (get_saldo_bank_lama + nominal_sebelum), 
+				ket_mutasi_param, modified_by_param, modified_by_param);
 		
 		END IF;
 
-			-- jika ada perubahan bank
-			IF id_bank_sebelum != id_bank_param THEN
+		-- jika ada perubahan bank
+		IF id_bank_sebelum != id_bank_param THEN
 
-				-- get saldo bank lama
-				SELECT saldo INTO get_saldo_bank_lama FROM bank WHERE id = id_bank_sebelum;
-				
-				-- normalisasi saldo bank sebelum
-				UPDATE bank SET saldo = (get_saldo_bank_lama - nominal_sebelum) WHERE id = id_bank_sebelum;
+			-- get saldo bank lama
+			SELECT saldo INTO get_saldo_bank_lama FROM bank WHERE id = id_bank_sebelum;
+			
+			-- normalisasi saldo bank sebelum
+			UPDATE bank SET 
+				saldo = (get_saldo_bank_lama - nominal_sebelum),
+				modified_by = modified_by_param
+			WHERE id = id_bank_sebelum;
 
-				-- insert mutasi bank lama
-				INSERT INTO mutasi_bank 
-					(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
-				VALUES 
-					(id_bank_sebelum, tgl_param, 0, nominal_sebelum, (get_saldo_bank_lama - nominal_sebelum), ket_bank_keluar_param);
+			-- insert mutasi bank lama
+			INSERT INTO mutasi_bank 
+				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket, created_by, modified_by)
+			VALUES 
+				(id_bank_sebelum, tgl_param, 0, nominal_sebelum, (get_saldo_bank_lama - nominal_sebelum), 
+				ket_bank_keluar_param, modified_by_param, modified_by_param);
 
-				-- get saldo bank baru
+			-- get saldo bank baru
+			SELECT saldo INTO get_saldo_bank FROM bank WHERE id = id_bank_param;
+
+			-- update saldo bank baru
+			UPDATE bank SET 
+				saldo = (get_saldo_bank + nominal_param),
+				modified_by = modified_by_param 
+			WHERE id = id_bank_param;
+
+			-- insert mutasi bank baru
+			INSERT INTO mutasi_bank 
+				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket, created_by, modified_by)
+			VALUES 
+				(id_bank_param, tgl_param, nominal_param, 0, (get_saldo_bank + nominal_param), 
+				ket_bank_masuk_param, modified_by_param, modified_by_param);
+		
+		-- jika ada perubahan nominal
+		ELSE IF nominal_sebelum != nominal_param THEN
+
+			IF nominal_param > nominal_sebelum THEN
+
+				-- get saldo bank
 				SELECT saldo INTO get_saldo_bank FROM bank WHERE id = id_bank_param;
 
-				-- update saldo bank baru
-				UPDATE bank SET saldo = (get_saldo_bank + nominal_param) WHERE id = id_bank_param;
+				-- normalisasi saldo
+				UPDATE bank SET 
+					saldo = (get_saldo_bank + (nominal_param - nominal_sebelum)),
+					modified_by = modified_by_param 
+				WHERE id = id_bank_param;
 
-				-- insert mutasi bank baru
+				-- insert mutasi
 				INSERT INTO mutasi_bank 
-					(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+					(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket, created_by, modified_by)
 				VALUES 
-					(id_bank_param, tgl_param, nominal_param, 0, (get_saldo_bank + nominal_param), ket_bank_masuk_param);
+					(id_bank_param, tgl_param, (nominal_param - nominal_sebelum), 0, (get_saldo_bank + (nominal_param - nominal_sebelum)), 
+					ket_saldo_change_param, modified_by_param, modified_by_param);
 			
-			 -- jika ada perubahan nominal
-			ELSE IF nominal_sebelum != nominal_param THEN
+			ELSE IF nominal_param < nominal_sebelum THEN
 
-				IF nominal_param > nominal_sebelum THEN
+				-- get saldo bank
+				SELECT saldo INTO get_saldo_bank FROM bank WHERE id = id_bank_param;
+			
+				-- normalisasi saldo
+				UPDATE bank SET 
+					saldo = (get_saldo_bank - (nominal_sebelum - nominal_param)),
+					modified_by = modified_by_param 
+				WHERE id = id_bank_param;
 
-					-- get saldo bank
-					SELECT saldo INTO get_saldo_bank FROM bank WHERE id = id_bank_param;
-
-					-- normalisasi saldo
-					UPDATE bank SET saldo = (get_saldo_bank + (nominal_param - nominal_sebelum)) WHERE id = id_bank_param;
-
-					-- insert mutasi
-					INSERT INTO mutasi_bank 
-						(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
-					VALUES 
-						(id_bank_param, tgl_param, (nominal_param - nominal_sebelum), 0, (get_saldo_bank + (nominal_param - nominal_sebelum)), ket_saldo_change_param);
-				
-				ELSE IF nominal_param < nominal_sebelum THEN
-
-					-- get saldo bank
-					SELECT saldo INTO get_saldo_bank FROM bank WHERE id = id_bank_param;
-				
-					-- normalisasi saldo
-					UPDATE bank SET saldo = (get_saldo_bank - (nominal_sebelum - nominal_param)) WHERE id = id_bank_param;
-
-					-- insert mutasi
-					INSERT INTO mutasi_bank 
-						(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
-					VALUES 
-						(id_bank_param, tgl_param, 0, (nominal_sebelum - nominal_param), (get_saldo_bank - (nominal_sebelum - nominal_param)), ket_saldo_change_param);
-
-						END IF;
+				-- insert mutasi
+				INSERT INTO mutasi_bank 
+					(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket, created_by, modified_by)
+				VALUES 
+					(id_bank_param, tgl_param, 0, (nominal_sebelum - nominal_param), (get_saldo_bank - (nominal_sebelum - nominal_param)), 
+					ket_saldo_change_param, modified_by_param, modified_by_param);
 
 					END IF;
 
@@ -166,18 +198,23 @@
 
 			END IF;
 
-	-- update operasional
-	UPDATE operasional 
-	SET id_bank = id_bank_param, tgl = tgl_param, nama = nama_param, nominal = nominal_param, jenis = jenis_param, ket = ket_param
-	WHERE id = id_param;
+		END IF;
 
-	END//
+		-- update operasional
+		UPDATE operasional SET 
+			id_bank = id_bank_param, tgl = tgl_param, nama = nama_param, nominal = nominal_param, 
+			jenis = jenis_param, ket = ket_param, modified_by = modified_by_param
+		WHERE id = id_param;
+
+	END //
+
 	delimiter ;
+-- End Procedure Edit Operasional Masuk
 
-
-	-- Procedure Edit Data Operasional keluar (FIX)
+-- Procedure Edit Operasional Keluar
+	DROP PROCEDURE IF EXISTS p_edit_operasional_keluar;
 	delimiter //
-	CREATE PROCEDURE edit_operasional_keluar(
+	CREATE PROCEDURE p_edit_operasional_keluar(
 		in id_param int,
 		in id_bank_param int, -- id bank
 		in tgl_param date,  -- tanggal operasional
@@ -188,7 +225,8 @@
 		in ket_mutasi_param text,
 		in ket_bank_masuk_param text,
 		in ket_bank_keluar_param text,
-		in ket_saldo_change_param text
+		in ket_saldo_change_param text,
+		in modified_by_param varchar(50)
 	)
 	BEGIN
 		DECLARE id_bank_sebelum int;
@@ -211,75 +249,93 @@
 			SELECT saldo INTO get_saldo_bank_lama FROM bank WHERE id = id_bank_sebelum;
 			
 			-- normalisasi saldo bank sebelum
-			UPDATE bank SET saldo = (get_saldo_bank_lama - nominal_sebelum) WHERE id = id_bank_sebelum;
+			UPDATE bank SET 
+				saldo = (get_saldo_bank_lama - nominal_sebelum),
+				modified_by = modified_by_param
+			WHERE id = id_bank_sebelum;
 
 			-- insert mutasi bank lama
 			INSERT INTO mutasi_bank 
-				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket, created_by, modified_by)
 			VALUES 
-				(id_bank_sebelum, tgl_param, 0, nominal_sebelum, (get_saldo_bank_lama - nominal_sebelum), ket_mutasi_param);
+				(id_bank_sebelum, tgl_param, 0, nominal_sebelum, (get_saldo_bank_lama - nominal_sebelum), 
+				ket_mutasi_param, modified_by_param, modified_by_param);
 		
 		END IF;
 
-			-- jika ada perubahan bank
-			IF id_bank_sebelum != id_bank_param THEN
+		-- jika ada perubahan bank
+		IF id_bank_sebelum != id_bank_param THEN
 
-				-- get saldo bank lama
-				SELECT saldo INTO get_saldo_bank_lama FROM bank WHERE id = id_bank_sebelum;
-				
-				-- normalisasi saldo bank sebelum
-				UPDATE bank SET saldo = (get_saldo_bank_lama + nominal_sebelum) WHERE id = id_bank_sebelum;
+			-- get saldo bank lama
+			SELECT saldo INTO get_saldo_bank_lama FROM bank WHERE id = id_bank_sebelum;
+			
+			-- normalisasi saldo bank sebelum
+			UPDATE bank SET 
+				saldo = (get_saldo_bank_lama + nominal_sebelum),
+				modified_by = modified_by_param 
+			WHERE id = id_bank_sebelum;
 
-				-- insert mutasi bank lama
-				INSERT INTO mutasi_bank 
-					(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
-				VALUES 
-					(id_bank_sebelum, tgl_param, nominal_sebelum, 0, (get_saldo_bank_lama + nominal_sebelum), ket_bank_masuk_param);
+			-- insert mutasi bank lama
+			INSERT INTO mutasi_bank 
+				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket, created_by, modified_by)
+			VALUES 
+				(id_bank_sebelum, tgl_param, nominal_sebelum, 0, (get_saldo_bank_lama + nominal_sebelum), 
+				ket_bank_masuk_param, modified_by_param, modified_by_param);
 
-				-- get saldo bank baru
+			-- get saldo bank baru
+			SELECT saldo INTO get_saldo_bank FROM bank WHERE id = id_bank_param;
+
+			-- update saldo bank baru
+			UPDATE bank SET 
+				saldo = (get_saldo_bank - nominal_param),
+				modified_by = modified_by_param
+			WHERE id = id_bank_param;
+
+			-- insert mutasi bank baru
+			INSERT INTO mutasi_bank 
+				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket, created_by, modified_by)
+			VALUES 
+				(id_bank_param, tgl_param, 0, nominal_param, (get_saldo_bank - nominal_param), 
+				ket_bank_keluar_param, modified_by_param, modified_by_param);
+		
+			-- jika ada perubahan nominal
+		ELSE IF nominal_sebelum != nominal_param THEN
+
+			IF nominal_param > nominal_sebelum THEN
+
+				-- get saldo bank
 				SELECT saldo INTO get_saldo_bank FROM bank WHERE id = id_bank_param;
 
-				-- update saldo bank baru
-				UPDATE bank SET saldo = (get_saldo_bank - nominal_param) WHERE id = id_bank_param;
+				-- normalisasi saldo
+				UPDATE bank SET 
+					saldo = (get_saldo_bank - (nominal_param - nominal_sebelum)) ,
+					modified_by = modified_by_param
+				WHERE id = id_bank_param;
 
-				-- insert mutasi bank baru
+				-- insert mutasi
 				INSERT INTO mutasi_bank 
-					(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+					(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket, created_by, modified_by)
 				VALUES 
-					(id_bank_param, tgl_param, 0, nominal_param, (get_saldo_bank - nominal_param), ket_bank_keluar_param);
+					(id_bank_param, tgl_param, 0, (nominal_param - nominal_sebelum), (get_saldo_bank - (nominal_param - nominal_sebelum)), 
+					ket_saldo_change_param, modified_by_param, modified_by_param);
 			
-			 -- jika ada perubahan nominal
-			ELSE IF nominal_sebelum != nominal_param THEN
+			ELSE IF nominal_param < nominal_sebelum THEN
 
-				IF nominal_param > nominal_sebelum THEN
+				-- get saldo bank
+				SELECT saldo INTO get_saldo_bank FROM bank WHERE id = id_bank_param;
+			
+				-- normalisasi saldo
+				UPDATE bank SET 
+					saldo = (get_saldo_bank + (nominal_sebelum - nominal_param)),
+					modified_by = modified_by_param
+				WHERE id = id_bank_param;
 
-					-- get saldo bank
-					SELECT saldo INTO get_saldo_bank FROM bank WHERE id = id_bank_param;
-
-					-- normalisasi saldo
-					UPDATE bank SET saldo = (get_saldo_bank - (nominal_param - nominal_sebelum)) WHERE id = id_bank_param;
-
-					-- insert mutasi
-					INSERT INTO mutasi_bank 
-						(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
-					VALUES 
-						(id_bank_param, tgl_param, 0, (nominal_param - nominal_sebelum), (get_saldo_bank - (nominal_param - nominal_sebelum)), ket_saldo_change_param);
-				
-				ELSE IF nominal_param < nominal_sebelum THEN
-
-					-- get saldo bank
-					SELECT saldo INTO get_saldo_bank FROM bank WHERE id = id_bank_param;
-				
-					-- normalisasi saldo
-					UPDATE bank SET saldo = (get_saldo_bank + (nominal_sebelum - nominal_param)) WHERE id = id_bank_param;
-
-					-- insert mutasi
-					INSERT INTO mutasi_bank 
-						(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
-					VALUES 
-						(id_bank_param, tgl_param, (nominal_sebelum - nominal_param), 0, (get_saldo_bank + (nominal_sebelum - nominal_param)), ket_saldo_change_param);
-
-						END IF;
+				-- insert mutasi
+				INSERT INTO mutasi_bank 
+					(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket, created_by, modified_by)
+				VALUES 
+					(id_bank_param, tgl_param, (nominal_sebelum - nominal_param), 0, (get_saldo_bank + (nominal_sebelum - nominal_param)), 
+					ket_saldo_change_param, modified_by_param, modified_by_param);
 
 					END IF;
 
@@ -287,21 +343,28 @@
 
 			END IF;
 
-	-- update operasional
-	UPDATE operasional 
-	SET id_bank = id_bank_param, tgl = tgl_param, nama = nama_param, nominal = nominal_param, jenis = jenis_param, ket = ket_param
-	WHERE id = id_param;
+		END IF;
 
-	END//
+		-- update operasional
+		UPDATE operasional SET 
+			id_bank = id_bank_param, tgl = tgl_param, nama = nama_param, nominal = nominal_param, 
+			jenis = jenis_param, ket = ket_param, modified_by = modified_by_param
+		WHERE id = id_param;
+
+	END //
+
 	delimiter ;
+-- End Procedure Edit Operasional Keluar
 
-
--- Procedure Hapus Data Operasional (FIX)
+-- Procedure Hapus Operasional
+	DROP PROCEDURE IF EXISTS p_hapus_operasional;
 	delimiter //
-	CREATE PROCEDURE hapus_operasional(
+
+	CREATE PROCEDURE p_hapus_operasional(
 		id_param int,
 		tgl_param date,
-		ket_param text
+		ket_param text,
+		modified_by varchar(50)
 	)
 	BEGIN
         
@@ -324,32 +387,40 @@
 
 			-- 1. insert mutasi
 			INSERT INTO mutasi_bank 
-				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket, created_by, modified_by)
 			VALUES 
-				(id_bank_param, tgl_param, 0, nominal_param, (get_saldo - nominal_param), ket_param);
+				(id_bank_param, tgl_param, 0, nominal_param, (get_saldo - nominal_param), 
+				ket_param, modified_by_param, modified_by_param);
 
 			-- 2. update saldo
-			UPDATE bank SET saldo = (get_saldo - nominal_param) WHERE id = id_bank_param;
+			UPDATE bank SET 
+				saldo = (get_saldo - nominal_param),
+				modified_by = modified_by_param
+			WHERE id = id_bank_param;
 
 		ELSE
 
 			-- 1. insert mutasi
 			INSERT INTO mutasi_bank 
-				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket, created_by, modified_by)
 			VALUES 
-				(id_bank_param, tgl_param, nominal_param, 0, (get_saldo + nominal_param), ket_param);
+				(id_bank_param, tgl_param, nominal_param, 0, (get_saldo + nominal_param), 
+				ket_param, modified_by_param, modified_by_param);
 
 			-- 2. update saldo
-			UPDATE bank SET saldo = (get_saldo + nominal_param) WHERE id = id_bank_param;
+			UPDATE bank SET 
+				saldo = (get_saldo + nominal_param),
+				modified_by = modified_by_param
+			WHERE id = id_bank_param;
 
 		END IF;
 
 		-- 3. hapus data operasional
 		DELETE FROM operasional WHERE id = id_param;
 
-	END//
-	delimiter ;
+	END //
 
-	-- ================================================================= --
-	-- Operasional -- Versi 25 Januari 2019 -- END --
-	-- ================================================================= --
+	delimiter ;
+-- End Procedure Hapus Operasional
+
+# End Procedure, Function, and Trigger Operasional #

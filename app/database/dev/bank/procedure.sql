@@ -1,7 +1,7 @@
 # Procedure, Function, and Trigger Bank #
 
 -- Procedure Tambah Bank
-    DROP PROCEDURE p_tambah_bank;
+    DROP PROCEDURE IF EXISTS p_tambah_bank;
     delimiter //
 
     CREATE PROCEDURE p_tambah_bank(
@@ -39,7 +39,7 @@
 -- End Trigger Tambah Bank (After Insert)
 
 -- Procedure Edit Bank
-    DROP PROCEDURE p_edit_bank;
+    DROP PROCEDURE IF EXISTS p_edit_bank;
     delimiter //
 
     CREATE PROCEDURE p_edit_bank(
@@ -60,7 +60,7 @@
 -- End Procedure Edit Bank
 
 -- Procedure Delete Bank
-    DROP PROCEDURE p_hapus_bank;
+    DROP PROCEDURE IF EXISTS p_hapus_bank;
     delimiter //
 
 	CREATE PROCEDURE p_hapus_bank(

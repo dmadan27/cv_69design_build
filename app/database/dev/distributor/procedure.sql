@@ -1,7 +1,7 @@
 # Procedure, Function, and Trigger Distributor #
 
 -- Procedure Tambah Distributor
-    DROP PROCEDURE p_tambah_distributor;
+    DROP PROCEDURE IF EXISTS p_tambah_distributor;
     delimiter //
 
     CREATE PROCEDURE p_tambah_distributor(
@@ -27,7 +27,7 @@
 -- End Procedure Tambah Distributor
 
 -- Procedure Edit Distributor
-    DROP PROCEDURE p_edit_distributor;
+    DROP PROCEDURE IF EXISTS p_edit_distributor;
     delimiter //
 
     CREATE PROCEDURE p_edit_distributor(
@@ -56,7 +56,7 @@
 -- End Procedure Edit Distributor
 
 -- Procedure Delete Distributor
-    DROP PROCEDURE p_hapus_distributor;
+    DROP PROCEDURE IF EXISTS p_hapus_distributor;
     delimiter //
 
     CREATE PROCEDURE p_hapus_distributor(

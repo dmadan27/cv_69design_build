@@ -1,5 +1,7 @@
+# View Pengajuan Sub Kas Kecil #
+
 -- View Pengajuan Sub Kas Kecil v2
-CREATE OR REPLACE VIEW v_pengajuan_sub_kas_kecil_v2 AS
+    CREATE OR REPLACE VIEW v_pengajuan_sub_kas_kecil_v2 AS
     SELECT
         pskk.id, pskk.id_sub_kas_kecil, skk.nama nama_skk, pskk.tgl,
         pskk.id_proyek, p.pemilik, p.pembangunan,
@@ -21,3 +23,6 @@ CREATE OR REPLACE VIEW v_pengajuan_sub_kas_kecil_v2 AS
     FROM pengajuan_sub_kas_kecil pskk
     JOIN proyek p ON p.id = pskk.id_proyek
     JOIN sub_kas_kecil skk ON skk.id = pskk.id_sub_kas_kecil;
+-- End View Pengajuan Sub Kas Kecil v2
+
+# End View Pengajuan Sub Kas Kecil #
