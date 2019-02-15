@@ -31,6 +31,7 @@
 -- Procedure Acc Pengajuan Kas Kecil
 	DROP PROCEDURE IF EXISTS p_acc_pengajuan_kas_kecil;
 	delimiter //
+	
 	CREATE PROCEDURE p_acc_pengajuan_kas_kecil(
 		IN id_param varchar(50),
 		IN id_kas_kecil_param varchar(50),

@@ -1,7 +1,7 @@
 # Procedure, Function, and Trigger Pengajuan Sub Kas Kecil #
 
 -- Procedure acc pengajuan sub kas kecil
-	DROP PROCEDURE IF EXISTS p_acc_pengajuan_sub_kas_kecil
+	DROP PROCEDURE IF EXISTS p_acc_pengajuan_sub_kas_kecil;
 	delimiter //
 	
 	CREATE PROCEDURE p_acc_pengajuan_sub_kas_kecil(

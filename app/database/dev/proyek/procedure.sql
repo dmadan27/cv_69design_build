@@ -1,7 +1,77 @@
+# Procedure, Function, and Trigger Proyek #
 
--- Procedure Hapus Data Proyek (FIX)
-	-- terdapat bug, jika menghapus data proyek langsung maka saldo tidak akan bisa dinormalisasi
+-- Procedure Tambah Proyek
+	DROP PROCEDURE IF EXISTS p_tambah_proyek;
 	delimiter //
+
+	CREATE PROCEDURE p_tambah_proyek(
+		in id_param varchar(50),
+		in pemilik_param varchar(255),
+		in tgl_param date,
+		in pembangunan_param varchar(255),
+		in luas_area_param double(10,2),
+		in alamat_param text,
+		in kota_param varchar(100),
+		in estimasi_param smallint,
+		in total_param double(12,2),
+		in dp_param double(12,2),
+		in cco_param double(12,2),
+		in progress_param int,
+		in status_param enum('SELESAI', 'BERJALAN'),
+		in created_by_param varchar(50)
+	)
+	BEGIN
+
+		INSERT INTO proyek 
+			(id, pemilik, tgl, pembangunan, luas_area, alamat, kota, 
+			estimasi, total, dp, cco, progress, status, created_by, modified_by)
+		VALUES 
+			(id_param, pemilik_param, tgl_param, pembangunan_param, luas_area_param, alamat_param, kota_param, 
+			estimasi_param, total_param, dp_param, cco_param, progress_param, status_param, created_by_param, created_by_param);
+
+	END //
+
+	delimiter;
+-- End Procedure Tambah Proyek
+
+-- Procedure Edit Proyek
+	DROP PROCEDURE IF EXISTS p_edit_proyek;
+	delimiter //
+
+	CREATE PROCEDURE p_edit_proyek(
+		in id_param varchar(50),
+		in pemilik_param varchar(255),
+		in tgl_param date,
+		in pembangunan_param varchar(255),
+		in luas_area_param double(10,2),
+		in alamat_param text,
+		in kota_param varchar(100),
+		in estimasi_param smallint,
+		in total_param double(12,2),
+		in dp_param double(12,2),
+		in cco_param double(12,2),
+		in progress_param int,
+		in status_param enum('SELESAI', 'BERJALAN'),
+		in modified_by_param varchar(50)
+	)
+	BEGIN
+
+		UPDATE proyek SET 
+			pemilik = pemilik_param, tgl = tgl_param, pembangunan = pembangunan_param, luas_area = luas_area_param,
+			alamat = alamat_param, kota = kota_param, estimasi = estimasi_param, total = total_param,
+			dp = dp_param, cco = cco_param, progress = progress_param, status = status_param, modified_by = modified_by_param
+		WHERE id = id_param;
+
+	END //
+
+	delimiter;
+-- End Procedure Edit Proyek
+
+-- Procedure Hapus Data Proyek
+	-- terdapat bug, jika menghapus data proyek langsung maka saldo tidak akan bisa dinormalisasi
+	DROP PROCEDURE IF EXISTS p_hapus_proyek;
+	delimiter //
+
 	CREATE PROCEDURE hapus_proyek(
 		in id_param varchar(50)
 	)
@@ -41,58 +111,127 @@
 		-- 8. hapus proyek
 		DELETE FROM proyek WHERE id = id_param;
 
-	END//
+	END //
+
 	delimiter ;
+-- End Procedure Hapus Proyek
 
-
--- Procedure Tambah Data Detail Proyek (FIX)
+-- Procedure Tambah Detail SKK Proyek
+	DROP PROCEDURE IF EXISTS p_tambah_detail_skk_proyek;
 	delimiter //
-	CREATE PROCEDURE tambah_detail_proyek(
+
+	CREATE PROCEDURE p_tambah_detail_skk_proyek(
+		in id_proyek_param varchar(50),
+		in id_sub_kas_kecil_param varchar(10),
+		in created_by_param varchar(50)
+	)
+	BEGIN
+
+		INSERT INTO logistik_proyek 
+			(id_proyek, id_sub_kas_kecil, created_by, modified_by) 
+		VALUES 
+			(id_proyek_param, id_sub_kas_kecil_param, created_by_param, created_by_param);
+
+	END //
+
+	delimiter ;
+-- End Procedure Tambah Detail SKK Proyek
+
+-- Procedure Edit Detail SKK Proyek
+	DROP PROCEDURE IF EXISTS p_edit_detail_skk_proyek;
+	delimiter //
+
+	CREATE PROCEDURE p_edit_detail_skk_proyek(
+		in id_param int,
+		in id_proyek_param varchar(50),
+		in id_sub_kas_kecil_param varchar(10),
+		in modified_by_param varchar(50)
+	)
+	BEGIN
+
+		UPDATE logistik_proyek SET
+			id_proyek = id_proyek_param, id_sub_kas_kecil = id_sub_kas_kecil_param,
+			modified_by = modified_by_param
+		WHERE id = id_param;
+
+	END //
+
+	delimiter ;
+-- End Procedure Edit Detail SKK Proyek
+
+-- Procedure Hapus Detail SKK Proyek
+	DROP PROCEDURE IF EXISTS p_hapus_detail_skk_proyek;
+	delimiter //
+
+	CREATE PROCEDURE p_hapus_detail_skk_proyek(
+		in id_param int
+	)
+	BEGIN
+
+		DELETE FROM logistik_proyek WHERE id = id_param;
+
+	END //
+
+	delimiter ;
+-- End Procedure hapus Detail SKK Proyek
+
+-- Procedure Tambah Data Detail Proyek
+	DROP PROCEDURE IF EXISTS p_tambah_detail_proyek;
+	delimiter //
+
+	CREATE PROCEDURE p_tambah_detail_proyek(
 		id_proyek_param varchar(50),
 		id_bank_param int,
 		tgl_param date,
 		nama_param varchar(255),
 		total_param double(12,2),
 		is_DP_param char(1),
-		ket_param text
+		ket_param text,
+		created_by_param varchar(50)
 	)
 	BEGIN
 		DECLARE get_saldo double(12,2);
 
 		-- 1. insert detail proyek
 		INSERT INTO detail_proyek 
-			(id_proyek, id_bank, tgl, nama, total, is_DP) 
+			(id_proyek, id_bank, tgl, nama, total, is_DP, created_by, modified_by) 
 		VALUES 
-			(id_proyek_param, id_bank_param, tgl_param, nama_param, total_param, is_DP_param);
+			(id_proyek_param, id_bank_param, tgl_param, nama_param, total_param, is_DP_param, created_by_param, created_by_param);
 
 		-- 2. get saldo bank terakhir
 		SELECT saldo INTO get_saldo FROM bank WHERE id = id_bank_param;
 
 		-- 3. Update Saldo bank
-		UPDATE bank SET saldo = (get_saldo + total_param) WHERE id = id_bank_param;
+		UPDATE bank SET 
+			saldo = (get_saldo + total_param),
+			modified_by = created_by_param 
+		WHERE id = id_bank_param;
 
 		-- 4. tambah mutasi bank
 		INSERT INTO mutasi_bank 
-			(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+			(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket, created_by, modified_by)
 		VALUES 
-			(id_bank_param, tgl_param, total_param, 0, (get_saldo + total_param),  ket_param);
+			(id_bank_param, tgl_param, total_param, 0, (get_saldo + total_param), 
+			ket_param, created_by_param, created_by_param);
 
-	END//
+	END //
+
 	delimiter ;
-	
+-- End Procedure Tambah Detail Proyek
 
--- Procedure Edit Data Detail Proyek (FIX)
+-- Procedure Edit Data Detail Proyek
+	DROP PROCEDURE IF EXISTS p_edit_detail_proyek;
 	delimiter //
-	CREATE PROCEDURE edit_detail_proyek(
+	
+	CREATE PROCEDURE p_edit_detail_proyek(
 		id_param int,
 		id_proyek_param varchar(50),
 		id_bank_param int,
 		tgl_param date,
 		nama_param varchar(255),
 		total_param double(12,2),
-		is_DP_param char(1)
-		-- ket_param text
-		-- tgl_real date
+		is_DP_param char(1),
+		modified_by_param varchar(50)
 	)
 	BEGIN
 		DECLARE nama_bank_baru varchar(50);
@@ -114,11 +253,8 @@
 
 		-- update detail
 		UPDATE detail_proyek SET
-			id_bank = id_bank_param,
-			tgl = tgl_param,
-			nama = nama_param,
-			total = total_param,
-			is_DP = is_DP_param
+			id_bank = id_bank_param, tgl = tgl_param, nama = nama_param, total = total_param,
+			is_DP = is_DP_param, modified_by = modified_by_param
 		WHERE id = id_param;
 
 		-- jika ada perubahan di bank
@@ -128,7 +264,10 @@
 			SELECT saldo INTO get_saldo_bank_lama FROM bank WHERE id = get_bank_sebelum;
 			
 			-- normalisasi saldo bank sebelum
-			UPDATE bank SET saldo = (get_saldo_bank_lama - get_total_sebelum) WHERE id = get_bank_sebelum;
+			UPDATE bank SET 
+				saldo = (get_saldo_bank_lama - get_total_sebelum),
+				modified_by = modified_by_param
+			WHERE id = get_bank_sebelum;
 
 			-- get nama bank baru dan lama
 			SELECT nama INTO nama_bank_baru FROM bank WHERE id = id_bank_param;
@@ -141,15 +280,19 @@
 
 			-- insert mutasi bank lama
 			INSERT INTO mutasi_bank 
-				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket, created_by, modified_by)
 			VALUES 
-				(get_bank_sebelum, tgl_param, 0, get_total_sebelum, (get_saldo_bank_lama - get_total_sebelum), ket_bank_lama_param);
+				(get_bank_sebelum, tgl_param, 0, get_total_sebelum, (get_saldo_bank_lama - get_total_sebelum), 
+				ket_bank_lama_param, modified_by_param, modified_by_param);
 
 			-- get saldo bank baru
 			SELECT saldo INTO get_saldo_bank_baru FROM bank WHERE id = id_bank_param;
 
 			-- update saldo bank baru
-			UPDATE bank SET saldo = (get_saldo_bank_baru + total_param) WHERE id = id_bank_param;
+			UPDATE bank SET 
+				saldo = (get_saldo_bank_baru + total_param),
+				modified_by = modified_by_param 
+			WHERE id = id_bank_param;
 
 			-- set keterangan mutasi bank baru
 			SELECT CONCAT('UANG MASUK SEBESAR RP ', FORMAT(total_param, 2, 'de_DE'), 
@@ -158,9 +301,10 @@
 
 			-- insert mutasi bank baru
 			INSERT INTO mutasi_bank 
-				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+				(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket, created_by, modified_by)
 			VALUES 
-				(id_bank_param, tgl_param, total_param, 0, (get_saldo_bank_baru + total_param), ket_bank_baru_param);
+				(id_bank_param, tgl_param, total_param, 0, (get_saldo_bank_baru + total_param), 
+				ket_bank_baru_param, modified_by_param, modified_by_param);
 		ELSE
 			-- jika bank sama
 			-- jika ada perubahan di total
@@ -169,7 +313,10 @@
 				SELECT saldo INTO get_saldo_bank_baru FROM bank WHERE id = id_bank_param;
 
 				-- normalisasi saldo
-				UPDATE bank SET saldo = (get_saldo_bank_baru + (total_param - get_total_sebelum)) WHERE id = id_bank_param;
+				UPDATE bank SET 
+					saldo = (get_saldo_bank_baru + (total_param - get_total_sebelum)),
+					modified_by = modified_by_param
+				WHERE id = id_bank_param;
 				
 				IF total_param > get_total_sebelum THEN
 					-- set keterangan mutasi
@@ -178,9 +325,10 @@
 					
 					-- insert mutasi
 					INSERT INTO mutasi_bank 
-						(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+						(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket, created_by, modified_by)
 					VALUES 
-						(id_bank_param, tgl_param, (total_param - get_total_sebelum), 0, (get_saldo_bank_baru + (total_param - get_total_sebelum)), ket_param);
+						(id_bank_param, tgl_param, (total_param - get_total_sebelum), 0, (get_saldo_bank_baru + (total_param - get_total_sebelum)), 
+						ket_param, modified_by_param, modified_by_param);
 				ELSE
 					IF total_param < get_total_sebelum THEN
 						-- set keterangan mutasi
@@ -189,9 +337,10 @@
 						
 						-- insert mutasi
 						INSERT INTO mutasi_bank 
-							(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+							(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket, created_by, modified_by)
 						VALUES 
-							(id_bank_param, tgl_param, 0, (get_total_sebelum - total_param), (get_saldo_bank_baru + (total_param - get_total_sebelum)), ket_param);
+							(id_bank_param, tgl_param, 0, (get_total_sebelum - total_param), (get_saldo_bank_baru + (total_param - get_total_sebelum)), 
+							ket_param, modified_by_param, modified_by_param);
 					END IF;
 
 				END IF;
@@ -200,15 +349,19 @@
 
 		END IF;
 
-	END//
+	END //
+
 	delimiter ;
+-- End Procedure Edit Data Detail Proyek
 
-
--- Procedure Hapus Data Detail Proyek (FIX)
+-- Procedure Hapus Data Detail Proyek
+	DROP PROCEDURE IF EXISTS p_hapus_detail_proyek;
 	delimiter //
-	CREATE PROCEDURE hapus_detail_proyek(
+	
+	CREATE PROCEDURE p_hapus_detail_proyek(
 		id_param int,
-		tgl_param date
+		tgl_param date,
+		modified_by_param varchar(50)
 	)
 	BEGIN
 		DECLARE get_id_bank int;
@@ -234,16 +387,24 @@
 		SELECT saldo INTO get_saldo FROM bank WHERE id = get_id_bank;
 
 		-- update saldo
-		UPDATE bank SET saldo = (get_saldo - get_total) WHERE id = get_id_bank;
+		UPDATE bank SET 
+			saldo = (get_saldo - get_total),
+			modified_by = modified_by_param 
+		WHERE id = get_id_bank;
 
 		-- insert mutasi
 		INSERT INTO mutasi_bank 
-			(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket)
+			(id_bank, tgl, uang_masuk, uang_keluar, saldo, ket, created_by, modified_by)
 		VALUES 
-			(get_id_bank, tgl_param, 0, get_total, (get_saldo - get_total), ket_param);
+			(get_id_bank, tgl_param, 0, get_total, (get_saldo - get_total), 
+			ket_param, modified_by_param, modified_by_param);
 
 		-- hapus detail
 		DELETE FROM detail_proyek WHERE id = id_param;
 
-	END//
+	END //
+
 	delimiter ;
+-- End Procedure Hapus Data Detail Proyek
+
+# Procedure, Function, and Trigger Proyek #
