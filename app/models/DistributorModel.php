@@ -1,57 +1,25 @@
 <?php
-	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	Defined("BASE_PATH") or die(ACCESS_DENIED);
+	
 	/**
-	*	Class DistributorModel, implementasi ModelInterface
-	*/
-
-	class DistributorModel extends Database implements ModelInterface{
+	 * Class DistributorModel, implementasi ModelInterface
+	 */
+	class DistributorModel extends Database implements ModelInterface
+	{
 
 		protected $koneksi;
-		protected $dataTable;
 
 		/**
-		* fungsi yang dijalankan saat memanggil kelas model
-		*/
-		public function __construct(){
+		 * fungsi yang dijalankan saat memanggil kelas model
+		 */
+		public function __construct() {
 			$this->koneksi = $this->openConnection();
-			$this->dataTable = new Datatable();
 		}
 
-			// ======================= dataTable ======================= //
-		
-			/**
-			* 
-			*/
-			public function getAllDataTable($config){
-				$this->dataTable->set_config($config);
-				$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
-				$statement->execute();
-				$result = $statement->fetchAll();
-
-				return $result;
-			}
-
-			/**
-			* 
-			*/
-			public function recordFilter(){
-				return $this->dataTable->recordFilter();
-
-			}
-
-			/**
-			* 
-			*/
-			public function recordTotal(){
-				return $this->dataTable->recordTotal();
-			}
-
-		// ========================================================= //
-
 		/**
-		* 
-		*/
-		public function getAll(){
+		 * 
+		 */
+		public function getAll() {
 			$query = "SELECT * FROM distributor";
 
 			$statement = $this->koneksi->prepare($query);
@@ -62,9 +30,9 @@
 		}
 
 		/**
-		* 
-		*/
-		public function getById($id){
+		 * 
+		 */
+		public function getById($id) {
 			$query = "SELECT * FROM distributor WHERE id = :id;";
 
 			$statement = $this->koneksi->prepare($query);
@@ -76,12 +44,12 @@
 		}
 
 		/**
-		* 
-		*/
-		public function insert($data){
-			$query = "INSERT INTO distributor (id, nama, alamat, no_telp, pemilik, status) VALUES (:id, :nama, :alamat,  :no_telp, :pemilik, :status);";
-
-			try{
+		 * 
+		 */
+		public function insert($data) {
+			// $query = "INSERT INTO distributor (id, nama, alamat, no_telp, pemilik, status) VALUES (:id, :nama, :alamat,  :no_telp, :pemilik, :status);";
+			$query = "CALL p_tambah_distributor (:id, :nama, :alamat, :no_telp, :pemilik, :status, :created_by);";
+			try {
 				$this->koneksi->beginTransaction();
 
 				$statement = $this->koneksi->prepare($query);
@@ -92,66 +60,76 @@
 						':alamat' => $data['alamat'],
 						':no_telp' => $data['no_telp'],
 						':pemilik' => $data['pemilik'],
-						':status' => $data['status']
+						':status' => $data['status'],
+						':created_by' => $data['created_by']
 					)
 				);
 				$statement->closeCursor();
 
 				$this->koneksi->commit();
 
-				return true;
+				return array(
+					'success' => true,
+					'error' => null
+				);
 			}
-			catch(PDOException $e){
+			catch(PDOException $e) {
 				$this->koneksi->rollback();
-				die($e->getMessage());
-				// return false;
+				return array(
+					'success' => false,
+					'error' => $e->getMessage()
+				);
 			}
 			
 		}
 
 		/**
-		* 
-		*/
-		public function update($data){
-			$query = "UPDATE distributor SET
-			 nama = :nama, alamat = :alamat,  no_telp = :no_telp, pemilik = :pemilik, status = :status WHERE id = :id;";
-
-			try{
+		 * 
+		 */
+		public function update($data) {
+			// $query = "UPDATE distributor SET
+			//  nama = :nama, alamat = :alamat,  no_telp = :no_telp, pemilik = :pemilik, status = :status WHERE id = :id;";
+			$query = "CALL p_edit_distributor (:id, :nama, :alamat, :no_telp, :pemilik, :status, :modified_by);";
+			try {
 				$this->koneksi->beginTransaction();
 
 				$statement = $this->koneksi->prepare($query);
 				$statement->execute(
 					array(
-
+						':id' => $data['id'],
 						':nama' => $data['nama'],
 						':alamat' => $data['alamat'],
 						':no_telp' => $data['no_telp'],
 						':pemilik' => $data['pemilik'],
 						':status' => $data['status'],
-						':id' => $data['id'],
+						':modified_by' => $data['modified_by']
 					)
 				);
 				$statement->closeCursor();
 
 				$this->koneksi->commit();
 
-				return true;
+				return array(
+					'success' => true,
+					'error' => null
+				);
 			}
-			catch(PDOException $e){
+			catch(PDOException $e) {
 				$this->koneksi->rollback();
-				die($e->getMessage());
-				// return false;
+				return array(
+					'success' => false,
+					'error' => $e->getMessage()
+				);
 			}
-
-			
 		}
 
 
 		/**
-		* 
-		*/
-		public function delete($id){
-			$query = "DELETE FROM distributor WHERE id = :id";
+		 * 
+		 */
+		public function delete($id) {
+			// $query = "DELETE FROM distributor WHERE id = :id";
+			$query = "CALL p_hapus_distributor (:id);";
 			
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id', $id);
@@ -161,18 +139,21 @@
 			
 		}
 		
-
-		public function export(){
+		/**
+		 * 
+		 */
+		public function export() {
 			$query = "SELECT id ID, nama NAMA, alamat ALAMAT,  no_telp NO_TELP, pemilik PEMILIK, status STATUS FROM distributor ";
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute();
 			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
 			return $result;
-		
-
 		}
 
-		public function getLastID(){
+		/**
+		 * 
+		 */
+		public function getLastID() {
 			$query = "SELECT MAX(id) id FROM distributor";
 
 			$statement = $this->koneksi->prepare($query);
@@ -182,7 +163,7 @@
 			return $result;
 		}
 
-		public function countDistributor(){
+		public function countDistributor() {
 			$query = "SELECT count(id) FROM distributor";
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute();
@@ -191,8 +172,8 @@
 		}
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		public function __destruct(){
 			$this->closeConnection($this->koneksi);
 		}

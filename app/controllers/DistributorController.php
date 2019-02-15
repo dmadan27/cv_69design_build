@@ -5,8 +5,11 @@
 	 * Class Distributor extend ke abstract crud modals
 	 */
 	class Distributor extends Crud_modalsAbstract{
-		private $token;
-		private $status = false;
+
+		private $success = false;
+		private $notif = array();
+		private $error = array();
+		private $message = NULL;
 
 		/**
 		 * Default load saat pertama kali controller diakses
@@ -24,7 +27,7 @@
 		/**
 		 * Method pertama kali yang diakses
 		 */
-		public function index(){
+		public function index() {
 			$this->list();
 		}
 
@@ -33,7 +36,7 @@
 		 * Menampilkan list semua data proyek
 		 * Passing data css dan js yang dibutuhkan di list distributor
 		 */
-		protected function list(){
+		protected function list() {
 			// set config untuk layouting
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
@@ -64,7 +67,7 @@
 		 * Request berupa POST dan output berupa JSON
 		 */
 		public function get_list(){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				// config datatable
 				$config_dataTable = array(
 					'tabel' => 'distributor',
@@ -78,7 +81,7 @@
 
 				$data = array();
 				$no_urut = $_POST['start'];
-				foreach($dataDistributor as $row){
+				foreach($dataDistributor as $row) {
 					$no_urut++;
 
 					$status = ($row['status'] == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-danger">'.$row['status'].'</span>';
@@ -122,14 +125,12 @@
 		 * notif => pesan yang akan ditampilkan disistem
 		 * error => error apa saja yang ada dari hasil validasi
 		 */
-		public function action_add(){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+		public function action_add() {
+			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				$data = isset($_POST) ? $_POST : false;
-						
-				$error = $notif = array();
 
 				if(!$data){
-					$notif = array(
+					$this->notif = array(
 						'type' => 'error',
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
@@ -139,7 +140,7 @@
 					// validasi data
 					$validasi = $this->set_validation($data);
 					$cek = $validasi['cek'];
-					$error = $validasi['error'];
+					$this->error = $validasi['error'];
 
 					if($cek){
 						// validasi inputan
@@ -149,21 +150,23 @@
 							'alamat' => $this->validation->validInput($data['alamat']),
 							'no_telp' => $this->validation->validInput($data['no_telp']),
 							'pemilik' => $this->validation->validInput($data['pemilik']),
-							'status' => $this->validation->validInput($data['status'])
-										
+							'status' => $this->validation->validInput($data['status']),
+							'created_by' => $_SESSION['sess_id']										
 						);
 
 						// insert bank
-						if($this->DistributorModel->insert($data)) {
-							$this->status = true;
-							$notif = array(
+						$insert = $this->DistributorModel->insert($data);
+						if($insert['success']) {
+							$this->success = true;
+							$this->notif = array(
 								'type' => 'success',
 								'title' => "Pesan Berhasil",
 								'message' => "Tambah Data Distributor Baru Berhasil",
 							);
 						}
 						else {
-							$notif = array(
+							$this->message = $insert['error'];
+							$this->notif = array(
 								'type' => 'error',
 								'title' => "Pesan Gagal",
 								'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
@@ -171,7 +174,7 @@
 						}
 					}
 					else {
-						$notif = array(
+						$this->notif = array(
 							'type' => 'warning',
 							'title' => "Pesan Pemberitahuan",
 							'message' => "Silahkan Cek Kembali Form Isian",
@@ -180,9 +183,10 @@
 				}
 
 				$output = array(
-					'status' => $this->status,
-					'notif' => $notif,
-					'error' => $error,
+					'status' => $this->success,
+					'notif' => $this->notif,
+					'error' => $this->error,
+					'message' => $this->message
 					// 'data' => $data
 				);
 
@@ -199,14 +203,14 @@
 		 * param $id didapat dari url
 		 * return berupa json
 		 */
-		public function edit($id){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+		public function edit($id) {
+			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				$id = strtoupper($id);
 				$data = !empty($this->DistributorModel->getById($id)) ? $this->DistributorModel->getById($id) : false;
 
 				echo json_encode($data);
 			}
-			else $this->redirect();	
+			else { $this->redirect(); }
 
 		}
 
@@ -218,14 +222,12 @@
 		 * notif => pesan yang akan ditampilkan disistem
 		 * error => error apa saja yang ada dari hasil validasi
 		 */
-		public function action_edit(){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+		public function action_edit() {
+			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				$data = isset($_POST) ? $_POST : false;
-				
-				$error = $notif = array();
 
 				if(!$data){
-					$notif = array(
+					$this->notif = array(
 						'type' => 'error',
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
@@ -235,7 +237,7 @@
 					// validasi data
 					$validasi = $this->set_validation($data);
 					$cek = $validasi['cek'];
-					$error = $validasi['error'];
+					$this->error = $validasi['error'];
 
 					if($cek){
 						// validasi inputan
@@ -245,21 +247,23 @@
 							'alamat' => $this->validation->validInput($data['alamat']),
 							'no_telp' => $this->validation->validInput($data['no_telp']),
 							'pemilik' => $this->validation->validInput($data['pemilik']),
-							'status' => $this->validation->validInput($data['status'])
+							'status' => $this->validation->validInput($data['status']),
+							'modified_by' => $_SESSION['sess_id']
 						);
 
 						// update bank
-						if($this->DistributorModel->update($data)) {
-
-							$this->status = true;
-							$notif = array(
+						$update = $this->DistributorModel->update($data);
+						if($update['success']) {
+							$this->success = true;
+							$this->notif = array(
 								'type' => 'success',
 								'title' => "Pesan Berhasil",
 								'message' => "Edit Data Distributor Berhasil",
 							);
 						}
 						else {
-							$notif = array(
+							$this->message = $update['error'];
+							$this->notif = array(
 								'type' => 'error',
 								'title' => "Pesan Gagal",
 								'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
@@ -267,7 +271,7 @@
 						}
 					}
 					else {
-						$notif = array(
+						$this->notif = array(
 							'type' => 'warning',
 							'title' => "Pesan Pemberitahuan",
 							'message' => "Silahkan Cek Kembali Form Isian",
@@ -276,16 +280,16 @@
 				}
 
 				$output = array(
-					'status' => $this->status,
-					'notif' => $notif,
-					'error' => $error,
+					'status' => $this->success,
+					'notif' => $this->notif,
+					'error' => $this->error,
+					'message' => $this->message
 					// 'data' => $data
 				);
 
 				echo json_encode($output);
 			}
-			else $this->redirect();
-
+			else { $this->redirect(); }
 		}
 
 		/**
@@ -293,12 +297,12 @@
 		 * method untuk get data detail dan setting layouting detail
 		 * param $id didapat dari url
 		 */
-		public function detail($id){
+		public function detail($id) {
 			$id = strtoupper($id);
 
 			$data_detail = !empty($this->DistributorModel->getById($id)) ? $this->DistributorModel->getById($id) : false;
 
-			if(!$data_detail || (empty($id) || $id == "")) $this->redirect(BASE_URL."distributor/");
+			if(!$data_detail || (empty($id) || $id == "")) { $this->redirect(BASE_URL."distributor/"); }
 
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
@@ -325,7 +329,6 @@
 				'<span class="label label-success">'.$data_detail['status'].'</span>' : 
 				'<span class="label label-danger">'.$data_detail['status'].'</span>';
 			
-
 			$data = array(
 				'id' => strtoupper($data_detail['id']),
 				'nama' => $data_detail['nama'],
@@ -336,7 +339,6 @@
 			);
 
 			$this->layout('distributor/view', $config, $data);
-
 		}
 
 		/**
@@ -345,8 +347,8 @@
 		 * param $id didapat dari url
 		 * return json
 		 */
-		public function delete($id){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+		public function delete($id) {
+			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				$id = strtoupper($id);
 				if(empty($id) || $id == "") $this->redirect(BASE_URL."distributor/");
 
@@ -354,14 +356,13 @@
 
 				echo json_encode($this->status);
 			}
-			else $this->redirect();	
-
+			else { $this->redirect(); }
 		}
 
 		/**
 		 * Export data ke format Excel
 		 */
-		public function export(){
+		public function export() {
 			$row = $this->DistributorModel->export();
 			$header = array_keys($row[0]); 
 
@@ -370,19 +371,17 @@
 			$this->excel->getData('distributor', 'distributor', 4, 5 );
 
 			$this->excel->getExcel('distributor');
-
-
 		}
 
 		/**
 		 * Fungsi generate id otomatis
 		 */
-		public function get_last_id(){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+		public function get_last_id() {
+			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				$data = !empty($this->DistributorModel->getLastID()['id']) ? $this->DistributorModel->getLastID()['id'] : false;
 				
-				if(!$data) $id = 'DIS0001';
-				else{
+				if(!$data) { $id = 'DIS0001'; }
+				else {
 					$kode = 'DIS';
 					$noUrut = (int)substr($data, 3, 4);
 					$noUrut++;
@@ -390,20 +389,19 @@
 					$id = $kode.sprintf("%04s", $noUrut);
 					// print_r($data);
 					// exit;
-					
 				}
 
 				echo json_encode($id);
 			}
-			else $this->redirect();
+			else { $this->redirect(); }
 		}
 
 		/**
 		 * Fungsi history pembelian
 		 * di menu Distributor
 		 */
-		public function get_history_distributor($id){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+		public function get_history_distributor($id) {
+			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				
 				// config datatable
 				$config_dataTable = array(
@@ -441,8 +439,7 @@
 
 				echo json_encode($output);
 			}
-			else $this->redirect();
-
+			else { $this->redirect(); }
 		}
 
 		/**
@@ -451,7 +448,7 @@
 		 * param $data didapat dari post yang dilakukan oleh user
 		 * return berupa array, status hasil pengecekan dan error tiap validasi inputan
 		 */
-		private function set_validation($data){
+		private function set_validation($data) {
 
 			// nama
 			$this->validation->set_rules($data['nama'], 'Nama Distributor', 'nama', 'string | 1 | 255 | required');
