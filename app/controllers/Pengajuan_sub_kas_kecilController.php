@@ -305,6 +305,10 @@
 
 			if((empty($id) || $id == "") || !$dataPengajuan) { $this->redirect(BASE_URL."pengajuan-sub-kas-kecil/"); }
 
+			$cekAction = false;
+
+			if($dataPengajuan['status_order'] == '1' ) { $cekAction = true; }
+
 			$css = array(
 				'assets/bower_components/select2/dist/css/select2.min.css',
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css'
@@ -380,7 +384,8 @@
 
 			$data = array(
 				'data_pengajuan' => $parsing_dataPengajuan,
-				'data_detail' => $parsing_dataDetail
+				'data_detail' => $parsing_dataDetail,
+				'action' => $cekAction
 			);
 
 			$this->layout('pengajuan_sub_kas_kecil/view', $config, $data);

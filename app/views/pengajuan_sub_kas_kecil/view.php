@@ -84,8 +84,14 @@
                                 <td><?= $pengajuan['status'] ?></td>
                             </tr>
                         </table>
-                        </br>
-                        <button class="btn btn-success btn-block" onclick="getEdit('<?= strtolower($pengajuan['id']); ?>')">Edit Status Pengajuan</button>	
+                        <?php
+                            if($this->data['action']) {
+                                ?>
+                                </br>
+                                <button class="btn btn-success btn-block" onclick="getEdit('<?= strtolower($pengajuan['id']); ?>')">Edit Status Pengajuan</button>	
+                                <?php
+                            }
+                        ?>
 					</div>
 				</div>
 			</div>
