@@ -3,7 +3,7 @@
 -- View mutasi bank export
     CREATE OR REPLACE VIEW v_mutasi_bank_export AS
     SELECT 
-        m.id_bank 'ID BANK',
+        m.id_bank id_bank,
         b.nama 'BANK',
         m.tgl TANGGAL,
         m.uang_masuk 'UANG MASUK',

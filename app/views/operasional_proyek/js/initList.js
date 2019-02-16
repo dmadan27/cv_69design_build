@@ -43,7 +43,6 @@ $(document).ready(function(){
             url: BASE_URL+"operasional-proyek/get-list/",
             type: 'POST',
              data: {
-                "token_list" : $('#token_list').val().trim(),
             }
         },
         "columnDefs": [

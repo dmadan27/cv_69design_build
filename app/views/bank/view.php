@@ -57,20 +57,22 @@
 					<div class="box-body">
 						<div class="row">
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-								<table id="mutasiBankTable" class="table table-bordered table-hover" style="width:100%">
-									<thead>
-										<tr>
-											<th class="text-right">No</th>
-											<th>Tanggal</th>
-											<th class="text-right">Uang Masuk</th>
-											<th class="text-right">Uang Keluar</th>
-											<th class="text-right">Saldo</th>
-											<th>Keterangan</th>
-										</tr>
-									</thead>
-									<tbody>
-									</tbody>
-								</table>
+								<div class="table-responsive">
+									<table id="mutasiBankTable" class="table table-bordered table-hover" style="width:100%">
+										<thead>
+											<tr>
+												<th class="text-right">No</th>
+												<th>Tanggal</th>
+												<th class="text-right">Uang Masuk</th>
+												<th class="text-right">Uang Keluar</th>
+												<th class="text-right">Saldo</th>
+												<th>Keterangan</th>
+											</tr>
+										</thead>
+										<tbody>
+										</tbody>
+									</table>
+								</div>
 							</div>
 						</div>		
 					</div>

@@ -30,8 +30,14 @@
 						<div class="row">
 							<div class="col-md-12 col-sm-12 col-xs-12">
 								<div class="btn-group">
-									<!-- tambah -->
-									<button type="button" class="btn btn-default btn-flat" id="tambah" value="<?= $this->data['token_add'] ?>"><i class="fa fa-plus"></i> Tambah</button>
+									<?php
+										if($_SESSION['sess_level'] === 'KAS BESAR') {
+											?>
+											<!-- tambah -->
+											<button type="button" class="btn btn-default btn-flat" id="tambah" value="<?= $this->data['token_add'] ?>"><i class="fa fa-plus"></i> Tambah</button>
+											<?php
+										}
+									?>
 									<!-- export -->
 									<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 								</div>
@@ -42,24 +48,25 @@
 					<div class="box-body">
 						<div class="row">
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-								<input type="hidden" id="token_list" value="<?= $this->data['token_list']; ?>">
-								<table id="operasionalProyekTable" class="table table-bordered table-hover">
-									<thead>
-										<tr>
-											<th class="text-center" style="width: 35px">No</th>
-											<th class="text-center">ID</th>
-											<th class="text-center">ID Proyek</th>
-											<th class="text-center">ID Kas Besar</th>
-											<th class="text-center">ID Distributor</th>
-											<th class="text-center">Tanggal</th>
-											<th class="text-center">Nama</th>
-											<th class="text-center">Total</th>
-											<th class="text-center">Aksi</th>
-										</tr>
-									</thead>
-									<tbody>
-									</tbody>
-								</table>	
+								<div class="table-responsive">
+									<table id="operasionalProyekTable" class="table table-bordered table-hover">
+										<thead>
+											<tr>
+												<th class="text-center" style="width: 35px">No</th>
+												<th class="text-center">ID</th>
+												<th class="text-center">ID Proyek</th>
+												<th class="text-center">ID Kas Besar</th>
+												<th class="text-center">ID Distributor</th>
+												<th class="text-center">Tanggal</th>
+												<th class="text-center">Nama</th>
+												<th class="text-center">Total</th>
+												<th class="text-center">Aksi</th>
+											</tr>
+										</thead>
+										<tbody>
+										</tbody>
+									</table>	
+								</div>
 							</div>
 						</div>
 					</div>

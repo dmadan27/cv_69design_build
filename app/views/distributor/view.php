@@ -110,6 +110,7 @@
                                             <!-- export -->
                                             <button type="button" class="btn btn-success btn-flat" id="exportExcel_pengajuan"><i class="fa fa-file-excel-o"></i> Export Excel</button>
                                         </div>
+										<div class="table-responsive">
                                             <table id="historyPembelianDistributor" class="table table-bordered table-hover" style="width: 100%;">
                                                 <thead>
                                                     <tr>
@@ -124,6 +125,7 @@
                                                 <tbody>
                                                 </tbody>
                                             </table>
+										</div>
                                     </div>
                                 </div>
                             </div>

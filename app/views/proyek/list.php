@@ -30,8 +30,14 @@
 						<div class="row">
 							<div class="col-md-12 col-sm-12 col-xs-12">
 								<div class="btn-group">
-									<!-- tambah -->
-									<button type="button" class="btn btn-default btn-flat" id="tambah"><i class="fa fa-plus"></i> Tambah</button>
+									<?php
+										if($_SESSION['sess_level'] === 'KAS BESAR') {
+											?>
+											<!-- tambah -->
+											<button type="button" class="btn btn-default btn-flat" id="tambah"><i class="fa fa-plus"></i> Tambah</button>
+											<?php
+										}
+									?>
 									<!-- export -->
 									<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 								</div>
@@ -40,23 +46,25 @@
 					</div>
 					<!-- box body -->
 					<div class="box-body">
-						<table id="proyekTable" class="table table-bordered table-hover" style="width:100%">
-							<thead>
-								<tr>
-									<th class="text-right" style="width: 35px">No</th>
-									<th>ID</th>
-									<th>Pemilik</th>
-									<th>Tanggal</th>
-									<th>Pembangunan</th>
-									<th>Kota</th>
-									<th class="text-right">Total</th>
-									<th>Progress</th>
-									<th>Status</th>
-									<th>Aksi</th>
-								</tr>
-							</thead>
-							<tbody></tbody>
-						</table>
+						<div class="table-responsive">
+							<table id="proyekTable" class="table table-bordered table-hover" style="width:100%">
+								<thead>
+									<tr>
+										<th class="text-right" style="width: 35px">No</th>
+										<th>ID</th>
+										<th>Pemilik</th>
+										<th>Tanggal</th>
+										<th>Pembangunan</th>
+										<th>Kota</th>
+										<th class="text-right">Total</th>
+										<th>Progress</th>
+										<th>Status</th>
+										<th>Aksi</th>
+									</tr>
+								</thead>
+								<tbody></tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>

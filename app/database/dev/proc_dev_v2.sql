@@ -112,9 +112,9 @@
     BEGIN
 
         INSERT INTO distributor 
-            (nama, alamat, no_telp, pemilik, status, created_by, modified_by)
+            (id, nama, alamat, no_telp, pemilik, status, created_by, modified_by)
         VALUES 
-            (nama_param, alamat_param, no_telp_param, pemilik_param, 
+            (id_param, nama_param, alamat_param, no_telp_param, pemilik_param, 
             status_param, created_by_param, created_by_param);
 
     END //

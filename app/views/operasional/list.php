@@ -30,8 +30,14 @@
 						<div class="row">
 							<div class="col-md-12 col-sm-12 col-xs-12">
 								<div class="btn-group">
-									<!-- tambah -->
-									<button type="button" class="btn btn-default btn-flat" id="tambah"> <i class="fa fa-plus"></i> Tambah</button>
+									<?php
+										if($_SESSION['sess_level'] === 'KAS BESAR') {
+											?>
+												<!-- tambah -->
+												<button type="button" class="btn btn-default btn-flat" id="tambah"> <i class="fa fa-plus"></i> Tambah</button>
+											<?php
+										}
+									?>
 									<!-- export -->
 									<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 								</div>

@@ -431,16 +431,16 @@
 				$row = $this->BankModel->export();
 				$column = array_keys($row[0]);
 
-				$detailRow = $this->BankModel->export_mutasi(3, '2018-01-01', '2019-02-27');
-				$detailColumn = array_keys($detailRow[0]);
-				$detailColumn[1] = 'ID BANK';
-				$detail = array(
-					array(
-						'row' => $detailRow,
-						'column' => $detailColumn,
-						'sheet' => 'Data Mutasi'
-					)
-				);
+				// $detailRow = $this->BankModel->export_mutasi(3, '2018-01-01', '2019-02-27');
+				// $detailColumn = array_keys($detailRow[0]);
+				// $detailColumn[1] = 'ID BANK';
+				// $detail = array(
+				// 	array(
+				// 		'row' => $detailRow,
+				// 		'column' => $detailColumn,
+				// 		'sheet' => 'Data Mutasi'
+				// 	)
+				// );
 
 				$config = array(
 					'data' => array(
@@ -449,7 +449,7 @@
 							'column' => $column,
 							'sheet' => 'Data Bank'
 						),
-						'detail' => $detail
+						'detail' => NULL
 					),
 					'property' => array(
 						'title' => 'Data Bank',
@@ -476,7 +476,7 @@
 
 				$row = $this->BankModel->export_mutasi($id, $tgl_awal, $tgl_akhir);
 				$header = array_keys($row[0]);
-				$header[1] = 'ID BANK';
+				$header[0] = 'ID BANK';
 			
 				$this->excel->setProperty('Mutasi Bank','Mutasi Bank','Data Mutasi Bank');
 				$this->excel->setData($header, $row);
