@@ -3,9 +3,9 @@
 # Versi 2.0 for MariaDB #
 
 # FOR LOCAL DEVELOPMENT #
-	DROP DATABASE IF EXISTS `69design-build_dev`;
-	CREATE DATABASE `69design-build_dev`;
-	USE `69design-build_dev`;
+	-- DROP DATABASE IF EXISTS `69design-build_dev`;
+	-- CREATE DATABASE `69design-build_dev`;
+	-- USE `69design-build_dev`;
 # END FOR LOCAL DEVELOPMENT #
 
 # ============================== Base Tabel ============================== #
