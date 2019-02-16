@@ -642,10 +642,11 @@
 		 */
 		public function get_list_pengajuan_sub_kas_kecil($id){
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				$id = strtoupper($id);
 				// config datatable
 				$config_dataTable = array(
-					'tabel' => 'v_pengajuan_sub_kas_kecil_full',
-					'kolomOrder' => array(null, 'id_pengajuan', 'tgl', 'nama_pengajuan', 'nama_skk', 'total', 'dana_disetujui', 'status', null),
+					'tabel' => 'v_pengajuan_sub_kas_kecil_v2',
+					'kolomOrder' => array(null, 'id', 'tgl', 'nama_pengajuan', 'nama_skk', 'total', 'dana_disetujui', 'status', null),
 					'kolomCari' => array('id_pengajuan', 'tgl', 'nama_pengajuan', 'id_sub_kas_kecil', 'nama_skk', 'total', 'dana_disetujui', 'status'),
 					'orderBy' => array('tgl' => 'desc'),
 					'kondisi' => 'WHERE id_proyek = "'.$id.'"',
@@ -674,14 +675,14 @@
 					}
 
 					// button aksi
-					$aksiDetail = '<button onclick="getView('."'".strtolower($row["id_pengajuan"])."'".')" type="button" ';
+					$aksiDetail = '<button onclick="getView('."'".strtolower($row["id"])."'".')" type="button" ';
 					$aksiDetail .= 'class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
 					
 					$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
 					
 					$dataRow = array();
 					$dataRow[] = $no_urut;
-					$dataRow[] = $row['id_pengajuan'];
+					$dataRow[] = $row['id'];
 					$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
 					$dataRow[] = $row['nama_pengajuan'];
 					$dataRow[] = $row['id_sub_kas_kecil'].' - '.$row['nama_skk'];
