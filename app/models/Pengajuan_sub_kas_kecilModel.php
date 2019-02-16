@@ -59,6 +59,20 @@
 		/**
 		 * 
 		 */
+		public function getEstimasiPengajuan_byId($id) {
+			$query = "SELECT * FROM vp_estimasi_pengeluaran_skk WHERE id_sub_kas_kecil = :id;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+
+		/**
+		 * 
+		 */
 		public function getAll_pending() {
 			$status = "1";
 			$query = "SELECT pskc.id, skc.id id_skc, skc.nama nama_skc, pskc.total FROM pengajuan_sub_kas_kecil pskc ";

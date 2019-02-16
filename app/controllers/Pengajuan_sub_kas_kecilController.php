@@ -156,12 +156,24 @@
 				// get data pengajuan dan saldo sub kas kecil
 				$this->model('Sub_kas_kecilModel');
 				$this->model('Kas_kecilModel');
+				
 				$dataPengajuan = $this->Pengajuan_sub_kas_kecilModel->getById($id);
-				$dataSaldoSkc = $this->Sub_kas_kecilModel->getById($dataPengajuan['id_sub_kas_kecil']);
+				$dataEstimasiPengajuan = (!empty($this->Pengajuan_sub_kas_kecilModel->
+											getEstimasiPengajuan_byId($dataPengajuan['id_sub_kas_kecil'])['estimasi_pengeluaran_saldo'])) ?
+										$this->Pengajuan_sub_kas_kecilModel->
+											getEstimasiPengajuan_byId($dataPengajuan['id_sub_kas_kecil'])['estimasi_pengeluaran_saldo'] : 0;
+				
+				// die(var_dump($dataEstimasiPengajuan));
+
+				$dataSaldoSkk = $this->Sub_kas_kecilModel->getById($dataPengajuan['id_sub_kas_kecil']);
 				$dataSaldoKK = $this->Kas_kecilModel->getById($_SESSION['sess_id']);
-				$dataPengajuan['saldo_sub_kas_kecil'] = $dataSaldoSkc['saldo'];
+				
+				$dataPengajuan['saldo_sub_kas_kecil'] = $dataSaldoSkk['saldo'];
+				$dataPengajuan['sisa_saldo_sub_kas_kecil'] = $dataSaldoSkk['saldo'] - $dataEstimasiPengajuan;
 				$dataPengajuan['saldo_kas_kecil'] = $dataSaldoKK['saldo'];
-				$dataPengajuan['dana_disetujui'] = $dataPengajuan['total'] - $dataSaldoSkc['saldo'];
+				
+				$dataPengajuan['total_pengajuan'] = $dataPengajuan['total'] - ($dataSaldoSkk['saldo'] - $dataEstimasiPengajuan); 
+				$dataPengajuan['dana_disetujui'] = $dataPengajuan['total_pengajuan'];
 
 				$output = array(
 					'data' => $dataPengajuan
@@ -205,7 +217,7 @@
 								'tgl' => date('Y-m-d'),
 								'dana_disetujui' => $this->validation->validInput($data['dana_disetujui']),
 								'status' => $this->validation->validInput($data['status']),
-								'modifeid_by' => $_SESSION['sess_email']
+								'modified_by' => $_SESSION['sess_email']
 							);
 	
 							$this->model('Kas_kecilModel');

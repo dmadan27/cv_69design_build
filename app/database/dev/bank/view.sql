@@ -11,7 +11,7 @@
         m.saldo SALDO,
         m.ket KETERANGAN
     FROM mutasi_bank m 
-    JOIN bank b ON bank.id = mutasi_bank.id_bank;
+    JOIN bank b ON b.id = m.id_bank;
 -- End mutasi bank export
 
 # End View Bank #

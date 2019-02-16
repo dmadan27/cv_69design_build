@@ -419,9 +419,9 @@
 			if($_SERVER['REQUEST_METHOD'] == "POST") {
 
 				$username = isset($_SESSION['sess_email']) ? $this->validation->validInput($_SESSION['sess_email'], false) : false;
-				$password_lama = isset($_POST['password_lama']) ? $this->validation->validInput($_POST['password_lama'], false) : false;
-				$password_baru = isset($_POST['password_baru']) ? $this->validation->validInput($_POST['password_baru'], false) : false;
-				$password_konf = isset($_POST['password_konf']) ? $this->validation->validInput($_POST['password_konf'], false) : false;
+				$password_lama = isset($_POST['password_lama']) ? $_POST['password_lama'] : false;
+				$password_baru = isset($_POST['password_baru']) ? $_POST['password_baru'] : false;
+				$password_konf = isset($_POST['password_konf']) ? $_POST['password_konf'] : false;
 
 				$error = $notif = array();
 

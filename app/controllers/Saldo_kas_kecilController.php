@@ -56,7 +56,7 @@
 			$config = array(
 				'title' => array(
 					'main' => 'Data Mutasi Saldo Kas Kecil',
-					'sub' => 'Ini adalah halaman Data Mutasi Saldo Kas Kecil.',
+					'sub' => 'List Mutasi Saldo Kas Kecil',
 				),
 				'css' => $css,
 				'js' => $js,

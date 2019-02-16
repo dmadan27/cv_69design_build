@@ -118,7 +118,7 @@
 		 */
 		public function update($data) {
 			// $query = "UPDATE bank SET nama = :nama, status = :status WHERE id = :id;";
-			$query = "CALL p_edit_bank (:id, :nama, :status, :modified_by)"
+			$query = "CALL p_edit_bank (:id, :nama, :status, :modified_by)";
 			try {
 				$this->koneksi->beginTransaction();
 

@@ -56,7 +56,7 @@
 
 -- Procedure ganti status laporan dari pending ke perbaiki
 -- BELUM FIX
-    DROP PROCEDURE IF EXISTS p_ganti_status_perbaiki_laporan_sub_kas_kecil
+    DROP PROCEDURE IF EXISTS p_ganti_status_perbaiki_laporan_sub_kas_kecil;
     delimiter //
     
     CREATE PROCEDURE p_ganti_status_perbaiki_laporan_sub_kas_kecil(
@@ -174,4 +174,4 @@
     delimiter ;
 -- End Procedure edit_laporan_sub_kas_kecil v2
 
-# Procedure, Function, and Trigger Laporan Pengajuan Sub Kas Kecil #
+# End Procedure, Function, and Trigger Laporan Pengajuan Sub Kas Kecil #

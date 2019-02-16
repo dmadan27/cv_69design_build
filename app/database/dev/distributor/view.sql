@@ -1,4 +1,4 @@
-# View Access Distributor #
+# View Distributor #
 
 -- View history distributor
     CREATE OR REPLACE VIEW v_history_distributor AS
@@ -19,4 +19,4 @@
     FROM distributor;
 -- End View Distributor
 
-# End View Access Distributor #
+# End View Distributor #

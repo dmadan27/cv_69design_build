@@ -1,7 +1,7 @@
 # Procedure, Function, and Trigger Kas Besar #
 
 -- Procedure Tambah Data Kas Besar
-	DROP PROCEDURE IF EXISTS IF EXISTS p_tambah_kas_besar;
+	DROP PROCEDURE IF EXISTS p_tambah_kas_besar;
     delimiter //
 	
 	CREATE PROCEDURE p_tambah_kas_besar(
@@ -37,7 +37,7 @@
 -- End Procedure Tambah Data Kas Besar
 
 -- Procedure Edit Kas Besar
-	DROP PROCEDURE IF EXISTS IF EXISTS p_edit_kas_besar;
+	DROP PROCEDURE IF EXISTS p_edit_kas_besar;
 	delimiter //
 
 	CREATE PROCEDURE p_edit_kas_besar (
@@ -64,10 +64,10 @@
 -- End Procedure Kas Besar
 
 -- Procedure Edit Status Kas Besar
-    DROP PROCEDURE IF EXISTS IF EXISTS p_edit_status_kas_besar;
+    DROP PROCEDURE IF EXISTS p_edit_status_kas_besar;
 	delimiter //
 	
-	CREATE PROCEDURE edit_status_kas_besar(
+	CREATE PROCEDURE p_edit_status_kas_besar(
 		in id_param varchar(10),
 		in status_param varchar(20),
 		in modified_by_param varchar(50)
@@ -111,7 +111,7 @@
 -- End Procedure Edit Status Kas Besar
 
 -- Procedure Hapus Data Kas Besar
-	DROP PROCEDURE IF EXISTS IF EXISTS p_hapus_kas_besar;
+	DROP PROCEDURE IF EXISTS p_hapus_kas_besar;
 	delimiter //
 	
 	CREATE PROCEDURE p_hapus_kas_besar(
@@ -145,4 +145,4 @@
 	delimiter ;
 -- End Procedure Hapus Data Kas Besar
 
-# Procedure, Function, and Trigger Kas Besar #
+# End Procedure, Function, and Trigger Kas Besar #

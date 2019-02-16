@@ -157,4 +157,4 @@
 	delimiter ;
 -- End Procedure Edit Status Sub Kas Kecil
 
-# Procedure, Function, and Trigger Sub Kas Kecil #
+# End Procedure, Function, and Trigger Sub Kas Kecil #

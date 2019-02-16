@@ -72,7 +72,7 @@
 	DROP PROCEDURE IF EXISTS p_hapus_proyek;
 	delimiter //
 
-	CREATE PROCEDURE hapus_proyek(
+	CREATE PROCEDURE p_hapus_proyek(
 		in id_param varchar(50)
 	)
 	BEGIN
@@ -407,4 +407,4 @@
 	delimiter ;
 -- End Procedure Hapus Data Detail Proyek
 
-# Procedure, Function, and Trigger Proyek #
+# End Procedure, Function, and Trigger Proyek #

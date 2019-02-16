@@ -42,7 +42,7 @@
 		 * Method list
 		 * Proses menampilkan list semua data bank
 		 */
-		private function list() {
+		protected function list() {
 			// set config untuk layouting
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',

@@ -22,7 +22,7 @@
 -- End Procedure Tambah Bank
 
 -- Trigger Tambah Bank (After Insert)
-    DROP TRIGGER t_after_insert_tambah_bank;
+    DROP TRIGGER IF EXISTS t_after_insert_tambah_bank;
     delimiter //
     
     CREATE TRIGGER t_after_insert_tambah_bank AFTER INSERT ON bank FOR EACH ROW

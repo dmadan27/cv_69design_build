@@ -675,8 +675,8 @@
 	delimiter ;
 -- End Hapus Operasional Proyek Jenis Pembayaran Kredit
 
--- Procedure Pencatatan Mutasi Bank Setelah Operasional Proyek Kredit Dihapus (FIXED)
-	DROP PROCEDURE IF EXISTS p_hapus_operasional_proyek_kredit_catatMutasi
+-- Procedure Pencatatan Mutasi Bank Setelah Operasional Proyek Kredit Dihapus
+	DROP PROCEDURE IF EXISTS p_hapus_operasional_proyek_kredit_catatMutasi;
 	delimiter //
 	
 	CREATE PROCEDURE p_hapus_operasional_proyek_kredit_catatMutasi(
@@ -710,6 +710,6 @@
 	END //
 	
 	delimiter ;
--- 
+-- End Procedure Pencatatan Mutasi Bank Setelah Operasional Proyek Kredit Dihapus
 
 # End Procedure, Function, and Trigger Operasional Proyek #

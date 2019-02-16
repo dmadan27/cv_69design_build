@@ -9,7 +9,7 @@
 	  	<!-- breadcrumb -->
 	  	<ol class="breadcrumb">
 	    	<li><a href="<?= BASE_URL ?>"><i class="fa fa-dashboard"></i> Home</a></li>
-	    	<li><a href="#"><i class="fa fa-dashboard"></i> Saldo Kas Kecil</a></li>
+	    	<li><a href="#"> Saldo Kas Kecil</a></li>
 	  	</ol>
 	  	<!-- end breadcrumb -->
 
@@ -31,7 +31,7 @@
 						</div>
 						<!-- panel button -->
 						<div class="row">
-							<div class="col-md-9 col-sm-9 col-xs-9">
+							<div class="col-md-6 col-sm-6 col-xs-12">
 								<div class="btn-group">
 									<!-- tambah -->
 									<!-- <a href="<?= BASE_URL."" ?>" class="btn btn-default btn-flat" role="button"><i class="fa fa-plus"></i> Tambah</a> -->
@@ -39,27 +39,29 @@
 									<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 								</div>
 							</div>
-							<div class="col-md-3 col-sm-3 col-xs-3">
-								<h3 class="box-title" style="margin-top:10px;"><strong>Saldo:  <?php echo $this->data['saldo']; ?> ,-</strong></h3>
+							<div class="col-md-6 col-sm-6 col-xs-12">
+								<h3 class="box-title pull-right"><strong>Saldo:  <?php echo $this->data['saldo']; ?></strong></h3>
 							</div>
 						</div>
 					</div>
 					<!-- box body -->
 					<div class="box-body">
 						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+							<div class="table-responsive">
 								<table id="mutasi_saldo_kas_kecilTable" class="table table-bordered table-hover">
 									<thead>
 										<tr>
-											<th>No</th>
+											<th class="text-right">No</th>
 											<th>Tanggal</th>
-											<th>Uang Masuk</th>
-											<th>Uang Keluar</th>
-											<th>Saldo</th>
-											<th>Ket</th>
+											<th class="text-right">Uang Masuk</th>
+											<th class="text-right">Uang Keluar</th>
+											<th class="text-right">Saldo</th>
+											<th>Keterangan</th>
 										</tr>
 									</thead>
 									<tbody></tbody>
-							</table>
+								</table>
+							</div>
 						</div>
 					</div>
 				</div>

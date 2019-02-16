@@ -4,19 +4,19 @@
 -- password ABCDE
 
 -- insert tabel kas besar
-CALL tambah_kas_besar('KB001', 'KAS BESAR', 'SUKABUMI', '081234567890', 'kas_besar@69designbuild.com', '', 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'KAS BESAR');
-CALL tambah_kas_besar('KB002', 'DODIK', 'SUKABUMI', '087822678678', 'dodik@69designbuild.com', '', 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'KAS BESAR');
+CALL p_tambah_kas_besar('KB001', 'KAS BESAR', 'SUKABUMI', '081234567890', 'kas_besar@69designbuild.com', '', 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'KAS BESAR', NULL);
+CALL p_tambah_kas_besar('KB002', 'DODIK', 'SUKABUMI', '087822678678', 'dodik@69designbuild.com', '', 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'KAS BESAR', NULL);
 
 -- insert tabel kas kecil
-CALL tambah_kas_kecil('KK001', 'KAS KECIL', 'SUKABUMI', '081234567890', 'kas_kecil@69designbuild.com', '', 1500000, 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'KAS KECIL');
-CALL tambah_kas_kecil('KK002', 'AGUNG', 'SUKABUMI', '087812345678', 'agung@designbuild.com', '', 1000000, 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'KAS KECIL');
+CALL p_tambah_kas_kecil('KK001', 'KAS KECIL', 'SUKABUMI', '081234567890', 'kas_kecil@69designbuild.com', '', 1500000, CURDATE(), 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'KAS KECIL', NULL);
+CALL p_tambah_kas_kecil('KK002', 'AGUNG', 'SUKABUMI', '087812345678', 'agung@designbuild.com', '', 1000000, CURDATE(), 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'KAS KECIL', NULL);
 
 -- Insert Sub Kas Kecil
-CALL tambah_sub_kas_kecil('LOG001', 'UJANG', 'SUKABUMI', '081234567890', 'ujang@designbuild.com', '', 100000, 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'SUB KAS KECIL');
-CALL tambah_sub_kas_kecil('LOG002', 'ASEP', 'SUKABUMI', '081234567890', 'asep@designbuild.com', '', 100000, 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'SUB KAS KECIL');
-CALL tambah_sub_kas_kecil('LOG003', 'JAKA', 'SUKABUMI', '081234567890', 'jaka@designbuild.com', '', 100000, 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'SUB KAS KECIL');
-CALL tambah_sub_kas_kecil('LOG004', 'FAJAR', 'SUKABUMI', '081234567890', 'fajar@designbuild.com', '', 100000, 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'SUB KAS KECIL');
-CALL tambah_sub_kas_kecil('LOG005', 'HENDRO', 'SUKABUMI', '081234567890', 'hendro@designbuild.com', '', 100000, 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'SUB KAS KECIL');
+CALL p_tambah_sub_kas_kecil('LOG001', 'UJANG', 'SUKABUMI', '081234567890', 'ujang@designbuild.com', '', 100000, CURDATE(), 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'SUB KAS KECIL', NULL);
+CALL p_tambah_sub_kas_kecil('LOG002', 'ASEP', 'SUKABUMI', '081234567890', 'asep@designbuild.com', '', 100000, CURDATE(), 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'SUB KAS KECIL', NULL);
+CALL p_tambah_sub_kas_kecil('LOG003', 'JAKA', 'SUKABUMI', '081234567890', 'jaka@designbuild.com', '', 100000, CURDATE(), 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'SUB KAS KECIL', NULL);
+CALL p_tambah_sub_kas_kecil('LOG004', 'FAJAR', 'SUKABUMI', '081234567890', 'fajar@designbuild.com', '', 100000, CURDATE(), 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'SUB KAS KECIL', NULL);
+CALL p_tambah_sub_kas_kecil('LOG005', 'HENDRO', 'SUKABUMI', '081234567890', 'hendro@designbuild.com', '', 100000, CURDATE(), 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'SUB KAS KECIL', NULL);
 
 -- Hapus Operasional Proyek
 -- ini testing data aja ya ikutin format ini aja  (perlu di revisi)

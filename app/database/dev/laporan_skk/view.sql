@@ -11,7 +11,7 @@
             WHEN pskk.status_laporan = '3' THEN 'DISETUJUI'
             ELSE 'BELUM DIKERJAKAN' END
         ) status_laporan, pskk.status_laporan status_order
-	) status_laporan, pskk.status_laporan status_order
+	-- ) status_laporan, pskk.status_laporan status_order
 	FROM pengajuan_sub_kas_kecil pskk
 	LEFT JOIN detail_pengajuan_sub_kas_kecil dpskk ON dpskk.id_pengajuan = pskk.id
 	JOIN sub_kas_kecil skk ON skk.id = pskk.id_sub_kas_kecil

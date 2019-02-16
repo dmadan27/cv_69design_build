@@ -337,7 +337,7 @@
 					'success' => $this->success,
 					'notif' => $this->notif,
 					'error' => $this->error,
-					'message' => $this->message
+					'message' => $this->message,
 					'data' => $data
 				);
 

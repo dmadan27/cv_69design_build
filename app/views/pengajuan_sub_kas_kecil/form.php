@@ -18,7 +18,7 @@
                     <!-- ID dan sub kas kecil -->
                     <div class="row">
                         <!-- ID -->
-                        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div class="form-group field-id has-feedback">
                                 <label for="id">ID Pengajuan</label>
                                 <input type="text" class="form-control field" id="id" placeholder="" readonly>
@@ -28,7 +28,7 @@
                         </div>
                         
                         <!-- sub kas kecil -->
-                        <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div class="form-group field-sub_kas_kecil has-feedback">
                                 <label for="sub_kas_kecil">Sub Kas Kecil</label>
                                 <input type="text" class="form-control field" id="sub_kas_kecil" placeholder="" readonly>
@@ -40,7 +40,7 @@
                     <!-- tgl dan nama pengajuan -->
                     <div class="row">
                         <!-- tgl -->
-                        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div class="form-group field-tgl has-feedback">
                                 <label for="tgl">Tanggal</label>
                                 <div class="input-group date">
@@ -54,10 +54,10 @@
                         </div>
                         
                         <!-- nama pengajuan -->
-                        <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+                        <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                             <div class="form-group field-nama_pengajuan has-feedback">
                                 <label for="nama_pengajuan">Nama Pengajuan</label>
-                                <input type="text" class="form-control field" id="nama_pengajuan" placeholder="" readonly>
+                                <textarea class="form-control field" id="nama_pengajuan" placeholder="" readonly></textarea>
                                 <span class="help-block small pesan pesan-nama_pengajuan"></span>
                             </div>
                         </div>
@@ -65,7 +65,7 @@
 
                     <div class="row">
                         <!-- total -->
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group field-total has-feedback">
                                 <label for="total">Total</label>
                                     <div class="input-group">
@@ -78,7 +78,7 @@
                         </div>
 
                         <!-- total pengajuan -->
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="form-group field-total_pengajuan has-feedback">
                                 <label for="total_pengajuan">Total Pengajuan</label>
                                     <div class="input-group">
@@ -92,10 +92,14 @@
                     </div>
 
                     <!-- status -->
-                    <div class="form-group field-status_order has-feedback">
-                        <label for="status_order">Status</label>
-                        <select id="status_order" class="form-control field select2" style="width: 100%"></select>
-                        <span class="help-block small pesan pesan-status_order"></span>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group field-status_order has-feedback">
+                                <label for="status_order">Status</label>
+                                <select id="status_order" class="form-control field select2" style="width: 100%"></select>
+                                <span class="help-block small pesan pesan-status_order"></span>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="data-pengajuan" style="display: none">
@@ -129,25 +133,41 @@
                         </div>
 
                         <!-- saldo kas kecil -->
-                        <div class="form-group field-saldo_kas_kecil has-feedback">
-                            <label for="saldo_kas_kecil">Saldo</label>
-                            <div class="input-group">
-                                <span class="input-group-addon">Rp.</span>
-                                <input type="text" class="form-control field input-mask-uang" id="saldo_kas_kecil" readonly>
-                                <span class="input-group-addon">,00-</span>
+                        <div class="row">
+                            <div class="col-md-6">
                             </div>
-                            <span class="help-block small pesan pesan-saldo_kas_kecil"></span>
+                            <div class="col-md-6">
+                                <div class="form-group field-saldo_kas_kecil has-feedback">
+                                    <label for="saldo_kas_kecil">Saldo</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">Rp.</span>
+                                        <input type="text" class="form-control field input-mask-uang" id="saldo_kas_kecil" readonly>
+                                        <span class="input-group-addon">,00-</span>
+                                    </div>
+                                    <span class="help-block small pesan pesan-saldo_kas_kecil"></span>
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- Dana yang disetujui -->
+                        <div class="row">
+                            <div class="col-md-6">
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group field-dana_disetujui has-feedback">
+                                    <label for="dana_disetujui">Dana yang disetujui</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon">Rp.</span>
+                                        <input type="text" class="form-control field input-mask-uang" id="dana_disetujui" placeholder="Masukkan dana yang disetujui">
+                                        <span class="input-group-addon">,00-</span>
+                                    </div>
+                                    <span class="help-block small pesan pesan-dana_disetujui"></span>
+                                </div>        
+                            </div>
+                        </div>
+                                
                         
-                        <div class="form-group field-dana_disetujui has-feedback">
-                            <label for="dana_disetujui">Dana yang disetujui</label>
-                            <div class="input-group">
-                                <span class="input-group-addon">Rp.</span>
-                                <input type="text" class="form-control field input-mask-uang" id="dana_disetujui" placeholder="Masukkan dana yang disetujui">
-                                <span class="input-group-addon">,00-</span>
-                            </div>
-                            <span class="help-block small pesan pesan-dana_disetujui"></span>
-                        </div>
+                        
                     </div>
 
                 </div>

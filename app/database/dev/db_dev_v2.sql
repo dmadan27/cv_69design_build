@@ -366,6 +366,8 @@
 			ON DELETE RESTRICT ON UPDATE CASCADE,
 		CONSTRAINT fk_detail_proyek_id_bank FOREIGN KEY(id_bank) REFERENCES bank(id)
 			ON DELETE RESTRICT ON UPDATE CASCADE,
+		CONSTRAINT fk_detail_proyek_created_by FOREIGN KEY(created_by) REFERENCES user(username)
+			ON DELETE SET NULL ON UPDATE CASCADE,
 		CONSTRAINT fk_detail_proyek_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 			ON DELETE SET NULL ON UPDATE CASCADE
 	)ENGINE=InnoDb;
@@ -473,6 +475,8 @@
 		CONSTRAINT pk_mutasi_saldo_kas_kecil_id PRIMARY KEY(id),
 		CONSTRAINT fk_mutasi_saldo_kas_kecil_id_kas_kecil FOREIGN KEY(id_kas_kecil) REFERENCES kas_kecil(id)
 			ON DELETE SET NULL ON UPDATE CASCADE,
+		CONSTRAINT fk_mutasi_saldo_kas_kecil_created_by FOREIGN KEY(created_by) REFERENCES user(username)
+			ON DELETE SET NULL ON UPDATE CASCADE,
 		CONSTRAINT fk_mutasi_saldo_kas_kecil_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 			ON DELETE SET NULL ON UPDATE CASCADE
 	)ENGINE=InnoDb;
@@ -523,13 +527,15 @@
 		status char(1), -- status pengajuan, default 1: 'pending'
 						-- 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI', 4: 'LANGSUNG', 5: 'DITOLAK'
 		status_laporan char(1), -- status laporan, default set null
-						-- 0: 'BELUM DIKERJAKAN', 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI',
+						-- 0: 'BELUM DIKERJAKAN', 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI', 4: 'DITOLAK'
 
 		CONSTRAINT pk_pengajuan_sub_kas_kecil_id PRIMARY KEY(id),
 		CONSTRAINT fk_pengajuan_sub_kas_kecil_id_sub_kas_kecil FOREIGN KEY(id_sub_kas_kecil) REFERENCES sub_kas_kecil(id)
 			ON DELETE RESTRICT ON UPDATE CASCADE,
 		CONSTRAINT fk_pengajuan_sub_kas_kecil_id_proyek FOREIGN KEY(id_proyek) REFERENCES proyek (id)
 			ON DELETE RESTRICT ON UPDATE CASCADE,
+		CONSTRAINT fk_pengajuan_sub_kas_kecil_created_by FOREIGN KEY(created_by) REFERENCES user(username)
+			ON DELETE SET NULL ON UPDATE CASCADE,
 		CONSTRAINT fk_pengajuan_sub_kas_kecil_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
 			ON DELETE SET NULL ON UPDATE CASCADE
 	)ENGINE=InnoDb;
