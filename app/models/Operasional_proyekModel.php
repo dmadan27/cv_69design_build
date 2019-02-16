@@ -1,61 +1,29 @@
 <?php
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 	
-	class Operasional_proyekModel extends Database implements ModelInterface{
+	class Operasional_proyekModel extends Database implements ModelInterface
+	{
 	
-	protected $koneksi;
-	protected $dataTable;
-
-	/**
-	* 
-	*/
-		public function __construct(){
-			$this->koneksi = $this->openConnection();
-			$this->dataTable = new Datatable();
-		}
-
-		// ======================= dataTable ======================= //
-
-			/**
-			* 
-			*/
-			public function getAllDataTable($config){
-				$this->dataTable->set_config($config);
-				$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
-				$statement->execute();
-				$result = $statement->fetchAll();
-
-				return $result;
-			}
-
-			/**
-			* 
-			*/
-			public function recordFilter(){
-				return $this->dataTable->recordFilter();
-
-			}
-
-			/**
-			* 
-			*/
-			public function recordTotal(){
-				return $this->dataTable->recordTotal();
-			}
-
-		// ========================================================= //
+		protected $koneksi;
 
 		/**
-		* 
-		*/
-		public function getAll(){
+		 * 
+		 */
+		public function __construct() {
+			$this->koneksi = $this->openConnection();
+		}
+
+		/**
+		 * 
+		 */
+		public function getAll() {
 			
 		}
 
 		/**
-		* 
-		*/
-		public function getById($id){
+		 * 
+		 */
+		public function getById($id) {
 			$query = "SELECT * FROM operasional_proyek WHERE id = :id;";
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id', $id);
@@ -70,7 +38,7 @@
 		 * Proses get data bank yang aktif untuk keperluan select di operasional proyek
 		 * @return result {array}
 		 */
-		public function get_selectBank(){
+		public function get_selectBank() {
 			$status = 'AKTIF';
 			$query = "SELECT * FROM bank WHERE status = :status";
 
@@ -83,9 +51,9 @@
 		}
 
 		/**
-		* 
-		*/
-		public function getBankById($id){
+		 * 
+		 */
+		public function getBankById($id) {
 			$query = "SELECT DISTINCT(id_bank) as id_bank FROM detail_operasional_proyek WHERE id_operasional_proyek = :id;";
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id', $id);
@@ -96,9 +64,9 @@
 		}
 
 		/**
-		* 
-		*/
-		public function getSaldoBank($id){
+		 * 
+		 */
+		public function getSaldoBank($id) {
 			$query = "SELECT saldo FROM bank WHERE id = :id;";
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id', $id);
@@ -109,9 +77,9 @@
 		}
 
 		/**
-		* 
-		*/
-		public function getTotalLama($id){
+		 * 
+		 */
+		public function getTotalLama($id) {
 			$query = "SELECT total FROM detail_operasional_proyek WHERE id = :id;";
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id', $id);
@@ -122,9 +90,9 @@
 		}
 
 		/**
-		* 
-		*/
-		public function getDetailById($id){
+		 * 
+		 */
+		public function getDetailById($id) {
 			$query = "	SELECT 
 							detail_operasional_proyek.id, 
 							detail_operasional_proyek.id_operasional_proyek,
@@ -145,9 +113,9 @@
 		}
 
 		/**
-		*
-		*/
-		public function getById_fromView($id){
+		 * 
+		 */
+		public function getById_fromView($id) {
 			$query = "SELECT * FROM v_operasional_proyek WHERE id = :id;";
 
 			$statement = $this->koneksi->prepare($query);
@@ -160,9 +128,9 @@
 		}
 
 		/**
-		*
-		*/
-		public function getDetailById_fromView($id){
+		 * 
+		 */
+		public function getDetailById_fromView($id) {
 			$query = "SELECT * FROM v_operasional_proyek WHERE id = :id;";
 
 			$statement = $this->koneksi->prepare($query);
@@ -174,9 +142,9 @@
 		}
 
 		/**
-		*
-		*/
-		public function getBYid_fromHistoryPembelian($id){
+		 * 
+		 */
+		public function getBYid_fromHistoryPembelian($id) {
 			$query = "SELECT * FROM v_history_pembelian_operasionalProyek WHERE id = :id;";
 
 			$statement = $this->koneksi->prepare($query);
@@ -188,8 +156,8 @@
 		}
 
 		/**
-		* 	Get Data Operasional Proyek Untuk Di Export
-		*/
+		 * Get Data Operasional Proyek Untuk Di Export
+		 */
 		public function getExport($tgl_awal, $tgl_akhir) {
 			if($tgl_awal == '' && $tgl_akhir == ''){
 				$query = "SELECT * FROM v_operasional_proyek_export";
@@ -208,8 +176,8 @@
 		}
 
 		/**
-		* 	Get Data Operasional Proyek Untuk Di Export Detail
-		*/
+		 * 
+		 */
 		public function getExportDetail($id, $tgl_awal, $tgl_akhir) {
 			
 			$query = "SELECT * FROM v_detail_operasional_proyek_export WHERE TANGGAL BETWEEN :tgl_awal AND :tgl_akhir AND ID = :id;";
@@ -227,8 +195,8 @@
 		}
 
 		/**
-		* 	Get Data Operasional Proyek Untuk Di Export History Pembelian
-		*/
+		 * Get Data Operasional Proyek Untuk Di Export History Pembelian
+		 */
 		public function getExportHistory($id) {
 			
 			$query = "SELECT * FROM v_history_pembelian_operasionalProyek_export WHERE ID = :id;";
@@ -244,8 +212,8 @@
 		}
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		public function insert($data){
 			$dataOperasionalProyek = $data['dataOperasionalProyek'];
 			if($dataOperasionalProyek['id_distributor'] == ''){
@@ -332,7 +300,7 @@
 
 				}
 
-				if(!$response){
+				if(!$response) {
 
 					$output = array(
 						'success' => false,
@@ -362,16 +330,16 @@
 		}
 
 		/**
-		*	Insert Data Operasional Proyek Tunai Lunas
-		*/
-		private function insertOperasionalProyek_TunaiLunas($data){
+		 * Insert Data Operasional Proyek Tunai Lunas
+		 */
+		private function insertOperasionalProyek_TunaiLunas($data) {
 			// insert operasional_proyek
 			$uang = $data['total'];
 			$id = $data['id'];
 
 			$ket_mutasi = "UANG KELUAR SEBESAR Rp. ".number_format($uang,2,",",".")." DARI TRANSAKSI DI OPERASIONAL PROYEK DENGAN ID ".$id;
 
-			$query = "CALL tambah_operasional_proyek_tunailunas (
+			$query = "CALL p_tambah_operasional_proyek_tunailunas (
 				:id, 
 				:id_proyek, 
 				:id_bank, 
@@ -385,7 +353,8 @@
 				:status, 
 				:status_lunas, 
 				:ket,
-				:ket_mutasi
+				:ket_mutasi,
+				:created_by
 			);";
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
@@ -403,17 +372,18 @@
 					':status' => $data['status'],
 					':status_lunas' => $data['status_lunas'],
 					':ket' => $data['ket'],
-					':ket_mutasi' => $ket_mutasi
+					':ket_mutasi' => $ket_mutasi,
+					':created_by' => $_SESSION['sess_email']
 				)
 			);
 			$statement->closeCursor();
 		}
 
 		/**
-		*	Insert Data Operasional Proyek Tunai Belum Lunas
-		*/
+		 * Insert Data Operasional Proyek Tunai Belum Lunas
+		 */
 		private function insertOperasionalProyek_TunaiBelumLunas($data) {
-			$query = "CALL tambah_operasional_proyek_tunaiblmlunas (
+			$query = "CALL p_tambah_operasional_proyek_tunaiblmlunas (
 				:id, 
 				:id_proyek, 
 				:id_bank, 
@@ -426,7 +396,8 @@
 				:sisa, 
 				:status, 
 				:status_lunas, 
-				:ket
+				:ket,
+				:created_by
 			);";
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
@@ -443,18 +414,19 @@
 					':sisa' => $data['total'],
 					':status' => $data['status'],
 					':status_lunas' => $data['status_lunas'],
-					':ket' => $data['ket']
+					':ket' => $data['ket'],
+					':created_by' => $_SESSION['sess_email']
 				)
 			);
 			$statement->closeCursor();
 		}
 
 		/**
-		*	Insert Data Operasional Proyek Jenis Pembayaran Kredit
-		*/
+		 * Insert Data Operasional Proyek Jenis Pembayaran Kredit
+		 */
 		private function insertOperasionalProyek_Kredit($data) {
 
-			$query = "CALL tambah_operasional_proyek_kredit (
+			$query = "CALL p_tambah_operasional_proyek_kredit (
 				:id, 
 				:id_proyek, 
 				:id_bank, 
@@ -467,7 +439,8 @@
 				:sisa, 
 				:status, 
 				:status_lunas, 
-				:ket
+				:ket,
+				:created_by
 			);";
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
@@ -484,28 +457,30 @@
 					':sisa' => $data['sisa'],
 					':status' => $data['status'],
 					':status_lunas' => $data['status_lunas'],
-					':ket' => $data['ket']
+					':ket' => $data['ket'],
+					':created_by' => $_SESSION['sess_email']
 				)
 			);
 			$statement->closeCursor();
 		}
 
 		/**
-		*	Insert Data Detail Operasional Proyek
-		*/
+		 * Insert Data Detail Operasional Proyek
+		 */
 		private function insertDetailOperasionalProyek($data, $id_operasional_proyek){
 			
 			$uang = $data['total_detail'];
 
 			$ket_mutasi = "UANG KELUAR SEBESAR Rp. ".number_format($uang,2,",",".")." DARI TRANSAKSI DI OPERASIONAL PROYEK DENGAN ID ".$id_operasional_proyek;
 
-			$query = "CALL tambah_detail_operasional_proyek_kredit (
+			$query = "CALL p_tambah_detail_operasional_proyek_kredit (
 				:id, 
 				:id_bank, 
 				:tgl, 
 				:nama, 
 				:total,
-				:ket
+				:ket,
+				:created_by
 			);";
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
@@ -515,7 +490,8 @@
 					':tgl' => $data['tgl_detail'],
 					':nama' => $data['nama_detail'],
 					':total' => $data['total_detail'],
-					':ket' => $ket_mutasi
+					':ket' => $ket_mutasi,
+					':created_by' => $_SESSION['sess_email']
 				)
 			);
 			$statement->closeCursor();
@@ -523,8 +499,8 @@
 		}
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		public function update($data){
 			
 
@@ -631,7 +607,7 @@
 
 				}
 
-				if(!$response){
+				if(!$response) {
 					$output = array(
 						'success' => false,
 						'invalidtotaldetail' => true,
@@ -689,7 +665,7 @@
 				$ket_mutasi_kondisi = "UANG MASUK SEBESAR Rp. ".number_format($selisih,2,",",".")." DIKARENAKAN ADANYA PERUBAHAN DATA DI OPERASIONAL PROYEK DENGAN ID ".$id;
 			}
 			
-			$query = "CALL edit_operasional_proyek (
+			$query = "CALL p_edit_operasional_proyek (
 				:id, 
 				:id_detail,
 				:id_proyek, 
@@ -706,7 +682,8 @@
 				:ket_mutasi,
 				:ket_mutasi_masuk,
 				:ket_mutasi_keluar,
-				:ket_mutasi_kondisi
+				:ket_mutasi_kondisi,
+				:modified_by
 			);";
 
 			$statement = $this->koneksi->prepare($query);
@@ -728,7 +705,8 @@
 					':ket_mutasi' => $ket_mutasi,
 					':ket_mutasi_masuk' => $ket_mutasi_masuk,
 					':ket_mutasi_keluar' => $ket_mutasi_keluar,
-					':ket_mutasi_kondisi' => $ket_mutasi_kondisi
+					':ket_mutasi_kondisi' => $ket_mutasi_kondisi,
+					':modified_by' => $_SESSION['sess_email']
 				)
 			);
 			$statement->closeCursor();
@@ -744,7 +722,7 @@
 
 			$ket_mutasi = "UANG MASUK SEBESAR Rp. ".number_format($uang,2,",",".")." DIKARENAKAN ADANYA PERUBAHAN DATA DI OPERASIONAL PROYEK DENGAN ID ".$id;
 
-			$query = "CALL edit_operasional_proyek_BelumLunas (
+			$query = "CALL p_edit_operasional_proyek_BelumLunas (
 				:id, 
 				:id_proyek, 
 				:id_distributor,
@@ -756,7 +734,8 @@
 				:status, 
 				:status_lunas, 
 				:ket,
-				:ket_mutasi
+				:ket_mutasi,
+				:modified_by
 			);";
 
 			$statement = $this->koneksi->prepare($query);
@@ -773,7 +752,8 @@
 					':status' => $data['status'],
 					':status_lunas' => $data['status_lunas'],
 					':ket' => $data['ket'],
-					':ket_mutasi' => $ket_mutasi
+					':ket_mutasi' => $ket_mutasi,
+					':modified_by' => $_SESSION['sess_email']
 				)
 			);
 			$statement->closeCursor();
@@ -782,7 +762,7 @@
 		/**
 		* 	Edit Data Operasional Proyek Jenis Pembayaran Kredit
 		*/
-		private function edit_operasionalProyek_kredit($data) {
+		private function p_edit_operasionalProyek_kredit($data) {
 			// print_r($data);
 			// exit;
 			$query = "CALL edit_operasional_proyek_kredit (
@@ -796,7 +776,8 @@
 				:sisa, 
 				:status, 
 				:status_lunas, 
-				:ket
+				:ket,
+				:modified_by
 			);";
 
 			$statement = $this->koneksi->prepare($query);
@@ -812,7 +793,8 @@
 					':sisa' => $data['sisa'],
 					':status' => $data['status'],
 					':status_lunas' => $data['status_lunas'],
-					':ket' => $data['ket']
+					':ket' => $data['ket'],
+					':modified_by' => $_SESSION['sess_email']
 				)
 			);
 			$statement->closeCursor();
@@ -841,7 +823,7 @@
 
 			$ket_mutasi_kondisi = '';
 
-			if($uang > $total){
+			if($uang > $total) {
 			//Mutasi Jika Saldo Berubah Lebih Besar
 				$selisih = $uang - $total;
 				$ket_mutasi_kondisi = "UANG KELUAR SEBESAR Rp. ".number_format($selisih,2,",",".")." DIKARENAKAN ADANYA PERUBAHAN DATA DI OPERASIONAL PROYEK DENGAN ID ".$id;
@@ -851,7 +833,7 @@
 				$ket_mutasi_kondisi = "UANG MASUK SEBESAR Rp. ".number_format($selisih,2,",",".")." DIKARENAKAN ADANYA PERUBAHAN DATA DI OPERASIONAL PROYEK DENGAN ID ".$id;
 			}
 
-			$query = "CALL edit_detail_operasional_proyek (
+			$query = "CALL p_edit_detail_operasional_proyek (
 				:id_operasional_proyek, 
 				:id_detail, 
 				:id_bank,
@@ -861,7 +843,8 @@
 				:ket_mutasi,
 				:ket_mutasi_masuk,
 				:ket_mutasi_keluar,
-				:ket_mutasi_kondisi
+				:ket_mutasi_kondisi,
+				:modified_by
 			);";
 
 			$statement = $this->koneksi->prepare($query);
@@ -876,7 +859,8 @@
 					':ket_mutasi' => $ket_mutasi,
 					':ket_mutasi_masuk' => $ket_mutasi_masuk,
 					':ket_mutasi_keluar' => $ket_mutasi_keluar,
-					':ket_mutasi_kondisi' => $ket_mutasi_kondisi
+					':ket_mutasi_kondisi' => $ket_mutasi_kondisi,
+					':modified_by' => $_SESSION['sess_email']
 				)
 			);
 			$statement->closeCursor();
@@ -946,8 +930,8 @@
 		}
 
 		/**
-		*  Hapus Data Operasional Proyek Dengan Jenis Pembayaran "LUNAS"
-		*/
+		 * Hapus Data Operasional Proyek Dengan Jenis Pembayaran "LUNAS"
+		 */
 		private function deleteOperasionalProyek_Lunas($data) {
 			
 			$uang = $data['total'];
@@ -955,7 +939,7 @@
 
 			$ket_mutasi = "UANG MASUK SEBESAR Rp. ".number_format($uang,2,",",".")." DIKARENAKAN ADANYA PENGHAPUSAN DATA DI OPERASIONAL PROYEK DENGAN ID ".$id;
 
-			$query = 'CALL hapus_operasional_proyek_versi2 (:id, :total, :tgl, :ket);';
+			$query = 'CALL p_hapus_operasional_proyek_versi2 (:id, :total, :tgl, :ket, :modified_by);';
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
 				array(
@@ -963,6 +947,7 @@
 					':total' => $data['total'],
 					':tgl' => $data['tgl'],
 					':ket' => $ket_mutasi,
+					':modified_by' => $_SESSION['sess_email']
 				)
 			);
 			$statement->closeCursor();
@@ -970,10 +955,10 @@
 
 		
 		/**
-		*  Hapus Data Operasional Proyek Dengan Jenis Pembayaran "BELUM LUNAS"
-		*/
+		 * Hapus Data Operasional Proyek Dengan Jenis Pembayaran "BELUM LUNAS"
+		 */
 		public function deleteOperasionalProyek_BelumLunas($data){
-			$query = 'CALL hapus_operasional_proyek_tunai_blmlunas (:id);';
+			$query = 'CALL p_hapus_operasional_proyek_tunai_blmlunas (:id);';
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
 				array(
@@ -987,7 +972,7 @@
 		*  Hapus Data Operasional Proyek Dengan Jenis Pembayaran "KREDIT"
 		*/
 		public function deleteKredit($dataOpr){
-			$query = 'CALL hapus_operasional_proyek_kredit (:id);';
+			$query = 'CALL p_hapus_operasional_proyek_kredit (:id);';
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
 				array(
@@ -1007,12 +992,13 @@
 
 			$ket_mutasi = "UANG MASUK SEBESAR Rp. ".number_format($uang,2,",",".")." DIKARENAKAN ADANYA PENGHAPUSAN DATA DI OPERASIONAL PROYEK DENGAN ID ".$id;
 
-			$query = 'CALL hapus_operasional_proyek_kredit_catatMutasi (
+			$query = 'CALL p_hapus_operasional_proyek_kredit_catatMutasi (
 				:id,
 				:id_bank,
 				:total_detail,
 				:tgl,
-				:ket
+				:ket,
+				:modified_by
 			);';
 
 			$statement = $this->koneksi->prepare($query);
@@ -1022,15 +1008,16 @@
 					':id_bank' 		=> $data['id_bank'],
 					':total_detail'	=> $data['total_detail'],
 					':tgl' 			=> $data['tgl_detail'],
-					':ket'			=> $ket_mutasi					
+					':ket'			=> $ket_mutasi,
+					':modified_by' => $_SESSION['sess_email']					
 				)
 			);
 			$statement->closeCursor();
 		}
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		public function getLastID($id){
 			$id .= "%";
 			$query = "SELECT MAX(id) AS id FROM operasional_proyek WHERE id LIKE :id";
@@ -1045,8 +1032,8 @@
 
 	
 		/**
-		* 
-		*/
+		 * 
+		 */
 		public function __destruct(){
 			$this->closeConnection($this->koneksi);
 		}

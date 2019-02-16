@@ -4,7 +4,8 @@
 	/**
 	 * 
 	 */
-	class Operasional extends Crud_modalsAbstract{
+	class Operasional extends Crud_modalsAbstract
+	{
 
 		private $token;
 		private $status = false;

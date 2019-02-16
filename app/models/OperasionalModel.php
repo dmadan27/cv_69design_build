@@ -2,63 +2,31 @@
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 
 	/**
-	* Class BankModel, implementasi ke ModelInterface
-	*/
-	class OperasionalModel extends Database implements ModelInterface{
+	 * Class BankModel, implementasi ke ModelInterface
+	 */
+	class OperasionalModel extends Database implements ModelInterface
+	{
 
 		protected $koneksi;
-		protected $dataTable;
 
 		/**
-		* 
-		*/
-		public function __construct(){
+		 * 
+		 */
+		public function __construct() {
 			$this->koneksi = $this->openConnection();
-			$this->dataTable = new Datatable();
 		}
 
-		// ======================= dataTable ======================= //
-
-			/**
-			* 
-			*/
-			public function getAllDataTable($config){
-				$this->dataTable->set_config($config);
-				$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
-				$statement->execute();
-				$result = $statement->fetchAll();
-
-				return $result;
-			}
-
-			/**
-			* 
-			*/
-			public function recordFilter(){
-				return $this->dataTable->recordFilter();
-
-			}
-
-			/**
-			* 
-			*/
-			public function recordTotal(){
-				return $this->dataTable->recordTotal();
-			}
-
-		// ========================================================= //
-
 		/**
-		* 
-		*/
-		public function getAll(){
+		 * 
+		 */
+		public function getAll() {
 			
 		}
 
 		/**
-		* 
-		*/
-		public function getById($id){
+		 * 
+		 */
+		public function getById($id) {
 			$query = "SELECT * FROM operasional WHERE id = :id;";
 
 			$statement = $this->koneksi->prepare($query);
@@ -70,9 +38,9 @@
 		}
 
 		/**
-		*
-		*/
-		public function getByid_fromView($id){
+		 * 
+		 */
+		public function getByid_fromView($id) {
 			$query = "SELECT * FROM v_operasional WHERE id = :id;";
 
 			$statement = $this->koneksi->prepare($query);
@@ -84,9 +52,9 @@
 		}
 
 		/**
-		*
-		*/
-		public function getKasBesar($id){
+		 * 
+		 */
+		public function getKasBesar($id) {
 			$query = "SELECT * FROM kas_besar WHERE id = :id;";
 
 			$statement = $this->koneksi->prepare($query);
@@ -97,10 +65,10 @@
 			return $result;
 		}
 
-		/*
-		*
-		*/
-		public function getExport($tgl_awal, $tgl_akhir){
+		/**
+		 * 
+		 */
+		public function getExport($tgl_awal, $tgl_akhir) {
 			if($tgl_awal == '' || $tgl_akhir == ''){
 				$query = "SELECT * FROM v_operasional_export;";
 			} else {
@@ -118,9 +86,9 @@
 		}
 
 		/**
-		* 
-		*/
-		public function insert($data){
+		 * 
+		 */
+		public function insert($data) {
 			
 			$res = $this->getKasBesar($data['id_kas_besar']);
 
@@ -132,10 +100,10 @@
 				$ket_mutasi = "UANG KELUAR SEBESAR Rp.".$uang." DARI TRANSAKSI OPERASIONAL ".$data['nama']." OLEH ".$res['nama'];
 			}
 
-			try{
+			try {
 				$this->koneksi->beginTransaction();
 
-				$query = "CALL tambah_operasional (
+				$query = "CALL p_tambah_operasional (
 					:id_bank,
 					:id_kas_besar,
 					:tgl,
@@ -143,7 +111,8 @@
 					:nominal,
 					:jenis,
 					:ket,
-					:ket_mutasi
+					:ket_mutasi,
+					:created_by
 				)";
 
 				$statement = $this->koneksi->prepare($query);
@@ -156,7 +125,8 @@
 						':nominal' => $data['nominal'],
 						':jenis' => $data['jenis'],
 						':ket' => $data['ket'],
-						':ket_mutasi' => $ket_mutasi
+						':ket_mutasi' => $ket_mutasi,
+						':created_by' => $_SESSION['sess_email']
 					)
 				);
 				$statement->closeCursor();
@@ -174,10 +144,10 @@
 		}
 
 		/**
-		* 
-		*/
-		public function update($data){
-			try{
+		 * 
+		 */
+		public function update($data) {
+			try {
 				$this->koneksi->beginTransaction();
 
 				if($data['jenis'] == "UANG MASUK"){
@@ -198,8 +168,8 @@
 		}
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		private function editMasuk($data) {
 
 			$res = $this->getById($data['id']);
@@ -237,7 +207,7 @@
 			
 			}
 			
-			$query = "CALL edit_operasional_masuk (
+			$query = "CALL p_edit_operasional_masuk (
 				:id,
 				:id_bank,
 				:tgl,
@@ -248,7 +218,8 @@
 				:ket_mutasi,
 				:ket_bank_masuk,
 				:ket_bank_keluar,
-				:ket_saldo_change
+				:ket_saldo_change,
+				:modified_by
 			)";
 
 			$statement = $this->koneksi->prepare($query);
@@ -264,15 +235,16 @@
 					':ket_mutasi' => $ket_mutasi,
 					':ket_bank_masuk' => $ket_bank_masuk,
 					':ket_bank_keluar' => $ket_bank_keluar,
-					':ket_saldo_change' => $ket_saldoChange
+					':ket_saldo_change' => $ket_saldoChange,
+					':modified_by' => $_SESSION['sess_email']
 				)
 			);
 			$statement->closeCursor();
 		}
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		private function editKeluar($data) {
 
 			$res = $this->getById($data['id']);
@@ -310,7 +282,7 @@
 			
 			}
 
-			$query = "CALL edit_operasional_keluar (
+			$query = "CALL p_edit_operasional_keluar (
 				:id,
 				:id_bank,
 				:tgl,
@@ -321,7 +293,8 @@
 				:ket_mutasi,
 				:ket_bank_masuk,
 				:ket_bank_keluar,
-				:ket_saldo_change
+				:ket_saldo_change,
+				:modified_by
 			)";
 
 			$statement = $this->koneksi->prepare($query);
@@ -337,19 +310,20 @@
 					':ket_mutasi' => $ket_mutasi,
 					':ket_bank_masuk' => $ket_bank_masuk,
 					':ket_bank_keluar' => $ket_bank_keluar,
-					':ket_saldo_change' => $ket_saldoChange
+					':ket_saldo_change' => $ket_saldoChange,
+					':modified_by' => $_SESSION['sess_email']
 				)
 			);
 			$statement->closeCursor();
 		}
 
 		/**
-		* 
-		*/
-		public function delete($data){
+		 * 
+		 */
+		public function delete($data) {
 			// TRANSACT
-			 try {
-			 	$this->koneksi->beginTransaction();
+			try {
+				$this->koneksi->beginTransaction();
 
 				$this->hapusOperasional($data);
 
@@ -357,22 +331,19 @@
 
 				return true;
 			 	
-			 }
-			  catch (PDOException $e) {
-				 	$this->koneksi->rollback();
-					die($e->getMessage());
-					// return false;
+			}
+			catch (PDOException $e) {
+				$this->koneksi->rollback();
+				die($e->getMessage());
+				// return false;
 			 	
-			 }
-
-
-			
+			}
 		}
 
 		/**
-		*
-		*/
-		public function hapusOperasional($data){
+		 * 
+		 */
+		public function hapusOperasional($data) {
 
 			$uang = number_format($data['nominal'],2,",",".");
 
@@ -384,25 +355,26 @@
 				$ket_mutasi = "UANG MASUK SEBESAR Rp.".$uang." DIKARENAKAN ADANYA PENGHAPUSAN DATA DI OPERASIONAL DENGAN ID ".$data['id'];
 			}
 
-			$query = "CALL hapus_operasional (
+			$query = "CALL p_hapus_operasional (
 				:id,
 				:tgl,
-				:ket);";
+				:ket, :modified_by);";
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
 				array(
 					':id' => $data['id'],
 					':tgl' => $data['tgl'],
 					':ket' => $ket_mutasi,
+					':modified_by' => $_SESSION['sess_email']
 				)
 			);
 			$statement->closeCursor();
 		}
 
 		/**
-		* 
-		*/
-		public function __destruct(){
+		 * 
+		 */
+		public function __destruct() {
 			$this->closeConnection($this->koneksi);
 		}
 

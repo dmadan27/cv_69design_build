@@ -57,7 +57,7 @@
 		SET 
 			dana_disetujui = dana_disetujui_param, 
 			status = '3',
-			status_laporan = '1',
+			status_laporan = '0',
 			modified_by = modified_by_param
 		WHERE id = id_param;
 

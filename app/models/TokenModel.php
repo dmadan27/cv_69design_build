@@ -60,8 +60,8 @@
 		* 
 		*/
 		private function insert_lupa_password($data){
-			$query = "INSERT INTO token_lupa_password (username, token, tgl_buat, tgl_exp) ";
-			$query .= "VALUES (:username, :token, :tgl_buat, :tgl_exp)";
+			$query = "INSERT INTO token_lupa_password (username, token, tgl_buat, tgl_exp, created_by, modified_by) ";
+			$query .= "VALUES (:username, :token, :tgl_buat, :tgl_exp, :created_by, :modified_by)";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
@@ -70,6 +70,8 @@
 					':token' => $data['token'],
 					':tgl_buat' => $data['tgl_buat'],
 					':tgl_exp' => $data['tgl_exp'],
+					':created_by' => $_SESSION['sess_email'],
+					':modified_by' => $_SESSION['sess_email']
 				)
 			);
 			

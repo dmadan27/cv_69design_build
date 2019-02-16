@@ -4,7 +4,8 @@
 	/**
 	 * Class Pengajuan_sub_kas_kecil
 	 */
-	class Pengajuan_sub_kas_kecil extends Controller {
+	class Pengajuan_sub_kas_kecil extends Controller 
+	{
 
 		private $success = false;
 		private $notif = array();
@@ -15,7 +16,7 @@
 		 * Method __construct
 		 * Default load saat pertama kali controller diakses
 		 */
-		public function __construct(){
+		public function __construct() {
 			$this->auth();
 			$this->auth->cekAuth();
 			$this->model('Pengajuan_sub_kas_kecilModel');
@@ -28,7 +29,7 @@
 		 * Method index
 		 * Render list pengajuan sub kas kecil
 		 */
-		public function index(){
+		public function index() {
 			$this->list();
 		}
 
@@ -36,7 +37,7 @@
 		 * Method list
 		 * Proses menampilkan list semua data pengajuan sub kas kecil
 		 */
-		private function list(){
+		private function list() {
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
 				'assets/bower_components/select2/dist/css/select2.min.css'
@@ -68,7 +69,7 @@
 		 * Data akan di parsing dalam bentuk dataTable
 		 * @return output {object} array berupa json
 		 */
-		public function get_list(){
+		public function get_list() {
 			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				// config datatable
 				$config = array(
@@ -147,7 +148,7 @@
 		 * @param id {string}
 		 * @param output {object}
 		 */
-		public function edit($id){
+		public function edit($id) {
 			if($_SERVER['REQUEST_METHOD'] == 'POST') {
 				$id = strtoupper($id);
 				if(empty($id) || $id == "") { $this->redirect(BASE_URL."pengajuan-sub-kas-kecil"); }
@@ -177,45 +178,46 @@
 		 * @param id {string}
 		 * @return output {object} array berupa json
 		 */
-		public function action_edit(){
+		public function action_edit() {
 			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				$data = isset($_POST) ? $_POST : false;
 				
-				if(!$data){
+				if(!$data) {
 					$this->notif = array(
 						'type' => 'error',
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
 					);
 				}
-				else{ 
+				else { 
 					// validasi data
 					$validasi = $this->set_validation($data);
 					$cek = $validasi['cek'];
 					$this->error = $validasi['error'];
 
-					if($cek){
+					if($cek) {
 						// status disetujui
-						if($data['status'] == '3'){
+						if($data['status'] == '3') {
 	
 							$data = array(
 								'id' => $this->validation->validInput($data['id']),
 								'id_kas_kecil' => $_SESSION['sess_id'],
 								'tgl' => date('Y-m-d'),
 								'dana_disetujui' => $this->validation->validInput($data['dana_disetujui']),
-								'status' => $this->validation->validInput($data['status'])
+								'status' => $this->validation->validInput($data['status']),
+								'modifeid_by' => $_SESSION['sess_email']
 							);
 	
 							$this->model('Kas_kecilModel');
 							$getSaldo = $this->Kas_kecilModel->getById($_SESSION['sess_id'])['saldo'];
 	
-							if($data['dana_disetujui'] > $getSaldo){
+							if($data['dana_disetujui'] > $getSaldo) {
 								$this->error['dana_disetujui'] = "Dana yang Disetujui terlalu besar dan melebihi saldo";
 							}
-							else{
+							else {
 								// update status
 								$acc_pengajuan = $this->Pengajuan_sub_kas_kecilModel->acc_pengajuan($data);
-								if($acc_pengajuan['success']){
+								if($acc_pengajuan['success']) {
 									$this->success = true;
 									$this->notif = array(
 										'type' => 'success',
@@ -223,7 +225,7 @@
 										'message' => "Edit Status Pengajuan Sub Kas Kecil Berhasil",
 									);
 								}
-								else{
+								else {
 									$this->notif = array(
 										'type' => 'error',
 										'title' => "Pesan Gagal",
@@ -233,15 +235,16 @@
 								}
 							}
 						}
-						else{ // status selain disetujui
+						else { // status selain disetujui
 							$data = array(
 								'id' => $this->validation->validInput($data['id']),
-								'status' => $this->validation->validInput($data['status'])
+								'status' => $this->validation->validInput($data['status']),
+								'modified_by' => $_SESSION['sess_email']
 							);
 	
 							// update status
 							$update = $this->Pengajuan_sub_kas_kecilModel->update_status($data);
-							if($update['success']){
+							if($update['success']) {
 								$this->success = true;
 								$this->notif = array(
 									'type' => 'success',
@@ -249,7 +252,7 @@
 									'message' => "Edit Status Pengajuan Sub Kas Kecil Berhasil",
 								);
 							}
-							else{
+							else {
 								$this->notif = array(
 									'type' => 'error',
 									'title' => "Pesan Gagal",
@@ -259,7 +262,7 @@
 							}
 						}
 					}
-					else{
+					else {
 						$this->notif = array(
 							'type' => 'warning',
 							'title' => "Pesan Pemberitahuan",
@@ -284,7 +287,7 @@
 		/**
 		 * 
 		 */
-		public function detail($id){
+		public function detail($id ){
 			$id = strtoupper($id);
 			$dataPengajuan = !empty($this->Pengajuan_sub_kas_kecilModel->getById($id)) ? $this->Pengajuan_sub_kas_kecilModel->getById($id) : false;
 
@@ -375,28 +378,28 @@
 		/**
 		 * 
 		 */
-		public function delete($id){
+		public function delete($id) {
 
 		}
 
 		/**
 		 * 
 		 */
-		public function export(){
+		public function export() {
 			
 		}
 
 		/**
 		 * 
 		 */
-		public function export_detail(){
+		public function export_detail() {
 
 		}
 
 		/**
 		 * 
 		 */
-		public function get_notif(){
+		public function get_notif() {
 			$notif = $this->Pengajuan_sub_kas_kecilModel->getAll_pending();
 			$jumlah = $this->Pengajuan_sub_kas_kecilModel->getTotal_pending();
 
@@ -427,7 +430,7 @@
 		 * param $data didapat dari post yang dilakukan oleh user
 		 * return berupa array, status hasil pengecekan dan error tiap validasi inputan
 		 */
-		private function set_validation($data){
+		private function set_validation($data) {
 			$required = ($data['status'] == "1") ? 'required' : 'not_required';
 
 			// status

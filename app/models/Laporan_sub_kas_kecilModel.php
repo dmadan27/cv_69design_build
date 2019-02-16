@@ -4,15 +4,15 @@
 	/**
 	 * 
 	 */
-	class Laporan_sub_kas_kecilModel extends Database{
+	class Laporan_sub_kas_kecilModel extends Database
+	{
 
 		private $koneksi;
-		private $dataTable;
 
 		/**
 		 * 
 		 */
-		public function __construct(){
+		public function __construct() {
 			$this->koneksi = $this->openConnection();
 		}
 
@@ -70,13 +70,14 @@
 			try {
 				$this->koneksi->beginTransaction();
 
-				$query	= "UPDATE pengajuan_sub_kas_kecil SET status_laporan = :status_laporan WHERE id = :id";
+				$query	= "UPDATE pengajuan_sub_kas_kecil SET status_laporan = :status_laporan, modified_by = :modified_by WHERE id = :id";
 
 				$statment = $this->koneksi->prepare($query);
 				$statment->execute(
 					array(
 						':id' => $data['id'],
 						':status_laporan' => $data['status_laporan'],
+						':modified_by' => $data['modified_by']
 					)
 				);
 				$statment->closeCursor();
@@ -103,14 +104,15 @@
 			try {
 				$this->koneksi->beginTransaction();
 				
-				$query	= "CALL ganti_status_perbaiki_laporan_sub_kas_kecil (:id, :id_sub_kas_kecil, :tgl);";
+				$query	= "CALL p_ganti_status_perbaiki_laporan_sub_kas_kecil (:id, :id_sub_kas_kecil, :tgl, :modified_by);";
 
 				$statment = $this->koneksi->prepare($query);
 				$statment->execute(
 					array(
 						':id' => $data['id'],
 						':id_sub_kas_kecil' => $data['id_sub_kas_kecil'],
-						':tgl' => date('Y-m-d')
+						':tgl' => date('Y-m-d'),
+						':modified_by' => $data['modified_by']
 					)
 				);
 				$statment->closeCursor();
@@ -133,7 +135,7 @@
 		/**
 		 * 
 		 */
-		public function __destruct(){
+		public function __destruct() {
 			$this->closeConnection($this->koneksi);
 		}
 	}

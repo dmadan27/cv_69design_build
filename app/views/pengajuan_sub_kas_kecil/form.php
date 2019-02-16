@@ -1,7 +1,7 @@
 <?php Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung"); ?>
 
 <div class="modal fade" id="modalPengajuanSKC">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <!-- header modal -->
             <div class="modal-header">
@@ -63,17 +63,34 @@
                         </div>
                     </div>
 
-                    <!-- total pengajuan -->
-                    <div class="form-group field-total has-feedback">
-                        <label for="total">Total Pengajuan</label>
-                            <div class="input-group">
-                            <span class="input-group-addon">Rp.</span>
-                            <input type="text" class="form-control field input-mask-uang" id="total" readonly>
-                            <span class="input-group-addon">,00-</span>
+                    <div class="row">
+                        <!-- total -->
+                        <div class="col-md-12">
+                            <div class="form-group field-total has-feedback">
+                                <label for="total">Total</label>
+                                    <div class="input-group">
+                                    <span class="input-group-addon">Rp.</span>
+                                    <input type="text" class="form-control field input-mask-uang" id="total" readonly>
+                                    <span class="input-group-addon">,00-</span>
+                                </div>
+                                <span class="help-block small pesan pesan-total"></span>
+                            </div>
                         </div>
-                        <span class="help-block small pesan pesan-total"></span>
-                    </div>    
-                        
+
+                        <!-- total pengajuan -->
+                        <div class="col-md-12">
+                            <div class="form-group field-total_pengajuan has-feedback">
+                                <label for="total_pengajuan">Total Pengajuan</label>
+                                    <div class="input-group">
+                                    <span class="input-group-addon">Rp.</span>
+                                    <input type="text" class="form-control field input-mask-uang" id="total_pengajuan" readonly>
+                                    <span class="input-group-addon">,00-</span>
+                                </div>
+                                <span class="help-block small pesan pesan-total_pengajuan"></span>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- status -->
                     <div class="form-group field-status_order has-feedback">
                         <label for="status_order">Status</label>
@@ -84,10 +101,10 @@
                     <div class="data-pengajuan" style="display: none">
                         <!-- sisa saldo dan dana disetujui -->
                         <div class="row">
-                            <!-- sisa saldo -->
+                            <!-- saldo sub kas kecil -->
                             <div class="col-md-6">
                                 <div class="form-group field-saldo_sub_kas_kecil has-feedback">
-                                    <label for="saldo_sub_kas_kecil">Sisa Saldo Sub Kas Kecil</label>
+                                    <label for="saldo_sub_kas_kecil">Saldo Sub Kas Kecil</label>
                                      <div class="input-group">
                                         <span class="input-group-addon">Rp.</span>
                                         <input type="text" class="form-control field input-mask-uang" id="saldo_sub_kas_kecil" readonly>
@@ -97,20 +114,31 @@
                                 </div>
                             </div>
 
-                            <!-- saldo kas kecil -->
+                            <!-- sisa saldo kas kecil -->
                             <div class="col-md-6">
-                                <div class="form-group field-saldo_kas_kecil has-feedback">
-                                    <label for="saldo_kas_kecil">Saldo</label>
-                                    <div class="input-group">
+                                <div class="form-group field-sisa_saldo_sub_kas_kecil has-feedback">
+                                    <label for="sisa_saldo_sub_kas_kecil">Sisa Saldo Sub Kas Kecil</label>
+                                     <div class="input-group">
                                         <span class="input-group-addon">Rp.</span>
-                                        <input type="text" class="form-control field input-mask-uang" id="saldo_kas_kecil" readonly>
+                                        <input type="text" class="form-control field input-mask-uang" id="sisa_saldo_sub_kas_kecil" readonly>
                                         <span class="input-group-addon">,00-</span>
                                     </div>
-                                    <span class="help-block small pesan pesan-saldo_kas_kecil"></span>
+                                    <span class="help-block small pesan pesan-sisa_saldo_sub_kas_kecil"></span>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- saldo kas kecil -->
+                        <div class="form-group field-saldo_kas_kecil has-feedback">
+                            <label for="saldo_kas_kecil">Saldo</label>
+                            <div class="input-group">
+                                <span class="input-group-addon">Rp.</span>
+                                <input type="text" class="form-control field input-mask-uang" id="saldo_kas_kecil" readonly>
+                                <span class="input-group-addon">,00-</span>
+                            </div>
+                            <span class="help-block small pesan pesan-saldo_kas_kecil"></span>
+                        </div>
+                        
                         <div class="form-group field-dana_disetujui has-feedback">
                             <label for="dana_disetujui">Dana yang disetujui</label>
                             <div class="input-group">

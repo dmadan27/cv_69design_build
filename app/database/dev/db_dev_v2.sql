@@ -521,7 +521,7 @@ USE `69design-build`;
 		status char(1), -- status pengajuan, default 1: 'pending'
 						-- 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI', 4: 'LANGSUNG', 5: 'DITOLAK'
 		status_laporan char(1), -- status laporan, default set null
-						-- 1: 'BELUM DIKERJAKAN', 2: 'PENDING', 3: 'PERBAIKI', 4: 'DISETUJUI',
+						-- 0: 'BELUM DIKERJAKAN', 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI',
 
 		CONSTRAINT pk_pengajuan_sub_kas_kecil_id PRIMARY KEY(id),
 		CONSTRAINT fk_pengajuan_sub_kas_kecil_id_sub_kas_kecil FOREIGN KEY(id_sub_kas_kecil) REFERENCES sub_kas_kecil(id)

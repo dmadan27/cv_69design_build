@@ -8,7 +8,6 @@
 	class ProyekModel extends Database implements ModelInterface{
 
 		protected $koneksi;
-		protected $dataTable;
 
 		/**
 		 * Method __construct
@@ -17,42 +16,7 @@
 		 */
 		public function __construct(){
 			$this->koneksi = $this->openConnection();
-			$this->dataTable = new Datatable();
 		}
-
-		// ======================= dataTable ======================= //
-
-			/**
-			 * Method getAllDataTable
-			 * @param config {array}
-			 * @return result {array}
-			 */
-			public function getAllDataTable($config){
-				$this->dataTable->set_config($config);
-				$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
-				$statement->execute();
-				$result = $statement->fetchAll();
-
-				return $result;
-			}
-
-			/**
-			 * Method recordFilter
-			 * @return result {int}
-			 */
-			public function recordFilter(){
-				return $this->dataTable->recordFilter();
-			}
-
-			/**
-			 * Method recordTotal
-			 * @return result {int}
-			 */
-			public function recordTotal(){
-				return $this->dataTable->recordTotal();
-			}
-
-		// ========================================================= //
 
 		/**
 		 * Method getAll
@@ -291,8 +255,9 @@
 		 */
 		private function insertProyek($data){
 			// insert proyek
-			$query = "INSERT INTO proyek (id, pemilik, tgl, pembangunan, luas_area, alamat, kota, estimasi, total, dp, cco, progress, status) ";
-			$query .= "VALUES (:id, :pemilik, :tgl, :pembangunan, :luas_area, :alamat, :kota, :estimasi, :total, :dp, :cco, :progress, :status);";
+			// $query = "INSERT INTO proyek (id, pemilik, tgl, pembangunan, luas_area, alamat, kota, estimasi, total, dp, cco, progress, status) ";
+			// $query .= "VALUES (:id, :pemilik, :tgl, :pembangunan, :luas_area, :alamat, :kota, :estimasi, :total, :dp, :cco, :progress, :status);";
+			$query = "CALL p_tambah_proyek (:id, :pemilik, :tgl, :pembangunan, :luas_area, :alamat, :kota, :estimasi, :total, :dp, :cco, :progress, :status, :created_by);";
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
 				array(
@@ -309,6 +274,7 @@
 					':cco' => $data['cco'],
 					':status' => $data['status'],
 					':progress' => $data['progress'],
+					':created_by' => $_SESSION['sess_email']
 				)
 			);
 			$statement->closeCursor();
@@ -324,7 +290,7 @@
 			$ket = "UANG MASUK SEBESAR RP ".number_format($data['total_detail'], 2, ',', '.')." DARI TRANSAKSI PROYEK (".$data['id_proyek'].") - ".$data['nama_detail'];
 			
 			// insert detail_proyek
-			$query = 'CALL tambah_detail_proyek (:id_proyek, :id_bank, :tgl_detail, :nama_detail, :total_detail, :is_DP, :ket);';
+			$query = 'CALL p_tambah_detail_proyek (:id_proyek, :id_bank, :tgl_detail, :nama_detail, :total_detail, :is_DP, :ket, :created_by);';
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
@@ -335,7 +301,8 @@
 					':nama_detail' => $data['nama_detail'],
 					':total_detail' => $data['total_detail'],
 					':is_DP' => $data['is_DP'],
-					':ket' => $ket
+					':ket' => $ket,
+					':created_by' => $_SESSION['sess_email']
 				)
 			);
 			$statement->closeCursor();
@@ -348,12 +315,14 @@
 		 * @return result {array}
 		 */
 		private function insertSkk($data){
-			$query = 'INSERT INTO logistik_proyek (id_proyek, id_sub_kas_kecil) VALUES (:id_proyek, :id_sub_kas_kecil);';
+			// $query = 'INSERT INTO logistik_proyek (id_proyek, id_sub_kas_kecil) VALUES (:id_proyek, :id_sub_kas_kecil);';
+			$query = "CALL p_tambah_detail_skk_proyek (:id_proyek, :id_sub_kas_kecil, :created_by);";
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
 				array(
 					':id_proyek' => $data['id_proyek'],
 					':id_sub_kas_kecil' => $data['id_skk'],
+					':created_by' => $_SESSION['sess_email']
 				)
 			);
 			$statement->closeCursor();
@@ -425,10 +394,11 @@
 		 * @return result {array}
 		 */
 		private function updateProyek($data){
-			$query = "UPDATE proyek SET pemilik = :pemilik, tgl = :tgl, pembangunan = :pembangunan, luas_area = :luas_area, ";
-			$query .= "alamat = :alamat, kota = :kota, estimasi = :estimasi, total = :total, ";
-			$query .= "dp = :dp, cco = :cco, progress = :progress, status = :status WHERE id = :id;";
-
+			// $query = "UPDATE proyek SET pemilik = :pemilik, tgl = :tgl, pembangunan = :pembangunan, luas_area = :luas_area, ";
+			// $query .= "alamat = :alamat, kota = :kota, estimasi = :estimasi, total = :total, ";
+			// $query .= "dp = :dp, cco = :cco, progress = :progress, status = :status WHERE id = :id;";
+			$query = "CALL p_edit_proyek (:id, :pemilik, :tgl, :pembangunan, :luas_area, :alamat, :kota, :estimasi, :total, :dp, :cco, :progress, :status, :modified_by);";
+			
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
 				array(
@@ -445,6 +415,7 @@
 					':cco' => $data['cco'],
 					':status' => $data['status'],
 					':progress' => $data['progress'],
+					':modified_by' => $_SESSION['sess_email']
 				)
 			);
 			$statement->closeCursor();
@@ -457,7 +428,7 @@
 		 * @return result {array}
 		 */
 		private function updateDetail($data){
-			$query = 'CALL edit_detail_proyek (:id, :id_proyek, :id_bank, :tgl_detail, :nama_detail, :total_detail, :is_DP)';
+			$query = 'CALL p_edit_detail_proyek (:id, :id_proyek, :id_bank, :tgl_detail, :nama_detail, :total_detail, :is_DP, :modified_by)';
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
 				array(
@@ -467,7 +438,8 @@
 					':tgl_detail' => $data['tgl_detail'],
 					':nama_detail' => $data['nama_detail'],
 					':total_detail' => $data['total_detail'],
-					':is_DP' => $data['is_DP']
+					':is_DP' => $data['is_DP'],
+					':modified_by' => $_SESSION['sess_email']
 				)
 			);
 			$statement->closeCursor();
@@ -482,12 +454,13 @@
 		private function deleteDetail($id){
 			$tgl = date('Y-m-d');
 
-			$query = 'CALL hapus_detail_proyek (:id, :tgl)';
+			$query = 'CALL hapus_detail_proyek (:id, :tgl, :modified_by)';
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
 				array(
 					':id' => $id,
-					':tgl' => $tgl
+					':tgl' => $tgl,
+					':modified_by' => $_SESSION['sess_email']
 				)
 			);
 			$statement->closeCursor();
@@ -500,7 +473,8 @@
 		 * @param id {string}
 		 */
 		private function deleteSkk($id){
-			$query = 'DELETE FROM logistik_proyek WHERE id=:id;';
+			// $query = 'DELETE FROM logistik_proyek WHERE id=:id;';
+			$query = "CALL p_hapus_detail_skk_proyek (:id);";
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
 				array(
@@ -516,7 +490,7 @@
 		 */
 		public function delete($id){
 			try{
-				$query = 'CALL hapus_proyek (:id);';
+				$query = 'CALL p_hapus_proyek (:id);';
 
 				$this->koneksi->beginTransaction();
 

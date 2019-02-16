@@ -4,7 +4,8 @@
 	/**
 	 * Class Laporan_sub_kas_kecil
 	 */
-	class Laporan_sub_kas_kecil extends Controller {
+	class Laporan_sub_kas_kecil extends Controller 
+	{
 
 		private $success = false;
 		private $notif = array();
@@ -14,7 +15,7 @@
 		/**
 		 * 
 		 */
-		public function __construct(){
+		public function __construct() {
 			$this->auth();
             $this->auth->cekAuth();
             $this->model('DataTableModel');
@@ -26,14 +27,14 @@
 		/**
 		 * 
 		 */
-		public function index(){
+		public function index() {
 			$this->list();
 		}
 
 		/**
 		 * 
 		 */
-		protected function list(){
+		protected function list() {
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
 				'assets/bower_components/select2/dist/css/select2.min.css'
@@ -65,7 +66,7 @@
 		 * Data akan di parsing dalam bentuk dataTable
 		 * @return output {object} array berupa json
 		 */
-		public function get_list(){
+		public function get_list() {
 			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				// config datatable
 				$config_dataTable = array(
@@ -135,7 +136,7 @@
 		/**
 		 * 
 		 */
-		public function edit($id){
+		public function edit($id) {
 			if($_SERVER['REQUEST_METHOD'] == 'POST') {
 				$id = strtoupper($id);
 				if(empty($id) || $id == "") { $this->redirect(BASE_URL."laporan-sub-kas-kecil"); }
@@ -154,29 +155,30 @@
 		/**
 		 * 
 		 */
-		public function action_edit_status(){
+		public function action_edit_status() {
 			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				$data = isset($_POST) ? $_POST : false;
 				
-				if(!$data){
+				if(!$data) {
 					$this->notif = array(
 						'type' => 'error',
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi Kesalahan Teknis, Silahkan Coba Kembali",
 					);
 				}
-				else{ 
+				else { 
 					// validasi data
 					$validasi = $this->set_validation($data);
 					$cek = $validasi['cek'];
 					$this->error = $validasi['error'];
 
-					if($cek){
+					if($cek) {
 						// status disetujui, ditolak, atau masih pending
 						if($data['status_laporan'] != '2' && $data['status_laporan'] != '0') {
 							$data_update = array(
 								'id' => $this->validation->validInput($data['id']),
-								'status_laporan' => $this->validation->validInput($data['status_laporan'])
+								'status_laporan' => $this->validation->validInput($data['status_laporan']),
+								'modified_by' => $_SESSION['sess_email']
 							);
 	
 							// update status
@@ -201,7 +203,8 @@
 						else if($data['status_laporan'] == '2' && $data['status_laporan'] != '0') { // diperbaiki
 							$data_update = array(
 								'id' => $this->validation->validInput($data['id']),
-								'id_sub_kas_kecil' => $this->validation->validInput($data['id_sub_kas_kecil'])
+								'id_sub_kas_kecil' => $this->validation->validInput($data['id_sub_kas_kecil']),
+								'modified_by' => $_SESSION['sess_email']
 							);
 	
 							// update status
@@ -214,7 +217,7 @@
 									'message' => "Edit Status Pengajuan Sub Kas Kecil Berhasil",
 								);
 							}
-							else{
+							else {
 								$this->notif = array(
 									'type' => 'error',
 									'title' => "Pesan Gagal",
@@ -224,7 +227,7 @@
 							}
 						}
 					}
-					else{
+					else {
 						$this->notif = array(
 							'type' => 'warning',
 							'title' => "Pesan Pemberitahuan",
@@ -249,7 +252,7 @@
 		/**
 		 * 
 		 */
-		public function detail($id){
+		public function detail($id) {
 			$id = strtoupper($id);
 			$dataLaporan = !empty($this->Laporan_sub_kas_kecilModel->getById($id)) ? 
 				$this->Laporan_sub_kas_kecilModel->getById($id) : false;
@@ -355,21 +358,21 @@
 		/**
 		 * 
 		 */
-		public function delete($id){
+		public function delete($id) {
 
 		}
 
 		/**
 		 * 
 		 */
-		public function export(){
+		public function export() {
 			
 		}
 
 		/**
 		 * 
 		 */
-		public function export_detail(){
+		public function export_detail() {
 
 		}
 

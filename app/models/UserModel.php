@@ -4,49 +4,17 @@
 	/**
 	* 
 	*/
-	class UserModel extends Database implements ModelInterface {
+	class UserModel extends Database implements ModelInterface 
+	{
 		
 		protected $koneksi;
-		protected $dataTable;
 
 		/**
 		* 
 		*/
 		public function __construct(){
 			$this->koneksi = $this->openConnection();
-			$this->dataTable = new Datatable();
 		}
-
-		// ======================= dataTable ======================= //
-
-			/**
-			* 
-			*/
-			public function getAllDataTable($config){
-				$this->dataTable->set_config($config);
-				$statement = $this->koneksi->prepare($this->dataTable->getDataTable());
-				$statement->execute();
-				$result = $statement->fetchAll();
-
-				return $result;
-			}
-
-				/**
-			* 
-			*/
-			public function recordFilter(){
-				return $this->dataTable->recordFilter();
-
-			}
-
-			/**
-			* 
-			*/
-			public function recordTotal(){
-				return $this->dataTable->recordTotal();
-			}
-
-		// ========================================================= //
 
 		/**
 		* 
@@ -162,7 +130,7 @@
 		*
 		*/
 		public function updatePassword($data, $lupa_password = false){
-			$query = "UPDATE user SET password = :password WHERE username = :username";
+			$query = "UPDATE user SET password = :password, modified_by = :modified_by WHERE username = :username";
 
 			try{
 				$this->koneksi->beginTransaction();
@@ -172,6 +140,7 @@
 					array(
 						':password' => $data['password'],
 						':username' => $data['username'],
+						':modified_by' => $_SESSION['sess_email']
 					)
 				);
 				$statement->closeCursor();

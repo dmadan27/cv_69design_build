@@ -4,17 +4,16 @@
 	/**
 	 * 
 	 */
-	class Sub_kas_kecilModel extends Database implements ModelInterface{
+	class Sub_kas_kecilModel extends Database implements ModelInterface
+	{
 
 		protected $koneksi;
-		protected $dataTable;
 
 		/**
 		 * 
 		 */
 		public function __construct(){
 			$this->koneksi = $this->openConnection();
-			$this->dataTable = new Datatable();
 		}
 
 		/**
@@ -101,7 +100,7 @@
 		*/
 		private function insertSubKasKecil($data){
 			$level = "SUB KAS KECIL";
-			$query = "CALL tambah_sub_kas_kecil (:id, :nama, :alamat, :no_telp, :email, :foto, :saldo, :tgl, :status, :password, :level);";
+			$query = "CALL p_tambah_sub_kas_kecil (:id, :nama, :alamat, :no_telp, :email, :foto, :saldo, :tgl, :status, :password, :level, :created_by);";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
@@ -117,6 +116,7 @@
 					':status' => $data['status'],
 					':password' => $data['password'],
 					':level' => $level,
+					':created_by' => $_SESSION['sess_email']
 				)
 			);
 			$statement->closeCursor();
@@ -126,7 +126,7 @@
 		*
 		*/
 		public function update($data){
-			$query = "UPDATE sub_kas_kecil SET nama = :nama, alamat = :alamat, no_telp = :no_telp, email = :email, status = :status WHERE id = :id;";
+			$query = "UPDATE sub_kas_kecil SET nama = :nama, alamat = :alamat, no_telp = :no_telp, email = :email, status = :status, modified_by = :modified_by WHERE id = :id;";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':nama', $data['nama']);
@@ -135,6 +135,7 @@
 			$statement->bindParam(':email', $data['email']);
 			$statement->bindParam(':status', $data['status']);
 			$statement->bindParam(':id', $data['id']);
+			$statement->bindParam(':modified_by', $_SESSION['sess_email']);
 			$result = $statement->execute();
 
 			return $result;
@@ -201,7 +202,7 @@
 		*/
 		public function delete($id){
 			try {
-				$query = "CALL hapus_sub_kas_kecil (:id)";
+				$query = "CALL p_hapus_sub_kas_kecil (:id)";
 
 				$this->koneksi->beginTransaction();
 
