@@ -20,7 +20,7 @@
 		define('DB_HOST', 'localhost'); // host db
 		define('DB_USERNAME', 'root'); // username db
 		define('DB_PASSWORD', ''); // password db
-		define('DB_NAME', '69design-build'); // db yang digunakan
+		define('DB_NAME', '69design-build_dev'); // db yang digunakan
 	}
 	else if(STATUS_DEV == 'LIVE'){ // dev live
 		define('BASE_URL', 'https://dev.69designbuild.com/v1/web/'); 
@@ -32,7 +32,7 @@
 		define('DB_HOST', 'localhost');
 		define('DB_USERNAME', 'designbu_full');
 		define('DB_PASSWORD', '69db69db69db');
-		define('DB_NAME', 'designbu_69design_build.sql');
+		define('DB_NAME', 'designbu_69design_build_live');
 	}
 	else if(STATUS_DEV == 'TESTING'){ // testing before production
 		define('BASE_URL', 'https://test.69designbuild.com/');

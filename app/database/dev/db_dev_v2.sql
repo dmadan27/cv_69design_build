@@ -2,9 +2,11 @@
 # 69design-build #
 # Versi 2.0 for MariaDB #
 
-DROP DATABASE IF EXISTS `69design-build`;
-CREATE DATABASE `69design-build`;
-USE `69design-build`;
+# FOR LOCAL DEVELOPMENT #
+	DROP DATABASE IF EXISTS `69design-build_dev`;
+	CREATE DATABASE `69design-build_dev`;
+	USE `69design-build_dev`;
+# END FOR LOCAL DEVELOPMENT #
 
 # ============================== Base Tabel ============================== #
 
@@ -602,7 +604,7 @@ USE `69design-build`;
 		nama varchar(50), -- nama pengajuan
 		total double(12,2), -- total pengajuan ke kas besar
 		status char(1), -- status pengajuan, default 'pending'
-		-- 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI', 4: 'DITOLAK'
+		-- 0: 'PENDING', 1: 'PERBAIKI', 2: 'DISETUJUI', 3: 'DITOLAK'
 		total_disetujui double(12,2),
 
 		CONSTRAINT pk_pengajuan_kas_kecil_id PRIMARY KEY(id),
