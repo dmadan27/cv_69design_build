@@ -39,7 +39,15 @@ $(document).ready(function(){
         // }
     });
 
-    init();
+	init();
+	
+	// event on submi laporan
+	$('#form_laporan_skc').on('submit', function(e) {
+		e.preventDefault();
+		submit();
+
+		return false;
+	});
 });
 
 /**
@@ -115,9 +123,10 @@ function submit() {
 		success: function(response){
 			console.log('%cResponse Submit Laporan Pengajuan Sub Kas Kecil:', 'color: green; font-weight: bold', response);
 			setValue(response.data);
-			$('#modalLaporanSKC').modal();
+			$('#modalLaporanSKC').modal('hide');
 			$('#submit_laporan_skc').prop('disabled', false);
 			$('#submit_laporan_skc').html($('#submit_laporan_skc').text());
+			setTimeout(function(){ location.reload(); }, 1000);
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling
 			console.log('%cError Response Submit Laporan Pengajuan Sub Kas Kecil:', 'color: red; font-weight: bold', jqXHR, textStatus, errorThrown);
@@ -145,6 +154,8 @@ function setStatus() {
 		$("#status_laporan").append(option).trigger('change');
 	});
 	$('#status_laporan').val(null).trigger('change');
+
+	$('#status_laporan').val(status_laporan).trigger('change');
 }
 
 /**
@@ -152,7 +163,7 @@ function setStatus() {
  */
 function setValue(value) {	
 	$('#id').val(value.id);
-	$('#status_laporan').val(value.status_laporan).trigger('change');
+	$('#status_laporan').val(value.status_order).trigger('change');
 }
 
 /**

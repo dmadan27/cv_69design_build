@@ -96,6 +96,7 @@
             WHEN pskk.status_laporan = '1' THEN 'PENDING'
             WHEN pskk.status_laporan = '2' THEN 'PERBAIKI'
             WHEN pskk.status_laporan = '3' THEN 'DISETUJUI'
+            WHEN pskk.status_laporan = '4' THEN 'DITOLAK'
             ELSE 'BELUM DIKERJAKAN' END
         ) status_laporan, pskk.status_laporan status_order
 	FROM pengajuan_sub_kas_kecil pskk

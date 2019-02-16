@@ -315,6 +315,7 @@
 				'nama_pengajuan' => $dataLaporan['nama_pengajuan'],
 				'total' => $this->helper->cetakRupiah($dataLaporan['total']),
 				'total_asli' => $this->helper->cetakRupiah($dataLaporan['total_asli']),
+				'status_order' => $dataLaporan['status_order'],
 				'status' => $status
 			);
 

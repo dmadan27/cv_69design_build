@@ -190,5 +190,8 @@
   		</div>			
 	</section>
 	<!-- /.content -->
-    <?php include_once('form.php'); ?>
 </div>
+<script>
+    var status_laporan = "<?= $laporan['status_order']; ?>";
+</script>
+<?php include_once('form.php'); ?>
