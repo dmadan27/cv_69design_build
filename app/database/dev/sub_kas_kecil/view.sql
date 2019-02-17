@@ -9,7 +9,7 @@
     SELECT 
 	    id_sub_kas_kecil, sum(total) estimasi_pengeluaran_saldo
     FROM pengajuan_sub_kas_kecil
-    WHERE (status=3 or status=4) AND (status_laporan!=3 && status_laporan!=4)
+    WHERE (status=3 or status=4) AND (status_laporan=0 OR status_laporan=2)
     GROUP BY id_sub_kas_kecil;
 -- End View Estiamsi pengeluaran sub kas kecil
 
