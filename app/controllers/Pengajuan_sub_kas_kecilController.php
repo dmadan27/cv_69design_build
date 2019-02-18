@@ -231,6 +231,17 @@
 								$acc_pengajuan = $this->Pengajuan_sub_kas_kecilModel->acc_pengajuan($data);
 								if($acc_pengajuan['success']) {
 									$this->success = true;
+
+									// KIRIM NOTIF KE ANDROID
+									$id_skk = explode("-",$data['id'])[2];
+									$this->helper->sendNotif(array(
+										'show' => "1",
+										'id_skk' => $id_skk,
+										'title' => "Pengajuan Telah Disetujui",
+										'body' => "Pengajuan ".$data['id']." telah disetujui.",
+										'refresh' => "1,2,4"
+									));
+
 									$this->notif = array(
 										'type' => 'success',
 										'title' => "Pesan Berhasil",
@@ -258,6 +269,18 @@
 							$update = $this->Pengajuan_sub_kas_kecilModel->update_status($data);
 							if($update['success']) {
 								$this->success = true;
+
+								// KIRIM NOTIF KE ANDROID
+								$id_skk = explode("-",$data['id'])[2];
+								$status_pengajuan = $this->helper->getNamaStatusPengajuanSKK($data['status']);
+								$this->helper->sendNotif(array(
+									'show' => "1",
+									'id_skk' => $id_skk,
+									'title' => "Pengajuan ".$status_pengajuan,
+									'body' => "Pengajuan ".$data['id']." ".$status_pengajuan.".",
+									'refresh' => "1"
+								));
+
 								$this->notif = array(
 									'type' => 'success',
 									'title' => "Pesan Berhasil",

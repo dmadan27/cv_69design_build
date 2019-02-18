@@ -205,9 +205,11 @@
 		 */
 		private function setStatusLaporanSKK() {
 			return array(
+				'0' => 'BELUM DIKERJAKAN',
 				'1' => 'PENDING',
 				'2' => 'PERBAIKI', 
 				'3' => 'DISETUJUI', 
+				'4' => 'DITOLAK',
 			);
 		}
 
@@ -271,9 +273,9 @@
 		 * @param data (array) Data yang ingin dikirimkan dalam notifikasi.
 		 * @param priority (string) Setting prioritas notifikasi ('HIGH' atau 'NORMAL').
 		 * @return message_id (string) Merupakan kode unik pemberitahuan notifikasi pesan telah dikirim, 
-		 * 						Jika message_id tidak dikembalikan oleh firebase maka method akan menghasilkan nilai null.
+		 * 						Jika message_id tidak dikembalikan oleh firebase maka method akan menghasilkan nilai false.
 		 */
-		public function sendNotif($data, $priority) {
+		public function sendNotif($data, $priority="HIGH") {
 			$url = "https://fcm.googleapis.com/fcm/send";
 
 			$headers = array(
@@ -282,23 +284,21 @@
 			);
 
 			$post_data = array(
-				'to' => "/topics/all",
+				'to' => "/topics/".STATUS_DEV,
 				'notification' => array(
 					'sound' => "default"
 				),
 				'data' => [
-					'stage' => STATUS_DEV,
-					'show' => $data['show'],		// (string) "0" => TIDAK DITAMPILKAN, "1" => DITAMPILKAN
-					'id_skk' => $data['id_skk'],
-					'title' => $data['title'],
-					'body' => $data['body'],
-					'refresh' => $data['refresh']   
-							/**
-							 * (string) "0" => TIDAK ADA REFRESH, "1" => REFRESH PENGAJUAN, 
-							 * 			"2" => REFRESH LAPORAN,	  "3" => REFRESH HISTORI,
-							 * 			"4" => REFRESH MUTASI
-							 */ 
-							        
+					'show' => $data['show'] ?? 0,		// (string) "0" => TIDAK DITAMPILKAN, "1" => DITAMPILKAN	
+					'id_skk' => $data['id_skk'] ?? "",
+					'title' => $data['title'] ?? "",
+					'body' => $data['body'] ?? "",
+					'refresh' => $data['refresh'] ?? 0,   
+						/**
+						 * (string) "0" => TIDAK ADA REFRESH, "1" => REFRESH PENGAJUAN, 
+						 * 			"2" => REFRESH LAPORAN,	  "3" => REFRESH HISTORI,
+						 * 			"4" => REFRESH MUTASI
+						 */							        
 				],
 				'priority' => $priority
 			);
@@ -313,7 +313,7 @@
 			$result = curl_exec($ch);
 			curl_close($ch);
 			
-			return json_decode($result, true)['message_id'] ?? null;
+			return json_decode($result, true)['message_id'] ?? false;
 		}
 
 
