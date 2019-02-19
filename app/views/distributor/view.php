@@ -109,7 +109,8 @@
                                         <div class="form-group">
                                             <!-- export -->
                                             <button type="button" class="btn btn-success btn-flat" id="exportExcel_pengajuan"><i class="fa fa-file-excel-o"></i> Export Excel</button>
-                                        </div>
+											<button type="button" class="btn btn-info btn-flat pull-right" id="refreshTable"><i class="fa fa-refresh"></i> Refresh</button>
+										</div>
 										<div class="table-responsive">
                                             <table id="historyPembelianDistributor" class="table table-bordered table-hover" style="width: 100%;">
                                                 <thead>

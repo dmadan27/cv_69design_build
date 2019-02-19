@@ -23,7 +23,7 @@ $(document).ready(function(){
 		$('#submit_bank').prop('value', 'action-add');
 		$('#submit_bank').prop('disabled', false);
 		$('#submit_bank').html('Simpan Data');
-		$('#modalBank').modal();
+		$('#modalBank').modal({backdrop: 'static'});
 	});
 
 	// event on submit form bank
@@ -147,7 +147,7 @@ function getEdit(id){
 		success: function(response){
 			console.log('%cResponse Get Edit Bank: ', 'color: green; font-weight: bold', response);
 			setValue(response);
-			$('#modalBank').modal();
+			$('#modalBank').modal({backdrop: 'static'});
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling
             console.log('Response Error getEdit Bank: ', jqXHR, textStatus, errorThrown);

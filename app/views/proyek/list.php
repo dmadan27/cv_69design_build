@@ -47,23 +47,25 @@
 					<!-- box body -->
 					<div class="box-body">
 						<div class="table-responsive">
-							<table id="proyekTable" class="table table-bordered table-hover" style="width:100%">
-								<thead>
-									<tr>
-										<th class="text-right" style="width: 35px">No</th>
-										<th>ID</th>
-										<th>Pemilik</th>
-										<th>Tanggal</th>
-										<th>Pembangunan</th>
-										<th>Kota</th>
-										<th class="text-right">Total</th>
-										<th>Progress</th>
-										<th>Status</th>
-										<th>Aksi</th>
-									</tr>
-								</thead>
-								<tbody></tbody>
-							</table>
+							<div class="table-responsive">
+								<table id="proyekTable" class="table table-bordered table-hover" style="width:100%">
+									<thead>
+										<tr>
+											<th class="text-right" style="width: 35px">No</th>
+											<th>ID</th>
+											<th>Pemilik</th>
+											<th>Tanggal</th>
+											<th>Pembangunan</th>
+											<th>Kota</th>
+											<th class="text-right">Total</th>
+											<th>Progress</th>
+											<th>Status</th>
+											<th>Aksi</th>
+										</tr>
+									</thead>
+									<tbody></tbody>
+								</table>
+							</div>
 						</div>
 					</div>
 				</div>

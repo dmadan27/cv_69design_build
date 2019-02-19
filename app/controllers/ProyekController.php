@@ -5,7 +5,8 @@
 	 * Class Proyek extend ke Abstract Crud
 	 * Extend Abstract CrudAbstract
 	 */
-	class Proyek extends CrudAbstract{
+	class Proyek extends CrudAbstract
+	{
 		
 		private $success = false;
 		private $notif = array();
@@ -16,7 +17,7 @@
 		 * Method __construct
 		 * Default load saat pertama kali controller diakses
 		 */
-		public function __construct(){
+		public function __construct() {
 			$this->auth();
 			$this->auth->cekAuth();
 			$this->model('ProyekModel');
@@ -30,7 +31,7 @@
 		 * Method index
 		 * Render list proyek
 		 */
-		public function index(){
+		public function index() {
 			$this->list();
 		}
 
@@ -38,7 +39,7 @@
 		 * Method list
 		 * Proses menampilkan list semua data proyek
 		 */
-		protected function list(){
+		protected function list() {
 			$css = array('assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css');
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
@@ -64,7 +65,7 @@
 		 * Data akan di parsing dalam bentuk dataTable
 		 * @return output {object} array berupa json
 		 */
-		public function get_list(){
+		public function get_list() {
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				// config datatable
 				$config_dataTable = array(
@@ -132,16 +133,18 @@
 		 * Proses render form proyek
 		 * @param id {string}
 		 */
-		public function form($id){
-			if($id)	{ $this->edit(strtoupper($id)); }
-			else { $this->add(); }
+		public function form($id) {
+			if($_SESSION['sess_level'] === 'KAS BESAR') {
+				if($id)	{ $this->edit(strtoupper($id)); }
+				else { $this->add(); }
+			}
 		}
 
 		/**
 		 * Method add
 		 * Proses render form add proyek
 		 */
-		protected function add(){
+		protected function add() {
 			$css = array(
   				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
 				'assets/bower_components/select2/dist/css/select2.min.css',
@@ -180,8 +183,8 @@
 		 * Proses penambahan data proyek
 		 * @return output {object} array berupa json
 		 */
-		public function action_add(){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+		public function action_add() {
+			if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
 				$data = isset($_POST) ? $_POST : false;
 				$dataProyek = isset($_POST['dataProyek']) ? json_decode($_POST['dataProyek'], true) : false;
 				$dataDetail = isset($_POST['dataDetail']) ? json_decode($_POST['dataDetail'], true) : false;
@@ -189,25 +192,25 @@
 				
 				$cekSkk = $cekDetail = true;
 
-				if(!$data){
+				if(!$data) {
 					$this->notif['default'] = array(
 						'type' => 'error',
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
 					);
 				}
-				else{
+				else {
 					// validasi data
 					$validasi = $this->set_validation($dataProyek, $data['action']);
 					$cek = $validasi['cek'];
 					$this->error = $validasi['error'];
 
-					if(!$this->helper->cekArray($dataSkk)){ 
+					if(!$this->helper->cekArray($dataSkk)) { 
 						$cek = false;
 						$cekSkk = false;
 					}
 
-					if($cek){
+					if($cek) {
 						// validasi input
 						$data_insertProyek = array(
 							'id' => $this->validation->validInput($dataProyek['id']),
@@ -251,7 +254,7 @@
 							$this->message = $insert_proyek['error'];
 						}
 					}
-					else{
+					else {
 						if(!$cekSkk){
 							$this->notif['data_skk'] = array(
 								'type' => 'warning',
@@ -294,8 +297,8 @@
 		 * Proses pengecekan validasi saat penambahan data detail
 		 * @return output {object} array berupa json
 		 */
-		public function action_add_detail(){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+		public function action_add_detail() {
+			if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
 				$data = isset($_POST) ? $_POST : false;
 
 				$validasi = $this->set_validation_detail($data);
@@ -327,7 +330,7 @@
 		 * Proses render form edit proyek
 		 * @param id {string}
 		 */
-		protected function edit($id){
+		protected function edit($id) {
 			$id = strtoupper($id);
 			// get data proyek
 			$dataProyek = !empty($this->ProyekModel->getById($id)) ? $this->ProyekModel->getById($id) : false;
@@ -373,8 +376,8 @@
 		 * @param id {string}
 		 * @return output {object} array berupa json
 		 */
-		public function get_edit($id){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+		public function get_edit($id) {
+			if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR'){
 				$id = strtoupper($id);
 				if(empty($id) || $id == "") { $this->redirect(BASE_URL."proyek/"); }
 
@@ -406,8 +409,8 @@
 		 * Proses pengeditan data proyek
 		 * @return output {object} array berupa json
 		 */
-		public function action_edit(){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+		public function action_edit() {
+			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				$data = isset($_POST) ? $_POST : false;
 				$dataProyek = isset($_POST['dataProyek']) ? json_decode($_POST['dataProyek'], true) : false;
 				$dataDetail = isset($_POST['dataDetail']) ? json_decode($_POST['dataDetail'], true) : false;
@@ -415,13 +418,13 @@
 			
 				$cekDetail = $cekSkk = true;
 
-				if(!$data){
+				if(!$data) {
 					$notif = array(
 						'title' => "Pesan Gagal",
 						'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
 					);
 				}
-				else{
+				else {
 					// validasi data
 					$validasi = $this->set_validation($dataProyek, $data['action']);
 					$cek = $validasi['cek'];
@@ -432,7 +435,7 @@
 						$cekSkk = false;
 					}
 
-					if($cek){
+					if($cek) {
 						$data_updateProyek = array(
 							'id' => $this->validation->validInput($dataProyek['id']),
 							'pemilik' => $this->validation->validInput($dataProyek['pemilik']),
@@ -476,8 +479,8 @@
 						}
 
 					}
-					else{
-						if(!$cekDetail){
+					else {
+						if(!$cekDetail) {
 							$this->notif['data_detail'] = array(
 								'type' => 'warning',
 								'title' => "Pesan Pemberitahuan",
@@ -485,7 +488,7 @@
 							);
 						}
 
-						if(!$cekSkk){
+						if(!$cekSkk) {
 							$this->notif['data_skk'] = array(
 								'type' => 'warning',
 								'title' => "Pesan Pemberitahuan",
@@ -528,109 +531,112 @@
 		 * Proses render detail view proyek
 		 * @param id {string}
 		 */
-		public function detail($id){
-			$id = strtoupper($id);
-			$dataProyek = !empty($this->ProyekModel->getById($id)) ? $this->ProyekModel->getById($id) : false;
+		public function detail($id) {
+			if($_SESSION['sess_level'] === 'KAS BESAR') {
+				$id = strtoupper($id);
+				$dataProyek = !empty($this->ProyekModel->getById($id)) ? $this->ProyekModel->getById($id) : false;
 
-			if((empty($id) || $id == "") || !$dataProyek) { $this->redirect(BASE_URL."proyek/"); }
+				if((empty($id) || $id == "") || !$dataProyek) { $this->redirect(BASE_URL."proyek/"); }
 
-			$css = array(
-				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css'
-			);
-			$js = array(
-				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
-				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
-				'app/views/proyek/js/initView.js',
-			);
+				$css = array(
+					'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css'
+				);
+				$js = array(
+					'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
+					'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+					'app/views/proyek/js/initView.js',
+				);
 
-			$config = array(
-				'title' => array(
-					'main' => 'Data Proyek',
-					'sub' => 'Detail Data Proyek',
-				),
-				'css' => $css,
-				'js' => $js,
-			);
+				$config = array(
+					'title' => array(
+						'main' => 'Data Proyek',
+						'sub' => 'Detail Data Proyek',
+					),
+					'css' => $css,
+					'js' => $js,
+				);
 
-			$parsing_dataProyek = array(
-				'id' => $dataProyek['id'],
-				'pemilik' => $dataProyek['pemilik'],
-				'tgl' => $this->helper->cetakTgl($dataProyek['tgl'], 'full'),
-				'pembangunan' => $dataProyek['pembangunan'],
-				'luas_area' => $dataProyek['luas_area'],
-				'alamat' => $dataProyek['alamat'],
-				'kota' => $dataProyek['kota'],
-				'estimasi' => $dataProyek['estimasi'].' Bulan',
-				'total' => $this->helper->cetakRupiah($dataProyek['total']),
-				'dp' => $this->helper->cetakRupiah($dataProyek['dp']),
-				'cco' => $this->helper->cetakRupiah($dataProyek['cco']),
-				'status' => (strtolower($dataProyek['status']) == "lunas") ? 
-					'<span class="label label-success">'.$dataProyek['status'].'</span>' : 
-					'<span class="label label-primary">'.$dataProyek['status'].'</span>',
-				'progress' => array(
-					'style' => 'style="width: '.$dataProyek['progress'].'%"',
-					'value' => $dataProyek['progress'],
-					'text' => $dataProyek['progress'].'% Success',
-				),
-			);
+				$parsing_dataProyek = array(
+					'id' => $dataProyek['id'],
+					'pemilik' => $dataProyek['pemilik'],
+					'tgl' => $this->helper->cetakTgl($dataProyek['tgl'], 'full'),
+					'pembangunan' => $dataProyek['pembangunan'],
+					'luas_area' => $dataProyek['luas_area'],
+					'alamat' => $dataProyek['alamat'],
+					'kota' => $dataProyek['kota'],
+					'estimasi' => $dataProyek['estimasi'].' Bulan',
+					'total' => $this->helper->cetakRupiah($dataProyek['total']),
+					'dp' => $this->helper->cetakRupiah($dataProyek['dp']),
+					'cco' => $this->helper->cetakRupiah($dataProyek['cco']),
+					'status' => (strtolower($dataProyek['status']) == "lunas") ? 
+						'<span class="label label-success">'.$dataProyek['status'].'</span>' : 
+						'<span class="label label-primary">'.$dataProyek['status'].'</span>',
+					'progress' => array(
+						'style' => 'style="width: '.$dataProyek['progress'].'%"',
+						'value' => $dataProyek['progress'],
+						'text' => $dataProyek['progress'].'% Success',
+					),
+				);
 
-			$dataDetail = array();
-			foreach($this->ProyekModel->getDetailById($id) as $row){
-			 	$dataRow = array();
-			 	$dataRow['tgl_detail'] = $this->helper->cetakTgl($row['tgl_detail'], 'full');
-			 	$dataRow['nama_detail'] = $row['nama_detail'];
-				$dataRow['nama_bank'] = $row['nama_bank'];
-				$dataRow['is_DP'] = ($row['is_DP'] == '1') ? 
-					'<span class="label label-success">YA</span>' : 
-					'<span class="label label-primary">TIDAK</span>';
-				$dataRow['total_detail'] = $this->helper->cetakRupiah($row['total_detail']);
+				$dataDetail = array();
+				foreach($this->ProyekModel->getDetailById($id) as $row){
+					$dataRow = array();
+					$dataRow['tgl_detail'] = $this->helper->cetakTgl($row['tgl_detail'], 'full');
+					$dataRow['nama_detail'] = $row['nama_detail'];
+					$dataRow['nama_bank'] = $row['nama_bank'];
+					$dataRow['is_DP'] = ($row['is_DP'] == '1') ? 
+						'<span class="label label-success">YA</span>' : 
+						'<span class="label label-primary">TIDAK</span>';
+					$dataRow['total_detail'] = $this->helper->cetakRupiah($row['total_detail']);
 
-				$dataDetail[] = $dataRow;
+					$dataDetail[] = $dataRow;
+				}
+
+				$dataSkk = array();
+				foreach($this->ProyekModel->getSkkById($id) as $row){
+					$dataRow = array();
+					$dataRow['id_skk'] = $row['id_skk'];
+					$dataRow['nama'] = $row['nama'];
+
+					$dataSkk[] = $dataRow;
+				}
+
+				$total_pelaksana_utama = $dataProyek['total'] + $dataProyek['cco'];
+				$nilaiTermint_diTerima = $this->ProyekModel->getTermintMasuk($id)['total_termint'];
+				$keluaran_tunai = $this->ProyekModel->getKeluaranTunai($id);
+				$keluaran_kredit = $this->ProyekModel->getPengeluaran_operasionalProyek($id, 'KREDIT')['total'];
+				$saldo_kas_pelaksanaan = $total_pelaksana_utama - ($keluaran_tunai + $keluaran_kredit);
+				$selisih = $nilaiTermint_diTerima - $keluaran_tunai;
+
+				$dataArus = array(
+					'total_pelaksana_utama' => $this->helper->cetakRupiah($total_pelaksana_utama),
+					'nilai_rab' => $this->helper->cetakRupiah($dataProyek['total']),
+					'cco' => $this->helper->cetakRupiah($dataProyek['cco']),
+					'nilai_terment_diterima' => $this->helper->cetakRupiah($nilaiTermint_diTerima),
+					'sisa_terment_project' => $this->helper->cetakRupiah($total_pelaksana_utama - $nilaiTermint_diTerima),
+					'nilai_terment_masuk' => $this->helper->cetakRupiah($nilaiTermint_diTerima),
+					'total_pelaksana_project' => $this->helper->cetakRupiah($total_pelaksana_utama),
+					'keluaran_tunai' => $this->helper->cetakRupiah($keluaran_tunai),
+					'keluaran_kredit' => $this->helper->cetakRupiah($keluaran_kredit),
+					'saldo_kas_pelaksanaan' => $this->helper->cetakRupiah($saldo_kas_pelaksanaan),
+					'selisih' => $this->helper->cetakRupiah($selisih)
+				);
+
+				$data = array(
+					'data_proyek' => $parsing_dataProyek,
+					'data_detail' => $dataDetail,
+					'data_skk' => $dataSkk,
+					'data_arus' => $dataArus,
+				);
+
+				// echo '<pre>';
+				// var_dump($data);
+				// echo '</pre>';
+				// die();
+
+				$this->layout('proyek/view', $config, $data);
 			}
-
-			$dataSkk = array();
-			foreach($this->ProyekModel->getSkkById($id) as $row){
-				$dataRow = array();
-				$dataRow['id_skk'] = $row['id_skk'];
-				$dataRow['nama'] = $row['nama'];
-
-				$dataSkk[] = $dataRow;
-			}
-
-			$total_pelaksana_utama = $dataProyek['total'] + $dataProyek['cco'];
-			$nilaiTermint_diTerima = $this->ProyekModel->getTermintMasuk($id)['total_termint'];
-			$keluaran_tunai = $this->ProyekModel->getKeluaranTunai($id);
-			$keluaran_kredit = $this->ProyekModel->getPengeluaran_operasionalProyek($id, 'KREDIT')['total'];
-			$saldo_kas_pelaksanaan = $total_pelaksana_utama - ($keluaran_tunai + $keluaran_kredit);
-			$selisih = $nilaiTermint_diTerima - $keluaran_tunai;
-
-			$dataArus = array(
-				'total_pelaksana_utama' => $this->helper->cetakRupiah($total_pelaksana_utama),
-				'nilai_rab' => $this->helper->cetakRupiah($dataProyek['total']),
-				'cco' => $this->helper->cetakRupiah($dataProyek['cco']),
-				'nilai_terment_diterima' => $this->helper->cetakRupiah($nilaiTermint_diTerima),
-				'sisa_terment_project' => $this->helper->cetakRupiah($total_pelaksana_utama - $nilaiTermint_diTerima),
-				'nilai_terment_masuk' => $this->helper->cetakRupiah($nilaiTermint_diTerima),
-				'total_pelaksana_project' => $this->helper->cetakRupiah($total_pelaksana_utama),
-				'keluaran_tunai' => $this->helper->cetakRupiah($keluaran_tunai),
-				'keluaran_kredit' => $this->helper->cetakRupiah($keluaran_kredit),
-				'saldo_kas_pelaksanaan' => $this->helper->cetakRupiah($saldo_kas_pelaksanaan),
-				'selisih' => $this->helper->cetakRupiah($selisih)
-			);
-
-			$data = array(
-				'data_proyek' => $parsing_dataProyek,
-				'data_detail' => $dataDetail,
-				'data_skk' => $dataSkk,
-				'data_arus' => $dataArus,
-			);
-
-			// echo '<pre>';
-			// var_dump($data);
-			// echo '</pre>';
-			// die();
-
-			$this->layout('proyek/view', $config, $data);
+			else { die(ACCESS_DENIED); }
 		}
 
 		/**
@@ -641,7 +647,7 @@
 		 * @return result {object} array berupa json
 		 */
 		public function get_list_pengajuan_sub_kas_kecil($id){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+			if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
 				$id = strtoupper($id);
 				// config datatable
 				$config_dataTable = array(
@@ -714,7 +720,7 @@
 		 * @return result {object} array berupa json
 		 */
 		public function get_list_operasional_proyek($proyek){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+			if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
 				// config datatable
 				$config_dataTable = array(
 					'tabel' => 'v_operasional_proyek',
@@ -773,12 +779,12 @@
 		 * @return result 
 		 */
 		public function delete($id){
-			if($_SERVER['REQUEST_METHOD'] == "POST" && $id != ''){
+			if($_SERVER['REQUEST_METHOD'] == "POST" && $id != '' && $_SESSION['sess_level'] === 'KAS BESAR') {
 				$id = strtoupper($id);
 				if(empty($id) || $id == "") { $this->redirect(BASE_URL."proyek/"); }
 
 				$delete_proyek = $this->ProyekModel->delete($id);
-				if($delete_proyek['success']){ 
+				if($delete_proyek['success']) { 
 					$this->success = true;
 					$this->notif = array(
 						'type' => 'success',
@@ -786,7 +792,7 @@
 						'message' => 'Data Berhasil Dihapus',
 					);
 				}
-				else{
+				else {
 					$this->message = $delete_proyek['error'];
 					$this->notif = array(
 						'type' => 'error',
@@ -804,23 +810,21 @@
 			else { $this->redirect(); }	
 		}
 
-		
-
 		/**
 		 * Method generate_id
 		 * Proses generate id proyek
 		 * @return result {object} string berupa json
 		 */
-		public function generate_id(){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+		public function generate_id() {
+			if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
 				$tahun = isset($_POST['get_tahun']) ? $this->validation->validInput($_POST['get_tahun']) : false;
 
 				$id_temp = ($tahun) ? 'PRY'.$tahun : 'PRY'.date('Y');
 
 				$data = !empty($this->ProyekModel->getLastID($id_temp)['id']) ? $this->ProyekModel->getLastID($id_temp)['id'] : false;
 
-				if(!$data) $id = $id_temp.'0001';
-				else{
+				if(!$data) { $id = $id_temp.'0001'; }
+				else {
 					$noUrut = (int)substr($data, 7, 4);
 					$noUrut++;
 
@@ -838,7 +842,7 @@
 		 * @return data {object} array berupa json
 		 */
 		public function get_skk(){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+			if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR'){
 				$data_skk = $this->ProyekModel->get_selectSkk();
 				$data = array();
 
@@ -861,11 +865,11 @@
 		 * @return data {object} array berupa json
 		 */
 		public function get_bank(){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+			if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
 				$data_bank = $this->ProyekModel->get_selectBank();
 				$data = array();
 
-				foreach($data_bank as $row){
+				foreach($data_bank as $row) {
 					$dataRow = array();
 					$dataRow['id'] = $row['id'];
 					$dataRow['text'] = $row['nama'];
@@ -899,7 +903,7 @@
 		 * @param action {string}
 		 * @return result {array}
 		 */
-		private function set_validation($data, $action){
+		private function set_validation($data, $action) {
 			$required = ($action =="action-add") ? 'not_required' : 'required';
 
 			// id
@@ -938,7 +942,7 @@
 		 * @param data {array}
 		 * @return result {array}
 		 */
-		private function set_validation_detail($data){
+		private function set_validation_detail($data) {
 			// pembayaran
 			$this->validation->set_rules($data['nama_detail'], 'Pembayaran Proyek', 'nama_detail', 'string | 1 | 255 | required');
 			// tgl

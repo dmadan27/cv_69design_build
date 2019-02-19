@@ -19,7 +19,7 @@
 	<section class="content container-fluid">
 		<div class="row">
 			<!-- panel info data bank -->
-			<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+			<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
 				<input type="hidden" id="id" value="<?=$this->data['id_bank']?>">
 				<div class="box box-widget widget-user-2">
 					<div class="widget-user-header bg-aqua">
@@ -45,13 +45,21 @@
 				</div>
 			</div>
 			<!-- panel info tabel mutasi bank -->
-			<div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+			<div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
 				<div class="box">
 					<!-- box header -->
 					<div class="box-header with-border">
-						<h3 class="box-title">Data Mutasi Bank</h3>
-						<!-- export -->
-						<button type="button" class="pull-right btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>	
+						<div class="row">
+							<div class="col-md-12"><h3 class="box-title">Data Mutasi Bank</h3></div>
+						</div>
+						<hr>
+						<div class="row">
+							<div class="col-md-12">
+								<!-- export -->
+								<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+								<button type="button" class="btn btn-info btn-flat pull-right" id="refreshTable"><i class="fa fa-refresh"></i> Refresh</button>
+							</div>
+						</div>
 					</div>
 					<!-- box body -->
 					<div class="box-body">

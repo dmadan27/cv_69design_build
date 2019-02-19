@@ -120,35 +120,37 @@
 														<div class="col-md-12">
 															<fieldset>
 																<legend style="font-size: 18px;">Data Detail Proyek</legend>
-																<table class="table table-hover">
-																	<thead>
-																		<tr>
-																			<th class="text-right" style="width: 35px">No</th>
-																			<th>Tanggal</th>
-																			<th>Pembayaran</th>
-																			<th>Bank</th>
-																			<th>DP</th>
-																			<th class="text-right">Total</th>
-																		</tr>
-																	</thead>
-																	<tbody>
-																		<?php
-																			$no = 1;
-																			foreach($detail as $row){
-																				echo "<tr>";
-																				echo "<td class='text-right'>".$no++."</td>";
-																				$tempNo = 0;
-																				foreach($row as $value){
-																					if($tempNo == 4) echo "<td class='text-right'>".$value."</td>";
-																					else echo "<td>".$value."</td>";
+																<div class="table-responsive">
+																	<table class="table table-hover">
+																		<thead>
+																			<tr>
+																				<th class="text-right" style="width: 35px">No</th>
+																				<th>Tanggal</th>
+																				<th>Pembayaran</th>
+																				<th>Bank</th>
+																				<th>DP</th>
+																				<th class="text-right">Total</th>
+																			</tr>
+																		</thead>
+																		<tbody>
+																			<?php
+																				$no = 1;
+																				foreach($detail as $row){
+																					echo "<tr>";
+																					echo "<td class='text-right'>".$no++."</td>";
+																					$tempNo = 0;
+																					foreach($row as $value){
+																						if($tempNo == 4) echo "<td class='text-right'>".$value."</td>";
+																						else echo "<td>".$value."</td>";
 
-																					$tempNo++;
+																						$tempNo++;
+																					}
+																					echo "</tr>";
 																				}
-																				echo "</tr>";
-																			}
-																		?>
-																	</tbody>
-																</table>
+																			?>
+																		</tbody>
+																	</table>
+																</div>
 															</fieldset>	
 														</div>
 													</div>
@@ -157,28 +159,30 @@
 														<div class="col-md-12">
 															<fieldset>
 																<legend style="font-size: 18px;">Data Logistik Proyek</legend>
-																<table class="table table-hover">
-																	<thead>
-																		<tr>
-																			<th class="text-right" style="width: 35px">No</th>
-																			<th style="width: 200px">ID Sub Kas Kecil</th>
-																			<th>Nama</th>
-																		</tr>
-																	</thead>
-																	<tbody>
-																		<?php
-																			$no = 1;
-																			foreach($skk as $row){
-																				echo "<tr>";
-																				echo "<td class='text-right'>".$no++."</td>";
-																				foreach($row as $value){
-																					echo "<td>".$value."</td>";
+																<div class="table-responsive">
+																	<table class="table table-hover">
+																		<thead>
+																			<tr>
+																				<th class="text-right" style="width: 35px">No</th>
+																				<th style="width: 200px">ID Sub Kas Kecil</th>
+																				<th>Nama</th>
+																			</tr>
+																		</thead>
+																		<tbody>
+																			<?php
+																				$no = 1;
+																				foreach($skk as $row){
+																					echo "<tr>";
+																					echo "<td class='text-right'>".$no++."</td>";
+																					foreach($row as $value){
+																						echo "<td>".$value."</td>";
+																					}
+																					echo "</tr>";
 																				}
-																				echo "</tr>";
-																			}
-																		?>
-																	</tbody>
-																</table>
+																			?>
+																		</tbody>
+																	</table>
+																</div>
 															</fieldset>
 																
 														</div>
@@ -272,23 +276,25 @@
 															<!-- export -->
 															<button type="button" class="btn btn-success btn-flat" id="exportExcel_pengajuan"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 														</div>
-														<table id="pengajuan_skkTable" class="table table-bordered table-hover" style="width: 100%;">
-															<thead>
-																<tr>
-																	<th class="text-right" style="width: 35px">No</th>
-																	<th>ID</th>
-																	<th>Tanggal</th>
-																	<th>Pengajuan</th>
-																	<th>Sub Kas Kecil</th>
-																	<th class="text-right">Total Pengajuan</th>
-																	<th class="text-right">Dana Disetuji</th>
-																	<th>Status</th>
-																	<th>Aksi</th>
-																</tr>
-															</thead>
-															<tbody>
-															</tbody>
-														</table>
+														<div class="table-responsive">
+															<table id="pengajuan_skkTable" class="table table-bordered table-hover" style="width: 100%;">
+																<thead>
+																	<tr>
+																		<th class="text-right" style="width: 35px">No</th>
+																		<th>ID</th>
+																		<th>Tanggal</th>
+																		<th>Pengajuan</th>
+																		<th>Sub Kas Kecil</th>
+																		<th class="text-right">Total Pengajuan</th>
+																		<th class="text-right">Dana Disetuji</th>
+																		<th>Status</th>
+																		<th>Aksi</th>
+																	</tr>
+																</thead>
+																<tbody>
+																</tbody>
+															</table>
+														</div>
 													</div>
 												</div>
 											</div>
@@ -308,23 +314,25 @@
 															<!-- export -->
 															<button type="button" class="btn btn-success btn-flat" id="exportExcel_operasional"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 														</div>
-														<table id="operasional_proyekTable" class="table table-bordered table-hover" style="width: 100%">
-															<thead>
-																<tr>
-																	<th class="text-right" style="width: 35px">No</th>
-																	<th>ID</th>
-																	<th>Tanggal</th>
-																	<th>Nama Pengajuan</th>
-																	<th>Kas Besar</th>
-																	<th>Jenis Pembayaran</th>
-																	<th>Status</th>
-																	<th class="text-right">Total</th>
-																	<th>Aksi</th>
-																</tr>
-															</thead>
-															<tbody>
-															</tbody>
-														</table>
+														<div class="table-responsive">
+															<table id="operasional_proyekTable" class="table table-bordered table-hover" style="width: 100%">
+																<thead>
+																	<tr>
+																		<th class="text-right" style="width: 35px">No</th>
+																		<th>ID</th>
+																		<th>Tanggal</th>
+																		<th>Nama Pengajuan</th>
+																		<th>Kas Besar</th>
+																		<th>Jenis Pembayaran</th>
+																		<th>Status</th>
+																		<th class="text-right">Total</th>
+																		<th>Aksi</th>
+																	</tr>
+																</thead>
+																<tbody>
+																</tbody>
+															</table>
+														</div>
 													</div>
 												</div>
 											</div>

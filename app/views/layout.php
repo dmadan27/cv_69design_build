@@ -59,6 +59,16 @@
 			}
 
 			/**
+			 * 
+			 */
+			function refreshTable(table, refresh) {
+				refresh.prop('disabled', true);
+				table.ajax.reload(function(response) {
+					refresh.prop('disabled', false);
+				}, false);
+			}
+
+			/**
 			 * Function onChangeField
 			 * Base function untuk setiap event onchange semua field yang ada di form
 			 * @param {object} scope
