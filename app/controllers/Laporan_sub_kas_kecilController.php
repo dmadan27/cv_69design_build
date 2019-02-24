@@ -185,6 +185,18 @@
 							$update_laporan = $this->Laporan_sub_kas_kecilModel->update_laporan($data_update);
 							if($update_laporan['success']) {
 								$this->success = true;
+
+								// KIRIM NOTIF KE ANDROID
+								$id_skk = explode("-",$data_update['id'])[2];
+								$status_laporan = $this->helper->getNamaStatusLaporanSKK($data_update['status_laporan']);
+								$this->helper->sendNotif(array(
+									'show' => "1",
+									'id_skk' => $id_skk,
+									'title' => "LAPORAN TELAH ".$status_laporan,
+									'body' => "Laporan ".$data_update['id']." telah ".$status_laporan.".",
+									'refresh' => "3,2,4"
+								));
+
 								$this->notif = array(
 									'type' => 'success',
 									'title' => "Pesan Berhasil",
@@ -203,7 +215,7 @@
 						else if($data['status_laporan'] == '2' && $data['status_laporan'] != '0') { // diperbaiki
 							$data_update = array(
 								'id' => $this->validation->validInput($data['id']),
-								'id_sub_kas_kecil' => $this->validation->validInput($data['id_sub_kas_kecil']),
+								'id_sub_kas_kecil' => explode("-", $this->validation->validInput($data['id']))[2],
 								'modified_by' => $_SESSION['sess_email']
 							);
 	
@@ -211,6 +223,16 @@
 							$update_laporan = $this->Laporan_sub_kas_kecilModel->perbaiki_laporan($data_update);
 							if($update_laporan['success']) {
 								$this->success = true;
+
+								// KIRIM NOTIF KE ANDROID
+								$this->helper->sendNotif(array(
+									'show' => "1",
+									'id_skk' => $data_update['id_sub_kas_kecil'],
+									'title' => "LAPORAN HARUS DIPERBAIKI",
+									'body' => "Laporan ".$data_update['id']." harus diperbaiki.",
+									'refresh' => "2,4"
+								));
+
 								$this->notif = array(
 									'type' => 'success',
 									'title' => "Pesan Berhasil",
