@@ -239,7 +239,7 @@
 										'id_skk' => $id_skk,
 										'title' => "Pengajuan Telah Disetujui",
 										'body' => "Pengajuan ".$data['id']." telah disetujui.",
-										'refresh' => "1,2,4"
+										'refresh' => "2,1,4"
 									));
 
 									$this->notif = array(
