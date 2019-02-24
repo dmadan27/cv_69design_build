@@ -102,6 +102,7 @@
                 <div class="box">
                     <div class="box-header">
                         <h4 class="box-title">Detail Pengajuan</h4>
+                        <button type="button" class="btn btn-info btn-flat pull-right" id="refreshTable"><i class="fa fa-refresh"></i> Refresh</button>
                     </div>
                     <div class="box-body">
                         <div class="table-responsive">

@@ -1,51 +1,24 @@
 $(document).ready(function(){
-	setIdBank();
-	setJenis()
-
-	$('#id_bank').select2({
-		placeholder: "Pilih Bank",
-		allowClear : true,
-	});
-
-	$('#jenis').select2({
-		placeholder: "Pilih Bank",
-		allowClear : true,
-	});
-
-	
-	// 
-	$('#submit_operasional').prop('disabled', true);
 
 	// button tambah
 	$('#tambah').on('click', function(){
 		resetForm();
-			$("#jenis").val("UANG MASUK").trigger('change');
-			$('#tgl').prop('disabled', false);
-			$('#submit_operasional').prop('value', 'action-add');
-			$('#submit_operasional').prop('disabled', false);
-			$('#submit_operasional').html('Simpan Data');
-			$('#modalOperasional').modal();
-		
-		
+		// $("#jenis").val("UANG MASUK").trigger('change');
+		$('#tgl').prop('disabled', false);
+		$('#submit_operasional').prop('value', 'action-add');
+		$('#submit_operasional').prop('disabled', false);
+		$('#submit_operasional').html('Simpan Data');
+		$('#modalOperasional').modal();
+
 	});
 
 	// submit operasional
 	$('#form_operasional').submit(function(e){
 		e.preventDefault();
-		submit(edit_view);
+		submit();
 
 		return false;
 	});
-
-	//Date picker
-    $('.datepicker').datepicker({
-      autoclose: true,
-      format: "yyyy-mm-dd",
-      todayHighlight: true,
-      orientation:"bottom auto",
-      todayBtn: true,
-    });
-
 
 	// on change field
 	$('.field').on('change', function(){
@@ -59,6 +32,26 @@ $(document).ready(function(){
 		}
 	});
 
+	init();
+
+});
+
+/**
+ * 
+ */
+function init() {
+	$('#submit_operasional').prop('disabled', true);
+
+	$('#id_bank').select2({
+		placeholder: "Pilih Bank",
+		allowClear : true,
+	});
+
+	$('#jenis').select2({
+		placeholder: "Pilih Jenis Operasional",
+		allowClear : true,
+	});
+
 	// input mask
     $('.input-mask-uang').inputmask({ 
     	alias : 'currency',
@@ -68,9 +61,20 @@ $(document).ready(function(){
     	groupSeparator: '.', 
     	clearMaskOnLostFocus: true, 
     	digitsOptional: false,
-    });
-
-});
+	});
+	
+	//Date picker
+    $('.datepicker').datepicker({
+		autoclose: true,
+		format: "yyyy-mm-dd",
+		todayHighlight: true,
+		orientation:"bottom auto",
+		todayBtn: true,
+	});
+	
+	setIdBank();
+	setJenis();
+}
 
 /**
 * Fungsi getDataForm()
@@ -116,7 +120,7 @@ function getDataForm(){
 /**
 *
 */
-function submit(edit_view){
+function submit(){
 	var data = getDataForm();
 
 	$.ajax({
@@ -157,7 +161,6 @@ function submit(edit_view){
 */
 function getEdit(id){
 	resetForm();
-	setIdBank();
 	$('.field-id').css('display', 'none');
 	$('.field-tgl').css('display', true);
 	$('#tgl').prop('disabled', true);
@@ -231,6 +234,8 @@ function resetForm(){
 	// trigger reset form
 	$('#form_operasional').trigger('reset');
 
+	$('#id_bank').val(null).trigger('change');
+
 	// hapus semua pesan
 	$('.pesan').text('');
 
@@ -242,9 +247,9 @@ function resetForm(){
 *
 */
 function setIdBank(){
-	$('#id_bank').html('');
 	$.ajax({
 		url: BASE_URL+'operasional/get-bank',
+		type: 'post',
 		dataType: 'json',
 		beforeSend: function(){},
 		success: function(data){
@@ -259,7 +264,7 @@ function setIdBank(){
             console.log(jqXHR, textStatus, errorThrown);
             swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
         }
-	})
+	});
 }
 
 /**
@@ -275,4 +280,5 @@ function setJenis() {
 		var option = new Option(item.text, item.value);
 		$("#jenis").append(option);
 	});
+	$('#jenis').val(null).trigger('change');
 }

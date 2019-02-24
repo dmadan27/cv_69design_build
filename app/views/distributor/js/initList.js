@@ -51,12 +51,6 @@ $(document).ready(function(){
         refreshTable(distributorTable, $(this));
     });
 
-    // auto refresh every 1 minutes
-    setInterval( function () {
-        console.log('%cAutomatically refresh table..', 'color: blue; font-style: italic');
-        distributorTable.ajax.reload(null, false);
-    }, 60000 );
-
 });
 
 /**

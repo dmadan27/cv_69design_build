@@ -70,7 +70,7 @@
 				// config datatable
 				$config_dataTable = array(
 					'tabel' => 'operasional_proyek',
-					'kolomOrder' => array(null, 'id', 'id_proyek', 'id_kas_besar', 'id_distributor', 'tgl', 'nama', 'total', null),
+					'kolomOrder' => array(null, 'id', 'tgl', 'nama', 'id_proyek', 'id_kas_besar', 'id_distributor', 'total', null),
 					'kolomCari' => array('id', 'id_proyek', 'id_kas_besar', 'id_distributor', 'tgl', 'nama', 'total'),
 					'orderBy' => array('id' => 'asc'),
 					'kondisi' => false,
@@ -92,14 +92,22 @@
 					
 					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
 					
+					$jenis_pembayaran = ($row['status'] == 'TUNAI') ? 
+						'<span class="label label-success">'.$row['status'].'</span>' : 
+						'<span class="label label-primary">'.$row['status'].'</span>';
+					
+					$status = ($row['status_lunas'] == 'LUNAS') ? 
+						'<span class="label label-success">'.$row['status_lunas'].'</span>' : 
+						'<span class="label label-danger">'.$row['status_lunas'].'</span>';
+
 					$dataRow = array();
 					$dataRow[] = $no_urut;
 					$dataRow[] = $row['id'];
-					$dataRow[] = $row['id_proyek'];
-					$dataRow[] = $row['id_kas_besar'];
-					$dataRow[] = $row['id_distributor'];
 					$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
 					$dataRow[] = $row['nama'];
+					$dataRow[] = $row['id_proyek'];
+					$dataRow[] = $jenis_pembayaran;
+					$dataRow[] = $status;
 					$dataRow[] = $this->helper->cetakRupiah($row['total']);
 					$dataRow[] = $aksi;
 
@@ -116,10 +124,7 @@
 				echo json_encode($output);	
 
 			}
-			else $this->redirect;
-
-			
-				
+			else $this->redirect();	
 		}
 
 		/**
@@ -918,7 +923,7 @@
 			if($_SERVER['REQUEST_METHOD'] == "POST"){
 				$config_dataTable = array(
 					'tabel' => 'v_operasional_proyek',
-					'kolomOrder' => array('nama_bank', 'nama_detail', 'tgl_detail','total_detail'),
+					'kolomOrder' => array(null, 'tgl_detail', 'nama_detail', 'nama_bank','total_detail'),
 					'kolomCari' => array('nama_bank', 'nama_detail', 'tgl_detail','total_detail'),
 					'orderBy' => array('id_bank' => 'asc'),
 					'kondisi' => 'WHERE id = "'.$id.'"',
@@ -927,9 +932,9 @@
 				$dataDetailOperasionalProyek = $this->DataTableModel->getAllDataTable($config_dataTable);
 				
 				$data = array();
-				// $no_urut = $_POST['start'];
+				$no_urut = $_POST['start'];
 				foreach($dataDetailOperasionalProyek as $row){
-					// $no_urut++;
+					$no_urut++;
 					$dataRow = array();
 
 					if($row['nama_detail'] == ""){
@@ -938,14 +943,13 @@
 						unset($row['tgl_detail']);
 						unset($row['total_detail']);
 					} else {
-						$dataRow[] = $row['nama_bank'];					
-						$dataRow[] = $row['nama_detail'];
+						$dataRow[] = $no_urut;
 						$dataRow[] = $this->helper->cetakTgl($row['tgl_detail'], 'full');
+						$dataRow[] = $row['nama_detail'];
+						$dataRow[] = $row['nama_bank'];					
 						$dataRow[] = $this->helper->cetakRupiah($row['total_detail']);
 						$data[] = $dataRow;
 					}
-					
-					// $dataRow[] = $no_urut;
 					
 				}
 

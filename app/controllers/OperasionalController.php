@@ -99,6 +99,11 @@
 					
 					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
 					
+					if($row['jenis'] == 'UANG MASUK')
+						$jenis = '<span class="label label-success">'.$row['jenis'].'</span>';
+					else if($row['jenis'] == 'UANG KELUAR')
+						$jenis = '<span class="label label-danger">'.$row['jenis'].'</span>';
+
 					$dataRow = array();
 					$dataRow[] = $no_urut;
 					// $dataRow[] = $row['id'];
@@ -106,7 +111,7 @@
 					$dataRow[] = $this->helper->cetakTgl($row['tgl'] ,'full');
 					$dataRow[] = $row['nama'];
 					$dataRow[] = $this->helper->cetakRupiah($row['nominal']);
-					$dataRow[] = $row['jenis'];
+					$dataRow[] = $jenis;
 					$dataRow[] = $aksi;
 					
 					// $dataRow[] = $row['ket'];

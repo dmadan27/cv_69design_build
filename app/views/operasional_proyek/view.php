@@ -149,30 +149,26 @@
 
 										<!-- Tab 2 : Data Detail Operasional Proyek  -->
 										<div class="tab-pane" id="tab_detail_operasionalProyek">
-											<!-- tabel detail operasional proyek -->
-											<div class="panel box box-primary">
-												<div class="box-header with-border">
-													<h6 class="box-title">
-                      									<a data-toggle="collapse" data-parent="#accordion" href="#collapse_detailOperasionalProyek">
-								                        	Data Detail Operasional Proyek
-								                      	</a>
-								                    </h6>
+											<div class="row">
+												<div class="col-md-12">
+													<?php $id = $this->data['id_operasional_proyek']; ?>
+													<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+													<button type="button" class="btn btn-info btn-flat pull-right" id="refreshTable"><i class="fa fa-refresh"></i> Refresh</button>
 												</div>
-												<div id="collapse_detailOperasionalProyek" class="panel-collapse collapse in">
-													<div class="box-body">
-														<div class="form-group">
-															<!-- export -->
-															<?php $id = $this->data['id_operasional_proyek']; ?>
-															<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
-														</div>
+											</div>
+											<hr>
+											<div class="row">
+												<div class="col-md-12">
+													<!-- tabel detail operasional proyek -->
+													<div class="table-responsive">
 														<table id="detailOperasionalProyek" class="table table-bordered table-hover" style="width: 100%;">
 															<thead>
-																<tr><!-- 
-																	<th class="text-right">No</th> -->
-																	<th>Nama Bank</th>
-																	<th>Nama</th>
+																<tr>
+																	<th class="text-right" style="width: 5%">No</th>
 																	<th>Tanggal</th>
-																	<th>Total</th>
+																	<th>Pembayaran</th>
+																	<th>Bank</th>
+																	<th class="text-right">Total</th>
 																</tr>
 															</thead>
 															<tbody>
@@ -181,6 +177,7 @@
 													</div>
 												</div>
 											</div>
+											
 
 										</div>
 

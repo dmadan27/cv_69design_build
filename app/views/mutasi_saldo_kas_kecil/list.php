@@ -25,22 +25,20 @@
 					<!-- box header -->
 					<div class="box-header">
 						<div class="row">
-							<div class="col-md-12 col-sm-12 col-xs-12 text-right">
-								&nbsp;
+							<div class="col-md-12">
+								<!-- ganti jd ajax -->
+								<h4 class="box-title pull-right"><strong>Saldo:  <?php echo $this->data['saldo']; ?></strong></h4>
 							</div>
 						</div>
+						<hr>
 						<!-- panel button -->
 						<div class="row">
-							<div class="col-md-6 col-sm-6 col-xs-12">
+							<div class="col-md-12">
 								<div class="btn-group">
-									<!-- tambah -->
-									<!-- <a href="<?= BASE_URL."" ?>" class="btn btn-default btn-flat" role="button"><i class="fa fa-plus"></i> Tambah</a> -->
 									<!-- export -->
 									<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 								</div>
-							</div>
-							<div class="col-md-6 col-sm-6 col-xs-12">
-								<h3 class="box-title pull-right"><strong>Saldo:  <?php echo $this->data['saldo']; ?></strong></h3>
+								<button type="button" class="btn btn-info btn-flat pull-right" id="refreshTable"><i class="fa fa-refresh"></i> Refresh</button>
 							</div>
 						</div>
 					</div>
@@ -48,15 +46,15 @@
 					<div class="box-body">
 						<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 							<div class="table-responsive">
-								<table id="mutasi_saldo_kas_kecilTable" class="table table-bordered table-hover">
+								<table id="mutasi_saldo_kas_kecilTable" class="table table-bordered table-hover" style="width: 100%">
 									<thead>
 										<tr>
-											<th class="text-right">No</th>
+											<th class="text-right" style="width: 5%">No</th>
 											<th>Tanggal</th>
 											<th class="text-right">Uang Masuk</th>
 											<th class="text-right">Uang Keluar</th>
 											<th class="text-right">Saldo</th>
-											<th>Keterangan</th>
+											<th style="width: 40%">Keterangan</th>
 										</tr>
 									</thead>
 									<tbody></tbody>

@@ -48,12 +48,6 @@ $(document).ready(function(){
         refreshTable(kasBesarTable, $(this));
     });
 
-    // auto refresh every 1 minutes
-    setInterval( function () {
-        console.log('%cAutomatically refresh table..', 'color: blue; font-style: italic');
-        kasBesarTable.ajax.reload(null, false);
-    }, 60000 );
-
 });
 
 /**

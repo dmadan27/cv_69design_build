@@ -63,7 +63,7 @@
                             <!-- Pengajuan -->
                             <tr>
                                 <td><strong>Pengajuan</strong></td>
-                                <td style="word-wrap: break-word;min-width: 160px;max-width: 160px;"><?= $pengajuan['nama_pengajuan'] ?></td>
+                                <td><?= $pengajuan['nama_pengajuan'] ?></td>
                             </tr>
 
                             <!-- Total -->
@@ -101,6 +101,7 @@
                 <div class="box">
                     <div class="box-header">
                         <h4 class="box-title">Detail Pengajuan</h4>
+                        <button type="button" class="btn btn-info btn-flat pull-right" id="refreshTable"><i class="fa fa-refresh"></i> Refresh</button>
                     </div>
                     <div class="box-body">
                         <div class="table-responsive">

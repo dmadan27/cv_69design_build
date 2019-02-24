@@ -41,6 +41,7 @@
 									<!-- export -->
 									<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 								</div>
+								<button type="button" class="btn btn-info btn-flat pull-right" id="refreshTable"><i class="fa fa-refresh"></i> Refresh</button>
 							</div>
 						</div>
 					</div>
@@ -49,18 +50,18 @@
 						<div class="row">
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 								<div class="table-responsive">
-									<table id="operasionalProyekTable" class="table table-bordered table-hover">
+									<table id="operasionalProyekTable" class="table table-bordered table-hover" style="width: 100%">
 										<thead>
 											<tr>
-												<th class="text-center" style="width: 35px">No</th>
-												<th class="text-center">ID</th>
-												<th class="text-center">ID Proyek</th>
-												<th class="text-center">ID Kas Besar</th>
-												<th class="text-center">ID Distributor</th>
-												<th class="text-center">Tanggal</th>
-												<th class="text-center">Nama</th>
-												<th class="text-center">Total</th>
-												<th class="text-center">Aksi</th>
+												<th class="text-rigth" style="width: 5%">No</th>
+												<th>ID</th>
+												<th>Tanggal</th>
+												<th>Nama</th>
+												<th>Proyek</th>
+												<th>Jenis Pembayaran</th>
+												<th>Status</th>
+												<th class="text-right">Total</th>
+												<th>Aksi</th>
 											</tr>
 										</thead>
 										<tbody>

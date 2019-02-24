@@ -19,8 +19,8 @@
             <div class="col-md-12">
                 <!-- field ID Bank -->
                 <div class="form-group field-id_bank has-feedback">
-                  <label for="id">ID Bank</label>
-                    <select class="form-control field select2" name="id_bank" id="id_bank" style="width: 100%;"> 
+                  <label for="id_bank">ID Bank</label>
+                    <select class="form-control field" id="id_bank" style="width: 100%;"> 
                     </select>
                   <span class="help-block small pesan pesan-id_bank"></span>
                 </div>
@@ -36,14 +36,14 @@
             <!-- panel kanan -->
             <!-- <div class="col-md-6"> -->
 
-              <!-- field Nama -->
-                <div class="form-group field-nama has-feedback">
-                  <label for="nama">Nama</label>
-                  <input type="text" name="nama" id="nama" placeholder="Masukan Nama Kebutuhan" class="form-control field">
-                  <span class="help-block small pesan pesan-nama"></span>
-                </div>
+				<!-- field Nama -->
+				<div class="form-group field-nama has-feedback">
+					<label for="nama">Nama</label>
+					<input type="text" name="nama" id="nama" placeholder="Masukan Nama Kebutuhan" class="form-control field">
+					<span class="help-block small pesan pesan-nama"></span>
+				</div>
                 
-                  <!-- field  Nominal -->
+				<!-- field  Nominal -->
                 <div class="form-group field-nominal has-feedback">
                   <label for="nominal">Nominal</label>
                   <div class="input-group">
@@ -73,8 +73,8 @@
         </div>
         <!-- modal footer -->
         <div class="modal-footer">
-          <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Kembali</button>
-                  <button type="submit" id="submit_operasional" class="btn btn-primary" value="tambah">Simpan Data</button>
+          	<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Kembali</button>
+			<button type="submit" id="submit_operasional" class="btn btn-primary" value="tambah">Simpan Data</button>
         </div>
       </form>
     </div>

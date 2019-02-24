@@ -1,7 +1,7 @@
 $(document).ready(function () {
-init();
+	init();
 
-console.log('%cDetail Operasional Proyek: ', 'font-style: italic; color: white', listDetail);
+	console.log('%cDetail Operasional Proyek: ', 'font-style: italic; color: white', listDetail);
 	 
 	if($('#submit_operasional_proyek').val() == 'action-add') {
 		console.log('mode tambah')
@@ -23,94 +23,6 @@ console.log('%cDetail Operasional Proyek: ', 'font-style: italic; color: white',
 		// $('#id_bank').val();		
 
 	}
-		
-function init () {
-	console.log('%cFunction init run...', 'font-style: blue');
-
-	//Initialize Select2 Elements
-	$('#id_proyek').select2({
-		placeholder: "Pilih Proyek",
-		allowClear: true
-	});
-
-	$('#id_bank').select2({
-		placeholder: "Pilih Bank",
-		allowClear: true
-	});
-
-	$('#jenis').select2({
-		placeholder: "Pilih Jenis Operasional Proyek",
-		allowClear: true
-	});
-
-	$('#status').select2({
-		placeholder: "Pilih Jenis Pembayaran",
-		allowClear: true
-	});
-
-	$('#status_lunas').select2({
-		placeholder: "Pilih Status Pembayaran",
-		allowClear: true
-	});
-
-	$('#id_bank_form').select2({
-		placeholder: "Pilih Bank",
-		allowClear: true
-	});
-
-	$('#id_distributor').select2({
-		placeholder: "Pilih Distributor",
-		allowClear: true,
-	});
-
-	//Date picker
-	$('.datepicker').datepicker({
-		autoclose: true,
-		format: "yyyy-mm-dd",
-		todayHighlight: true,
-		orientation:"bottom auto",
-		todayBtn: true,
-	  });
-
-	  //Date picker
-	$('#tgl_awal').datepicker({
-		autoclose: true,
-		format: "yyyy-mm-dd",
-		todayHighlight: true,
-		orientation:"bottom auto",
-		todayBtn: true,
-	  });
-
-	  //Date picker
-	$('#tgl_akhir').datepicker({
-		autoclose: true,
-		format: "yyyy-mm-dd",
-		todayHighlight: true,
-		orientation:"bottom auto",
-		todayBtn: true,
-	  });
-	  
-    // input mask
-    $('.input-mask-uang').inputmask({ 
-    	alias : 'currency',
-    	prefix: '', 
-    	radixPoint: ',',
-    	digits: 0,
-    	groupSeparator: '.', 
-    	clearMaskOnLostFocus: true, 
-    	digitsOptional: false,
-    });
-
-
-	 // Inisiasi Function
-	 setNamaProyek();
-	 setNamaBank();
-	 setnamaDistributor();
-	 setJenis();
-	 setStatus();
-	 setStatusLunas();
-}
-
 
  	// ------------------------------------------------
 	// FUNGSI DETAIL OPERSIONAL PROYEK
@@ -226,14 +138,107 @@ function init () {
     		generateID(this.value);
 	});
 	
+	$('#btn-back').on('click', function() {
+		window.location.href = BASE_URL+'operasional-proyek/';
+	});
 
- });
+});
+
+/**
+ * 
+ */
+function init() {
+	console.log('%cFunction init run...', 'font-style: blue');
+
+	//Initialize Select2 Elements
+	$('#id_proyek').select2({
+		placeholder: "Pilih Proyek",
+		allowClear: true
+	});
+
+	$('#id_bank').select2({
+		placeholder: "Pilih Bank",
+		allowClear: true
+	});
+
+	$('#jenis').select2({
+		placeholder: "Pilih Jenis Operasional Proyek",
+		allowClear: true
+	});
+
+	$('#status').select2({
+		placeholder: "Pilih Jenis Pembayaran",
+		allowClear: true
+	});
+
+	$('#status_lunas').select2({
+		placeholder: "Pilih Status Pembayaran",
+		allowClear: true
+	});
+
+	$('#id_bank_form').select2({
+		placeholder: "Pilih Bank",
+		allowClear: true
+	});
+
+	$('#id_distributor').select2({
+		placeholder: "Pilih Distributor",
+		allowClear: true,
+	});
+
+	//Date picker
+	$('.datepicker').datepicker({
+		autoclose: true,
+		format: "yyyy-mm-dd",
+		todayHighlight: true,
+		orientation:"bottom auto",
+		todayBtn: true,
+	  });
+
+	  //Date picker
+	$('#tgl_awal').datepicker({
+		autoclose: true,
+		format: "yyyy-mm-dd",
+		todayHighlight: true,
+		orientation:"bottom auto",
+		todayBtn: true,
+	  });
+
+	  //Date picker
+	$('#tgl_akhir').datepicker({
+		autoclose: true,
+		format: "yyyy-mm-dd",
+		todayHighlight: true,
+		orientation:"bottom auto",
+		todayBtn: true,
+	  });
+	  
+    // input mask
+    $('.input-mask-uang').inputmask({ 
+    	alias : 'currency',
+    	prefix: '', 
+    	radixPoint: ',',
+    	digits: 0,
+    	groupSeparator: '.', 
+    	clearMaskOnLostFocus: true, 
+    	digitsOptional: false,
+    });
+
+
+	 // Inisiasi Function
+	 setNamaProyek();
+	 setNamaBank();
+	 setnamaDistributor();
+	 setJenis();
+	 setStatus();
+	 setStatusLunas();
+}
 
 // ================ Function detail operasional proyek =================== //
 
 	/**
-	*
-	*/
+	 * 
+	 */
 	function addDetail(){
 
 		var index = indexDetail++;
@@ -284,8 +289,8 @@ function init () {
 	}
 
 	/**
-	*
-	*/
+	 * 
+	 */
 	function validDetail(data, action = 'tambah'){
 		$.ajax({
 			url: BASE_URL+'operasional-proyek/action-add-detail/',
@@ -370,8 +375,8 @@ function init () {
 
 
 	/**
-	*
-	*/
+	 * 
+	 */
 	function numbering_listDetail(){
 		$('#detail_OperasionalproyekTable tbody tr').each(function(index){
 			$(this).children('td:eq(0)').html(index+1);	
@@ -379,8 +384,8 @@ function init () {
 	}
 
 	/**
-	*
-	*/
+	 * 
+	 */
 	function btnAksi_detail(index){
 		if($('#status').val() == "TUNAI"){
 
@@ -407,8 +412,8 @@ function init () {
 	}
 
 	/**
-	*
-	*/
+	 * 
+	 */
 	function edit_detail(index){
 		$('#modalDetailOperasional').modal();
 		$('#submit_detail').val('edit');
@@ -419,8 +424,8 @@ function init () {
 	}
 
 	/**
-	*
-	*/
+	 * 
+	 */
 	function actionEditDetail(){
 
 		var aksi = ($('#submit_proyek').val() == 'action-add') ? 'tambah' : 'edit';
@@ -451,8 +456,8 @@ function init () {
 	}
 
 	/**
-	*
-	*/
+	 * 
+	 */
 	function setValueDetail(data,index){
 
 		console.log('%cButton Edit Detail Pembayaran Proyek Clicked...', 'font-style: italic');
@@ -476,8 +481,8 @@ function init () {
 	}
 
 	/**
-	*
-	*/
+	 * 
+	 */
 	function delete_detail(index, val){
 		$(val).parent().parent().parent().remove();
 		listDetail[index].delete = true;
@@ -490,8 +495,8 @@ function init () {
 	}	
 
 	/**
-	*
-	*/
+	 * 
+	 */
 	function set_data_table(data){
 		console.log('%cDetail Operasional Proyek Setelah Di Edit: ', 'font-style: italic; color: white', data);
 		$('#detail_OperasionalproyekTable tbody tr').remove();
@@ -516,6 +521,9 @@ function init () {
 
 // ========================================================================= //
 
+/**
+ * 
+ */
 function setNamaProyek_new($id = false){
 	var id = "";
 	if ($('#submit_operasional_proyek').val() == 'action-edit') id = $('#id').val().split('-')[1];
@@ -540,6 +548,9 @@ function setNamaProyek_new($id = false){
 	})		
 }
 
+/**
+ * 
+ */
 function setNamaProyek(){
 	$.ajax({
 		url: BASE_URL+'operasional-proyek/get-nama-proyek',
@@ -560,6 +571,9 @@ function setNamaProyek(){
 
 }
 
+/**
+ * 
+ */
 function setNamaBank(){
 	$.ajax({
 		url: BASE_URL+'operasional-proyek/get-nama-bank',
@@ -586,6 +600,9 @@ function setNamaBank(){
 	console.log($('#id_bank').val());
 }
 
+/**
+ * 
+ */
 function setnamaKasBesar(){
 	// if ($('#submit_operasional_proyek').val() == 'action-edit') id = $('#id_kas_besar').val().split('-')[1];
 	$.ajax({
@@ -608,6 +625,9 @@ function setnamaKasBesar(){
 
 }
 
+/**
+ * 
+ */
 function setnamaDistributor(){
 	$.ajax({
 		url: BASE_URL+'operasional-proyek/get-nama-distributor',
@@ -631,8 +651,8 @@ function setnamaDistributor(){
 }
 
 /**
-*
-*/
+ * 
+ */
 function getDataForm(){
 
 	var data = new FormData()
@@ -735,8 +755,8 @@ function getDataForm(){
 }
 
 /**
-*
-*/
+ * 
+ */
 function submit(){
 	
 	var data = getDataForm();
@@ -775,8 +795,8 @@ function submit(){
 }
 
 /**
-*
-*/
+ * 
+ */
 function getEdit(id){
 
 	$.ajax({
@@ -838,8 +858,8 @@ function getEdit(id){
 }
 
 /**
-*
-*/
+ * 
+ */
 function renderTableDetailOperasional(data){
 	// tambah data ke tabel
 
@@ -860,8 +880,8 @@ function renderTableDetailOperasional(data){
 }
 
 /**
-*
-*/
+ * 
+ */
 function setError(error){
 	$.each(error, function(index, item){
 		// console.log(index);
@@ -877,11 +897,9 @@ function setError(error){
 	});
 }
 
-
-
 /**
-*
-*/
+ * 
+ */
 function generateID(proyek = null){
 	$.ajax({
 		url: BASE_URL+'operasional-proyek/get-last-id/',
@@ -904,8 +922,8 @@ function generateID(proyek = null){
 }
 
 /**
-*
-*/
+ * 
+ */
 function setJenis(){
 	var jenis = [
 		{value: "TEKNIS", text: "TEKNIS"},
@@ -920,8 +938,8 @@ function setJenis(){
 }
 
 /**
-*
-*/
+ * 
+ */
 function setStatus(){
 	var status = [
 		{value: "TUNAI", text: "TUNAI"},
@@ -934,9 +952,10 @@ function setStatus(){
 	});
 	$("#status").val(null).trigger('change');
 }
+
 /**
-*
-*/
+ * 
+ */
 function setStatusLunas(){
 	var status_lunas = [
 		{value: "LUNAS", text: "LUNAS"},
@@ -951,8 +970,8 @@ function setStatusLunas(){
 }
 
 /**
-*
-*/
+ * 
+ */
 function resetForm(){
 	// trigger reset form
 	$('#form_detail_operasional_proyek').trigger('reset');
@@ -965,8 +984,8 @@ function resetForm(){
 }
 
 /**
-*
-*/
+ * 
+ */
 function resetModal(){
 	$('#form_detail_operasional_proyek').trigger('reset');
 	// $('modalDetailOperasional').trigger('reset');

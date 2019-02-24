@@ -69,12 +69,12 @@
 									<table id="mutasiBankTable" class="table table-bordered table-hover" style="width:100%">
 										<thead>
 											<tr>
-												<th class="text-right">No</th>
+												<th class="text-right" style="width: 5%">No</th>
 												<th>Tanggal</th>
 												<th class="text-right">Uang Masuk</th>
 												<th class="text-right">Uang Keluar</th>
 												<th class="text-right">Saldo</th>
-												<th>Keterangan</th>
+												<th style="width: 40%">Keterangan</th>
 											</tr>
 										</thead>
 										<tbody>

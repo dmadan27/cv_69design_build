@@ -196,11 +196,11 @@
                         <div class="box-body">
                           <div class="row">
                             <div class="col-md-6 col-xs-12">
-                              <button class="btn btn-default btn-flat btn-lg" type="button">Kembali</button>
+                              <button class="btn btn-default btn-flat btn-lg" type="button" id="btn-back">Kembali</button>
                               </div>
                             <div class="col-md-6 col-xs-12">
                               <div class="btn-group pull-right">
-                                <button class="btn btn-default btn-flat btn-lg" type="button">Reset</button>
+                                <button class="btn btn-default btn-flat btn-lg" type="button" id="btn-reset">Reset</button>
                                 <button class="btn btn-primary btn-flat btn-lg" id="submit_operasional_proyek" 
                                 type="submit" value="<?= $this->data['action'];?>">Submit</button>
                               </div>  

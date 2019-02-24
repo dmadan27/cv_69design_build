@@ -1,43 +1,44 @@
-$(document).ready(function(){
-    var table_detail = $("#table_detail").DataTable({
-        "language" : {
-            "lengthMenu": "Tampilkan _MENU_ data/page",
-            "zeroRecords": "Data Tidak Ada",
-            "info": "Menampilkan _START_ s.d _END_ dari _TOTAL_ data",
-            "infoEmpty": "Menampilkan 0 s.d 0 dari 0 data",
-            "search": "Pencarian:",
-            "loadingRecords": "Loading...",
-            "processing": "Processing...",
-            "paginate": {
-                "first": "Pertama",
-                "last": "Terakhir",
-                "next": "Selanjutnya",
-                "previous": "Sebelumnya"
-            }
-        },
-        "lengthMenu": [ 5, 10, 25, 50 ],
-        "pageLength": 5,
-        order: [],
-        // processing: true,
-        // serverSide: true,
-        // ajax: {
-        //     url: BASE_URL+"laporan-sub-kas-kecil/get-list/",
-        //     type: 'POST',
-        //     data: {}
-        // },
-        "columnDefs": [
-            {
-                "targets":[0],
-                "orderable":false,
-            }
-        ],
-        // createdRow: function(row, data, dataIndex){
-        //     if($(data[8]).text().toLowerCase() == "ditolak") { $(row).addClass('danger'); }
-        //     for(var i = 0; i < 10; i++){
-        //         if(i == 0 || i == 6 || i == 7) { $('td:eq('+i+')', row).addClass('text-right'); }
-        //     }
-        // }
-    });
+var table_detail = $("#table_detail").DataTable({
+	"language" : {
+		"lengthMenu": "Tampilkan _MENU_ data/page",
+		"zeroRecords": "Data Tidak Ada",
+		"info": "Menampilkan _START_ s.d _END_ dari _TOTAL_ data",
+		"infoEmpty": "Menampilkan 0 s.d 0 dari 0 data",
+		"search": "Pencarian:",
+		"loadingRecords": "Loading...",
+		"processing": "Processing...",
+		"paginate": {
+			"first": "Pertama",
+			"last": "Terakhir",
+			"next": "Selanjutnya",
+			"previous": "Sebelumnya"
+		}
+	},
+	"lengthMenu": [ 5, 10, 25, 50 ],
+	"pageLength": 5,
+	order: [],
+	// processing: true,
+	// serverSide: true,
+	// ajax: {
+	//     url: BASE_URL+"laporan-sub-kas-kecil/get-list/",
+	//     type: 'POST',
+	//     data: {}
+	// },
+	"columnDefs": [
+		{
+			"targets":[0],
+			"orderable":false,
+		}
+	],
+	// createdRow: function(row, data, dataIndex){
+	//     if($(data[8]).text().toLowerCase() == "ditolak") { $(row).addClass('danger'); }
+	//     for(var i = 0; i < 10; i++){
+	//         if(i == 0 || i == 6 || i == 7) { $('td:eq('+i+')', row).addClass('text-right'); }
+	//     }
+	// }
+});
+
+$(document).ready(function() {
 
 	init();
 	
@@ -48,6 +49,18 @@ $(document).ready(function(){
 
 		return false;
 	});
+
+	// event on click refresh table
+    $('#refreshTable').on('click', function() {
+        console.log('Button Refresh Table Detail Laporan SKK clicked...');
+        refreshTable(table_detail, $(this));
+	});
+	
+	// auto refresh every 1 minutes
+    // setInterval( function () {
+    //     console.log('%cAutomatically refresh table..', 'color: blue; font-style: italic');
+    //     table_detail.ajax.reload(null, false);
+    // }, 60000 );
 });
 
 /**

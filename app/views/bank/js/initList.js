@@ -31,14 +31,13 @@ var bankTable = $("#bankTable").DataTable({
         }
     ],
     createdRow: function(row, data, dataIndex){
+        if(data[0]) $('td:eq(0)', row).addClass('text-right');
+        if(data[2]) $('td:eq(3)', row).addClass('text-right');
         if($(data[3]).text().toLowerCase() == "nonaktif") $(row).addClass('danger');
-        for(var i = 0; i < 5; i++){
-            if(i == 0 || i == 2) $('td:eq('+i+')', row).addClass('text-right');
-        }
     }
 });
 
-$(document).ready(function(){
+$(document).ready(function() {
 
     // btn Export
     $('#exportExcel').on('click', function(){

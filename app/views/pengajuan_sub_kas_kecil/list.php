@@ -31,6 +31,7 @@
 								<div class="btn-group">
 									<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 								</div>
+								<button type="button" class="btn btn-info btn-flat pull-right" id="refreshTable"><i class="fa fa-refresh"></i> Refresh</button>
 							</div>
 						</div>
 					</div>
@@ -39,11 +40,11 @@
 						<table id="pengajuan_sub_kas_kecilTable" class="table table-bordered table-hover" style="width: 100%">
 							<thead>
 								<tr>
-									<th class="text-right" style="width: 20px">No</th>
+									<th class="text-right" style="width: 5%">No</th>
 									<th>ID</th>
 									<th>Tanggal</th>
 									<th>Sub Kas Kecil</th>
-									<th>ID Proyek</th>
+									<th>Proyek</th>
 									<th>Pengajuan</th>
 									<th class="text-right">Total</th>
 									<th class="text-right">Dana Disetujui</th>
