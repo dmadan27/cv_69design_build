@@ -1922,10 +1922,8 @@
 		SELECT saldo INTO get_saldo_sub_kas_kecil FROM sub_kas_kecil WHERE id = id_sub_kas_kecil_param;
 
 		-- set keterangan mutasi kas kecil dan sub kas kecil
-		SELECT CONCAT('UANG KELUAR SEBESAR RP ', FORMAT(dana_disetujui_param, 2, 'de_DE'), 
-			' UNTUK PENGAJUAN SUB KAS KECIL DI PROYEK (', id_proyek_param, ') - ', id_param, ': ',nama_param) INTO ket_kas_kecil_param;
-		SELECT CONCAT('UANG MASUK SEBESAR RP ', FORMAT(dana_disetujui_param, 2, 'de_DE'), 
-			' DARI PENGAJUAN ', id_param, ' - ', nama_param) INTO ket_sub_kas_kecil_param;
+		SELECT CONCAT('PERSETUJUAN PENGAJUAN SUB KAS KECIL DI PROYEK (', id_proyek_param, ') - ', id_param, ': ',nama_param) INTO ket_kas_kecil_param;
+		SELECT CONCAT('PERSETUJUAN PENGAJUAN ', id_param, ': ', nama_param) INTO ket_sub_kas_kecil_param;
 
 		-- update saldo kas kecil
 		UPDATE kas_kecil SET 
@@ -1946,6 +1944,7 @@
 			dana_disetujui = dana_disetujui_param, 
 			status = '3',
 			status_laporan = '0',
+			tgl_laporan = tgl_param,
 			modified_by = modified_by_param
 		WHERE id = id_param;
 
