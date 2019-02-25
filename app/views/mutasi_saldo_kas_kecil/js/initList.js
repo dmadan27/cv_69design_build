@@ -70,12 +70,14 @@ $(document).ready(function(){
     $('#refreshTable').on('click', function() {
         console.log('Button Refresh Table Saldo Kas Kecil clicked...');
         refreshTable(mutasi_saldo_kas_kecilTable, $(this));
+        // getSaldo();
     });
 
     // auto refresh every 1 minutes
     setInterval( function () {
         console.log('%cAutomatically refresh table..', 'color: blue; font-style: italic');
         mutasi_saldo_kas_kecilTable.ajax.reload(null, false);
+        // getSaldo();
     }, 60000 );
 
 });

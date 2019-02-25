@@ -30,11 +30,18 @@
 						<div class="row">
 							<div class="col-md-12 col-sm-12 col-xs-12">
 								<div class="btn-group">
-									<!-- tambah -->
-									<button type="button" class="btn btn-default btn-flat" id="tambah" value="<?= $this->data['token_add'] ?>"><i class="fa fa-plus"></i> Tambah</button>
+									<?php
+										if($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'KAS KECIL') {
+											?>
+											<!-- tambah -->
+											<button type="button" class="btn btn-default btn-flat" id="tambah" value="<?= $this->data['token_add'] ?>"><i class="fa fa-plus"></i> Tambah</button>
+											<?php	
+										}
+									?>
 									<!-- export -->
 									<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 								</div>
+								<button type="button" class="btn btn-info btn-flat pull-right" id="refreshTable"><i class="fa fa-refresh"></i> Refresh</button>
 							</div>
 						</div>
 					</div>
@@ -42,12 +49,11 @@
 					<div class="box-body">
 						<div class="row">
 							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-								<input type="hidden" id="token_list" value="<?= $this->data['token_list']; ?>">
 								<div class="table-responsive">
 									<table id="skcTable" class="table table-bordered table-hover" style="width: 100%">
 										<thead>
 											<tr>
-												<th class="text-rigth" style="width: 35px">No</th>
+												<th class="text-right" style="width: 35px">No</th>
 												<th>ID</th>
 												<th>Nama</th>
 												<th>No. Telepon</th>

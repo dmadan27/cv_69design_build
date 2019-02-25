@@ -122,20 +122,22 @@
 									<hr>
 									<div class="row">
 										<div class="col-md-12">
-											<table id="mutasiKasKecilTable" class="table table-bordered table-hover" style="width: 100%;">
-												<thead>
-													<tr>
-														<th class="text-right">No</th>
-														<th>Tanggal</th>
-														<th class="text-right">Uang Masuk</th>
-														<th class="text-right">Uang Keluar</th>
-														<th class="text-right">Saldo</th>
-														<th>Keterangan</th>
-													</tr>
-												</thead>
-												<tbody>
-												</tbody>
-											</table>	
+											<div class="table-responsive">
+												<table id="mutasiKasKecilTable" class="table table-bordered table-hover" style="width: 100%;">
+													<thead>
+														<tr>
+															<th class="text-right" style="width: 5%">No</th>
+															<th>Tanggal</th>
+															<th class="text-right">Uang Masuk</th>
+															<th class="text-right">Uang Keluar</th>
+															<th class="text-right">Saldo</th>
+															<th style="width: 40%">Keterangan</th>
+														</tr>
+													</thead>
+													<tbody>
+													</tbody>
+												</table>
+											</div>	
 										</div>
 									</div>
 

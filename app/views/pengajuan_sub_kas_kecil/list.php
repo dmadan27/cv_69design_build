@@ -37,24 +37,26 @@
 					</div>
 					<!-- box body -->
 					<div class="box-body">
-						<table id="pengajuan_sub_kas_kecilTable" class="table table-bordered table-hover" style="width: 100%">
-							<thead>
-								<tr>
-									<th class="text-right" style="width: 5%">No</th>
-									<th>ID</th>
-									<th>Tanggal</th>
-									<th>Sub Kas Kecil</th>
-									<th>Proyek</th>
-									<th>Pengajuan</th>
-									<th class="text-right">Total</th>
-									<th class="text-right">Dana Disetujui</th>
-									<th>Status</th>
-									<th>Aksi</th>
-								</tr>
-							</thead>
-							<tbody>
-							</tbody>
-						</table>
+						<div class="table-responsive">
+							<table id="pengajuan_sub_kas_kecilTable" class="table table-bordered table-hover" style="width: 100%">
+								<thead>
+									<tr>
+										<th class="text-right" style="width: 5%">No</th>
+										<th>ID</th>
+										<th>Tanggal</th>
+										<th>Sub Kas Kecil</th>
+										<th>Proyek</th>
+										<th>Pengajuan</th>
+										<th class="text-right">Total</th>
+										<th class="text-right">Dana Disetujui</th>
+										<th>Status</th>
+										<th>Aksi</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>

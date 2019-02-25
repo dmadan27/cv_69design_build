@@ -111,37 +111,36 @@
 
               			<!-- Data Mutasi Sub Kas Kecil -->
               			<div class="tab-pane" id="data-mutasi">
-              				<div class="row">
+						  	<input type="hidden" id="id" value="<?= $this->data['id']?>">
+              				
+							  <div class="row">
                 				<div class="col-md-12">
-                					<div class="box">
-										<!-- box header -->
-										<div class="box-header with-border">
-											<h3 class="box-title">Data Mutasi Sub Kas Kecil</h3>
+									<div class="row">
+										<div class="col-md-12">
 											<!-- export -->
-											<button type="button" class="pull-right btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>	
+											<button type="button" class="btn btn-success btn-flat" id="exportExcel_mutasi"><i class="fa fa-file-excel-o"></i> Export Excel</button>	
+											<button type="button" class="btn btn-info btn-flat pull-right" id="refreshTable_mutasi"><i class="fa fa-refresh"></i> Refresh</button>
 										</div>
-										<!-- box body -->
-										<div class="box-body">
-											<div class="row">
-												<input type="hidden" id="id" value="<?= $this->data['id']?>">
-												<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-													<!-- <input type="hidden" id="token_view" value="<?= $this->data['token']['view']; ?>"> -->
-													<table id="mutasiSubKasKecilTable" class="table table-bordered table-hover" style="width: 100%;">
-														<thead>
-															<tr>
-																<th class="text-right">No</th>
-																<th>Tanggal</th>
-																<th class="text-right">Uang Masuk</th>
-																<th class="text-right">Uang Keluar</th>
-																<th class="text-right">Saldo</th>
-																<th>Keterangan</th>
-															</tr>
-														</thead>
-														<tbody>
-														</tbody>
-													</table>
-												</div>
-											</div>		
+									</div>			
+									<hr>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="table-responsive">
+												<table id="mutasiSubKasKecilTable" class="table table-bordered table-hover" style="width: 100%;">
+													<thead>
+														<tr>
+															<th class="text-right" style="width: 5%">No</th>
+															<th>Tanggal</th>
+															<th class="text-right">Uang Masuk</th>
+															<th class="text-right">Uang Keluar</th>
+															<th class="text-right">Saldo</th>
+															<th style="width: 40%">Keterangan</th>
+														</tr>
+													</thead>
+													<tbody>
+													</tbody>
+												</table>
+											</div>
 										</div>
 									</div>
                 				</div>
@@ -152,35 +151,31 @@
               			<div class="tab-pane" id="data-pengajuan">
               				<div class="row">
                 				<div class="col-md-12">
-                					<div class="box">
-										<!-- box header -->
-										<div class="box-header with-border">
-											<h3 class="box-title">Data History Pengajuan Sub Kas Kecil</h3>
+									<div class="row">
+										<div class="col-md-12">
 											<!-- export -->
-											<button type="button" class="pull-right btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>	
+											<button type="button" class="btn btn-success btn-flat" id="exportExcel_pengajuan"><i class="fa fa-file-excel-o"></i> Export Excel</button>	
+											<button type="button" class="btn btn-info btn-flat pull-right" id="refreshTable_pengajuan"><i class="fa fa-refresh"></i> Refresh</button>
 										</div>
-										<!-- box body -->
-										<div class="box-body">
-											<div class="row">
-												<input type="hidden" id="id" value="<?= $this->data['id']?>">
-												<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-													<!-- <input type="hidden" id="token_view" value="<?= $this->data['token']['view']; ?>"> -->
-													<table id="pengajuanSubKasKecilTable" class="table table-bordered table-hover" style="width: 100%;">
-														<thead>
-															<tr>
-																<th class="text-right">No</th>
-																<th>Tanggal</th>
-																<th class="text-right">Total</th>
-																<th class="text-right">Dana Disetujui</th>
-																<th>Status</th>
-																<th>Aksi</th>
-															</tr>
-														</thead>
-														<tbody>
-														</tbody>
-													</table>
-												</div>
-											</div>		
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="table-responsive">	
+												<table id="pengajuanSubKasKecilTable" class="table table-bordered table-hover" style="width: 100%;">
+													<thead>
+														<tr>
+															<th class="text-right">No</th>
+															<th>Tanggal</th>
+															<th class="text-right">Total</th>
+															<th class="text-right">Dana Disetujui</th>
+															<th>Status</th>
+															<th>Aksi</th>
+														</tr>
+													</thead>
+													<tbody>
+													</tbody>
+												</table>
+											</div>
 										</div>
 									</div>
                 				</div>
