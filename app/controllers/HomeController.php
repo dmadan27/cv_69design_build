@@ -235,9 +235,9 @@
 			);
 
 			$data = array(
-				'sum_acc_spkk' => $sumAccspkk['dana_disetujui'],
+				'sum_acc_spkk' => $this->helper->cetakRupiah($sumAccspkk['dana_disetujui']),
 				'pending_spkk' => $countPendingspkk['jml_transaksi_pending_spkk'],
-				'sum_pending_spkk' => $sumPendingspkk['dana_transaksi_pending'],
+				'sum_pending_spkk' => $this->helper->cetakRupiah($sumPendingspkk['dana_transaksi_pending']),
 				'jml_transaksi_pkk' => $countPkk['jml_transaksi_pkk']
 			);
 
