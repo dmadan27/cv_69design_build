@@ -1,43 +1,43 @@
-$(document).ready(function(){
-	var proyekTable = $("#proyekTable").DataTable({
-        "language" : {
-            "lengthMenu": "Tampilkan _MENU_ data/page",
-            "zeroRecords": "Data Tidak Ada",
-            "info": "Menampilkan _START_ s.d _END_ dari _TOTAL_ data",
-            "infoEmpty": "Menampilkan 0 s.d 0 dari 0 data",
-            "search": "Pencarian:",
-            "loadingRecords": "Loading...",
-            "processing": "Processing...",
-            "paginate": {
-                "first": "Pertama",
-                "last": "Terakhir",
-                "next": "Selanjutnya",
-                "previous": "Sebelumnya"
-            }
-        },
-        "lengthMenu": [ 10, 25, 75, 100 ],
-        "pageLength": 10,
-        order: [],
-        processing: true,
-        serverSide: true,
-        ajax: {
-            url: BASE_URL+"proyek/get-list/",
-            type: 'POST',
-            data: {}
-        },
-        "columnDefs": [
-            {
-                "targets":[0, 9],
-                "orderable":false,
-            }
-        ],
-        createdRow: function(row, data, dataIndex){
-            if($(data[8]).text().toLowerCase() == "selesai") $(row).addClass('danger');
-            for(var i = 0; i < 10; i++){
-                if(i == 0 || i == 6) $('td:eq('+i+')', row).addClass('text-right');
-            }
+var proyekTable = $("#proyekTable").DataTable({
+    "language" : {
+        "lengthMenu": "Tampilkan _MENU_ data/page",
+        "zeroRecords": "Data Tidak Ada",
+        "info": "Menampilkan _START_ s.d _END_ dari _TOTAL_ data",
+        "infoEmpty": "Menampilkan 0 s.d 0 dari 0 data",
+        "search": "Pencarian:",
+        "loadingRecords": "Loading...",
+        "processing": "Processing...",
+        "paginate": {
+            "first": "Pertama",
+            "last": "Terakhir",
+            "next": "Selanjutnya",
+            "previous": "Sebelumnya"
         }
-    });
+    },
+    "lengthMenu": [ 10, 25, 75, 100 ],
+    "pageLength": 10,
+    order: [],
+    processing: true,
+    serverSide: true,
+    ajax: {
+        url: BASE_URL+"proyek/get-list/",
+        type: 'POST',
+        data: {}
+    },
+    "columnDefs": [
+        {
+            "targets":[0, 9],
+            "orderable":false,
+        }
+    ],
+    createdRow: function(row, data, dataIndex){
+        if(data[0]) $('td:eq(0)', row).addClass('text-right');
+        if(data[6]) $('td:eq(6)', row).addClass('text-right');
+        if($(data[8]).text().toLowerCase() == "selesai") $(row).addClass('danger');
+    }
+});
+
+$(document).ready(function() {
 
     // btn tambah
     $('#tambah').on('click', function(){
@@ -50,6 +50,18 @@ $(document).ready(function(){
         console.log('%cButton Export Excel Proyek clicked...', 'font-style: italic');
         getExport();
     });
+
+    // event on click refresh table
+    $('#refreshTable').on('click', function() {
+        console.log('Button Refresh Table Proyek clicked...');
+        refreshTable(proyekTable, $(this));
+    });
+
+    // auto refresh every 1 minutes
+    setInterval( function () {
+        console.log('%cAutomatically refresh table..', 'color: blue; font-style: italic');
+        proyekTable.ajax.reload(null, false);
+    }, 60000 );
 
 });
 
