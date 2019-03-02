@@ -35,11 +35,17 @@
 											?>
 											<!-- tambah -->
 											<button type="button" class="btn btn-default btn-flat" id="tambah"><i class="fa fa-plus"></i> Tambah</button>
+											<!-- export -->
+											<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+											<?php
+										}
+										else if($_SESSION['sess_level'] === 'OWNER') {
+											?>
+											<!-- export -->
+											<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 											<?php
 										}
 									?>
-									<!-- export -->
-									<button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
 								</div>
 								<button type="button" class="btn btn-info btn-flat pull-right" id="refreshTable"><i class="fa fa-refresh"></i> Refresh</button>
 							</div>
@@ -75,3 +81,4 @@
 	</section>
 	<!-- /.content -->
 </div>
+<?php include_once('form_export.php'); ?>

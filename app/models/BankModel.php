@@ -51,26 +51,6 @@
 		}
 
 		/**
-		 * Method export
-		 * Proses get data bank khusus untuk export
-		 * @return result {array}
-		 */
-		public function export_mutasi($id, $tgl_awal, $tgl_akhir) {
-			$query = "SELECT * FROM v_mutasi_bank_export WHERE TANGGAL BETWEEN :tgl_awal AND :tgl_akhir AND id_bank = :id;";
-
-			$statement = $this->koneksi->prepare($query);
-			$statement->execute(
-				array(
-					':id' => $id,
-					':tgl_awal' => $tgl_awal,
-					':tgl_akhir' => $tgl_akhir
-				)
-			);
-			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
-			return $result;
-		}
-
-		/**
 		 * Method insert
 		 * Proses insert data bank
 		 * @param data {array}
@@ -194,6 +174,26 @@
 			$query = "SELECT id ID, nama NAMA, saldo SALDO, status STATUS FROM bank ";
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute();
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
+
+		/**
+		 * Method export
+		 * Proses get data bank khusus untuk export
+		 * @return result {array}
+		 */
+		public function export_mutasi($id, $tgl_awal, $tgl_akhir) {
+			$query = "SELECT * FROM v_mutasi_bank_export WHERE TANGGAL BETWEEN :tgl_awal AND :tgl_akhir AND id_bank = :id;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id' => $id,
+					':tgl_awal' => $tgl_awal,
+					':tgl_akhir' => $tgl_akhir
+				)
+			);
 			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
 			return $result;
 		}

@@ -34,10 +34,16 @@
 					</div>
 					<div class="box-footer text-center">
 						<div class="btn-group">
-							<!-- edit -->
-							<button id="btn_edit" type="button" class="btn btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>
-							<!-- hapus -->
-							<button id="btn_delete" type="button" class="btn btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>
+							<?php 
+								if($_SESSION['sess_level'] === 'KAS BESAR') {
+									?>
+									<!-- edit -->
+									<button id="btn_edit" type="button" class="btn btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>
+									<!-- hapus -->
+									<button id="btn_delete" type="button" class="btn btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>
+									<?php
+								}
+							?>
 							<!-- kembali -->
 							<button onclick="back()" type="button" class="btn btn-info btn-flat" title="Kembali"><i class="fa fa-reply"></i></button>
 						</div>
@@ -46,7 +52,7 @@
 			</div>
 			<!-- panel info tabel mutasi bank -->
 			<div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
-				<div class="box">
+				<div class="box box-mutasi">
 					<!-- box header -->
 					<div class="box-header with-border">
 						<div class="row">

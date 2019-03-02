@@ -5,7 +5,8 @@
 	 * Class ProyekModel
 	 * Implements ModelInterface
 	 */
-	class ProyekModel extends Database implements ModelInterface{
+	class ProyekModel extends Database implements ModelInterface
+	{
 
 		protected $koneksi;
 
@@ -14,7 +15,7 @@
 		 * Open connection to DB
 		 * Access library dataTable
 		 */
-		public function __construct(){
+		public function __construct() {
 			$this->koneksi = $this->openConnection();
 		}
 
@@ -23,7 +24,7 @@
 		 * Proses get semua data proyek
 		 * @return result {array}
 		 */
-		public function getAll(){
+		public function getAll() {
 			$query = "SELECT * FROM proyek;";
 
 			$statement = $this->koneksi->prepare($query);
@@ -39,7 +40,7 @@
 		 * @param id {string}
 		 * @return result {array}
 		 */
-		public function getById($id){
+		public function getById($id) {
 			$query = "SELECT * FROM proyek WHERE id = :id;";
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id', $id);
@@ -55,7 +56,7 @@
 		 * @param id {string}
 		 * @return result {array}
 		 */
-		public function getDetailById($id){
+		public function getDetailById($id) {
 			$query = "SELECT dp.id, id_proyek, id_bank, b.nama nama_bank, dp.tgl tgl_detail, dp.nama nama_detail, dp.total total_detail, is_DP ";
 			$query .= "FROM detail_proyek dp "; 
 			$query .= "JOIN bank b ON b.id = dp.id_bank ";
@@ -76,7 +77,7 @@
 		 * @param id {string}
 		 * @return result {array}
 		 */
-		public function getSkkById($id){
+		public function getSkkById($id) {
 			$query = "SELECT * FROM v_get_skk_proyek WHERE id_proyek = :id;";
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id', $id);
@@ -150,7 +151,7 @@
 		 * Proses get data skk yang aktif untuk keperluan select di proyek
 		 * @return result {array}
 		 */
-		public function get_selectSkk(){
+		public function get_selectSkk() {
 			$status = 'AKTIF';
 			$query = "SELECT * FROM sub_kas_kecil WHERE status = :status";
 
@@ -167,7 +168,7 @@
 		 * Proses get data bank yang aktif untuk keperluan select di proyek
 		 * @return result {array}
 		 */
-		public function get_selectBank(){
+		public function get_selectBank() {
 			$status = 'AKTIF';
 			$query = "SELECT * FROM bank WHERE status = :status";
 
@@ -185,7 +186,7 @@
 		 * @param id {string}
 		 * @return result {array}
 		 */
-		public function getLastID($id){
+		public function getLastID($id) {
 			$id .= "%";
 			$query = "SELECT MAX(id) AS id FROM proyek WHERE id LIKE :id";
 
@@ -204,7 +205,7 @@
 		 * @param data {array}
 		 * @return result {array}
 		 */
-		public function insert($data){
+		public function insert($data) {
 			$dataProyek = $data['dataProyek'];
 			$dataDetail = $data['dataDetail'];
 			$dataSkk = $data['dataSkk'];
@@ -253,7 +254,7 @@
 		 * @param data {array}
 		 * @return result {array}
 		 */
-		private function insertProyek($data){
+		private function insertProyek($data) {
 			// insert proyek
 			// $query = "INSERT INTO proyek (id, pemilik, tgl, pembangunan, luas_area, alamat, kota, estimasi, total, dp, cco, progress, status) ";
 			// $query .= "VALUES (:id, :pemilik, :tgl, :pembangunan, :luas_area, :alamat, :kota, :estimasi, :total, :dp, :cco, :progress, :status);";
@@ -286,7 +287,7 @@
 		 * @param data {array}
 		 * @return result {array}
 		 */
-		private function insertDetail($data){
+		private function insertDetail($data) {
 			$ket = "UANG MASUK SEBESAR RP ".number_format($data['total_detail'], 2, ',', '.')." DARI TRANSAKSI PROYEK (".$data['id_proyek'].") - ".$data['nama_detail'];
 			
 			// insert detail_proyek
@@ -314,7 +315,7 @@
 		 * @param data {array}
 		 * @return result {array}
 		 */
-		private function insertSkk($data){
+		private function insertSkk($data) {
 			// $query = 'INSERT INTO logistik_proyek (id_proyek, id_sub_kas_kecil) VALUES (:id_proyek, :id_sub_kas_kecil);';
 			$query = "CALL p_tambah_detail_skk_proyek (:id_proyek, :id_sub_kas_kecil, :created_by);";
 			$statement = $this->koneksi->prepare($query);
@@ -335,7 +336,7 @@
 		 * @param data {array}
 		 * @return result {array}
 		 */
-		public function update($data){
+		public function update($data) {
 			$dataProyek = $data['dataProyek'];
 			$dataDetail = $data['dataDetail'];
 			$dataSkk = $data['dataSkk'];
@@ -393,7 +394,7 @@
 		 * @param data {array}
 		 * @return result {array}
 		 */
-		private function updateProyek($data){
+		private function updateProyek($data) {
 			// $query = "UPDATE proyek SET pemilik = :pemilik, tgl = :tgl, pembangunan = :pembangunan, luas_area = :luas_area, ";
 			// $query .= "alamat = :alamat, kota = :kota, estimasi = :estimasi, total = :total, ";
 			// $query .= "dp = :dp, cco = :cco, progress = :progress, status = :status WHERE id = :id;";
@@ -427,7 +428,7 @@
 		 * @param data {array}
 		 * @return result {array}
 		 */
-		private function updateDetail($data){
+		private function updateDetail($data) {
 			$query = 'CALL p_edit_detail_proyek (:id, :id_proyek, :id_bank, :tgl_detail, :nama_detail, :total_detail, :is_DP, :modified_by)';
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
@@ -451,7 +452,7 @@
 		 * Kegunaan untuk di Method Update
 		 * @param id {string}
 		 */
-		private function deleteDetail($id){
+		private function deleteDetail($id) {
 			$tgl = date('Y-m-d');
 
 			$query = 'CALL hapus_detail_proyek (:id, :tgl, :modified_by)';
@@ -472,7 +473,7 @@
 		 * Kegunaan untuk di Method Update
 		 * @param id {string}
 		 */
-		private function deleteSkk($id){
+		private function deleteSkk($id) {
 			// $query = 'DELETE FROM logistik_proyek WHERE id=:id;';
 			$query = "CALL p_hapus_detail_skk_proyek (:id);";
 			$statement = $this->koneksi->prepare($query);
@@ -488,7 +489,7 @@
 		 * Method delete
 		 * Proses penghapusan data proyek beserta data yang berelasi denganya
 		 */
-		public function delete($id){
+		public function delete($id) {
 			try{
 				$query = 'CALL p_hapus_proyek (:id);';
 
@@ -514,6 +515,51 @@
 					'error' => $e->getMessage()
 				);
 			}
+		}
+
+		/**
+		 * 
+		 */
+		public function export($tgl_awal, $tgl_akhir) {
+			$query = "SELECT * FROM v_export_proyek_list WHERE TANGGAL BETWEEN :tgl_awal AND :tgl_akhir;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':tgl_awal' => $tgl_awal,
+					':tgl_akhir' => $tgl_akhir
+				)
+			);
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
+
+		/**
+		 * 
+		 */
+		public function export_detail_pembayaran($tgl_awal, $tgl_akhir, $id = false) {
+			if($id) {
+				$query = "SELECT * FROM v_export_proyek_detail_pembayaran WHERE TANGGAL BETWEEN :tgl_awal AND :tgl_akhir AND `ID PROYEK` = :id;";
+				$bindParam = array(
+					':tgl_awal' => $tgl_awal,
+					':tgl_akhir' => $tgl_akhir,
+					':id' => $id
+				);
+			}
+			else {
+				$query = "SELECT * FROM v_export_proyek_detail_pembayaran WHERE TANGGAL BETWEEN :tgl_awal AND :tgl_akhir;";
+				$bindParam = array(
+					':tgl_awal' => $tgl_awal,
+					':tgl_akhir' => $tgl_akhir,
+				);
+			}
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				$bindParam
+			);
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
 		}
 
 		/**

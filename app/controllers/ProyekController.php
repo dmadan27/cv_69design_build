@@ -25,6 +25,7 @@
 			$this->helper();
 			$this->validation();
 			$this->excel();
+			$this->excel_v2();
 		}
 
 		/**
@@ -40,10 +41,14 @@
 		 * Proses menampilkan list semua data proyek
 		 */
 		protected function list() {
-			$css = array('assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css');
+			$css = array(
+				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
+			);
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
 				'app/views/proyek/js/initList.js',
 			);
 
@@ -99,7 +104,15 @@
 					$aksiEdit = '<button onclick="getEdit('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
 					$aksiHapus = '<button onclick="getDelete('."'".strtolower($row["id"])."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 					
-					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
+					if($_SESSION['sess_level'] === 'KAS BESAR') {
+						$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
+					}
+					else if($_SESSION['sess_level'] === 'OWNER') {
+						$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
+					}
+					else {
+						$aksi = '';
+					}
 					
 					$dataRow = array();
 					$dataRow[] = $no_urut;
@@ -410,7 +423,7 @@
 		 * @return output {object} array berupa json
 		 */
 		public function action_edit() {
-			if($_SERVER['REQUEST_METHOD'] == "POST") {
+			if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
 				$data = isset($_POST) ? $_POST : false;
 				$dataProyek = isset($_POST['dataProyek']) ? json_decode($_POST['dataProyek'], true) : false;
 				$dataDetail = isset($_POST['dataDetail']) ? json_decode($_POST['dataDetail'], true) : false;
@@ -532,18 +545,20 @@
 		 * @param id {string}
 		 */
 		public function detail($id) {
-			if($_SESSION['sess_level'] === 'KAS BESAR') {
+			if($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER') {
 				$id = strtoupper($id);
 				$dataProyek = !empty($this->ProyekModel->getById($id)) ? $this->ProyekModel->getById($id) : false;
 
 				if((empty($id) || $id == "") || !$dataProyek) { $this->redirect(BASE_URL."proyek/"); }
 
 				$css = array(
-					'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css'
+					'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+					'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
 				);
 				$js = array(
 					'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 					'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+					'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
 					'app/views/proyek/js/initView.js',
 				);
 
@@ -640,6 +655,52 @@
 		}
 
 		/**
+		 * 
+		 */
+		public function get_list_detail_pembayaran($id) {
+			if($_SERVER['REQUEST_METHOD'] == "POST" && 
+			($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER')) {
+				$id = strtoupper($id);
+				// config datatable
+				$config_dataTable = array(
+					'tabel' => 'v_detail_pembayaran_proyek',
+					'kolomOrder' => array(null, 'tgl', 'nama', 'nama_bank', 'is_DP', 'total'),
+					'kolomCari' => array('tgl', 'nama', 'nama_bank', 'DP', 'total'),
+					'orderBy' => array('tgl' => 'desc'),
+					'kondisi' => 'WHERE id_proyek = "'.$id.'"',
+				);
+
+				$dataDetail = $this->DataTableModel->getAllDataTable($config_dataTable);
+
+				$data = array();
+				$no_urut = $_POST['start'];
+				foreach($dataDetail as $row){
+					$no_urut++;
+					
+					$dataRow = array();
+					$dataRow['no_urut'] = $no_urut;
+					$dataRow['tgl'] = $this->helper->cetakTgl($row['tgl'], 'full');
+					$dataRow['nama'] = $row['nama'];
+					$dataRow['nama_bank'] = $row['nama_bank'];
+					$dataRow['dp'] = $row['DP'];
+					$dataRow['total'] = $this->helper->cetakRupiah($row['total']);
+
+					$data[] = $dataRow;
+				}
+
+				$output = array(
+					'draw' => $_POST['draw'],
+					'recordsTotal' => $this->DataTableModel->recordTotal(),
+					'recordsFiltered' => $this->DataTableModel->recordFilter(),
+					'data' => $data,
+				);
+
+				echo json_encode($output);
+			}
+			else { $this->redirect(); }
+		}
+
+		/**
 		 * Method get_list_pengajuan_sub_kas_kecil
 		 * Proses get data pengajuan sub kas kecil sesuai dengan id proyek
 		 * Data akan di parsing dalam bentuk dataTable
@@ -647,7 +708,8 @@
 		 * @return result {object} array berupa json
 		 */
 		public function get_list_pengajuan_sub_kas_kecil($id){
-			if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
+			if($_SERVER['REQUEST_METHOD'] == "POST" && 
+			($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER')) {
 				$id = strtoupper($id);
 				// config datatable
 				$config_dataTable = array(
@@ -720,7 +782,8 @@
 		 * @return result {object} array berupa json
 		 */
 		public function get_list_operasional_proyek($proyek){
-			if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
+			if($_SERVER['REQUEST_METHOD'] == "POST" && 
+			($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER')) {
 				// config datatable
 				$config_dataTable = array(
 					'tabel' => 'v_operasional_proyek',
@@ -841,7 +904,7 @@
 		 * Proses get data skk yang aktif untuk keperluan select
 		 * @return data {object} array berupa json
 		 */
-		public function get_skk(){
+		public function get_skk() {
 			if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR'){
 				$data_skk = $this->ProyekModel->get_selectSkk();
 				$data = array();
@@ -864,7 +927,7 @@
 		 * Proses get data bank yang aktif untuk keperluan select
 		 * @return data {object} array berupa json
 		 */
-		public function get_bank(){
+		public function get_bank() {
 			if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
 				$data_bank = $this->ProyekModel->get_selectBank();
 				$data = array();
@@ -885,8 +948,48 @@
 		/**
 		 * Method export
 		 */
-		public function export(){
-			
+		public function export() {
+			if($_SERVER['REQUEST_METHOD'] == 'POST' && 
+			($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER')) {
+				$tgl_awal = isset($_POST['tgl_awal']) ? $_POST['tgl_awal'] : false;
+				$tgl_akhir = isset($_POST['tgl_akhir']) ? $_POST['tgl_akhir'] : false;
+				
+				$row = $this->ProyekModel->export($tgl_awal, $tgl_akhir);
+				$column = array_keys($row[0]);
+
+				$detailRow = $this->ProyekModel->export_detail_pembayaran($tgl_awal, $tgl_akhir);
+				$detailColumn = array_keys($detailRow[0]);
+				$detail = array(
+					array(
+						'row' => $detailRow,
+						'column' => $detailColumn,
+						'sheet' => 'Data Detail Pembayaran Proyek'
+					)
+				);
+
+				$config = array(
+					'data' => array(
+						'main' => array(
+							'row' => $row,
+							'column' => $column,
+							'sheet' => 'Data Proyek'
+						),
+						'detail' => $detail
+					),
+					'property' => array(
+						'title' => 'Data Proyek Tanggal '.$tgl_awal.' s.d '.$tgl_akhir,
+						'subject' => 'Data Proyek Tanggal '.$tgl_awal.' s.d '.$tgl_akhir,
+						'description' => 'List Data Proyek Tanggal '.$tgl_awal.' s.d '.$tgl_akhir,
+					)
+				); 
+				
+				// die(var_dump($config));
+
+				$this->excel_v2->setProperty($config['property']);
+				$this->excel_v2->setData($config['data']['main'], $config['data']['detail']);
+				$this->excel_v2->getExcel(1, 2);
+			}
+			else { die(ACCESS_DENIED); }
 		}
 
 		/**

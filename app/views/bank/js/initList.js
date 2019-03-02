@@ -32,7 +32,7 @@ var bankTable = $("#bankTable").DataTable({
     ],
     createdRow: function(row, data, dataIndex){
         if(data[0]) $('td:eq(0)', row).addClass('text-right');
-        if(data[2]) $('td:eq(3)', row).addClass('text-right');
+        if(data[2]) $('td:eq(2)', row).addClass('text-right');
         if($(data[3]).text().toLowerCase() == "nonaktif") $(row).addClass('danger');
     }
 });
@@ -42,7 +42,6 @@ $(document).ready(function() {
     // btn Export
     $('#exportExcel').on('click', function(){
         console.log('Button Export Excel Bank clicked...');
-        
         getExport();
     });
 
@@ -64,8 +63,39 @@ $(document).ready(function() {
  * Function getExport
  * Proses request get data untuk di export ke excel
  */
-function getExport(){
-    window.location.href = BASE_URL+'bank/export/';
+function getExport() {
+    if(LEVEL === 'KAS BESAR' || LEVEL === 'OWNER') {
+        $.ajax({
+            url: BASE_URL+'bank/export/',
+            type: 'POST',
+            dataType: 'JSON',
+            data: {},
+            beforeSend: function(){
+                console.log('Loading render file excel..');
+                $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+            },
+            success: function(response) {
+                console.log('%cResponse getExport Bank: ', 'color: blue; font-weight: bold', response);
+                $('.box .overlay').remove();
+                if(response.success) {
+                    var $a = $("<a>");
+                    $a.attr("href",response.file);
+                    $("body").append($a);
+                    $a.attr("download", response.filename);
+                    $a[0].click();
+                    $a.remove();   
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown){ // error handling
+                console.log('%cResponse Error getExport Bank', 'color: red; font-weight: bold', {jqXHR, textStatus, errorThrown});
+                swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+                $('.box .overlay').remove();
+            }
+        });
+    }
+    else {
+
+    }
 }
 
 /**

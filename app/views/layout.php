@@ -34,28 +34,38 @@
 		    const BASE_URL = "<?php print BASE_URL; ?>";
 			const BASE_API_MOBILE = "<?php print BASE_API_MOBLIE; ?>";
 			var urlParams = <?php echo json_encode($_GET, JSON_HEX_TAG);?>;
-		    var level = "<?php print $_SESSION['sess_level']; ?>";
+		    const LEVEL = "<?php print $_SESSION['sess_level']; ?>";
 
 		    /**
 			 * Function setNotif
 			 * Base function untuk akses notfikasi toastr
 			 * @param {object} notif
+			 * @param {type} string
 			 */
-			function setNotif(notif){
-				switch(notif.type){
-					case 'success':
-						toastr.success(notif.message, notif.title);
-						break;
-					case 'warning':
-						toastr.warning(notif.message, notif.title);
-						break;
-					case 'error':
-						toastr.error(notif.message, notif.title);
-						break;
-					default:
-						toastr.info(notif.message, notif.title);
-						break; 
+			function setNotif(notif, type = 'toastr') {
+				if(type == 'toastr') {
+					switch(notif.type){
+						case 'success':
+							toastr.success(notif.message, notif.title);
+							break;
+						case 'warning':
+							toastr.warning(notif.message, notif.title);
+							break;
+						case 'error':
+							toastr.error(notif.message, notif.title);
+							break;
+						default:
+							toastr.info(notif.message, notif.title);
+							break; 
+					}
 				}
+				else if(type == 'swal') {
+					swal(notif.message, notif.title, notif.type);
+				}
+				else {
+					alert(notif.title+'\n'+notif.message);
+				}
+				
 			}
 
 			/**

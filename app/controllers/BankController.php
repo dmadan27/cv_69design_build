@@ -427,7 +427,8 @@
 		 * Method export
 		 */
 		public function export() {
-			if($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER') {
+			if($_SERVER['REQUEST_METHOD'] == 'POST' && 
+			($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER')) {
 				$row = $this->BankModel->export();
 				$column = array_keys($row[0]);
 
@@ -453,7 +454,7 @@
 					),
 					'property' => array(
 						'title' => 'Data Bank',
-						'subject' => 'Data Bank Cv. 69 Design Build',
+						'subject' => 'Data Bank CV. 69 Design Build',
 						'description' => 'List Semua Data Bank CV. 69 Design Build' 
 					)
 				); 
@@ -466,23 +467,38 @@
 		}
 
 		/**
-		*	Export data ke format Excel
-		*/
-		public function export_mutasi() {
-			if($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER') {
-				$tgl_awal = $_GET['tgl_awal'];
-				$tgl_akhir = $_GET['tgl_akhir'];
-				$id = $_GET['id'];
+		 * Method export_mutasi
+		 * @param id {integer}
+		 */
+		public function export_mutasi($id) {
+			if($_SERVER['REQUEST_METHOD'] == 'POST' && 
+			($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER')) {
+				$tgl_awal = isset($_POST['tgl_awal']) ? $_POST['tgl_awal'] : false;
+				$tgl_akhir = isset($_POST['tgl_akhir']) ? $_POST['tgl_akhir'] : false;
 
 				$row = $this->BankModel->export_mutasi($id, $tgl_awal, $tgl_akhir);
-				$header = array_keys($row[0]);
-				$header[0] = 'ID BANK';
-			
-				$this->excel->setProperty('Mutasi Bank','Mutasi Bank','Data Mutasi Bank');
-				$this->excel->setData($header, $row);
-				$this->excel->getData('Data Mutasi Bank', 'Data Mutasi Bank', 4, 5 );
+				$column = array_keys($row[0]);
+				$column[0] = 'ID BANK';
 
-				$this->excel->getExcel('Data Mutasi Bank');
+				$config = array(
+					'data' => array(
+						'main' => array(
+							'row' => $row,
+							'column' => $column,
+							'sheet' => 'Data Mutasi Bank '.$row[0]['BANK']
+						),
+						'detail' => NULL
+					),
+					'property' => array(
+						'title' => 'Data Mutasi Bank '.$row[0]['BANK'].' Tanggal '.$tgl_awal.' s.d '.$tgl_akhir,
+						'subject' => 'Data Mutasi Bank '.$row[0]['BANK'].' Tanggal '.$tgl_awal.' s.d '.$tgl_akhir,
+						'description' => 'Data Mutasi Bank '.$row[0]['BANK'].' Tanggal '.$tgl_awal.' s.d '.$tgl_akhir 
+					)
+				);
+
+				$this->excel_v2->setProperty($config['property']);
+				$this->excel_v2->setData($config['data']['main'], $config['data']['detail']);
+				$this->excel_v2->getExcel(1, 2);
 			}
 			else { die(ACCESS_DENIED); }
 		}

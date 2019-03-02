@@ -1,5 +1,15 @@
 # View Proyek #
 
+-- View detail pembayaran proyek
+    CREATE OR REPLACE VIEW v_detail_pembayaran_proyek AS
+    SELECT
+        dp.id, dp.id_proyek, dp.tgl, dp.nama, dp.total,
+        dp.id_bank, b.nama nama_bank, dp.is_DP,
+        (CASE WHEN dp.is_DP = '1' THEN 'YA' ELSE 'TIDAK' END) as DP
+    FROM detail_proyek dp
+    JOIN bank b ON b.id = dp.id_bank;
+-- End View detail pembayaran proyek
+
 -- View Get Sub Kas Kecil Proyek
     CREATE OR REPLACE VIEW v_get_skk_proyek AS
     SELECT
@@ -49,7 +59,7 @@
 -- End View Export Proyek Lits
 
 -- View Export Proyek view detail
-    CREATE OR REPLACE VIEW v_export_proyek_detail AS
+    CREATE OR REPLACE VIEW v_export_proyek_detail_full AS
     SELECT 
         -- proyek
         p.id AS 'ID PROYEK', p.pemilik PEMILIK, p.tgl TANGGAL, p.pembangunan PEMBANGUNAN, p.luas_area AS 'LUAS AREA',
@@ -70,5 +80,34 @@
     JOIN bank b ON b.id = dp.id_bank;
     -- WHERE p.id = ''
 -- End View Export View Detail
+
+-- View Export Proyek detail pembayaran
+    CREATE OR REPLACE VIEW v_export_proyek_detail_pembayaran AS
+    SELECT 
+        -- proyek
+        p.id AS 'ID PROYEK', p.pemilik PEMILIK, p.tgl TANGGAL, p.pembangunan PEMBANGUNAN, 
+        
+        -- detail proyek (pembayaran)
+        dp.tgl AS 'TANGGAL PEMBAYARAN', dp.nama PEMBAYARAN, b.nama AS 'BANK', dp.total AS 'TOTAL PEMBAYARAN',
+        (CASE WHEN dp.is_DP = '1' THEN 'YA' ELSE 'TIDAK' END) AS 'DP'
+        
+    FROM proyek p
+    JOIN detail_proyek dp ON dp.id_proyek = p.id
+    JOIN bank b ON b.id = dp.id_bank;
+-- End View Export Proyek detail pembayaran
+
+-- View Export Proyek logistik (SKK)
+    CREATE OR REPLACE VIEW v_export_proyek_logistik_skk AS
+    SELECT 
+        -- proyek
+        p.id AS 'ID PROYEK', p.pemilik PEMILIK, p.tgl TANGGAL, p.pembangunan PEMBANGUNAN, 
+        
+        -- detail logistik proyek (skk)
+        skk.id AS 'ID SUB KAS KECIL', skk.nama
+        
+    FROM proyek p
+    JOIN logistik_proyek lp ON lp.id_proyek = p.id
+    JOIN sub_kas_kecil skk ON skk.id = lp.id_sub_kas_kecil;
+-- End View Export Proyek logistik (SKK)
 
 # End View Proyek #

@@ -90,12 +90,6 @@
             
             // set title sheet awal
             $this->excel->getActiveSheet(0)->setTitle($main_sheet);
-
-            // // set title header
-            // $this->excel->setActiveSheetIndex(0)->setCellValue('A1', $main_sheet);
-			// $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setBold(TRUE); // Set bold kolom A1
-			// $this->excel->getActiveSheet()->getStyle('A1')->getFont()->setSize(12); // Set font size 15 untuk kolom A1
-            // $this->excel->getActiveSheet()->getStyle('A1')->getAlignment();
             
             $column = 'A';
             $no = 1;
@@ -136,6 +130,7 @@
                 foreach ($detail_data['data'] as $item) {
                     
                     $sheetDetail = $this->excel->createSheet($i);
+                    $this->excel->setActiveSheetIndex($i);
 
                     foreach($item as $key => $row) {
 
@@ -157,7 +152,7 @@
                             foreach($row as $rows) {
                                 foreach($rows as $valueRow){
                                     $sheetDetail->setCellValue($column.$numRow, $valueRow);
-                                    // $this->excel->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
+                                    $this->excel->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
                                     $column++;	
                                 }
                                 $numRow++;
@@ -178,33 +173,31 @@
         }
 
         /**
-         * 
+         * Method getExcel
+         * @param start_column_header {integer}
+         * @param start_row_data {integer}
          */
         public function getExcel($start_column_header, $start_row_data) {
-            // echo '<pre>';
-            
-            // echo 'Property: ';
-            // var_dump($this->property);
-            // echo '</br>';
-
-            // echo 'Data: ';
-            // var_dump($this->data);
-            // echo '</br>';
-
-            // echo '</pre>';
-
-
             // render data ke excel
             $this->getData($start_column_header, $start_row_data);
-
+            $filename = $this->property['title']."_".date('d-m-Y').".xlsx";
+            
             // Proses pembentukan file excel
 			header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-			header('Content-Disposition: attachment; filename="'.$this->property['title'].'".xlsx"'); // Set nama file excel nya
+			header('Content-Disposition: attachment; filename="'.$filename.'"'); // Set nama file excel nya
 			header('Cache-Control: max-age=0');
 
+            ob_start();
             $write = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
+            $write->save('php://output');
+            $xlsData = ob_get_contents();
             ob_end_clean();
-			$write->save('php://output');
-			exit;
+
+            $response =  array(
+                'success' => true,
+                'filename' => $filename,
+                'file' => "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,".base64_encode($xlsData)
+            );
+            die(json_encode($response));
         }
     }

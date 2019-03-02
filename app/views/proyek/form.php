@@ -263,7 +263,7 @@
 	</section>
 </div>
 
-<?php include_once('modal.php'); ?>
+<?php include_once('form_detail_pembayaran.php'); ?>
 <script type="text/javascript">
 	var listDetail = [];
 	var indexDetail = 0;

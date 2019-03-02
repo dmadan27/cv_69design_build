@@ -377,8 +377,14 @@
                     		<div class="col-md-12 col-xs-12">
                     			<div class="btn-group">
 									<a href="<?= BASE_URL.'proyek/'; ?>" class="btn btn-default btn-flat btn-lg" role="button">Kembali</a>
-	                    			<a href="<?= BASE_URL.'proyek/form/'.strtolower($proyek['id']); ?>" class="btn btn-success btn-flat btn-lg" role="button">Edit</a>
-								</div>		
+	                    			<?php
+                                        if($_SESSION['sess_level'] === 'KAS BESAR') {
+                                            ?>
+                                            <a href="<?= BASE_URL.'proyek/form/'.strtolower($proyek['id']); ?>" class="btn btn-success btn-flat btn-lg" role="button">Edit</a>
+                                            <?php
+                                        }
+                                    ?>
+                                </div>		
                        		</div>
                     	</div>
                     </div>

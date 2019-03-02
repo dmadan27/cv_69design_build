@@ -135,8 +135,36 @@ function export_excel(id) {
             text: 'Tanggal Awal Melebihi Tanggal Akhir!'
         })
     } else {
-    // console.log(id)
-    window.location.href = BASE_URL+'bank/export-mutasi?id='+ id + '&tgl_awal=' + tgl_awal + '&tgl_akhir=' + tgl_akhir;
+		$.ajax({
+			url: BASE_URL+'bank/export-mutasi/'+id,
+			type: 'POST',
+			dataType: 'JSON',
+			data: {
+				'tgl_awal': tgl_awal,
+				'tgl_akhir': tgl_akhir
+			},
+			beforeSend: function(){
+				console.log('Loading render file excel..');
+				$('.box-mutasi').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+			},
+			success: function(response) {
+				console.log('%cResponse getExport Mutasi Bank: ', 'color: blue; font-weight: bold', response);
+				$('.box-mutasi .overlay').remove();
+				if(response.success) {
+					var $a = $("<a>");
+					$a.attr("href",response.file);
+					$("body").append($a);
+					$a.attr("download", response.filename);
+					$a[0].click();
+					$a.remove();   
+				}
+			},
+			error: function (jqXHR, textStatus, errorThrown){ // error handling
+				console.log('%cResponse Error getExport Mutasi Bank', 'color: red; font-weight: bold', {jqXHR, textStatus, errorThrown});
+				swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+				$('.box-mutasi .overlay').remove();
+			}
+		})
     }
 }
 
