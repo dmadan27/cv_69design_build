@@ -17,26 +17,40 @@ var detail_pembayaranTable = $("#detail_pembayaran").DataTable({
     },
     "lengthMenu": [ 10, 25, 75, 100 ],
     "pageLength": 10,
-    // order: [],
-    // processing: true,
-    // serverSide: true,
-    // ajax: {
-    //     url: BASE_URL+"proyek/get-list-pengajuan-sub-kas-kecil/"+$('#id').val().trim(),
-    //     type: 'POST',
-    //     data: {}
-    // },
-    // "columnDefs": [
-    //     {
-    //         "targets":[0, 8],
-    //         "orderable":false,
-    //     }
-    // ],
-    // createdRow: function(row, data, dataIndex){
-    //     // if($(data[7]).text().toLowerCase() == "selesai") $(row).addClass('danger');
-    //     for(var i = 0; i < 7; i++){
-    //         if(i == 0 || i == 5 || i == 6) $('td:eq('+i+')', row).addClass('text-right');
-    //     }
-    // }
+    "order": [],
+    "processing": true,
+    "serverSide": true,
+    "ajax": {
+        url: BASE_URL+"proyek/get-list-detail-pembayaran/"+$('#id').val().trim(),
+        type: 'POST',
+        data: {}
+    },
+    "columns": [
+        {
+            className: 'text-right',
+            orderable: false,
+            data: 'no_urut'
+        },
+        {data: 'tgl'},
+        {data: 'nama'},
+        {data: 'nama_bank'},
+        {
+            data: 'DP',
+            render: function(data) {
+                var status_dp = '';
+                console.log(data);
+
+                if(data == 'YA') { status_dp = '<span class="label label-success">'+data+'</span>'; }
+                else { status_dp = '<span class="label label-primary">'+data+'</span>'; }
+
+                return status_dp;
+            }
+        },
+        {
+            className: 'text-right',
+            data: 'total',
+        }
+    ]
 });
 
 // tabel detail logistik skk
@@ -57,27 +71,7 @@ var detail_logistikTable = $("#detail_logistik").DataTable({
         }
     },
     "lengthMenu": [ 10, 25, 75, 100 ],
-    "pageLength": 10,
-    // order: [],
-    // processing: true,
-    // serverSide: true,
-    // ajax: {
-    //     url: BASE_URL+"proyek/get-list-operasional-proyek/"+$('#id').val().trim(),
-    //     type: 'POST',
-    //     data: {}
-    // },
-    // "columnDefs": [
-    //     {
-    //         "targets":[0, 8],
-    //         "orderable":false,
-    //     }
-    // ],
-    // createdRow: function(row, data, dataIndex){
-    //     // if($(data[7]).text().toLowerCase() == "selesai") $(row).addClass('danger');
-    //     for(var i = 0; i < 7; i++){
-    //         if(i == 0 || i == 7) $('td:eq('+i+')', row).addClass('text-right');
-    //     }
-    // }
+    "pageLength": 10
 });
 
 // tabel pengajuan skk

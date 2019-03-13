@@ -1,7 +1,6 @@
 <?php 
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung"); 
 	$proyek = $this->data['data_proyek'];
-	$detail = $this->data['data_detail'];
 	$skk = $this->data['data_skk'];
 	$arus = $this->data['data_arus'];
 ?>
@@ -110,21 +109,24 @@
 				<div class="row">
 					<div class="col-md-12">
 						<div class="box">
-                            <div class="box-header">
-                                <div class="row">
-                                    <div class="col-md-12">
+                            <div class="box-header with-border">
+                                <!-- <div class="row">
+                                    <div class="col-md-12"> -->
                                         <h4 class="box-title">Detail Pembayaran Proyek</h4>
-                                    </div>
+                                    <!-- </div>
                                 </div>
                                 <hr>
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        <button type="button" class="btn btn-success btn-flat" id="exportExcel_pembayaran"><i class="fa fa-file-excel-o"></i> Export Excel</button>
-                                        <button type="button" class="btn btn-info btn-flat pull-right" id="refreshTable_pembayaran"><i class="fa fa-refresh"></i> Refresh</button>
-                                    </div>
-                                </div>
+                                    <div class="col-md-12"> -->
+                                        
+                                    <!-- </div>
+                                </div> -->
                             </div>
 							<div class="box-body">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-success btn-flat" id="exportExcel_pembayaran"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+                                    <button type="button" class="btn btn-info btn-flat pull-right" id="refreshTable_pembayaran"><i class="fa fa-refresh"></i> Refresh</button>
+                                </div>
 								<div class="table-responsive">
 									<table id="detail_pembayaran" class="table table-bordered table-hover" style="width: 100%;">
 										<thead>
@@ -138,21 +140,6 @@
 											</tr>
 										</thead>
 										<tbody>
-											<?php
-												$no = 1;
-												foreach($detail as $row){
-													echo "<tr>";
-													echo "<td class='text-right'>".$no++."</td>";
-													$tempNo = 0;
-													foreach($row as $value){
-														if($tempNo == 4) echo "<td class='text-right'>".$value."</td>";
-														else echo "<td>".$value."</td>";
-
-														$tempNo++;
-													}
-													echo "</tr>";
-												}
-											?>
 										</tbody>
 									</table>
 								</div>
@@ -209,6 +196,10 @@
                 <div class="box">
                     <div class="box-header">
                         <h4 class="box-title">Arus Terment dan Kas Pelaksanaan Project</h4>
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="box-body">
                         <div class="row">
@@ -284,21 +275,28 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="box">
-                    <div class="box-header">
-                        <div class="row">
-                            <div class="col-md-12">
+                    <div class="box-header with-border">
+                        <!-- <div class="row">
+                            <div class="col-md-12"> -->
                                 <h4 class="box-title">Detail Pengajuan Sub Kas Kecil</h4>
-                            </div>
+                            <!-- </div>
                         </div>
                         <hr>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <button type="button" class="btn btn-success btn-flat" id="exportExcel_pengajuan"><i class="fa fa-file-excel-o"></i> Export Excel</button>
-                                <button type="button" class="btn btn-info btn-flat pull-right" id="refreshTable_pengajuan"><i class="fa fa-refresh"></i> Refresh</button>
-                            </div>
+                        <div class="row"> -->
+                            <!-- <div class="col-md-12"> -->
+                                
+                            <!-- </div>
+                        </div> -->
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
                         </div>
                     </div>
                     <div class="box-body">
+                        <div class="form-group">
+                            <button type="button" class="btn btn-success btn-flat" id="exportExcel_pengajuan"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+                            <button type="button" class="btn btn-info btn-flat pull-right" id="refreshTable_pengajuan"><i class="fa fa-refresh"></i> Refresh</button>
+                        </div>
                         <div class="table-responsive">
                             <table id="pengajuan_skkTable" class="table table-bordered table-hover" style="width: 100%;">
                                 <thead>
@@ -328,21 +326,28 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="box">
-                    <div class="box-header">
-                        <div class="row">
-                            <div class="col-md-12">
+                    <div class="box-header with-border">
+                        <!-- <div class="row">
+                            <div class="col-md-12"> -->
                                 <h4 class="box-title">Detail Operasional Proyek</h4>
-                            </div>
+                            <!-- </div>
                         </div>
                         <hr>
                         <div class="row">
-                            <div class="col-md-12">
-                                <button type="button" class="btn btn-success btn-flat" id="exportExcel_operasional"><i class="fa fa-file-excel-o"></i> Export Excel</button>
-                                <button type="button" class="btn btn-info btn-flat pull-right" id="refreshTable_operasional"><i class="fa fa-refresh"></i> Refresh</button>
-                            </div>
+                            <div class="col-md-12"> -->
+                                
+                            <!-- </div>
+                        </div> -->
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                            </button>
                         </div>
                     </div>
                     <div class="box-body">
+                        <div class=form-group>
+                            <button type="button" class="btn btn-success btn-flat" id="exportExcel_operasional"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+                            <button type="button" class="btn btn-info btn-flat pull-right" id="refreshTable_operasional"><i class="fa fa-refresh"></i> Refresh</button>
+                        </div>
                         <div class="table-responsive">
                             <table id="operasional_proyekTable" class="table table-bordered table-hover" style="width: 100%">
                                 <thead>
