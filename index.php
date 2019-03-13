@@ -1,36 +1,43 @@
 <?php
-	date_default_timezone_set('Asia/Jakarta');
-	session_start();
 
-	define("BASE_PATH", true);
-	define("ACCESS_DENIED", json_encode(array('success' => false, 'message' => 'Access Denied')));
-	define('ROOT', dirname(__FILE__)); // root file web
-	define('DS', DIRECTORY_SEPARATOR); // pemisah direktori '\'
-	define('STATUS_DEV', 'DEVELOPMENT'); // DEVELOPMENT, LIVE, TESTING, PRODUCTION
+date_default_timezone_set('Asia/Jakarta');
+session_start();
 
-	/** Load config */
-	require_once "app/config/config.php";
-	require_once "app/config/route.php";
-	require_once "app/library/Database.class.php"; 
-	require_once "app/library/Controller.class.php";
-	require_once "app/library/Page.class.php";
-	require_once "app/library/Auth.class.php";
-	require_once "app/library/Datatable.class.php";
-	require_once "app/library/Helper.class.php";
-	require_once "app/library/Validation.class.php";
-	require_once "app/library/Excel.class.php";
-	require_once "app/library/Excel_v2.class.php";
+define("BASE_PATH", true);
+define("ACCESS_DENIED", json_encode(array('success' => false, 'message' => 'Access Denied'), JSON_PRETTY_PRINT));
+define('ROOT', dirname(__FILE__)); // root file web
+define('DS', DIRECTORY_SEPARATOR); // pemisah direktori '\'
+/**
+ * TYPE ENVIROMENT DEVELOPMENT
+ * DEV --> for Local development
+ * TEST --> for Testing (Pre Production)
+ * PROD --> for Production
+ */
+define('TYPE', 'DEV');
 
-	// load abstract
-	require_once "app/abstracts/CrudAbstract.php";
-	require_once "app/abstracts/Crud_modalsAbstract.php";
+/** Load config */
+require_once "config/config.php";
+require_once "config/route.php";
+require_once "library/Database.class.php"; 
+require_once "library/Controller.class.php";
+require_once "library/Page.class.php";
+require_once "library/Auth.class.php";
+require_once "library/Datatable.class.php";
+require_once "library/Helper.class.php";
+require_once "library/Validation.class.php";
+require_once "library/Excel.class.php";
+require_once "library/Excel_v2.class.php";
 
-	// load interface
-	require_once "app/interfaces/ModelInterface.php";
+// load abstract
+require_once "app/abstracts/CrudAbstract.php";
+require_once "app/abstracts/Crud_modalsAbstract.php";
 
-	// get request
-	$request = isset($_SERVER['PATH_INFO']) ? preg_replace("|/*(.+?)/*$|", "\\1", $_SERVER['PATH_INFO']) : DEFAULT_CONTROLLER;
+// load interface
+require_once "app/interfaces/ModelInterface.php";
 
-	$route = new Route();
-	$route->setUri($request)->getController();
+// get request
+$request = isset($_SERVER['PATH_INFO']) ? preg_replace("|/*(.+?)/*$|", "\\1", $_SERVER['PATH_INFO']) : DEFAULT_CONTROLLER;
+
+$route = new Route();
+$route->setUri($request)->getController();
 
