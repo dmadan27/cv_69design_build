@@ -24,7 +24,6 @@
 			$this->model('DataTableModel');
 			$this->helper();
 			$this->validation();
-			$this->excel();
 			$this->excel_v2();
 		}
 
@@ -71,8 +70,7 @@
 		 * @return output {object} array berupa json
 		 */
 		public function get_list() {
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
-				// config datatable
+			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				$config_dataTable = array(
 					'tabel' => 'proyek',
 					'kolomOrder' => array(null, 'id', 'pemilik', 'tgl', 'pembangunan', 'kota', 'total', 'progress', 'status', null),
@@ -107,12 +105,10 @@
 					if($_SESSION['sess_level'] === 'KAS BESAR') {
 						$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
 					}
-					else if($_SESSION['sess_level'] === 'OWNER') {
+					else if($_SESSION['sess_level'] === 'OWNER' || $_SESSION['sess_level'] === 'KAS KECIL') {
 						$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
 					}
-					else {
-						$aksi = '';
-					}
+					else { $aksi = ''; }
 					
 					$dataRow = array();
 					$dataRow[] = $no_urut;
@@ -138,7 +134,7 @@
 
 				echo json_encode($output);
 			}
-			else { $this->redirect(); }	
+			else { die(ACCESS_DENIED); }	
 		}
 
 		/**
@@ -150,6 +146,9 @@
 			if($_SESSION['sess_level'] === 'KAS BESAR') {
 				if($id)	{ $this->edit(strtoupper($id)); }
 				else { $this->add(); }
+			}
+			else {
+				$this->redirect(BASE_URL.'proyek');
 			}
 		}
 
@@ -302,7 +301,7 @@
 				
 				echo json_encode($output);
 			}
-			else { $this->redirect(); }
+			else { die(ACCESS_DENIED); }
 		}
 
 		/**
@@ -334,7 +333,7 @@
 
 				echo json_encode($output);
 			}
-			else { $this->redirect(); }
+			else { die(ACCESS_DENIED); }
 				
 		}
 
@@ -414,7 +413,7 @@
 
 				echo json_encode($output);
 			}
-			else { $this->redirect(); }	
+			else { die(ACCESS_DENIED); }	
 		}
 
 		/**
@@ -536,7 +535,7 @@
 
 				echo json_encode($output);
 			}
-			else { $this->redirect(); }
+			else { die(ACCESS_DENIED); }
 		}
 
 		/**
@@ -545,121 +544,102 @@
 		 * @param id {string}
 		 */
 		public function detail($id) {
-			if($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER') {
-				$id = strtoupper($id);
-				$dataProyek = !empty($this->ProyekModel->getById($id)) ? $this->ProyekModel->getById($id) : false;
+			$id = strtoupper($id);
+			$dataProyek = !empty($this->ProyekModel->getById($id)) ? $this->ProyekModel->getById($id) : false;
 
-				if((empty($id) || $id == "") || !$dataProyek) { $this->redirect(BASE_URL."proyek/"); }
+			if((empty($id) || $id == "") || !$dataProyek) { $this->redirect(BASE_URL."proyek/"); }
 
-				$css = array(
-					'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
-					'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
-				);
-				$js = array(
-					'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
-					'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
-					'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
-					'app/views/proyek/js/initView.js',
-				);
+			$css = array(
+				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
+			);
+			$js = array(
+				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
+				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
+				'app/views/proyek/js/initView.js',
+			);
 
-				$config = array(
-					'title' => array(
-						'main' => 'Data Proyek',
-						'sub' => 'Detail Data Proyek',
-					),
-					'css' => $css,
-					'js' => $js,
-				);
+			$config = array(
+				'title' => array(
+					'main' => 'Data Proyek',
+					'sub' => 'Detail Data Proyek',
+				),
+				'css' => $css,
+				'js' => $js,
+			);
 
-				$parsing_dataProyek = array(
-					'id' => $dataProyek['id'],
-					'pemilik' => $dataProyek['pemilik'],
-					'tgl' => $this->helper->cetakTgl($dataProyek['tgl'], 'full'),
-					'pembangunan' => $dataProyek['pembangunan'],
-					'luas_area' => $dataProyek['luas_area'],
-					'alamat' => $dataProyek['alamat'],
-					'kota' => $dataProyek['kota'],
-					'estimasi' => $dataProyek['estimasi'].' Bulan',
-					'total' => $this->helper->cetakRupiah($dataProyek['total']),
-					'dp' => $this->helper->cetakRupiah($dataProyek['dp']),
-					'cco' => $this->helper->cetakRupiah($dataProyek['cco']),
-					'status' => (strtolower($dataProyek['status']) == "lunas") ? 
-						'<span class="label label-success">'.$dataProyek['status'].'</span>' : 
-						'<span class="label label-primary">'.$dataProyek['status'].'</span>',
-					'progress' => array(
-						'style' => 'style="width: '.$dataProyek['progress'].'%"',
-						'value' => $dataProyek['progress'],
-						'text' => $dataProyek['progress'].'% Success',
-					),
-				);
+			$parsing_dataProyek = array(
+				'id' => $dataProyek['id'],
+				'pemilik' => $dataProyek['pemilik'],
+				'tgl' => $this->helper->cetakTgl($dataProyek['tgl'], 'full'),
+				'pembangunan' => $dataProyek['pembangunan'],
+				'luas_area' => $dataProyek['luas_area'],
+				'alamat' => $dataProyek['alamat'],
+				'kota' => $dataProyek['kota'],
+				'estimasi' => $dataProyek['estimasi'].' Bulan',
+				'total' => $this->helper->cetakRupiah($dataProyek['total']),
+				'dp' => $this->helper->cetakRupiah($dataProyek['dp']),
+				'cco' => $this->helper->cetakRupiah($dataProyek['cco']),
+				'status' => (strtolower($dataProyek['status']) == "lunas") ? 
+					'<span class="label label-success">'.$dataProyek['status'].'</span>' : 
+					'<span class="label label-primary">'.$dataProyek['status'].'</span>',
+				'progress' => array(
+					'style' => 'style="width: '.$dataProyek['progress'].'%"',
+					'value' => $dataProyek['progress'],
+					'text' => $dataProyek['progress'].'% Success',
+				),
+			);
 
-				$dataDetail = array();
-				foreach($this->ProyekModel->getDetailById($id) as $row){
-					$dataRow = array();
-					$dataRow['tgl_detail'] = $this->helper->cetakTgl($row['tgl_detail'], 'full');
-					$dataRow['nama_detail'] = $row['nama_detail'];
-					$dataRow['nama_bank'] = $row['nama_bank'];
-					$dataRow['is_DP'] = ($row['is_DP'] == '1') ? 
-						'<span class="label label-success">YA</span>' : 
-						'<span class="label label-primary">TIDAK</span>';
-					$dataRow['total_detail'] = $this->helper->cetakRupiah($row['total_detail']);
+			$dataSkk = array();
+			foreach($this->ProyekModel->getSkkById($id) as $row){
+				$dataRow = array();
+				$dataRow['id_skk'] = $row['id_skk'];
+				$dataRow['nama'] = $row['nama'];
 
-					$dataDetail[] = $dataRow;
-				}
-
-				$dataSkk = array();
-				foreach($this->ProyekModel->getSkkById($id) as $row){
-					$dataRow = array();
-					$dataRow['id_skk'] = $row['id_skk'];
-					$dataRow['nama'] = $row['nama'];
-
-					$dataSkk[] = $dataRow;
-				}
-
-				$total_pelaksana_utama = $dataProyek['total'] + $dataProyek['cco'];
-				$nilaiTermint_diTerima = $this->ProyekModel->getTermintMasuk($id)['total_termint'];
-				$keluaran_tunai = $this->ProyekModel->getKeluaranTunai($id);
-				$keluaran_kredit = $this->ProyekModel->getPengeluaran_operasionalProyek($id, 'KREDIT')['total'];
-				$saldo_kas_pelaksanaan = $total_pelaksana_utama - ($keluaran_tunai + $keluaran_kredit);
-				$selisih = $nilaiTermint_diTerima - $keluaran_tunai;
-
-				$dataArus = array(
-					'total_pelaksana_utama' => $this->helper->cetakRupiah($total_pelaksana_utama),
-					'nilai_rab' => $this->helper->cetakRupiah($dataProyek['total']),
-					'cco' => $this->helper->cetakRupiah($dataProyek['cco']),
-					'nilai_terment_diterima' => $this->helper->cetakRupiah($nilaiTermint_diTerima),
-					'sisa_terment_project' => $this->helper->cetakRupiah($total_pelaksana_utama - $nilaiTermint_diTerima),
-					'nilai_terment_masuk' => $this->helper->cetakRupiah($nilaiTermint_diTerima),
-					'total_pelaksana_project' => $this->helper->cetakRupiah($total_pelaksana_utama),
-					'keluaran_tunai' => $this->helper->cetakRupiah($keluaran_tunai),
-					'keluaran_kredit' => $this->helper->cetakRupiah($keluaran_kredit),
-					'saldo_kas_pelaksanaan' => $this->helper->cetakRupiah($saldo_kas_pelaksanaan),
-					'selisih' => $this->helper->cetakRupiah($selisih)
-				);
-
-				$data = array(
-					'data_proyek' => $parsing_dataProyek,
-					'data_detail' => $dataDetail,
-					'data_skk' => $dataSkk,
-					'data_arus' => $dataArus,
-				);
-
-				// echo '<pre>';
-				// var_dump($data);
-				// echo '</pre>';
-				// die();
-
-				$this->layout('proyek/view', $config, $data);
+				$dataSkk[] = $dataRow;
 			}
-			else { die(ACCESS_DENIED); }
+
+			$total_pelaksana_utama = $dataProyek['total'] + $dataProyek['cco'];
+			$nilaiTermint_diTerima = $this->ProyekModel->getTermintMasuk($id)['total_termint'];
+			$keluaran_tunai = $this->ProyekModel->getKeluaranTunai($id);
+			$keluaran_kredit = $this->ProyekModel->getPengeluaran_operasionalProyek($id, 'KREDIT')['total'];
+			$saldo_kas_pelaksanaan = $total_pelaksana_utama - ($keluaran_tunai + $keluaran_kredit);
+			$selisih = $nilaiTermint_diTerima - $keluaran_tunai;
+
+			$dataArus = array(
+				'total_pelaksana_utama' => $this->helper->cetakRupiah($total_pelaksana_utama),
+				'nilai_rab' => $this->helper->cetakRupiah($dataProyek['total']),
+				'cco' => $this->helper->cetakRupiah($dataProyek['cco']),
+				'nilai_terment_diterima' => $this->helper->cetakRupiah($nilaiTermint_diTerima),
+				'sisa_terment_project' => $this->helper->cetakRupiah($total_pelaksana_utama - $nilaiTermint_diTerima),
+				'nilai_terment_masuk' => $this->helper->cetakRupiah($nilaiTermint_diTerima),
+				'total_pelaksana_project' => $this->helper->cetakRupiah($total_pelaksana_utama),
+				'keluaran_tunai' => $this->helper->cetakRupiah($keluaran_tunai),
+				'keluaran_kredit' => $this->helper->cetakRupiah($keluaran_kredit),
+				'saldo_kas_pelaksanaan' => $this->helper->cetakRupiah($saldo_kas_pelaksanaan),
+				'selisih' => $this->helper->cetakRupiah($selisih)
+			);
+
+			$data = array(
+				'data_proyek' => $parsing_dataProyek,
+				'data_skk' => $dataSkk,
+				'data_arus' => $dataArus,
+			);
+
+			// echo '<pre>';
+			// var_dump($data);
+			// echo '</pre>';
+			// die();
+
+			$this->layout('proyek/view', $config, $data);
 		}
 
 		/**
 		 * 
 		 */
 		public function get_list_detail_pembayaran($id) {
-			if($_SERVER['REQUEST_METHOD'] == "POST" && 
-			($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER')) {
+			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				$id = strtoupper($id);
 				// config datatable
 				$config_dataTable = array(
@@ -682,7 +662,7 @@
 					$dataRow['tgl'] = $this->helper->cetakTgl($row['tgl'], 'full');
 					$dataRow['nama'] = $row['nama'];
 					$dataRow['nama_bank'] = $row['nama_bank'];
-					$dataRow['dp'] = $row['DP'];
+					$dataRow['DP'] = $row['DP'];
 					$dataRow['total'] = $this->helper->cetakRupiah($row['total']);
 
 					$data[] = $dataRow;
@@ -697,7 +677,7 @@
 
 				echo json_encode($output);
 			}
-			else { $this->redirect(); }
+			else { die(ACCESS_DENIED); }
 		}
 
 		/**
@@ -708,8 +688,7 @@
 		 * @return result {object} array berupa json
 		 */
 		public function get_list_pengajuan_sub_kas_kecil($id){
-			if($_SERVER['REQUEST_METHOD'] == "POST" && 
-			($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER')) {
+			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				$id = strtoupper($id);
 				// config datatable
 				$config_dataTable = array(
@@ -771,7 +750,7 @@
 
 				echo json_encode($output);
 			}
-			else { $this->redirect(); }
+			else { die(ACCESS_DENIED); }
 		}
 
 		/**
@@ -782,8 +761,7 @@
 		 * @return result {object} array berupa json
 		 */
 		public function get_list_operasional_proyek($proyek){
-			if($_SERVER['REQUEST_METHOD'] == "POST" && 
-			($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER')) {
+			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				// config datatable
 				$config_dataTable = array(
 					'tabel' => 'v_operasional_proyek',
@@ -832,7 +810,7 @@
 
 				echo json_encode($output);
 			}
-			else { $this->redirect(); }
+			else { die(ACCESS_DENIED);; }
 		}
 
 		/**
@@ -870,7 +848,7 @@
 					'notif' => $this->notif
 				));
 			}
-			else { $this->redirect(); }	
+			else { die(ACCESS_DENIED); }	
 		}
 
 		/**
@@ -896,7 +874,7 @@
 				
 				echo json_encode($id);				
 			}
-			else { $this->redirect(); }	
+			else { die(ACCESS_DENIED); }	
 		}
 
 		/**
@@ -919,7 +897,7 @@
 
 				echo json_encode($data);
 			}
-			else { $this->redirect(); }
+			else { die(ACCESS_DENIED); }
 		}
 
 		/**
@@ -942,7 +920,7 @@
 
 				echo json_encode($data);
 			}
-			else { $this->redirect(); }
+			else { die(ACCESS_DENIED); }
 		}
 
 		/**
@@ -967,6 +945,14 @@
 					)
 				);
 
+				// need validation data max and data null
+				if(empty($row)) {
+					die();
+				}
+				else if(count($row) > 20000) {
+					die();
+				}
+
 				$config = array(
 					'data' => array(
 						'main' => array(
@@ -982,8 +968,6 @@
 						'description' => 'List Data Proyek Tanggal '.$tgl_awal.' s.d '.$tgl_akhir,
 					)
 				); 
-				
-				// die(var_dump($config));
 
 				$this->excel_v2->setProperty($config['property']);
 				$this->excel_v2->setData($config['data']['main'], $config['data']['detail']);
