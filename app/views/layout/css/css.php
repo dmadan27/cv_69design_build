@@ -1,4 +1,4 @@
-<?php Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung"); ?>
+<?php Defined("BASE_PATH") or die(ACCESS_DENIED); ?>
 
 <link rel="stylesheet" href="<?= BASE_URL."assets/bower_components/bootstrap/dist/css/bootstrap.min.css"; ?>">
 <!-- Font Awesome -->
@@ -10,7 +10,9 @@
 <!-- toastr -->
 <link rel="stylesheet" href="<?= BASE_URL."assets/bower_components/toastr/build/toastr.min.css"; ?>">
 <!-- Theme style -->
-<?php $this->getCSS(); ?>
+<?php 
+    if(method_exists($this, 'getCSS')) { $this->getCSS(); } 
+?>
 <!-- pace -->
 <link rel="stylesheet" type="text/css" href="<?= BASE_URL."assets/bower_components/PACE/themes/red/pace-theme-flash.css"; ?>">
 <link rel="stylesheet" href="<?= BASE_URL."assets/dist/css/AdminLTE.min.css"; ?>">

@@ -1,5 +1,5 @@
 <?php 
-	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
+	Defined("BASE_PATH") or die(ACCESS_DENIED); 
 	$sess_welcome = isset($_SESSION['sess_welcome']) ? $_SESSION['sess_welcome'] : false;
 	$sess_notif = isset($_SESSION['notif']) ? $_SESSION['notif'] : false;
 	unset($_SESSION['sess_welcome']);
@@ -9,13 +9,16 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Sistem Informasi Manajemen Arus Keuangan dan Proyek | 69 Design & Build</title>
+
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 		<link rel="icon" href="<?= BASE_URL."assets/images/69design_icon.ico"; ?>" type='image/x-icon'>
+		<title><?= $this->title; ?></title>
+
 		<!-- load css default -->
 		<?php require_once "layout/css/css.php"; ?>
+
 	</head>
 	<body class="hold-transition skin-blue sidebar-mini">
 		<div class="wrapper">
@@ -30,81 +33,32 @@
 		</div>
 
 		<!-- load default js -->
-		<script type="text/javascript">
+		<script>
 		    const BASE_URL = "<?php print BASE_URL; ?>";
-			const BASE_API_MOBILE = "<?php print BASE_API_MOBLIE; ?>";
+			const BASE_API_MOBILE = "<?php print BASE_API_MOBILE; ?>";
+			const USER_ID = "<?php print $_SESSION['sess_id']; ?>";
+            const LEVEL = "<?php print $_SESSION['sess_level']; ?>";
 			var urlParams = <?php echo json_encode($_GET, JSON_HEX_TAG);?>;
-		    const LEVEL = "<?php print $_SESSION['sess_level']; ?>";
-
-		    /**
-			 * Function setNotif
-			 * Base function untuk akses notfikasi toastr
-			 * @param {object} notif
-			 * @param {type} string
-			 */
-			function setNotif(notif, type = 'toastr') {
-				if(type == 'toastr') {
-					switch(notif.type){
-						case 'success':
-							toastr.success(notif.message, notif.title);
-							break;
-						case 'warning':
-							toastr.warning(notif.message, notif.title);
-							break;
-						case 'error':
-							toastr.error(notif.message, notif.title);
-							break;
-						default:
-							toastr.info(notif.message, notif.title);
-							break; 
-					}
-				}
-				else if(type == 'swal') {
-					swal(notif.message, notif.title, notif.type);
-				}
-				else {
-					alert(notif.title+'\n'+notif.message);
-				}
-				
-			}
-
-			/**
-			 * 
-			 */
-			function refreshTable(table, refresh) {
-				refresh.prop('disabled', true);
-				table.ajax.reload(function(response) {
-					refresh.prop('disabled', false);
-				}, false);
-			}
-
-			/**
-			 * Function onChangeField
-			 * Base function untuk setiap event onchange semua field yang ada di form
-			 * @param {object} scope
-			 */
-			function onChangeField(scope) {
-				if(scope.value !== ""){
-					$('.field-'+scope.id).removeClass('has-error').addClass('has-success');
-					$(".pesan-"+scope.id).text('');
-				}
-				else{
-					$('.field-'+scope.id).removeClass('has-error').removeClass('has-success');
-					$(".pesan-"+scope.id).text('');	
-				}
-			}
-			
 		</script>
+
 		<?php 
-			require_once "layout/js/js.php";
+			require_once "layout/js/initJs.php";
+			?>
+                <!-- <script>
+                    $(document).ready(function() {
+                        setActiveMenu($(location).attr("href").split('/'), LEVEL);
+                    });
+                </script> -->
+            <?php
 			if($sess_welcome){
 		        ?>
-				<script type="text/javascript">
+				<script>
 					/**
 					 * Init toastr selamat datang ke sistem
 					 */
 			    	$(document).ready(function(){
-			    		toastr.success('Selamat Datang di SimakPro');
+						var notifWelcome = {type: 'success', title: '', message: 'Selamat Datang di SimakPro'};
+						setNotif(notifWelcome, 'toastr');
 			    	});
 			    </script>
 		        <?php
