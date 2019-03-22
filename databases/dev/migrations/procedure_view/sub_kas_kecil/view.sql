@@ -38,4 +38,11 @@
     LEFT JOIN vp_total_dana_pengajuan_skk vptdp ON skk.id=vptdp.id_sub_kas_kecil;
 -- End View Sub Kas Kecil
 
+-- View Sub Kas Kecil Export
+    CREATE OR REPLACE VIEW v_sub_kas_kecil_export AS
+    SELECT 
+        id ID, nama NAMA, alamat ALAMAT, no_telp `NO TELP`, email EMAIL, saldo SALDO, status STATUS 
+    FROM sub_kas_kecil; 
+-- View End Sub Kas Kecil Export
+
 # End View Sub Kas Kecil #
