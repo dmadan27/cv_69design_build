@@ -298,12 +298,25 @@
 				return $e->getMessage();
 			}
 		}
+
 		/**
 		*
 		*/
 		public function export(){
-			$query = "SELECT id ID, nama NAMA, alamat ALAMAT, no_telp NO_TELP, email EMAIL, saldo SALDO, status STATUS FROM sub_kas_kecil ";
+			$query = "SELECT * FROM v_sub_kas_kecil_export";
 			$statement = $this->koneksi->prepare($query);
+			$statement->execute();
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
+
+		/**
+		*
+		*/
+		public function getByIdExport($id){
+			$query = "SELECT * FROM v_sub_kas_kecil_export WHERE id=:id";
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id', $id);
 			$statement->execute();
 			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
 			return $result;

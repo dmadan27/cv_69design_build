@@ -85,6 +85,25 @@
 
 		}
 
+		// ======================== export = ======================= //
+
+		public function getByIdSKKTglExport($id_skk, $tgl) {
+			$tgl = "%".$tgl;
+
+			$query = "SELECT TANGGAL, `UANG MASUK`, `UANG KELUAR`, SALDO, KETERANGAN ";
+			$query .= "FROM v_mutasi_saldo_sub_kas_kecil_export ";
+			$query .= "WHERE `ID SUB KAS KECIL`=:id_skk AND TANGGAL like :tgl ORDER BY id DESC";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id_skk', $id_skk);
+			$statement->bindParam(':tgl', $tgl);
+			$statement->execute();
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
+
+		// ====================== end export ======================= //
+
 		// ======================== mobile = ======================= //
 
 			/**

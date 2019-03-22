@@ -121,7 +121,7 @@
 		 * 
 		 */
 		public function action_add(){
-			if($_SERVER['REQUEST_METHOD'] == "POST"){
+			if($_SERVER['REQUEST_METHOD'] == "POST") {
 				$data = isset($_POST) ? $_POST : false;
 				$foto = isset($_FILES['foto']) ? $_FILES['foto'] : false;
 
@@ -338,13 +338,17 @@
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
 				'assets/bower_components/dropify/dist/css/dropify.min.css',
 				'assets/bower_components/Magnific-Popup-master/dist/magnific-popup.css',
+				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
 			);
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 				'assets/bower_components/dropify/dist/js/dropify.min.js',
 				'assets/bower_components/Magnific-Popup-master/dist/jquery.magnific-popup.min.js',
+				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
+				'assets/bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.id.min.js',
 				'app/views/sub_kas_kecil/js/initView.js',
+				'app/views/modals/js/initFormExportModal.js',
 			);
 
 			$config = array(
@@ -436,20 +440,9 @@
 		}
 
 		/**
-		 * Export data ke format Excel
+		 * Aksi Export data sub kas kecil
 		 */
-		public function export(){
-			$row = $this->Sub_kas_kecilModel->export();
-			$header = array_keys($row[0]); 
-
-			$this->excel->setProperty('sub_kas_kecil','sub_kas_kecil','sub-kas-kecil');
-			$this->excel->setData($header, $row);
-			$this->excel->getData('sub_kas_kecil', 'sub_kas_kecil', 4, 5 );
-
-			$this->excel->getExcel('sub_kas_kecil');
-
-			
-		}
+		public function export() {}
 
 		/**
 		 * 

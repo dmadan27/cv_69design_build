@@ -105,6 +105,19 @@ $(document).ready(function() {
         pengajuanSubKasKecilTable.ajax.reload(null, false);
     }, 60000 );
 
+    // menampilkan form export detail
+    $('#export-detail').on('click', function () {
+
+        // option
+        $('.modal-export-title').html('Ekspor Data Detail Sub Kas Kecil');
+        $('#form-export').attr('action', BASE_URL + 'export/sub-kas-kecil-detail');
+
+        // wajib
+        $('#tahun').val('').attr('readonly', true);
+        $('#bulan').val('').attr('readonly', true).datepicker("destroy");
+        $('#modal-export').modal();
+    });
+
 });
 
 /**
