@@ -1,6 +1,6 @@
 <?php Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung"); ?>
 
-<div class="modal fade" id="modal-export">
+<div class="modal fade" id="modal-export-months-year">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
@@ -10,7 +10,7 @@
                 <h4 class="modal-title modal-export-title">Ekspor Data Sub Kas Kecil</h4>
             </div>
 
-            <form id="form-export" role="form" enctype="multipart/form-data">
+            <form id="form-export-months-year" role="form" enctype="multipart/form-data">
                 <div class="modal-body">
 
                     <input type="hidden" id="id" name="id" value="<?= $this->data['id']; ?>">
@@ -42,7 +42,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-flat btn-default pull-left" data-dismiss="modal">Batal</button>
-                    <button type="button" id="btn-export-form" class="btn btn-flat btn-success" value="ekspor">Ekspor Excel</button>
+                    <button type="button" id="btn-export-months-year" class="btn btn-flat btn-success">Ekspor</button>
                 </div>
 
             </form>

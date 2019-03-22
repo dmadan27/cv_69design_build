@@ -110,12 +110,12 @@ $(document).ready(function() {
 
         // option
         $('.modal-export-title').html('Ekspor Data Detail Sub Kas Kecil');
-        $('#form-export').attr('action', BASE_URL + 'export/sub-kas-kecil-detail');
+        $('#form-export-months-year').attr('action', BASE_URL + 'export/sub-kas-kecil-detail');
 
         // wajib
         $('#tahun').val('').attr('readonly', true);
         $('#bulan').val('').attr('readonly', true).datepicker("destroy");
-        $('#modal-export').modal();
+        $('#modal-export-months-year').modal();
     });
 
 });

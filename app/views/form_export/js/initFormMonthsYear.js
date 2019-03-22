@@ -36,12 +36,12 @@ $(document).ready(function () {
     });
 
     // submit export detail
-    $('#btn-export-form').on('click', function () {
+    $('#btn-export-months-year').on('click', function () {
 
         if ($('#tahun').val().trim() != "") {
             $('#bulan').val($('#bulan').data('datepicker').getFormattedDate('mm'));
-            $('#modal-export').modal('hide');
-            $('#form-export').attr('method', 'POST').submit();
+            $('#modal-export-months-year').modal('hide');
+            $('#form-export-months-year').attr('method', 'POST').submit();
         } else {
             $('.field-tahun').addClass('has-error');
             $('.pesan-tahun').html('Tahun tidak boleh kosong.');

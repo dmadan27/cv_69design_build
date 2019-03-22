@@ -348,7 +348,7 @@
 				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
 				'assets/bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.id.min.js',
 				'app/views/sub_kas_kecil/js/initView.js',
-				'app/views/modals/js/initFormExportModal.js',
+				'app/views/form_export/js/initFormMonthsYear.js',
 			);
 
 			$config = array(

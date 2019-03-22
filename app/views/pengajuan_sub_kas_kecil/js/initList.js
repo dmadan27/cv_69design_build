@@ -45,12 +45,12 @@ $(document).ready(function(){
 
         // option
         $('.modal-export-title').html('Ekspor Data Pengajuan Sub Kas Kecil');
-        $('#form-export').attr('action', BASE_URL + 'export/pengajuan-sub-kas-kecil');
+        $('#form-export-months-year').attr('action', BASE_URL + 'export/pengajuan-sub-kas-kecil');
 
         // wajib
         $('#tahun').val('').attr('readonly', true);
         $('#bulan').val('').attr('readonly', true).datepicker("destroy");
-        $('#modal-export').modal();
+        $('#modal-export-months-year').modal();
     });
 
     // event on click refresh table
