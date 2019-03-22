@@ -46,4 +46,19 @@
     JOIN sub_kas_kecil skk ON skk.id = pskk.id_sub_kas_kecil;
 -- End View Pengajuan Sub Kas Kecil
 
+-- View Pengajuan Sub Kas Kecil Export
+    CREATE OR REPLACE VIEW v_pengajuan_sub_kas_kecil_export AS
+    SELECT 
+        id `ID PENGAJUAN`, 
+        nama_pengajuan `NAMA PENGAJUAN`,
+        pemilik `PEMILIK PROYEK`,
+        pembangunan `NAMA PEMBANGUNAN PROYEK`,
+        DATE_FORMAT(tgl, "%d/%m/%Y") `TANGGAL PENGAJUAN`,
+        total `DANA DIAJUKAN`,
+        status `STATUS PENGAJUAN`,
+        dana_disetujui `DANA DISETUJUI`
+    FROM `v_pengajuan_sub_kas_kecil_v2`
+    ORDER BY tgl DESC;
+-- End View Pengajuan Sub Kas Kecil Export
+
 # End View Pengajuan Sub Kas Kecil #
