@@ -63,5 +63,6 @@
 		</div>			
 	</section>
 	<!-- /.content -->
+	<?php include_once(__DIR__.'/../modals/form_export_modal.php'); ?>
 	<?php include_once('form.php'); ?>
 </div>

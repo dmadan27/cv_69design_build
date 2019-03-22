@@ -193,6 +193,17 @@
 
 		// ======================== MODEL EXPORT ======================================
 
+		public function getByTglExport($tgl) {
+			$tgl = "%".$tgl;
+
+			$query = "SELECT * FROM v_pengajuan_sub_kas_kecil_export WHERE `TANGGAL PENGAJUAN` LIKE :tgl";
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':tgl', $tgl);
+			$statement->execute();
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
+
 		public function getByIdSKKTglExport($id_skk, $tgl) {
 			$id_skk = "%".$id_skk."%";
 			$tgl = "%".$tgl;

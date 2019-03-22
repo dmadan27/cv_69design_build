@@ -40,15 +40,19 @@
 		private function list() {
 			$css = array(
 				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
-				'assets/bower_components/select2/dist/css/select2.min.css'
+				'assets/bower_components/select2/dist/css/select2.min.css',
+				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
 			);
 			$js = array(
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js',
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
 				'assets/bower_components/select2/dist/js/select2.full.min.js',
+				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
+				'assets/bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.id.min.js',
 				'app/views/pengajuan_sub_kas_kecil/js/initList.js',
 				'app/views/pengajuan_sub_kas_kecil/js/initForm.js',
+				'app/views/modals/js/initFormExportModal.js',
 			);
 
 			$config = array(

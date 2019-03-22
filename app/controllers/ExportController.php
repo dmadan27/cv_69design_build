@@ -20,7 +20,21 @@ class Export extends Controller {
         $this->redirect();
     }
 
-    // ============== SUB KAS KECIL ===================
+    // ======================= BANK ============================
+
+    public function bank() {}
+
+    // ===================== END BANK ==========================
+
+    // ===================== PROYEK ============================
+
+    public function proyek() {}
+
+    public function proyek_detail() {}    
+
+    // ==================== END PROYEK =========================
+
+    // ============== SUB KAS KECIL ============================
 
     /**
      * Export Seluruh Data Sub Kas Kecil
@@ -33,7 +47,7 @@ class Export extends Controller {
         $this->excel->setData($header, $row);
         $this->excel->getData('DATA SUB KAS KECIL', 'DATA SUB KAS KECIL', 4, 5);
 
-        $this->excel->getExcel('SUB-KAS-KECIL');
+        $this->excel->getExcel('DATA_SUB_KAS_KECIL');
     }
 
     /**
@@ -80,10 +94,35 @@ class Export extends Controller {
                 ],
             ]);
 
-            $this->excel->getExcel("INFO-DETAIL-SKK-".$id_skk."-".$nama."-".$bulan.$tahun);
+            $this->excel->getExcel("DATA_DETAIL_SKK_".$id_skk."_".$nama."_".$bulan.$tahun);
 
         } else $this->redirect(BASE_URL."sub-kas-kecil");	
     }
 
-    // =========== END SUB KAS KECIL ==================
+    // =========== END SUB KAS KECIL ============================
+
+    // ============== PENGAJUAN SUB KAS KECIL ===================
+
+    /**
+     * Export Data Pengajuan Sub Kas Kecil
+     */
+    public function pengajuan_sub_kas_kecil(){
+        if ($_SERVER['REQUEST_METHOD'] != "POST") $this->redirect(BASE_URL."pengajuan-sub-kas-kecil");
+
+        $tahun = $_POST['tahun'] ?? false;
+        $bulan = $_POST['bulan'] ?? false;
+
+        if ($tahun) {
+
+            $data_pengajuan = $this->Pengajuan_sub_kas_kecilModel->getByTglExport($bulan."/".$tahun);
+
+            $this->excel->setProperty('Data Pengajuan Sub Kas Kecil '.$bulan."/".$tahun, 'Export Data Pengajuan SKK', 'Dokumen di Ekspor Tanggal '.Date('d/m/Y'));
+            $this->excel->setData(array_keys($data_pengajuan[0] ?? []), $data_pengajuan);
+            $this->excel->getData('DATA PENGAJUAN SUB KAS KECIL '.$bulan.$tahun, 'DATA PENGAJUAN SUB KAS KECIL '.$bulan.$tahun, 4, 5, 0, true);
+            $this->excel->getExcel('DATA_PENGAJUAN_SUB_KAS_KECIL_'.$bulan.$tahun);
+
+        } else $this->redirect(BASE_URL."pengajuan-sub-kas-kecil");
+    }
+
+    // =========== END PENGAJUAN SUB KAS KECIL ==================
 }

@@ -40,8 +40,17 @@ var pengajuan_sub_kas_kecilTable = $("#pengajuan_sub_kas_kecilTable").DataTable(
 $(document).ready(function(){
 
     // btn Export
-    $('#exportExcel').on('click', function(){
-        window.location.href = BASE_URL+'pengajuan-sub-kas-kecil/export/';       
+    // menampilkan form export pengajuan sub kas kecil
+	$('#exportExcel').on('click', function () {
+
+        // option
+        $('.modal-export-title').html('Ekspor Data Pengajuan Sub Kas Kecil');
+        $('#form-export').attr('action', BASE_URL + 'export/pengajuan-sub-kas-kecil');
+
+        // wajib
+        $('#tahun').val('').attr('readonly', true);
+        $('#bulan').val('').attr('readonly', true).datepicker("destroy");
+        $('#modal-export').modal();
     });
 
     // event on click refresh table
