@@ -108,6 +108,24 @@
 
 # End View Laporan Pengajuan Sub Kas Kecil #
 
+# View Mutasi Saldo Sub Kas Kecil #
+
+-- View export mutasi saldo sub kas kecil
+    CREATE OR REPLACE VIEW v_mutasi_saldo_sub_kas_kecil_export AS
+    SELECT 
+        id ID,
+        id_sub_kas_kecil `ID SUB KAS KECIL`,
+        DATE_FORMAT(tgl, "%d/%m/%Y") TANGGAL, 
+        uang_masuk `UANG MASUK`, 
+        uang_keluar `UANG KELUAR`, 
+        saldo SALDO, 
+        ket KETERANGAN
+    FROM mutasi_saldo_sub_kas_kecil
+    ORDER BY id DESC;
+-- End View export mutasi saldo sub kas kecil
+
+# End View Mutasi Saldo Sub Kas Kecil #
+
 # View Mutasi Saldo Kas Kecil #
 
 -- View export saldo kas kecil
@@ -289,6 +307,21 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
     JOIN sub_kas_kecil skk ON skk.id = pskk.id_sub_kas_kecil;
 -- End View Pengajuan Sub Kas Kecil
 
+-- View Pengajuan Sub Kas Kecil Export
+    CREATE OR REPLACE VIEW v_pengajuan_sub_kas_kecil_export AS
+    SELECT 
+        id `ID PENGAJUAN`, 
+        nama_pengajuan `NAMA PENGAJUAN`,
+        pemilik `PEMILIK PROYEK`,
+        pembangunan `NAMA PEMBANGUNAN PROYEK`,
+        DATE_FORMAT(tgl, "%d/%m/%Y") `TANGGAL PENGAJUAN`,
+        total `DANA DIAJUKAN`,
+        status `STATUS PENGAJUAN`,
+        dana_disetujui `DANA DISETUJUI`
+    FROM `v_pengajuan_sub_kas_kecil_v2`
+    ORDER BY tgl DESC;
+-- End View Pengajuan Sub Kas Kecil Export
+
 # End View Pengajuan Sub Kas Kecil #
 
 # View Proyek #
@@ -405,6 +438,13 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
     LEFT JOIN vp_estimasi_pengeluaran_skk veps ON skk.id=veps.id_sub_kas_kecil
     LEFT JOIN vp_total_dana_pengajuan_skk vptdp ON skk.id=vptdp.id_sub_kas_kecil;
 -- End View Sub Kas Kecil
+
+-- View Sub Kas Kecil Export
+    CREATE OR REPLACE VIEW v_sub_kas_kecil_export AS
+    SELECT 
+        id ID, nama NAMA, alamat ALAMAT, no_telp `NO TELP`, email EMAIL, saldo SALDO, status STATUS 
+    FROM sub_kas_kecil; 
+-- View End Sub Kas Kecil Export
 
 # End View Sub Kas Kecil #
 
