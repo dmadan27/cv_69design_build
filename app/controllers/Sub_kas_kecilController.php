@@ -50,7 +50,8 @@
 			);
 
 			$config = array(
-				'title' => array(
+				'title' => 'Menu Sub Kas Kecil',
+				'property' => array(
 					'main' => 'Data Sub Kas Kecil',
 					'sub' => 'List Semua Sub Kas Kecil (Logistik)',
 				),
@@ -352,7 +353,8 @@
 			);
 
 			$config = array(
-				'title' => array(
+				'title' => 'Menu Sub Kas Kecil - Detail',
+				'property' => array(
 					'main' => 'Data Sub Kas Kecil',
 					'sub' => 'Detail Data Sub Kas Kecil',
 				),

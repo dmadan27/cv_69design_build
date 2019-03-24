@@ -57,9 +57,12 @@
 
 			$config = array(
 				'title' => array(
-					'main' => 'Data Bank',
-					'sub' => 'List Semua Data Bank',
+					'title' => 'Menu Bank',
 				),
+				'property' => array(
+                    'main' => 'Data Bank',
+					'sub' => 'List Semua Data Bank',
+                ),
 				'css' => $css,
 				'js' => $js,
 			);
@@ -317,7 +320,8 @@
 				);
 
 				$config = array(
-					'title' => array(
+					'title' => 'Menu Bank - Detail',
+					'property' => array(
 						'main' => 'Data Bank',
 						'sub' => 'Detail Data Bank',
 					),

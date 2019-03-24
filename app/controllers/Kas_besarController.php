@@ -52,7 +52,8 @@
 			);
 
 			$config = array(
-				'title' => array(
+				'title' => 'Menu Kas Besar',
+				'property' => array(
 					'main' => 'Data Kas Besar',
 					'sub' => 'List Semua Data Kas Besar',
 				),
@@ -372,7 +373,8 @@
 			);
 
 			$config = array(
-				'title' => array(
+				'title' => 'Menu Kas Besar - Detail',
+				'property' => array(
 					'main' => 'Data Kas Besar',
 					'sub' => 'Detail Data Kas Besar',
 				),

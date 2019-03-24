@@ -52,10 +52,11 @@
 			);
 
 			$config = array(
-				'title' => array(
-					'main' => 'Data Proyek',
+				'title' => 'Menu Proyek',
+				'property' => array(
+                    'main' => 'Data Proyek',
 					'sub' => 'List Semua Data Proyek',
-				),
+                ),
 				'css' => $css,
 				'js' => $js,
 			);
@@ -171,10 +172,11 @@
 			);
 
 			$config = array(
-				'title' => array(
-					'main' => 'Data Proyek',
+				'title' => 'Menu Proyek - Form Tambah',
+				'property' => array(
+                    'main' => 'Data Proyek',
 					'sub' => 'Form Tambah Data',
-				),
+                ),
 				'css' => $css,
 				'js' => $js,
 			);
@@ -363,10 +365,11 @@
 			);
 
 			$config = array(
-				'title' => array(
-					'main' => 'Data Proyek',
+				'title' => 'Menu Proyek - Form Edit',
+				'property' => array(
+                    'main' => 'Data Proyek',
 					'sub' => 'Form Edit Data',
-				),
+                ),
 				'css' => $css,
 				'js' => $js,
 			);
@@ -561,10 +564,11 @@
 			);
 
 			$config = array(
-				'title' => array(
-					'main' => 'Data Proyek',
+				'title' => 'Menu Proyek - Detail',
+				'property' => array(
+                    'main' => 'Data Proyek',
 					'sub' => 'Detail Data Proyek',
-				),
+                ),
 				'css' => $css,
 				'js' => $js,
 			);

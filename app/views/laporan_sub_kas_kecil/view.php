@@ -9,8 +9,8 @@
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1>
-			<?= $this->title['main']; ?>
-			<small><?= $this->title['sub']; ?></small>
+			<?= $this->propertyPage['main']; ?>
+			<small><?= $this->propertyPage['sub']; ?></small>
 		</h1>
 		<!-- breadcrumb -->
 		<ol class="breadcrumb">

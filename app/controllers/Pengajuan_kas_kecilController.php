@@ -59,7 +59,8 @@
 			);
 
 			$config = array(
-				'title' => array(
+				'title' => 'Menu Pengajuan Kas Kecil',
+				'property' => array(
 					'main' => 'Data Pengajuan Kas Kecil',
 					'sub' => 'List Data Pengajuan Kas Kecil',
 				),
@@ -382,7 +383,8 @@
 			);
 
 			$config = array(
-				'title' => array(
+				'title' => 'Menu Pengajuan Kas Kecil - Detail',
+				'property' => array(
 					'main' => 'Data Pengajuan Kas Kecil',
 					'sub' => 'Detail Data Pengajuan Kas Kecil',
 				),

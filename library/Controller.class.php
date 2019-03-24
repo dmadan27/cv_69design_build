@@ -97,7 +97,10 @@ class Controller
 
 		if($config != null) {
 			// set title
-			$view->setTitle($config['title']['main'], $config['title']['sub']);
+			$view->setTitle($config['title']);
+
+			// set property page
+			$view->setProperty($config['property']);
 
 			// set css
 			foreach($config['css'] as $value) {

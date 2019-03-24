@@ -52,7 +52,8 @@
 			);
 
 			$config = array(
-				'title' => array(
+				'title' => 'Menu Kas Kecil',
+				'property' => array(
 					'main' => 'Data Kas Kecil',
 					'sub' => 'List Semua Data Kas Kecil',
 				),
@@ -364,7 +365,8 @@
 			);
 
 			$config = array(
-				'title' => array(
+				'title' => 'Menu Kas Kecil - Detail',
+				'property' => array(
 					'main' => 'Data Kas Kecil',
 					'sub' => 'Detail Data Kas Kecil',
 				),

@@ -50,7 +50,8 @@
 			);
 
 			$config = array(
-				'title' => array(
+				'title' => 'Menu Dsitributor',
+				'property' => array(
 					'main' => 'Data Distributor',
 					'sub' => 'List Semua Data Distributor',
 				),
@@ -317,7 +318,8 @@
 			);
 
 			$config = array(
-				'title' => array(
+				'title' => 'Menu Distributor - Detail',
+				'property' => array(
 					'main' => 'Data Distributor',
 					'sub' => 'Detail Data Distributor',
 				),

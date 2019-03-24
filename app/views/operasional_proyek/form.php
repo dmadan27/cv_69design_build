@@ -6,8 +6,8 @@
 <div class="content-wrapper">
     <section class="content-header">
         <h1>
-          <?= $this->title['main']; ?>
-        <small><?= $this->title['sub']; ?></small>
+          <?= $this->propertyPage['main']; ?>
+        <small><?= $this->propertyPage['sub']; ?></small>
         </h1>
         <ol class="breadcrumb">
           <li><a href="<?= BASE_URL; ?>"><i class="fa fa-dashboard"></i> Home</a></li>

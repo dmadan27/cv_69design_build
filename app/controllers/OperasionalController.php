@@ -7,8 +7,10 @@
 	class Operasional extends Crud_modalsAbstract
 	{
 
-		private $token;
-		private $status = false;
+		private $success = false;
+		private $notif = array();
+		private $error = array();
+		private $message = NULL;
 
 		/**
 		 * load auth, cekAuth
@@ -57,7 +59,8 @@
 			);
 
 			$config = array(
-				'title' => array(
+				'title' => 'Menu Operasional',
+				'property' => array(
 					'main' => 'Data Operasional',
 					'sub' => 'List Semua Data Operasional',
 				),
@@ -183,7 +186,7 @@
 
 						// insert
 						if($this->OperasionalModel->insert($data)) {
-							$this->status = true;
+							$this->success = true;
 							$notif = array(
 								'type' => "success",
 								'title' => "Pesan Berhasil",
@@ -208,7 +211,7 @@
 				}
 
 				$output = array(
-					'status' => $this->status,
+					'status' => $this->success,
 					'notif' => $notif,
 					'error' => $error,
 					// 'data' => $data
@@ -288,7 +291,7 @@
 						// transact
 
 						if($this->OperasionalModel->update($data)) {
-							$this->status = true;
+							$this->success = true;
 							$notif = array(
 								'type' => "success",
 								'title' => "Pesan Berhasil",
@@ -316,7 +319,7 @@
 				}
 
 				$output = array(
-					'status' => $this->status,
+					'status' => $this->success,
 					'notif' => $notif,
 					'error' => $error,
 					'data' => $data
@@ -354,7 +357,8 @@
 			);
 
 			$config = array(
-				'title' => array(
+				'title' => 'Menu Operasional - Detail',
+				'property' => array(
 					'main' => 'Data Operasional',
 					'sub' => 'Detail Data Operasional',
 				),
@@ -400,9 +404,9 @@
 				'ket' => '',	
 			);
 
-			if($this->OperasionalModel->delete($data)) $this->status = true;
+			if($this->OperasionalModel->delete($data)) $this->success = true;
 
-			echo json_encode($this->status);
+			echo json_encode($this->success);
 		}
 
 		/**

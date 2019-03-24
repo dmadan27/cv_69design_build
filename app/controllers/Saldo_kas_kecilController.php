@@ -54,7 +54,8 @@
 			);
 
 			$config = array(
-				'title' => array(
+				'title' => 'Menu Mutasi Saldo Kas Kecil',
+				'property' => array(
 					'main' => 'Data Mutasi Saldo Kas Kecil',
 					'sub' => 'List Mutasi Saldo Kas Kecil',
 				),

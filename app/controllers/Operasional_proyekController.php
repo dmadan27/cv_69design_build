@@ -51,7 +51,8 @@
 			);
 
 			$config = array(
-				'title' => array(
+				'title' => 'Menu Operasional Proyek',
+				'property' => array(
 					'main' => 'Data Operasional Proyek',
 					'sub' => 'List Semua Data Operasional Proyek',
 				),
@@ -155,7 +156,8 @@
 			);
 
 			$config = array(
-				'title' => array(
+				'title' => 'Menu Operasional Proyek - Form Tambah',
+				'property' => array(
 					'main' => 'Data Operasional Proyek',
 					'sub' => 'Form Tambah Data',
 				),
@@ -311,7 +313,8 @@
 			);
 
 			$config = array(
-				'title' => array(
+				'title' => 'Menu Operasional Proyek - Form Edit',
+				'property' => array(
 					'main' => 'Data Operasional Proyek',
 					'sub' => 'Form Edit Data',
 				),
@@ -509,7 +512,8 @@
 			);
 
 			$config = array(
-				'title' => array(
+				'title' => 'Menu Operasional Proyek - Detail',
+				'property' => array(
 					'main' => 'Data Operasional Proyek',
 					'sub' => 'Detail Data Operasional Proyek',
 				),

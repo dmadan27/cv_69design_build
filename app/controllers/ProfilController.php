@@ -45,7 +45,8 @@
 			);
 
 			$config = array(
-				'title' => array(
+				'title' => 'Profil User',
+				'property' => array(
 					'main' => 'Profil',
 					'sub' => 'Detail Data Profil User',
 				),

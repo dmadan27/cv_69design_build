@@ -48,7 +48,8 @@
 			);
 
 			$config = array(
-				'title' => array(
+				'title' => 'Menu User',
+				'property' => array(
 					'main' => 'Data User',
 					'sub' => 'List Semua Data User',
 				),
