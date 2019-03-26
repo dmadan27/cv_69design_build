@@ -1,4 +1,4 @@
-<?php Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung"); ?>
+<?php Defined("BASE_PATH") or die(ACCESS_DENIED); ?>
 
 <!-- Left Sidebar -->
 <aside class="main-sidebar">
@@ -18,8 +18,7 @@
 
       	<!-- Sidebar Menu -->
       	<ul class="sidebar-menu" data-widget="tree">
-        	<li class="header">MENU NAVIGASI</li>
-        	<?php echo $this->menuSidebar; ?>
+		  	<?php $this->getSidebar('side'); ?>
       	</ul>
       	<!-- /.sidebar-menu -->
 	</section>

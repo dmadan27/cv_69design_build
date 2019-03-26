@@ -62,34 +62,16 @@ class Page
 	/**
      * 
      */
-    public function getSidebar($type = 'side') {
+    public function getSidebar() {
         $sess_menu = isset($_SESSION['sess_menu']) ? $_SESSION['sess_menu'] : false;
 
         if($sess_menu) {
-            if($type == 'side') {
-                echo '<div class="main-sidebar sidebar-style-2">';
-                echo '<aside id="sidebar-wrapper">';
-                echo '<div class="sidebar-brand"><a href="<?= BASE_URL ?>">Timesheet</a></div>';
-                echo '<div class="sidebar-brand sidebar-brand-sm"><a href="<?= BASE_URL ?>">TS</a></div>';
-                echo '<ul class="sidebar-menu">';
-                foreach($sess_menu as $menu) {
-                    echo '<li class="'.$menu['class'].'">';
-                    echo '<a href="'.BASE_URL.$menu['url'].'" class="nav-link"><i class="'.$menu['icon'].'"></i><span>'.$menu['menu_name'].'</span></a>';
-                    echo '</li>';
-                }
-                echo '</ul></aside></div>';
-            }
-            else {
-                echo '<nav class="navbar navbar-secondary navbar-expand-lg">';
-                echo '<div class="container">';
-                echo '<ul class="navbar-nav">';
-                foreach($sess_menu as $menu) {
-                    echo '<li class="nav-item '.$menu['class'].'">';
-                    echo '<a href="'.BASE_URL.$menu['url'].'" class="nav-link"><i class="'.$menu['icon'].'"></i><span>'.$menu['menu_name'].'</span></a>';
-                    echo '</li>';
-                }
-                echo '</ul></div></nav>';
-            }
+			echo '<li class="header">MENU NAVIGASI</li>';
+			foreach($sess_menu as $menu) {
+				echo '<li class="'.$menu['class'].'">';
+				echo '<a href="'.BASE_URL.$menu['url'].'"><i class="'.$menu['icon'].'"></i><span>'.$menu['menu_name'].'</span></a>';
+				echo '</li>';
+			}
         }  
     }
 

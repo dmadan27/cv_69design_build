@@ -6,7 +6,8 @@ Defined("BASE_PATH") or die(ACCESS_DENIED);
  * Class Auth
  * Library untuk pengecekan Authentikasi yg masuk sistem
  */
-class Auth{
+class Auth
+{
 	
 	private $login;
 	private $lockscreen;

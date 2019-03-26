@@ -1,6 +1,6 @@
 # Database 69design-build_dev #
 # 69design-build_dev #
-# 1.1 #
+# 2.1 #
 
 # Local Development Only
 
@@ -66,9 +66,12 @@
             username VARCHAR(50) NOT NULL UNIQUE,
             password TEXT NOT NULL,
             -- name VARCHAR(255), -- optional, comentary if the name of user not contain in user table
-            level_id INT UNSIGNED DEFAULT NULL, -- fk level lookup
-            status_id INT UNSIGNED DEFAULT NULL, -- fk active status lookup
+            -- level_id INT UNSIGNED DEFAULT NULL, -- fk level lookup
+            -- status_id INT UNSIGNED DEFAULT NULL, -- fk active status lookup
             -- image text, -- optional, comentary if the image of user not contain in user table
+
+            level enum('OWNER', 'KAS BESAR', 'KAS KECIL', 'SUB KAS KECIL'), -- v1
+		    status enum('AKTIF', 'NONAKTIF'), -- status aktif username
 
             created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -76,10 +79,10 @@
             modified_by INT UNSIGNED DEFAULT NULL, -- who last edit
 
             CONSTRAINT pk_user_username PRIMARY KEY(username),
-            CONSTRAINT fk_user_level_id FOREIGN KEY(level_id) REFERENCES level_lookup(id)
-                ON DELETE RESTRICT ON UPDATE CASCADE,
-            CONSTRAINT fk_user_status_id FOREIGN KEY(status_id) REFERENCES active_status_lookup(id)
-                ON DELETE RESTRICT ON UPDATE CASCADE,
+            -- CONSTRAINT fk_user_level_id FOREIGN KEY(level_id) REFERENCES level_lookup(id)
+            --     ON DELETE RESTRICT ON UPDATE CASCADE,
+            -- CONSTRAINT fk_user_status_id FOREIGN KEY(status_id) REFERENCES active_status_lookup(id)
+            --     ON DELETE RESTRICT ON UPDATE CASCADE,
             CONSTRAINT fk_user_created_by FOREIGN KEY(created_by) REFERENCES user(username)
                 ON DELETE SET NULL ON UPDATE CASCADE,
             CONSTRAINT fk_user_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
@@ -214,8 +217,8 @@
             no_telp VARCHAR(20),
             email VARCHAR(50) UNIQUE, -- fk user
             foto TEXT,
-            -- status enum('AKTIF', 'NONAKTIF'), -- status aktif kas besar
-            status_id INT UNSIGNED DEFAULT NULL,
+            status enum('AKTIF', 'NONAKTIF'), -- status aktif kas besar
+            -- status_id INT UNSIGNED DEFAULT NULL,
 
             created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -225,8 +228,8 @@
             CONSTRAINT pk_kas_besar_id PRIMARY KEY(id),
             CONSTRAINT fk_kas_besar_email FOREIGN KEY(email) REFERENCES user(username)
                 ON DELETE SET NULL ON UPDATE CASCADE,
-            CONSTRAINT fk_kas_besar_status_id FOREIGN KEY(status_id) REFERENCES active_status_lookup(id)
-                ON DELETE RESTRICT ON UPDATE CASCADE,
+            -- CONSTRAINT fk_kas_besar_status_id FOREIGN KEY(status_id) REFERENCES active_status_lookup(id)
+            --     ON DELETE RESTRICT ON UPDATE CASCADE,
             CONSTRAINT fk_kas_besar_created_by FOREIGN KEY(created_by) REFERENCES user(username)
                 ON DELETE SET NULL ON UPDATE CASCADE,
             CONSTRAINT fk_kas_besar_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)

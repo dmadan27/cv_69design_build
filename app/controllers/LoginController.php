@@ -153,7 +153,7 @@
 			$_SESSION['sess_status'] = $dataProfil['status'];
 			$_SESSION['sess_welcome'] = true;
 			$_SESSION['sess_timeout'] = date('Y-m-d H:i:s', time()+(60*60)); // 1 jam idle
-			// $_SESSION['sess_akses'] = '';
+			$_SESSION['sess_menu'] = $this->auth->getListMenu($level);
 		}
 
 		/**
