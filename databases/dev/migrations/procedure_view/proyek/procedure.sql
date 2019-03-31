@@ -16,7 +16,7 @@
 		in total_param double(12,2),
 		in dp_param double(12,2),
 		in cco_param double(12,2),
-		in progress_param int,
+		in progress_param TINYINT,
 		in status_param enum('SELESAI', 'BERJALAN'),
 		in created_by_param varchar(50)
 	)

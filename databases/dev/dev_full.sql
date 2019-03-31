@@ -1,13 +1,13 @@
-# Database YOUR DATABASE #
-# YOUR DATABASE #
-# YOUR VERSION #
+# Database 69design-build_dev #
+# 69design-build_dev #
+# 2.1 #
 
 # Local Development Only
 
--- Remove commentary in you want build database from zero
-# DROP DATABASE IF EXISTS `timesheet`;
-# CREATE DATABASE `timesheet`;
-# USE `timesheet`;
+-- Remove commentary if you want build database from zero
+# DROP DATABASE IF EXISTS `69design-build_dev`;
+# CREATE DATABASE `69design-build_dev`;
+# USE `69design-build_dev`;
 
 # End Local Development Only
 
@@ -21,8 +21,8 @@
             name VARCHAR(255) NOT NULL,
             description TEXT DEFAULT NULL,
 
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
             CONSTRAINT pk_level_lookup_id PRIMARY KEY(id)
         )ENGINE=InnoDb;
@@ -36,8 +36,8 @@
             name VARCHAR(255) NOT NULL,
             description TEXT DEFAULT NULL,
 
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
             CONSTRAINT pk_active_status_lookup_id PRIMARY KEY(id)
         )ENGINE=InnoDb;
@@ -51,8 +51,8 @@
             name VARCHAR(255) NOT NULL,
             description TEXT DEFAULT NULL,
 
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
             CONSTRAINT pk_permission_lookup_id PRIMARY KEY(id)
         )ENGINE=InnoDb;
@@ -61,28 +61,31 @@
     -- Table User
         DROP TABLE IF EXISTS user;
         CREATE TABLE IF NOT EXISTS user (
-            id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+            -- id INT UNSIGNED NOT NULL AUTO_INCREMENT,
 
             username VARCHAR(50) NOT NULL UNIQUE,
             password TEXT NOT NULL,
             -- name VARCHAR(255), -- optional, comentary if the name of user not contain in user table
-            level_id INT UNSIGNED DEFAULT NULL, -- fk level lookup
-            status_id INT UNSIGNED DEFAULT NULL, -- fk active status lookup
             -- image text, -- optional, comentary if the image of user not contain in user table
 
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            created_by INT UNSIGNED DEFAULT NULL, -- who created first
-            updated_by INT UNSIGNED DEFAULT NULL, -- who last edit
+            level enum('OWNER', 'KAS BESAR', 'KAS KECIL', 'SUB KAS KECIL'), -- v1
+		    status enum('AKTIF', 'NONAKTIF'), -- status aktif username
+            -- level_id INT UNSIGNED DEFAULT NULL, -- fk level lookup
+            -- status_id INT UNSIGNED DEFAULT NULL, -- fk active status lookup
 
-            CONSTRAINT pk_user_username PRIMARY KEY(id),
-            CONSTRAINT fk_user_level_id FOREIGN KEY(level_id) REFERENCES level_lookup(id)
-                ON DELETE RESTRICT ON UPDATE CASCADE,
-            CONSTRAINT fk_user_status_id FOREIGN KEY(status_id) REFERENCES active_status_lookup(id)
-                ON DELETE RESTRICT ON UPDATE CASCADE,
-            CONSTRAINT fk_user_created_by FOREIGN KEY(created_by) REFERENCES user(id)
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by INT UNSIGNED DEFAULT NULL, -- who created first
+            modified_by INT UNSIGNED DEFAULT NULL, -- who last edit
+
+            CONSTRAINT pk_user_username PRIMARY KEY(username),
+            -- CONSTRAINT fk_user_level_id FOREIGN KEY(level_id) REFERENCES level_lookup(id)
+            --     ON DELETE RESTRICT ON UPDATE CASCADE,
+            -- CONSTRAINT fk_user_status_id FOREIGN KEY(status_id) REFERENCES active_status_lookup(id)
+            --     ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_user_created_by FOREIGN KEY(created_by) REFERENCES user(username)
                 ON DELETE SET NULL ON UPDATE CASCADE,
-            CONSTRAINT fk_user_updated_by FOREIGN KEY(updated_by) REFERENCES user(id)
+            CONSTRAINT fk_user_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
                 ON DELETE SET NULL ON UPDATE CASCADE
         )ENGINE=InnoDb;
     -- End Table user
@@ -99,8 +102,8 @@
             icon VARCHAR(50) DEFAULT NULL,
             position TINYINT UNSIGNED DEFAULT NULL,
 
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
             CONSTRAINT pk_menu_id PRIMARY KEY(id)
         )ENGINE=InnoDb;
@@ -114,8 +117,8 @@
             menu_id INT UNSIGNED DEFAULT NULL, -- fk menu
             permission_id INT UNSIGNED DEFAULT NULL, -- fk permission lookup
 
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
             CONSTRAINT pk_menu_detail_id PRIMARY KEY(id),
             CONSTRAINT fk_menu_detail_menu_id FOREIGN KEY(menu_id) REFERENCES menu(id)
@@ -133,8 +136,8 @@
             level_id INT UNSIGNED DEFAULT NULL, -- fk level lookup
             menu_id INT UNSIGNED DEFAULT NULL, -- fk menu
 
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
             CONSTRAINT pk_access_menu_id PRIMARY KEY(id),
             CONSTRAINT fk_access_menu_level_id FOREIGN KEY(level_id) REFERENCES level_lookup(id)
@@ -149,14 +152,17 @@
         CREATE TABLE IF NOT EXISTS role_permission(
             id INT UNSIGNED NOT NULL AUTO_INCREMENT,
 
-            user_id INT UNSIGNED DEFAULT NULL, -- fk user
+            username VARCHAR(50) DEFAULT NULL,
+            -- user_id INT UNSIGNED DEFAULT NULL, -- fk user
             menu_permission_id INT UNSIGNED DEFAULT NULL, -- fk menu detail
 
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
             CONSTRAINT pk_role_permission_id PRIMARY KEY(id),
-            CONSTRAINT fk_role_permission_user_id FOREIGN KEY(user_id) REFERENCES user(id)
+            -- CONSTRAINT fk_role_permission_user_id FOREIGN KEY(user_id) REFERENCES user(id)
+            --     ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_role_permission_username FOREIGN KEY(username) REFERENCES user(username)
                 ON DELETE RESTRICT ON UPDATE CASCADE,
             CONSTRAINT fk_role_permission_menu_permission_id FOREIGN KEY(menu_permission_id) REFERENCES menu_detail(id)
                 ON DELETE RESTRICT ON UPDATE CASCADE
@@ -171,7 +177,7 @@
             menu_id INT UNSIGNED NOT NULL UNIQUE, -- fk menu
             mask VARCHAR(255) DEFAULT NULL, -- format increment
             last_increment INT UNSIGNED DEFAULT 0,
-            description TEXT,
+            description TEXT DEFAULT NULL,
 
             created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -186,219 +192,640 @@
 
 -- PUT YOUR TABLE IN HERE --
     
-    -- Table Contact
-        DROP TABLE IF EXISTS contact;
-        CREATE TABLE IF NOT EXISTS contact(
-            id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    -- Table Status Proyek Lookup
+    -- End Table Proyek Status Lookup
 
-            user_id INT UNSIGNED DEFAULT NULL, -- fk user
-            name VARCHAR(255) NOT NULL,
-            firstname VARCHAR(255) DEFAULT NULL,
-            lastname VARCHAR(255) DEFAULT NULL,
-            birthplace VARCHAR(255) DEFAULT NULL,
-            birthdate DATE DEFAULT NULL,
-            address TEXT DEFAULT NULL,
-            position VARCHAR(255) DEFAULT NULL,
-            image TEXT DEFAULT NULL,
-            status_id INT UNSIGNED DEFAULT NULL, -- fk active status lookup
+    -- Table Jenis Uang Lookup (uang masuk - uang keluar)
+    -- End Table Jenis Uang Lookup
 
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            modified_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            created_by INT UNSIGNED DEFAULT NULL, -- who created first
-            updated_by INT UNSIGNED DEFAULT NULL, -- who last edit
+    -- Table Jenis Operasional Lookup (teknis - nonteknis)
+    -- End Table Jenis Operasional Lookup
 
-            CONSTRAINT pk_contact_id PRIMARY KEY(id),
-            CONSTRAINT fk_contact_user_id FOREIGN KEY(user_id) REFERENCES user(id)
+    -- Table Jenis Pembayaran Lookup (cash - kredit)
+    -- End Table Jenis Pembayaran Lookup
+
+    -- Table Status Lunas Lookup
+    -- End Table Status Lunas Lookup
+
+    -- Table Status Pengajuan Lookup
+    -- End Table Status Pengajuan Lookup
+
+    -- Table Kas Besar
+        DROP TABLE IF EXISTS kas_besar;
+        CREATE TABLE IF NOT EXISTS kas_besar(
+            id VARCHAR(10) NOT NULL UNIQUE, -- pk
+
+            nama VARCHAR(255) DEFAULT NULL,
+            alamat TEXT DEFAULT NULL,
+            no_telp VARCHAR(20) DEFAULT NULL,
+            email VARCHAR(50) NOT NULL UNIQUE, -- fk user
+            foto TEXT DEFAULT NULL,
+            status ENUM('AKTIF', 'NONAKTIF') DEFAULT NULL, -- status aktif kas besar
+            -- status_id INT UNSIGNED DEFAULT NULL,
+
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by VARCHAR(50) DEFAULT NULL, -- who created first
+            modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
+
+            CONSTRAINT pk_kas_besar_id PRIMARY KEY(id),
+            CONSTRAINT fk_kas_besar_email FOREIGN KEY(email) REFERENCES user(username)
                 ON DELETE SET NULL ON UPDATE CASCADE,
-            CONSTRAINT fk_contact_status_id FOREIGN KEY(status_id) REFERENCES active_status_lookup(id)
-                ON DELETE RESTRICT ON UPDATE CASCADE,
-            CONSTRAINT fk_contact_created_by FOREIGN KEY(created_by) REFERENCES user(id)
+            -- CONSTRAINT fk_kas_besar_status_id FOREIGN KEY(status_id) REFERENCES active_status_lookup(id)
+            --     ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_kas_besar_created_by FOREIGN KEY(created_by) REFERENCES user(username)
                 ON DELETE SET NULL ON UPDATE CASCADE,
-            CONSTRAINT fk_contact_updated_by FOREIGN KEY(updated_by) REFERENCES user(id)
+            CONSTRAINT fk_kas_besar_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
                 ON DELETE SET NULL ON UPDATE CASCADE
         )ENGINE=InnoDb;
-    -- End Table Contact
+    -- End Table Kas Besar
 
-    -- Table approve status lookup
-        DROP TABLE IF EXISTS approve_status_lookup;
-        CREATE TABLE IF NOT EXISTS approve_status_lookup(
-            id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    -- Table Kas Kecil
+        DROP TABLE IF EXISTS kas_kecil;
+        CREATE TABLE IF NOT EXISTS kas_kecil(
+            id VARCHAR(10) NOT NULL UNIQUE, -- pk
 
-            name VARCHAR(255) NOT NULL,
-            description TEXT DEFAULT NULL,
+            nama VARCHAR(50) DEFAULT NULL, -- nama kas kecil
+            alamat TEXT DEFAULT NULL,
+            no_telp VARCHAR(20) DEFAULT NULL,
+            email VARCHAR(50) NOT NULL UNIQUE, -- fk user
+            foto TEXT DEFAULT NULL,
+            saldo DOUBLE(12,2) DEFAULT 0, -- saldo kas kecil, default 0
+            status ENUM('AKTIF', 'NONAKTIF') DEFAULT NULL, -- status aktif kas kecil
+            -- status_id INT UNSIGNED DEFAULT NULL,
 
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            modified_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            created_by INT UNSIGNED DEFAULT NULL, -- who created first
-            updated_by INT UNSIGNED DEFAULT NULL, -- who last edit
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by VARCHAR(50) DEFAULT NULL, -- who created first
+            modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
 
-            CONSTRAINT pk_approve_status_lookup_id PRIMARY KEY(id),
-            CONSTRAINT fk_approve_status_lookup_created_by FOREIGN KEY(created_by) REFERENCES user(id)
+            CONSTRAINT pk_kas_kecil_id PRIMARY KEY(id),
+            CONSTRAINT fk_kas_kecil_email FOREIGN KEY(email) REFERENCES user(username)
                 ON DELETE SET NULL ON UPDATE CASCADE,
-            CONSTRAINT fk_approve_status_lookup_updated_by FOREIGN KEY(updated_by) REFERENCES user(id)
+            -- CONSTRAINT fk_kas_kecil_status_id FOREIGN KEY(status_id) REFERENCES active_status_lookup(id)
+            --     ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_kas_kecil_created_by FOREIGN KEY(created_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE,
+            CONSTRAINT fk_kas_kecil_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
                 ON DELETE SET NULL ON UPDATE CASCADE
         )ENGINE=InnoDb;
-    -- End Table approve status lookup
-    
-    -- Table category lookup
-        DROP TABLE IF EXISTS category_lookup;
-        CREATE TABLE IF NOT EXISTS category_lookup(
-            id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    -- End Table Kas Kecil
 
-            name VARCHAR(255) NOT NULL,
-            description TEXT DEFAULT NULL,
+    -- Table Sub Kas Kecil
+        DROP TABLE IF EXISTS sub_kas_kecil;
+        CREATE TABLE IF NOT EXISTS sub_kas_kecil(
+            id VARCHAR(10) NOT NULL UNIQUE, -- pk, id+increment, contoh: log001
+            
+            nama VARCHAR(255) DEFAULT NULL,
+            alamat TEXT DEFAULT NULL,
+            no_telp VARCHAR(20) DEFAULT NULL,
+            email VARCHAR(50) NOT NULL UNIQUE, -- username
+            foto TEXT DEFAULT NULL, -- simpan urlnya
+            saldo DOUBLE(12,2) DEFAULT 0, -- saldo master, default 0
+            status ENUM('AKTIF', 'NONAKTIF') DEFAULT NULL, -- status aktif sub kas kecil
+            -- status_id INT UNSIGNED DEFAULT NULL,
 
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            modified_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            created_by INT UNSIGNED DEFAULT NULL, -- who created first
-            updated_by INT UNSIGNED DEFAULT NULL, -- who last edit
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by VARCHAR(50) DEFAULT NULL, -- who created first
+            modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
 
-            CONSTRAINT pk_category_lookup_id PRIMARY KEY(id),
-            CONSTRAINT fk_category_lookup_created_by FOREIGN KEY(created_by) REFERENCES user(id)
+            CONSTRAINT pk_sub_kas_kecil_id PRIMARY KEY(id),
+            CONSTRAINT fk_sub_kas_kecil_email FOREIGN KEY(email) REFERENCES user(username)
                 ON DELETE SET NULL ON UPDATE CASCADE,
-            CONSTRAINT fk_category_lookup_updated_by FOREIGN KEY(updated_by) REFERENCES user(id)
+            -- CONSTRAINT fk_sub_kas_kecil_status_id FOREIGN KEY(status_id) REFERENCES active_status_lookup(id)
+            --     ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_sub_kas_kecil_created_by FOREIGN KEY(created_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE,
+            CONSTRAINT fk_sub_kas_kecil_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
                 ON DELETE SET NULL ON UPDATE CASCADE
         )ENGINE=InnoDb;
-    -- End Table category lookup
+    -- End Table Sub Kas Kecil
 
-    -- Table project
-        DROP TABLE IF EXISTS project;
-        CREATE TABLE IF NOT EXISTS project(
-            id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    -- Table Token Mobile
+        DROP TABLE IF EXISTS token_mobile;
+        CREATE TABLE IF NOT EXISTS token_mobile(
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, -- pk
 
-            name VARCHAR(255) NOT NULL,
-            status_id INT UNSIGNED DEFAULT NULL, -- fk active status lookup
-            description TEXT DEFAULT NULL,
+            username VARCHAR(50) DEFAULT NULL, -- fk
+            token TEXT DEFAULT NULL,
+            tgl_buat DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            tgl_exp DATETIME NOT NULL,
 
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            created_by INT UNSIGNED DEFAULT NULL, -- who created first
-            updated_by INT UNSIGNED DEFAULT NULL, -- who last edit
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by VARCHAR(50) DEFAULT NULL, -- who created first
+            modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
 
-            CONSTRAINT pk_project_id PRIMARY KEY(id),
-            CONSTRAINT fk_project_status_id FOREIGN KEY(status_id) REFERENCES active_status_lookup(id)
-                ON DELETE RESTRICT ON UPDATE CASCADE,
-            CONSTRAINT fk_project_created_by FOREIGN KEY(created_by) REFERENCES user(id)
+            CONSTRAINT pk_token_mobile PRIMARY KEY(id),
+            CONSTRAINT fk_token_mobile_username FOREIGN KEY(username) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE RESTRICT,
+            CONSTRAINT fk_token_mobile_created_by FOREIGN KEY(created_by) REFERENCES user(username)
                 ON DELETE SET NULL ON UPDATE CASCADE,
-            CONSTRAINT fk_project_updated_by FOREIGN KEY(updated_by) REFERENCES user(id)
+            CONSTRAINT fk_token_mobile_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
                 ON DELETE SET NULL ON UPDATE CASCADE
         )ENGINE=InnoDb;
-    -- End Table project
+    -- End Table Token Mobile
 
-    -- Table timesheet
-        DROP TABLE IF EXISTS timesheet;
-        CREATE TABLE IF NOT EXISTS timesheet(
-            id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    -- Table Token Lupa Password
+        DROP TABLE IF EXISTS token_lupa_password;
+        CREATE TABLE IF NOT EXISTS token_lupa_password(
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, -- pk
 
-            date DATE NOT NULL,
-            contact_id INT UNSIGNED DEFAULT NULL, -- fk contact
-            total FLOAT(8,2) DEFAULT 0, -- total in hour
-            approve_status_id INT UNSIGNED DEFAULT NULL, -- fk approve status lookup
+            username VARCHAR(50) DEFAULT NULL, -- fk
+            token TEXT DEFAULT NULL,
+            tgl_buat DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            tgl_exp DATETIME NOT NULL,
 
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            created_by INT UNSIGNED DEFAULT NULL, -- who created first
-            updated_by INT UNSIGNED DEFAULT NULL, -- who last edit
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by VARCHAR(50) DEFAULT NULL, -- who created first
+            modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
 
-            CONSTRAINT pk_timesheet_id PRIMARY KEY(id),
-            CONSTRAINT fk_timesheet_contact_id FOREIGN KEY(contact_id) REFERENCES contact(id)
-                ON DELETE RESTRICT ON UPDATE CASCADE,
-            CONSTRAINT fk_timesheet_approve_status_id FOREIGN KEY(approve_status_id) REFERENCES approve_status_lookup(id)
-                ON DELETE RESTRICT ON UPDATE CASCADE,
-            CONSTRAINT fk_timesheet_created_by FOREIGN KEY(created_by) REFERENCES user(id)
+            CONSTRAINT pk_token_lupa_password PRIMARY KEY(id),
+            CONSTRAINT fk_token_lupa_password FOREIGN KEY(username) REFERENCES user(username)
+                ON DELETE RESTRICT ON UPDATE RESTRICT,
+            CONSTRAINT fk_token_lupa_password_created_by FOREIGN KEY(created_by) REFERENCES user(username)
                 ON DELETE SET NULL ON UPDATE CASCADE,
-            CONSTRAINT fk_timesheet_updated_by FOREIGN KEY(updated_by) REFERENCES user(id)
+            CONSTRAINT fk_token_lupa_password_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
                 ON DELETE SET NULL ON UPDATE CASCADE
         )ENGINE=InnoDb;
-    -- End Table timesheet
+    -- End Table Token Lupa Password
 
-    -- Table timesheet detail
-        DROP TABLE IF EXISTS timesheet_detail;
-        CREATE TABLE IF NOT EXISTS timesheet_detail(
-            id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    -- Table Bank
+        DROP TABLE IF EXISTS bank;
+        CREATE TABLE IF NOT EXISTS bank(
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, -- pk
 
-            timesheet_id INT UNSIGNED DEFAULT NULL, -- fk timesheet
-            activity TEXT DEFAULT NULL,
-            category_id INT UNSIGNED DEFAULT NULL, -- fk category lookup
-            project_id INT UNSIGNED DEFAULT NULL, -- fk project
-            start DATETIME NOT NULL,
-            due DATETIME DEFAULT NULL,
-            subtotal FLOAT(8,2) DEFAULT 0,
+            nama VARCHAR(255) DEFAULT NULL, -- nama bank / jenis bank, Bank BCA, Giro BCA, Mandiri, dll
+            saldo DOUBLE(12,2) DEFAULT 0, -- saldo bank
+            status ENUM('AKTIF', 'NONAKTIF') DEFAULT NULL, -- status aktif bank
+            -- status_id INT UNSIGNED DEFAULT NULL,
 
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            created_by INT UNSIGNED DEFAULT NULL, -- who created first
-            updated_by INT UNSIGNED DEFAULT NULL, -- who last edit
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by VARCHAR(50) DEFAULT NULL, -- who created first
+            modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
 
-            CONSTRAINT pk_timesheet_detail_id PRIMARY KEY(id),
-            CONSTRAINT fk_timesheet_detail_timesheet_id FOREIGN KEY(timesheet_id) REFERENCES timesheet(id)
-                ON DELETE RESTRICT ON UPDATE CASCADE,
-            CONSTRAINT fk_timesheet_detail_category_id FOREIGN KEY(category_id) REFERENCES category_lookup(id)
-                ON DELETE RESTRICT ON UPDATE CASCADE,
-            CONSTRAINT fk_timesheet_detail_project_id FOREIGN KEY(project_id) REFERENCES project(id)
-                ON DELETE RESTRICT ON UPDATE CASCADE,
-            CONSTRAINT fk_timesheet_detail_created_by FOREIGN KEY(created_by) REFERENCES user(id)
+            CONSTRAINT pk_bank_id PRIMARY KEY(id),
+            -- CONSTRAINT fk_bank_status_id FOREIGN KEY(status_id) REFERENCES active_status_lookup(id)
+            --     ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_bank_created_by FOREIGN KEY(created_by) REFERENCES user(username)
                 ON DELETE SET NULL ON UPDATE CASCADE,
-            CONSTRAINT fk_timesheet_detail_updated_by FOREIGN KEY(updated_by) REFERENCES user(id)
+            CONSTRAINT fk_bank_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
                 ON DELETE SET NULL ON UPDATE CASCADE
         )ENGINE=InnoDb;
-    -- End Table timesheet detail
+    -- End Table Bank
 
-    -- Table approve history
-        DROP TABLE IF EXISTS approve_history;
-        CREATE TABLE IF NOT EXISTS approve_history(
-            id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    -- Table Mutasi Bank
+        DROP TABLE IF EXISTS mutasi_bank;
+        CREATE TABLE IF NOT EXISTS mutasi_bank(
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, -- pk
 
-            timesheet_id INT UNSIGNED DEFAULT NULL, -- fk timesheet
-            date DATETIME DEFAULT CURRENT_TIMESTAMP,
-            approve_status_id INT UNSIGNED DEFAULT NULL,
-            notes TEXT DEFAULT NULL,
+            id_bank INT UNSIGNED DEFAULT NULL, -- fk bank
+            tgl DATE DEFAULT CURRENT_DATE,
+            uang_masuk DOUBLE(12,2) UNSIGNED DEFAULT 0,
+            uang_keluar DOUBLE(12,2) UNSIGNED DEFAULT 0,
+            saldo DOUBLE(12,2) DEFAULT 0, -- saldo per tanggal
+            ket TEXT DEFAULT NULL,
 
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            created_by INT UNSIGNED DEFAULT NULL, -- who created first
-            updated_by INT UNSIGNED DEFAULT NULL, -- who last edit
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by VARCHAR(50) DEFAULT NULL, -- who created first
+            modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
 
-            CONSTRAINT pk_approve_history_id PRIMARY KEY(id),
-            CONSTRAINT fk_approve_history_timesheet_id FOREIGN KEY(timesheet_id) REFERENCES timesheet(id)
-                ON DELETE RESTRICT ON UPDATE CASCADE,
-            CONSTRAINT fk_approve_history_created_by FOREIGN KEY(created_by) REFERENCES user(id)
+            CONSTRAINT pk_mutasi_bank_id PRIMARY KEY(id),
+            CONSTRAINT fk_mutasi_bank_id_bank FOREIGN KEY(id_bank) REFERENCES bank(id)
                 ON DELETE SET NULL ON UPDATE CASCADE,
-            CONSTRAINT fk_approve_history_updated_by FOREIGN KEY(updated_by) REFERENCES user(id)
+            CONSTRAINT fk_mutasi_bank_created_by FOREIGN KEY(created_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE,
+            CONSTRAINT fk_mutasi_bank_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
                 ON DELETE SET NULL ON UPDATE CASCADE
         )ENGINE=InnoDb;
-    -- End Table approve history
+    -- End Table Mutasi Bank
 
-    -- Table login history
-        DROP TABLE IF EXISTS login_history;
-        CREATE TABLE IF NOT EXISTS login_history(
-            id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    -- Table Mutasi Kas Kecil
+        DROP TABLE IF EXISTS mutasi_saldo_kas_kecil;
+        CREATE TABLE IF NOT EXISTS mutasi_saldo_kas_kecil(
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, -- pk
 
-            user_id INT UNSIGNED DEFAULT NULL,
-            date DATETIME DEFAULT CURRENT_TIMESTAMP,
-            ip_address VARCHAR(255) DEFAULT NULL,
+            id_kas_kecil VARCHAR(10) DEFAULT NULL, -- fk kas kecil
+            tgl DATE DEFAULT CURRENT_DATE,
+            uang_masuk DOUBLE(12,2) UNSIGNED DEFAULT 0,
+            uang_keluar DOUBLE(12,2) UNSIGNED DEFAULT 0,
+            saldo DOUBLE(12,2) DEFAULT 0, -- saldo saat pada mutasi per tanggal
+            ket TEXT DEFAULT NULL,
 
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by VARCHAR(50) DEFAULT NULL, -- who created first
+            modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
 
-            CONSTRAINT pk_login_history_id PRIMARY KEY(id),
-            CONSTRAINT fk_login_history_user_id FOREIGN KEY(user_id) REFERENCES user(id)
-                ON DELETE RESTRICT ON UPDATE CASCADE
+            CONSTRAINT pk_mutasi_saldo_kas_kecil_id PRIMARY KEY(id),
+            CONSTRAINT fk_mutasi_saldo_kas_kecil_id_kas_kecil FOREIGN KEY(id_kas_kecil) REFERENCES kas_kecil(id)
+                ON DELETE SET NULL ON UPDATE CASCADE,
+            CONSTRAINT fk_mutasi_saldo_kas_kecil_created_by FOREIGN KEY(created_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE,
+            CONSTRAINT fk_mutasi_saldo_kas_kecil_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE
         )ENGINE=InnoDb;
-    -- End Table login history
+    -- End Table Mutasi Kas Kecil
 
-<!DOCTYPE html>
-	<html>
-	<head>
-		<title>403 Forbidden</title>
-	</head>
-	<body>
+    -- Table Mutasi Sub Kas Kecil
+        DROP TABLE IF EXISTS mutasi_saldo_sub_kas_kecil;
+        CREATE TABLE IF NOT EXISTS mutasi_saldo_sub_kas_kecil(
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, -- pk
 
-	<p>Directory access is forbidden.</p>
+            id_sub_kas_kecil VARCHAR(10) DEFAULT NULL, -- fk sub kas kecil
+            tgl DATE DEFAULT CURRENT_DATE,
+            uang_masuk DOUBLE(12,2) UNSIGNED DEFAULT 0,
+            uang_keluar DOUBLE(12,2) UNSIGNED DEFAULT 0,
+            saldo DOUBLE(12,2) DEFAULT 0, -- saldo saat pada mutasi per tanggal
+            ket TEXT DEFAULT NULL,
 
-	</body>
-</html>
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by VARCHAR(50) DEFAULT NULL, -- who created first
+            modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
 
+            CONSTRAINT pk_mutasi_saldo_sub_kas_kecil_id PRIMARY KEY(id),
+            CONSTRAINT fk_mutasi_saldo_sub_kas_kecil_id_sub_kas_kecil FOREIGN KEY(id_sub_kas_kecil) REFERENCES sub_kas_kecil(id)
+                ON DELETE SET NULL ON UPDATE CASCADE,
+            CONSTRAINT fk_mutasi_saldo_sub_kas_kecil_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE
+        )ENGINE=InnoDb;
+    -- End Table Mutasi Sub Kas Kecil
+
+    -- Table Distributor
+        DROP TABLE IF EXISTS distributor;
+        CREATE TABLE IF NOT EXISTS distributor(
+            id VARCHAR(50) NOT NULL UNIQUE, -- primary key
+
+            nama VARCHAR(255) DEFAULT NULL, -- nama distributor
+            alamat TEXT DEFAULT NULL, -- alamat distributor
+            no_telp VARCHAR(25) DEFAULT NULL, -- telpon 
+            pemilik VARCHAR(255) DEFAULT NULL, -- pemilik
+            status ENUM('AKTIF','NONAKTIF') DEFAULT NULL,
+            -- status_id INT UNSIGNED DEFAULT NULL,
+
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by VARCHAR(50) DEFAULT NULL, -- who created first
+            modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
+
+            CONSTRAINT pk_distributor_id PRIMARY KEY(id),
+            -- CONSTRAINT fk_distributor_status_id FOREIGN KEY(status_id) REFERENCES active_status_lookup(id)
+            --     ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_distributor_created_by FOREIGN KEY(created_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE,
+            CONSTRAINT fk_distributor_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE
+        )ENGINE=InnoDb;
+    -- End Table Distributor
+
+    -- Table Proyek
+        DROP TABLE IF EXISTS proyek;
+        CREATE TABLE IF NOT EXISTS proyek(
+            id VARCHAR(50) NOT NULL UNIQUE, -- pk, otomatis
+
+            pemilik VARCHAR(255) DEFAULT NULL,
+            tgl DATE DEFAULT CURRENT_DATE,
+            pembangunan VARCHAR(255) DEFAULT NULL, -- keterangan yg dibangun
+            luas_area DOUBLE(10,2) UNSIGNED DEFAULT NULL,
+            alamat TEXT DEFAULT NULL,
+            kota VARCHAR(100) DEFAULT NULL,
+            estimasi SMALLINT UNSIGNED DEFAULT NULL, -- estimasi waktu dalam bulan
+            total DOUBLE(12,2) UNSIGNED DEFAULT 0, -- total nilai rab
+            dp DOUBLE(12,2) UNSIGNED DEFAULT 0, -- dp
+            cco DOUBLE(12,2) UNSIGNED DEFAULT 0, -- change contract order
+            progress TINYINT UNSIGNED DEFAULT 0,
+            status ENUM('SELESAI', 'BERJALAN') DEFAULT NULL, -- status proyek
+            -- status_id INT UNSIGNED DEFAULT NULL,
+
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by VARCHAR(50) DEFAULT NULL, -- who created first
+            modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
+
+            CONSTRAINT pk_proyek_id PRIMARY KEY(id),
+            -- CONSTRAINT fk_proyek_status_id FOREIGN KEY(status_id) REFERENCES proyek_status_lookup(id)
+            --     ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_proyek_created_by FOREIGN KEY(created_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE,
+            CONSTRAINT fk_proyek_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE
+        )ENGINE=InnoDb;
+    -- End Table Proyek
+
+    -- Table Detail Proyek - detail pembayaran
+        ROP TABLE IF EXISTS detail_proyek;
+        CREATE TABLE IF NOT EXISTS detail_proyek(
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, -- pk
+
+            id_proyek VARCHAR(50) DEFAULT NULL, -- fk proyek
+            id_bank INT UNSIGNED DEFAULT NULL, -- fk bank
+            tgl DATE DEFAULT CURRENT_DATE,
+            nama VARCHAR(255) DEFAULT NULL, -- nama pembayaran
+            total DOUBLE(12,2) UNSIGNED DEFAULT 0, -- total angsuran
+            is_DP CHAR(1) DEFAULT '0', -- check DP atau bukan (1: DP, 0: Bukan)
+
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by VARCHAR(50) DEFAULT NULL, -- who created first
+            modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
+
+            CONSTRAINT pk_detail_proyek_id PRIMARY KEY(id),
+            CONSTRAINT fk_detail_proyek_id_proyek FOREIGN KEY(id_proyek) REFERENCES proyek(id)
+                ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_detail_proyek_id_bank FOREIGN KEY(id_bank) REFERENCES bank(id)
+                ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_detail_proyek_created_by FOREIGN KEY(created_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE,
+            CONSTRAINT fk_detail_proyek_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE
+        )ENGINE=InnoDb;
+    -- End Table Detail Proyek
+
+    -- Table Detail SKK Proyek
+        DROP TABLE IF EXISTS logistik_proyek;
+        CREATE TABLE IF NOT EXISTS logistik_proyek(
+        -- DROP TABLE IF EXISTS detail_skk_proyek;
+        -- CREATE TABLE IF NOT EXISTS detail_skk_proyek(
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, -- pk
+
+            id_proyek VARCHAR(50) DEFAULT NULL, -- fk proyek
+            id_sub_kas_kecil VARCHAR(10) DEFAULT NULL, -- fk sub kas kecil\
+
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by VARCHAR(50) DEFAULT NULL, -- who created first
+            modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
+
+            CONSTRAINT pk_logistik_proyek_id PRIMARY KEY(id),
+            CONSTRAINT fk_logistik_proyek_id_proyek FOREIGN KEY(id_proyek) REFERENCES proyek(id)
+                ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_logistik_proyek_id_sub_kas_kecil FOREIGN KEY(id_sub_kas_kecil) REFERENCES sub_kas_kecil(id)
+                ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_logistik_proyek_created_by FOREIGN KEY(created_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE,
+            CONSTRAINT fk_logistik_proyek_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE
+        )ENGINE=InnoDb;
+    -- End Table Detail SKK Proyek
+
+    -- Table Operasional
+        DROP TABLE IF EXISTS operasional;
+        CREATE TABLE IF NOT EXISTS operasional(
+            id VARCHAR(50) NOT NULL UNIQUE, -- pk
+
+            id_bank INT UNSIGNED DEFAULT NULL, -- fk bank
+            id_kas_besar VARCHAR(10) DEFAULT NULL,
+            tgl DATE DEFAULT CURRENT_DATE,
+            nama VARCHAR(255) DEFAULT NULL,
+            nominal DOUBLE(12,2) UNSIGNED DEFAULT 0,
+            jenis ENUM('UANG MASUK', 'UANG KELUAR') DEFAULT NULL,
+            -- jenis_id INT UNSIGNED DEFAULT NULL,
+            ket TEXT DEFAULT NULL,
+
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by VARCHAR(50) DEFAULT NULL, -- who created first
+            modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
+
+            CONSTRAINT pk_opersional_id PRIMARY KEY(id),
+            CONSTRAINT fk_operasional_id_bank FOREIGN KEY(id_bank) REFERENCES bank(id)
+                ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_operasional_id_kas_besar FOREIGN KEY(id_kas_besar) REFERENCES kas_besar(id)
+                ON DELETE RESTRICT ON UPDATE CASCADE,
+            -- CONSTRAINT fk_operasional_jenis_id FOREIGN KEY(jenis_id) REFERENCES jenis_uang_lookup(id)
+            --     ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_operasional_created_by FOREIGN KEY(created_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE,
+            CONSTRAINT fk_operasional_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE
+        )ENGINE=InnoDb;
+    -- End Table Operasaional
+
+    -- Table Operasional Proyek
+        DROP TABLE IF EXISTS operasional_proyek;
+        CREATE TABLE IF NOT EXISTS operasional_proyek(
+            id VARCHAR(50) NOT NULL UNIQUE,
+
+            id_proyek VARCHAR(50) DEFAULT NULL, -- fk proyek
+            id_kas_besar VARCHAR(10) DEFAULT NULL, -- fk kas besar
+            id_distributor VARCHAR(10) DEFAULT NULL, -- fk distributor
+            tgl DATE DEFAULT CURRENT_DATE,
+            nama VARCHAR(50) DEFAULT NULL, -- nama operasional
+            jenis ENUM('TEKNIS', 'NON-TEKNIS') DEFAULT NULL, -- jenis operasional,
+            -- jenis_id INT UNSIGNED DEFAULT NULL,
+            total DOUBLE(12,2) UNSIGNED DEFAULT 0, -- total operasional
+            sisa DOUBLE(12,2) UNSIGNED DEFAULT 0, -- sisa jika bayar secara cicil, default 0
+            status ENUM('TUNAI', 'KREDIT') DEFAULT NULL, -- T: Tunai, K: Kredit
+            -- jenis_pembayaran_id INT UNSIGNED DEFAULT NULL,
+            status_lunas ENUM('LUNAS', 'BELUM LUNAS') DEFAULT NULL, -- L: Lunas, B: Belum Lunas
+            -- status_id INT UNSIGNED DEFAULT NULL,
+            ket TEXT DEFAULT NULL,
+
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by VARCHAR(50) DEFAULT NULL, -- who created first
+            modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
+
+            CONSTRAINT pk_operasional_proyek_id PRIMARY KEY(id),
+            CONSTRAINT fk_operasional_proyek_id_proyek FOREIGN KEY(id_proyek) REFERENCES proyek(id)
+                ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_operasional_proyek_id_kas_besar FOREIGN KEY(id_kas_besar) REFERENCES kas_besar(id)
+                ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_operasional_proyek_id_distributor FOREIGN KEY(id_distributor) REFERENCES distributor(id)
+                ON DELETE SET NULL ON UPDATE CASCADE,
+            -- CONSTRAINT fk_operasional_jenis_id FOREIGN KEY(jenis_id) REFERENCES jenis_operasional_lookup(id)
+            --     ON DELETE RESTRICT ON UPDATE CASCADE,
+            -- CONSTRAINT fk_operasional_jenis_pembayaran_id FOREIGN KEY(jenis_pembayaran_id) REFERENCES jenis_pembayaran_lookup(id)
+            --     ON DELETE RESTRICT ON UPDATE CASCADE,
+            -- CONSTRAINT fk_operasional_status_id FOREIGN KEY(status_id) REFERENCES status_lunas_lookup(id)
+            --     ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_operasional_proyek_created_by FOREIGN KEY(created_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE,
+            CONSTRAINT fk_operasional_proyek_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE
+        )ENGINE=InnoDb;
+    -- End Table Operasional Proyek
+
+    -- Table Detail Operasional Proyek
+        DROP TABLE IF EXISTS detail_operasional_proyek;
+        CREATE TABLE IF NOT EXISTS detail_operasional_proyek(
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, -- pk
+
+            id_operasional_proyek VARCHAR(50) DEFAULT NULL, -- fk operasional proyek
+            id_bank INT UNSIGNED DEFAULT NULL,  -- fk bank 
+            nama VARCHAR(255) DEFAULT NULL, -- nama angsuran (angsuran ke-n)
+            tgl DATE DEFAULT CURRENT_DATE, -- tanggl angsuran
+            total DOUBLE(12,2) UNSIGNED DEFAULT 0, -- total angsuran
+
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by VARCHAR(50) DEFAULT NULL, -- who created first
+            modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
+
+            CONSTRAINT pk_detail_operasional_proyek PRIMARY KEY(id),
+            CONSTRAINT fk_detail_operasional_proyek_id_bank_from_bank FOREIGN KEY(id_bank) REFERENCES bank(id)
+                ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_detail_operasional_proyek_id_operasional FOREIGN KEY(id_operasional_proyek) REFERENCES operasional_proyek(id)
+                ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_detail_operasional_proyek_created_by FOREIGN KEY(created_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE,
+            CONSTRAINT fk_detail_operasional_proyek_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE
+        )ENGINE=InnoDb;
+    -- End Table Operasional Proyek
+
+    -- Table Pengajuan Sub Kas Kecil
+        DROP TABLE IF EXISTS pengajuan_sub_kas_kecil;
+        CREATE TABLE IF NOT EXISTS pengajuan_sub_kas_kecil(
+            id VARCHAR(50) NOT NULL UNIQUE, -- pk, id+proyek+sub_kas_kecil+increment
+
+            id_sub_kas_kecil VARCHAR(10) DEFAULT NULL, -- fk sub kecil
+            id_proyek VARCHAR(50) DEFAULT NULL, -- fk proyek
+            -- id_kas_kecil VARCHAR(10) DEFAULT NULL, -- fk kas kecil yang menyetujui
+            tgl DATE DEFAULT CURRENT_DATE, -- tgl pengajuan
+            tgl_laporan DATE DEFAULT CURRENT_DATE, -- tgl laporan
+            nama VARCHAR(50) DEFAULT NULL,
+            total DOUBLE(12,2) UNSIGNED DEFAULT 0, -- total pengajuan
+            dana_disetujui DOUBLE(12,2) UNSIGNED DEFAULT 0, -- dana yg disetujui, default 0 atau sama dengan total
+            status CHAR(1) DEFAULT '1', -- status pengajuan, default 1: 'pending'
+                            -- 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI', 4: 'LANGSUNG', 5: 'DITOLAK'
+            -- status_pengajuan_id INT UNSIGNED DEFAULT NULL,
+            status_laporan CHAR(1) DEFAULT '0', -- status laporan, default set null
+                            -- 0: 'BELUM DIKERJAKAN', 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI', 4: 'DITOLAK'
+            -- status_laporan_id INT UNSIGNED DEFAULT NULL,
+
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by VARCHAR(50) DEFAULT NULL, -- who created first
+            modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
+
+            CONSTRAINT pk_pengajuan_sub_kas_kecil_id PRIMARY KEY(id),
+            CONSTRAINT fk_pengajuan_sub_kas_kecil_id_sub_kas_kecil FOREIGN KEY(id_sub_kas_kecil) REFERENCES sub_kas_kecil(id)
+                ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_pengajuan_sub_kas_kecil_id_proyek FOREIGN KEY(id_proyek) REFERENCES proyek (id)
+                ON DELETE RESTRICT ON UPDATE CASCADE,
+            -- CONSTRAINT fk_pengajuan_sub_kas_kecil_id_kas_kecil FOREIGN KEY(id_kas_kecil) REFERENCES kas_kecil(id)
+            --     ON DELETE RESTRICT ON UPDATE CASCADE,
+            -- CONSTRAINT fk_pengajuan_sub_kas_kecil_status_pengajuan_id FOREIGN KEY(status_pengajuan_id) REFERENCES status_pengajuan_lookup(id)
+            --     ON DELETE RESTRICT ON UPDATE CASCADE,
+            -- CONSTRAINT fk_pengajuan_sub_kas_kecil_status_laporan_id FOREIGN KEY(status_laporan_id) REFERENCES status_pengajuan_lookup(id)
+            --     ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_pengajuan_sub_kas_kecil_created_by FOREIGN KEY(created_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE,
+            CONSTRAINT fk_pengajuan_sub_kas_kecil_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE
+        )ENGINE=InnoDb;
+    -- End Table Pengajuan Sub Kas Kecil
+
+    -- Table Detail Pengajuan Sub Kas Kecil
+        DROP TABLE IF EXISTS detail_pengajuan_sub_kas_kecil;
+        CREATE TABLE IF NOT EXISTS detail_pengajuan_sub_kas_kecil(
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, -- pk
+
+            id_pengajuan VARCHAR(50) DEFAULT NULL, -- fk pengajuan sub kas kecil
+            nama VARCHAR(255) DEFAULT NULL, -- nama barang/bahan
+            jenis CHAR(1) DEFAULT NULL, -- jenis pengajuan, T: 'TEKNIS', N: 'NON-TEKNIS'
+            -- jenis_id INT UNSIGNED DEFAULT NULL,
+            satuan VARCHAR(50) DEFAULT NULL, -- satuan barang/bahan
+            qty SMALLINT UNSIGNED DEFAULT 1, -- jumlah barang/bahan
+            harga DOUBLE(12,2) UNSIGNED DEFAULT 0, -- harga satuan per barang/bahan
+            subtotal DOUBLE(12,2) UNSIGNED DEFAULT 0, -- total per detail pengajuan
+            harga_asli DOUBLE(12,2) UNSIGNED DEFAULT 0,
+            sisa DOUBLE(12,2) UNSIGNED DEFAULT 0,
+
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by VARCHAR(50) DEFAULT NULL, -- who created first
+            modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
+
+            CONSTRAINT pk_detail_pengajuan_sub_kas_kecil_id PRIMARY KEY(id),
+            CONSTRAINT fk_detail_pengajuan_sub_kas_kecil_id_pengajuan FOREIGN KEY(id_pengajuan) REFERENCES pengajuan_sub_kas_kecil(id)
+                ON DELETE RESTRICT ON UPDATE CASCADE,
+            -- CONSTRAINT fk_operasional_jenis_id FOREIGN KEY(jenis_id) REFERENCES jenis_operasional_lookup(id)
+            --     ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_detail_pengajuan_sub_kas_kecil_created_by FOREIGN KEY(created_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE,
+            CONSTRAINT fk_detail_pengajuan_sub_kas_kecil_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE
+        )ENGINE=InnoDb;
+    -- End Table Pengajuan Sub Kas Kecil
+
+    -- Table Bukti Laporan Pengajuan SKK
+        DROP TABLE IF EXISTS upload_laporan_pengajuan_sub_kas_kecil;
+        CREATE TABLE IF NOT EXISTS upload_laporan_pengajuan_sub_kas_kecil(
+        -- DROP TABLE IF EXISTS bukti_laporan_pengajuan_skk;
+        -- CREATE TABLE IF NOT EXISTS bukti_laporan_pengajuan_skk(
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, -- pk
+
+            id_pengajuan VARCHAR(50) DEFAULT NULL, -- fk pengajuan sub kas kecil
+            foto TEXT DEFAULT NULL,
+
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by VARCHAR(50) DEFAULT NULL, -- who created first
+            modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
+
+            CONSTRAINT pk_upload_laporan_pengajuan_sub_kas_kecil PRIMARY KEY(id),
+            CONSTRAINT fk_upload_laporan_pengajuan_sub_kas_kecil_id_pengajuan FOREIGN KEY(id_pengajuan) REFERENCES pengajuan_sub_kas_kecil(id)
+                ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_upload_laporan_pengajuan_sub_kas_kecil_created_by FOREIGN KEY(created_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE,
+            CONSTRAINT fk_upload_laporan_pengajuan_sub_kas_kecil_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE
+        )ENGINE=InnoDb;
+    -- End Table Bukti Laporan Pengajuan SKK
+
+    -- Table Pengajuan Kas Kecil
+        DROP TABLE IF EXISTS pengajuan_kas_kecil;
+        CREATE TABLE IF NOT EXISTS pengajuan_kas_kecil(
+            id VARCHAR(50) NOT NULL UNIQUE, -- pk
+
+            id_kas_kecil VARCHAR(10) DEFAULT NULL, -- fk kas kecil
+            -- id_kas_besar VARCHAR(10) DEFAULT NULL, -- fk kas besar
+            id_bank INT UNSIGNED DEFAULT NULL, -- fk bank
+            tgl DATE DEFAULT CURRENT_DATE,
+            nama VARCHAR(50) DEFAULT NULL, -- nama pengajuan
+            total DOUBLE(12,2) UNSIGNED DEFAULT 0, -- total pengajuan ke kas besar
+            status CHAR(1) DEFAULT '0', -- status pengajuan, default 'pending'
+                        -- 0: 'PENDING', 1: 'PERBAIKI', 2: 'DISETUJUI', 3: 'DITOLAK'
+            total_disetujui DOUBLE(12,2) UNSIGNED DEFAULT 0,
+
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by VARCHAR(50) DEFAULT NULL, -- who created first
+            modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
+
+            CONSTRAINT pk_pengajuan_kas_kecil_id PRIMARY KEY(id),
+            CONSTRAINT fk_pengajuan_kas_kecil_id_kas_kecil FOREIGN KEY(id_kas_kecil) REFERENCES kas_kecil(id)
+                ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_pengajuan_kas_kecil_id_bank FOREIGN KEY(id_bank) REFERENCES bank(id)
+                ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_pengajuan_kas_kecil_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE
+        )ENGINE=InnoDb;
+    -- End Table Pengajuan Kas Kecil
+
+
+
+# View Access Right #
+
+-- View access menu
+CREATE OR REPLACE VIEW v_access_menu AS
+SELECT
+    am.id,
+    am.level_id, ll.name level_name,
+    am.menu_id, m.name menu_name, m.url, m.class, m.icon, m.position
+FROM access_menu am
+JOIN level_lookup ll ON ll.id = am.level_id
+JOIN menu m ON m.id = am.menu_id;
+-- End view access menu
+
+# End View Access Right #
 
 # Procedure, Function, and Trigger Bank #
 
@@ -514,19 +941,6 @@
 
 # End View Bank #
 
-<!DOCTYPE html>
-	<html>
-	<head>
-		<title>403 Forbidden</title>
-	</head>
-	<body>
-
-	<p>Directory access is forbidden.</p>
-
-	</body>
-</html>
-
-
 # View Dashboard #
 
 -- View proyek dashboard
@@ -538,19 +952,6 @@
 -- End View proyek dashboard
 
 # End View Dashboard #
-
-<!DOCTYPE html>
-	<html>
-	<head>
-		<title>403 Forbidden</title>
-	</head>
-	<body>
-
-	<p>Directory access is forbidden.</p>
-
-	</body>
-</html>
-
 
 # Procedure, Function, and Trigger Distributor #
 
@@ -649,19 +1050,6 @@
 -- End View Distributor
 
 # End View Distributor #
-
-<!DOCTYPE html>
-	<html>
-	<head>
-		<title>403 Forbidden</title>
-	</head>
-	<body>
-
-	<p>Directory access is forbidden.</p>
-
-	</body>
-</html>
-
 
 # Procedure, Function, and Trigger Kas Besar #
 
@@ -823,19 +1211,6 @@
 -- End View Export Kas Besar
 
 # End View Kas Besar #
-
-<!DOCTYPE html>
-	<html>
-	<head>
-		<title>403 Forbidden</title>
-	</head>
-	<body>
-
-	<p>Directory access is forbidden.</p>
-
-	</body>
-</html>
-
 
 # Procedure, Function, and Trigger Kas Kecil #
 
@@ -1010,19 +1385,6 @@
 -- End View saldo kas kecil
 
 # End View Kas Kecil #
-
-<!DOCTYPE html>
-	<html>
-	<head>
-		<title>403 Forbidden</title>
-	</head>
-	<body>
-
-	<p>Directory access is forbidden.</p>
-
-	</body>
-</html>
-
 
 # Procedure, Function, and Trigger Laporan Pengajuan Sub Kas Kecil #
 
@@ -1226,19 +1588,6 @@
 
 # End View Laporan Pengajuan Sub Kas Kecil #
 
-<!DOCTYPE html>
-	<html>
-	<head>
-		<title>403 Forbidden</title>
-	</head>
-	<body>
-
-	<p>Directory access is forbidden.</p>
-
-	</body>
-</html>
-
-
 # Procedure, Function, and Trigger Mutasi Saldo Kas Kecil #
 
 # End Procedure, Function, and Trigger Mutasi Saldo Kas Kecil #
@@ -1255,18 +1604,27 @@
 
 # End View Mutasi Saldo Kas Kecil #
 
-<!DOCTYPE html>
-	<html>
-	<head>
-		<title>403 Forbidden</title>
-	</head>
-	<body>
+# Procedure, Function, and Trigger Mutasi Saldo Sub Kas Kecil #
 
-	<p>Directory access is forbidden.</p>
+# End Procedure, Function, and Trigger Mutasi Saldo Sub Kas Kecil #
 
-	</body>
-</html>
+# View Mutasi Saldo Sub Kas Kecil #
 
+-- View export mutasi saldo sub kas kecil
+    CREATE OR REPLACE VIEW v_mutasi_saldo_sub_kas_kecil_export AS
+    SELECT 
+        id ID,
+        id_sub_kas_kecil `ID SUB KAS KECIL`,
+        DATE_FORMAT(tgl, "%d/%m/%Y") TANGGAL, 
+        uang_masuk `UANG MASUK`, 
+        uang_keluar `UANG KELUAR`, 
+        saldo SALDO, 
+        ket KETERANGAN
+    FROM mutasi_saldo_sub_kas_kecil
+    ORDER BY id DESC;
+-- End View export mutasi saldo sub kas kecil
+
+# End View Mutasi Saldo Sub Kas Kecil #
 
 # Procedure, Function, and Trigger Operasional #
 
@@ -1718,19 +2076,6 @@
 -- End View Operasional Export
 
 # End View Operasional #
-
-<!DOCTYPE html>
-	<html>
-	<head>
-		<title>403 Forbidden</title>
-	</head>
-	<body>
-
-	<p>Directory access is forbidden.</p>
-
-	</body>
-</html>
-
 
 # Procedure, Function, and Trigger Operasional Proyek #
 
@@ -2523,19 +2868,6 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
 
 # End View Operasional Proyek #
 
-<!DOCTYPE html>
-	<html>
-	<head>
-		<title>403 Forbidden</title>
-	</head>
-	<body>
-
-	<p>Directory access is forbidden.</p>
-
-	</body>
-</html>
-
-
 # Procedure, Function, and Trigger Pengajuan Kas Kecil #
 
 -- Tambah Data Pengajuan Kas Kecil
@@ -2650,19 +2982,6 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
 -- End View Pengajuan Kas Kecil (Export)
 
 # End View Pengajuan Kas Kecil #
-
-<!DOCTYPE html>
-	<html>
-	<head>
-		<title>403 Forbidden</title>
-	</head>
-	<body>
-
-	<p>Directory access is forbidden.</p>
-
-	</body>
-</html>
-
 
 # Procedure, Function, and Trigger Pengajuan Sub Kas Kecil #
 
@@ -2794,20 +3113,22 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
     JOIN sub_kas_kecil skk ON skk.id = pskk.id_sub_kas_kecil;
 -- End View Pengajuan Sub Kas Kecil
 
+-- View Pengajuan Sub Kas Kecil Export
+    CREATE OR REPLACE VIEW v_pengajuan_sub_kas_kecil_export AS
+    SELECT 
+        id `ID PENGAJUAN`, 
+        nama_pengajuan `NAMA PENGAJUAN`,
+        pemilik `PEMILIK PROYEK`,
+        pembangunan `NAMA PEMBANGUNAN PROYEK`,
+        DATE_FORMAT(tgl, "%d/%m/%Y") `TANGGAL PENGAJUAN`,
+        total `DANA DIAJUKAN`,
+        status `STATUS PENGAJUAN`,
+        dana_disetujui `DANA DISETUJUI`
+    FROM `v_pengajuan_sub_kas_kecil_v2`
+    ORDER BY tgl DESC;
+-- End View Pengajuan Sub Kas Kecil Export
+
 # End View Pengajuan Sub Kas Kecil #
-
-
-<!DOCTYPE html>
-	<html>
-	<head>
-		<title>403 Forbidden</title>
-	</head>
-	<body>
-
-	<p>Directory access is forbidden.</p>
-
-	</body>
-</html>
 
 
 # Procedure, Function, and Trigger Proyek #
@@ -2828,7 +3149,7 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
 		in total_param double(12,2),
 		in dp_param double(12,2),
 		in cco_param double(12,2),
-		in progress_param int,
+		in progress_param TINYINT,
 		in status_param enum('SELESAI', 'BERJALAN'),
 		in created_by_param varchar(50)
 	)
@@ -3335,19 +3656,6 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
 
 # End View Proyek #
 
-<!DOCTYPE html>
-	<html>
-	<head>
-		<title>403 Forbidden</title>
-	</head>
-	<body>
-
-	<p>Directory access is forbidden.</p>
-
-	</body>
-</html>
-
-
 # Procedure, Function, and Trigger Sub Kas Kecil #
 
 -- Procedure Tambah Data Sub Kas Kecil
@@ -3549,20 +3857,14 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
     LEFT JOIN vp_total_dana_pengajuan_skk vptdp ON skk.id=vptdp.id_sub_kas_kecil;
 -- End View Sub Kas Kecil
 
+-- View Sub Kas Kecil Export
+    CREATE OR REPLACE VIEW v_sub_kas_kecil_export AS
+    SELECT 
+        id ID, nama NAMA, alamat ALAMAT, no_telp `NO TELP`, email EMAIL, saldo SALDO, status STATUS 
+    FROM sub_kas_kecil; 
+-- View End Sub Kas Kecil Export
+
 # End View Sub Kas Kecil #
-
-<!DOCTYPE html>
-	<html>
-	<head>
-		<title>403 Forbidden</title>
-	</head>
-	<body>
-
-	<p>Directory access is forbidden.</p>
-
-	</body>
-</html>
-
 
 # Procedure, Function, and Trigger user #
 
@@ -3614,4 +3916,303 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
 -- End View User
 
 # End View User #
+
+# Seeder level lookup #
+
+INSERT INTO level_lookup (
+    id, name, description
+) VALUES 
+(1, 'OWNER', NULL),
+(2, 'KAS BESAR', NULL),
+(3, 'KAS KECIL', NULL),
+(4, 'SUB KAS KECIL', NULL);
+
+# End Seeder level lookup #
+
+# Seeder active status lookup #
+
+INSERT INTO active_status_lookup (
+    id, name, description
+) VALUES 
+(1, 'AKTIF', NULL),
+(2, 'NONAKTIF', NULL);
+
+# End Seeder active status lookup #
+
+# Seeder Permission lookup #
+
+INSERT INTO permission_lookup (
+    id, name, description
+) VALUES 
+(1, 'CREATE', NULL),
+(2, 'READ', NULL),
+(3, 'UPDATE', NULL),
+(4, 'DELETE', NULL),
+(5, 'UPDATE STATUS', NULL),
+(6, 'UPDATE IMAGE', NULL),
+(7, 'UPDATE PASSWORD', NULL),
+(8, 'RESET PASSWORD', NULL),
+(9, 'EXPORT', NULL);
+
+# End Seeder Permission lookup #
+
+# Seeder User #
+
+-- Password: ABCDE
+
+-- Owner
+INSERT INTO user (username, password, level, status) VALUES 
+('owner1@69designbuild.com', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'OWNER', 'AKTIF'),
+('owner2@69designbuild.com', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'OWNER', 'AKTIF');
+
+-- INSERT INTO user (username, password, level, status) VALUES 
+-- ('owner1@69designbuild.com', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 1, 1),
+-- ('owner2@69designbuild.com', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 1, 1);
+
+-- Kas Besar
+CALL p_tambah_kas_besar ('KB001', 'KAS BESAR 1', NULL, NULL, 'kas_besar1@69designbuild.com', NULL, 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'KAS BESAR', NULL);
+CALL p_tambah_kas_besar ('KB002', 'KAS BESAR 2', NULL, NULL, 'kas_besar2@69designbuild.com', NULL, 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'KAS BESAR', NULL);
+CALL p_tambah_kas_besar ('KB003', 'KAS BESAR 3', NULL, NULL, 'kas_besar3@69designbuild.com', NULL, 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'KAS BESAR', NULL);
+
+-- CALL p_tambah_kas_besar ('KB001', 'KAS BESAR 1', NULL, NULL, 'kas_besar1@69designbuild.com', NULL, 1, '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 2, NULL);
+-- CALL p_tambah_kas_besar ('KB002', 'KAS BESAR 2', NULL, NULL, 'kas_besar2@69designbuild.com', NULL, 1, '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 2, NULL);
+-- CALL p_tambah_kas_besar ('KB003', 'KAS BESAR 3', NULL, NULL, 'kas_besar3@69designbuild.com', NULL, 1, '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 2, NULL);
+
+-- Kas Kecil
+CALL p_tambah_kas_kecil ('KK001', 'KAS KECIL 1', NULL, NULL, 'kas_kecil1@69designbuild.com', NULL, 100000, CURRENT_DATE, 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'KAS KECIL', NULL);
+CALL p_tambah_kas_kecil ('KK002', 'KAS KECIL 2', NULL, NULL, 'kas_kecil2@69designbuild.com', NULL, 200000, CURRENT_DATE, 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'KAS KECIL', NULL);
+CALL p_tambah_kas_kecil ('KK003', 'KAS KECIL 3', NULL, NULL, 'kas_kecil3@69designbuild.com', NULL, 300000, CURRENT_DATE, 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'KAS KECIL', NULL);
+CALL p_tambah_kas_kecil ('KK004', 'KAS KECIL 4', NULL, NULL, 'kas_kecil4@69designbuild.com', NULL, 400000, CURRENT_DATE, 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'KAS KECIL', NULL);
+CALL p_tambah_kas_kecil ('KK005', 'KAS KECIL 5', NULL, NULL, 'kas_kecil5@69designbuild.com', NULL, 500000, CURRENT_DATE, 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'KAS KECIL', NULL);
+
+-- CALL p_tambah_kas_kecil ('KK001', 'KAS KECIL 1', NULL, NULL, 'kas_kecil1@69designbuild.com', NULL, 100000, CURRENT_DATE, 1, '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 3, NULL);
+-- CALL p_tambah_kas_kecil ('KK002', 'KAS KECIL 2', NULL, NULL, 'kas_kecil2@69designbuild.com', NULL, 200000, CURRENT_DATE, 1, '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 3, NULL);
+-- CALL p_tambah_kas_kecil ('KK003', 'KAS KECIL 3', NULL, NULL, 'kas_kecil3@69designbuild.com', NULL, 300000, CURRENT_DATE, 1, '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 3, NULL);
+-- CALL p_tambah_kas_kecil ('KK004', 'KAS KECIL 4', NULL, NULL, 'kas_kecil4@69designbuild.com', NULL, 400000, CURRENT_DATE, 1, '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 3, NULL);
+-- CALL p_tambah_kas_kecil ('KK005', 'KAS KECIL 5', NULL, NULL, 'kas_kecil5@69designbuild.com', NULL, 500000, CURRENT_DATE, 1, '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 3, NULL);
+
+-- Sub Kas Kecil
+CALL p_tambah_sub_kas_kecil ('SKK001', 'SUB KAS KECIL 1', NULL, NULL, 'sub_kas_kecil1@69designbuild.com', NULL, 50000, CURRENT_DATE, 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'SUB KAS KECIL', NULL);
+CALL p_tambah_sub_kas_kecil ('SKK002', 'SUB KAS KECIL 2', NULL, NULL, 'sub_kas_kecil2@69designbuild.com', NULL, 75000, CURRENT_DATE, 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'SUB KAS KECIL', NULL);
+CALL p_tambah_sub_kas_kecil ('SKK003', 'SUB KAS KECIL 3', NULL, NULL, 'sub_kas_kecil3@69designbuild.com', NULL, 100000, CURRENT_DATE, 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'SUB KAS KECIL', NULL);
+CALL p_tambah_sub_kas_kecil ('SKK004', 'SUB KAS KECIL 4', NULL, NULL, 'sub_kas_kecil4@69designbuild.com', NULL, 125000, CURRENT_DATE, 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'SUB KAS KECIL', NULL);
+CALL p_tambah_sub_kas_kecil ('SKK005', 'SUB KAS KECIL 5', NULL, NULL, 'sub_kas_kecil5@69designbuild.com', NULL, 150000, CURRENT_DATE, 'AKTIF', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'SUB KAS KECIL', NULL);
+
+-- CALL p_tambah_sub_kas_kecil ('SKK001', 'SUB KAS KECIL 1', NULL, NULL, 'sub_kas_kecil1@69designbuild.com', NULL, 50000, CURRENT_DATE, 1, '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 4, NULL);
+-- CALL p_tambah_sub_kas_kecil ('SKK002', 'SUB KAS KECIL 2', NULL, NULL, 'sub_kas_kecil2@69designbuild.com', NULL, 75000, CURRENT_DATE, 1, '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 4, NULL);
+-- CALL p_tambah_sub_kas_kecil ('SKK003', 'SUB KAS KECIL 3', NULL, NULL, 'sub_kas_kecil3@69designbuild.com', NULL, 100000, CURRENT_DATE, 1, '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 4, NULL);
+-- CALL p_tambah_sub_kas_kecil ('SKK004', 'SUB KAS KECIL 4', NULL, NULL, 'sub_kas_kecil4@69designbuild.com', NULL, 125000, CURRENT_DATE, 1, '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 4, NULL);
+-- CALL p_tambah_sub_kas_kecil ('SKK005', 'SUB KAS KECIL 5', NULL, NULL, 'sub_kas_kecil5@69designbuild.com', NULL, 150000, CURRENT_DATE, 1, '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 4, NULL);
+
+# End Seeder User #
+
+# Seeder Menu #
+
+INSERT INTO menu (
+    id, name, table_name, url, class, icon, position
+) VALUES 
+(1, 'Beranda', NULL, 'home', 'menu-home', 'fa fa-dashboard', 1),
+(2, 'Bank', 'bank', 'bank', 'menu-bank', 'fa fa-bank', 2),
+(3, 'Ditributor', 'distributor', 'distributor', 'menu-distributor', 'fa fa-truck', 3),
+(4, 'Proyek', 'proyek', 'proyek', 'menu-proyek', 'fa fa-cubes', 4),
+(5, 'Operasional Proyek', 'operasional_proyek', 'operasional-proyek', 'menu-operasional-proyek', 'fa fa-usd', 5),
+(6, 'Operasional', 'operasional', 'operasional', 'menu-operasional', 'fa fa-usd', 6),
+(7, 'Pengajuan Kas Kecil', 'pengajuan_kas_kecil', 'pengajuan-kas-kecil', 'menu-pengajuan-kas-kecil', 'fa-pencil-square-o', 7),
+(8, 'Pengajuan Sub Kas Kecil', 'pengajuan_sub_kas_kecil', 'pengajuan-sub-kas-kecil', 'menu-pengajuan-sub-kas-kecil', 'fa-pencil-square-o', 8),
+(9, 'Laporan Pengajuan SKK', 'pengajuan_sub_kas_kecil', 'laporan-sub-kas-kecil', 'menu-laporan-sub-kas-kecil', 'fa fa-check-square-o', 9),
+(10, 'Kas Besar', 'kas_besar', 'kas-besar', 'menu-kas-besar', 'fa fa-user-plus', 10),
+(11, 'Kas Kecil', 'kas_kecil', 'kas-kecil', 'menu-kas-kecil', 'fa fa-user', 11),
+(12, 'Sub Kas Kecil', 'sub_kas_kecil', 'sub-kas-kecil', 'menu-sub-kas-kecil', 'fa fa-users', 12),
+(13, 'User', 'user', 'user', 'menu-user', 'fa fa-users', 13),
+(14, 'Profile', NULL, NULL, NULL, NULL, NULL);
+
+# End Seeder Menu #
+
+# Seeder Detail Menu #
+
+# End Seeder Detail Menu #
+
+# Seeder Access Menu #
+
+INSERT INTO access_menu (
+    id, level_id, menu_id
+)
+VALUES 
+
+-- Owner
+(1, 1, 1),
+(2, 1, 2),
+(3, 1, 3),
+(4, 1, 4),
+(5, 1, 5),
+(6, 1, 6),
+(7, 1, 7),
+(8, 1, 8),
+(9, 1, 9),
+(10, 1, 10),
+(11, 1, 11),
+(12, 1, 12),
+(13, 1, 13),
+(14, 1, 14),
+
+-- Kas Besar
+(15, 2, 1),
+(16, 2, 2),
+(17, 2, 3),
+(18, 2, 4),
+(19, 2, 5),
+(20, 2, 6),
+(21, 2, 7),
+(22, 2, 10),
+(23, 2, 11),
+(24, 2, 12),
+(25, 2, 13),
+(26, 2, 14),
+
+-- Kas Kecil
+(27, 3, 1),
+(28, 3, 4),
+(29, 3, 7),
+(30, 3, 8),
+(31, 3, 9),
+(32, 3, 12),
+(33, 3, 14);
+
+# End Seeder Access Menu #
+
+# Seeder Role Permission #
+
+# End Seeder Role Permission #
+
+# Seeder Increment #
+
+INSERT INTO increment (id, menu_id, mask, last_increment) VALUES 
+(1, 3, 'DIS-0001', 6),
+(2, 4, 'PRY-yyyy-0001', 6),
+(3, 5, 'OPR-yyyy-{PRY0001}-0001', 0),
+(4, 6, 'OPR-yyyy-0001', 0),
+(5, 7, 'PKK-yyyy-0001', 0),
+(6, 8, 'PSKK-yyyy-0001', 0),
+(7, 10, 'KB-001', 4),
+(8, 11, 'KK-001', 6),
+(9, 12, 'SKK-001', 6);
+
+# End Seeder Increment #
+
+# Seeder Bank #
+
+CALL p_tambah_bank ('BCA', 57500750, 'AKTIF', NULL);
+CALL p_tambah_bank ('MANDIRI', 7952500, 'AKTIF', NULL);
+CALL p_tambah_bank ('BNI', 11440000, 'AKTIF', NULL);
+CALL p_tambah_bank ('BRI', 850000, 'AKTIF', NULL);
+CALL p_tambah_bank ('CIMB NIAGA', 27828000, 'AKTIF', NULL);
+
+-- CALL p_tambah_bank ('BCA', 57500750, 1, NULL);
+-- CALL p_tambah_bank ('MANDIRI', 7952500, 1, NULL);
+-- CALL p_tambah_bank ('BNI', 11440000, 1, NULL);
+-- CALL p_tambah_bank ('BRI', 850000, 1, NULL);
+-- CALL p_tambah_bank ('CIMB NIAGA', 27828000, 1, NULL);
+
+# End Seeder Bank #
+
+# Seeder Proyek #
+
+-- Proyek
+-- CALL p_tambah_proyek ('PRY20170001', 'UDIN TEMPEST', '2017-04-01', 'RUMAH TINGKAT 2', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
+-- CALL p_tambah_proyek ('PRY20170002', 'MULI IMRON', '2017-06-01', 'KOSTAN 10 KAMAR', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
+-- CALL p_tambah_proyek ('PRY20170003', 'BIMO MURE', '2017-09-01', 'APARTEMENT 100 KAMAR', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
+-- CALL p_tambah_proyek ('PRY20180001', 'JAKA PRATAMA', '2018-01-01', 'LAPANGAN FUTSAL', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
+-- CALL p_tambah_proyek ('PRY20180002', 'FAJAR CAHYO', '2018-03-01', 'PETERNAKAN MODERN', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
+-- CALL p_tambah_proyek ('PRY20180003', 'AINA NEVA', '2018-05-01', 'KANTOR 2 LANTAI', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
+-- CALL p_tambah_proyek ('PRY20180004', 'SERA INDRI', '2018-05-01', 'RUKO', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
+-- CALL p_tambah_proyek ('PRY20190001', 'RAMADAN SAPUTRA', '2019-01-01', 'RUMAH LANTAI 1', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
+-- CALL p_tambah_proyek ('PRY20190002', 'LILI SYARIPUDIN', '2019-01-01', 'RENOVASI RUMAH', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
+-- CALL p_tambah_proyek ('PRY20190003', 'RIFKA DIANA', '2019-02-01', 'RUKO', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
+-- CALL p_tambah_proyek ('PRY20190004', 'DWI PUTRI', '2019-03-01', 'KOSTAN 15 KAMAR', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
+-- CALL p_tambah_proyek ('PRY20190005', 'ABQORI GUNAWAN', CURRENT_DATE, 'RUMAH TINGKAT 3', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
+
+-- -- SKK Proyek
+-- CALL p_tambah_detail_skk_proyek ('PRY20170001');
+-- CALL p_tambah_detail_skk_proyek ('PRY20170001');
+
+-- CALL p_tambah_detail_skk_proyek ('PRY20170002');
+-- CALL p_tambah_detail_skk_proyek ('PRY20170002');
+-- CALL p_tambah_detail_skk_proyek ('PRY20170002');
+-- CALL p_tambah_detail_skk_proyek ('PRY20170002');
+
+-- CALL p_tambah_detail_skk_proyek ('PRY20170003');
+
+-- CALL p_tambah_detail_skk_proyek ('PRY20180001');
+-- CALL p_tambah_detail_skk_proyek ('PRY20180001');
+
+-- CALL p_tambah_detail_skk_proyek ('PRY20180002');
+
+-- CALL p_tambah_detail_skk_proyek ('PRY20180003');
+
+-- CALL p_tambah_detail_skk_proyek ('PRY20180004');
+-- CALL p_tambah_detail_skk_proyek ('PRY20180004');
+
+-- CALL p_tambah_detail_skk_proyek ('PRY20190001');
+-- CALL p_tambah_detail_skk_proyek ('PRY20190001');
+-- CALL p_tambah_detail_skk_proyek ('PRY20190001');
+
+-- CALL p_tambah_detail_skk_proyek ('PRY20190002');
+
+-- CALL p_tambah_detail_skk_proyek ('PRY20190003');
+
+-- CALL p_tambah_detail_skk_proyek ('PRY20190004');
+-- CALL p_tambah_detail_skk_proyek ('PRY20190004');
+-- CALL p_tambah_detail_skk_proyek ('PRY20190004');
+-- CALL p_tambah_detail_skk_proyek ('PRY20190004');
+
+-- CALL p_tambah_detail_skk_proyek ('PRY20190005');
+-- CALL p_tambah_detail_skk_proyek ('PRY20190005');
+
+-- -- Detail Proyek
+-- CALL p_tambah_detail_proyek ('PRY20170001');
+-- CALL p_tambah_detail_proyek ('PRY20170001');
+
+-- CALL p_tambah_detail_proyek ('PRY20170002');
+-- CALL p_tambah_detail_proyek ('PRY20170002');
+-- CALL p_tambah_detail_proyek ('PRY20170002');
+-- CALL p_tambah_detail_proyek ('PRY20170002');
+
+-- CALL p_tambah_detail_proyek ('PRY20170003');
+-- CALL p_tambah_detail_proyek ('PRY20170003');
+-- CALL p_tambah_detail_proyek ('PRY20170003');
+
+-- CALL p_tambah_detail_proyek ('PRY20180001');
+-- CALL p_tambah_detail_proyek ('PRY20180001');
+-- CALL p_tambah_detail_proyek ('PRY20180001');
+
+-- CALL p_tambah_detail_proyek ('PRY20180002');
+-- CALL p_tambah_detail_proyek ('PRY20180002');
+
+-- CALL p_tambah_detail_proyek ('PRY20180003');
+-- CALL p_tambah_detail_proyek ('PRY20180003');
+-- CALL p_tambah_detail_proyek ('PRY20180003');
+-- CALL p_tambah_detail_proyek ('PRY20180003');
+
+-- CALL p_tambah_detail_proyek ('PRY20180004');
+-- CALL p_tambah_detail_proyek ('PRY20180004');
+
+-- CALL p_tambah_detail_proyek ('PRY20190001');
+-- CALL p_tambah_detail_proyek ('PRY20190001');
+-- CALL p_tambah_detail_proyek ('PRY20190001');
+-- CALL p_tambah_detail_proyek ('PRY20190001');
+-- CALL p_tambah_detail_proyek ('PRY20190001');
+
+-- CALL p_tambah_detail_proyek ('PRY20190002');
+-- CALL p_tambah_detail_proyek ('PRY20190002');
+-- CALL p_tambah_detail_proyek ('PRY20190002');
+
+-- CALL p_tambah_detail_proyek ('PRY20190003');
+-- CALL p_tambah_detail_proyek ('PRY20190003');
+-- CALL p_tambah_detail_proyek ('PRY20190003');
+-- CALL p_tambah_detail_proyek ('PRY20190003');
+
+-- CALL p_tambah_detail_proyek ('PRY20190004');
+-- CALL p_tambah_detail_proyek ('PRY20190004');
+
+# End Seeder Proyek #
 

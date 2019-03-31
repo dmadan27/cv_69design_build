@@ -83,7 +83,7 @@ class Migrate
                 $file = explode('/', $path_file[0]);
                 $file = array_key_exists(5, $file) ? $file[5] : false;
 
-                if($file) {
+                if($file && (explode('.', $file)[1] !== 'html')) {
                     echo 'get all syntax</br>';
                     $filename = fopen($path_file[0], 'r') or die("Unable to open file!");
                     while(!feof($filename)) {
@@ -147,7 +147,7 @@ class Migrate
                         $getFile = explode('/', $file);
                         $getFile = array_key_exists(5, $getFile) ? $getFile[5] : false;
 
-                        if($getFile) {
+                        if($getFile && (explode('.', $getFile)[1] !== 'html')) {
                             echo 'get all '.$getFile.' syntax</br>';
                             $filename = fopen($file, 'r') or die("Unable to open file!");
                             while(!feof($filename)) {
@@ -171,8 +171,16 @@ class Migrate
             });
 
             if(!empty($getSeeder)) {
-                asort($getSeeder);
-                foreach($getSeeder as $path_seeder) {
+                // sorting seeder
+                $newSeeder = array();
+                foreach($getSeeder as $seeder) {
+                    $tempPath = explode('/', $seeder);
+                    $tempFile = explode('_', $tempPath[3]);
+                    $newSeeder[(int)$tempFile[0]] = $seeder;
+                }
+
+                ksort($newSeeder, 1);
+                foreach($newSeeder as $path_seeder) {
                     echo 'open file '.$path_seeder.'</br>';
                     $getFileSeeder = explode('/', $path_seeder);
                     $getFileSeeder = array_key_exists(3, $getFileSeeder) ? $getFileSeeder[3] : false;

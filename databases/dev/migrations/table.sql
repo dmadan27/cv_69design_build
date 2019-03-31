@@ -4,7 +4,7 @@
 
 # Local Development Only
 
--- Remove commentary in you want build database from zero
+-- Remove commentary if you want build database from zero
 # DROP DATABASE IF EXISTS `69design-build_dev`;
 # CREATE DATABASE `69design-build_dev`;
 # USE `69design-build_dev`;
@@ -66,12 +66,12 @@
             username VARCHAR(50) NOT NULL UNIQUE,
             password TEXT NOT NULL,
             -- name VARCHAR(255), -- optional, comentary if the name of user not contain in user table
-            -- level_id INT UNSIGNED DEFAULT NULL, -- fk level lookup
-            -- status_id INT UNSIGNED DEFAULT NULL, -- fk active status lookup
             -- image text, -- optional, comentary if the image of user not contain in user table
 
             level enum('OWNER', 'KAS BESAR', 'KAS KECIL', 'SUB KAS KECIL'), -- v1
 		    status enum('AKTIF', 'NONAKTIF'), -- status aktif username
+            -- level_id INT UNSIGNED DEFAULT NULL, -- fk level lookup
+            -- status_id INT UNSIGNED DEFAULT NULL, -- fk active status lookup
 
             created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -152,14 +152,17 @@
         CREATE TABLE IF NOT EXISTS role_permission(
             id INT UNSIGNED NOT NULL AUTO_INCREMENT,
 
-            user_id INT UNSIGNED DEFAULT NULL, -- fk user
+            username VARCHAR(50) DEFAULT NULL,
+            -- user_id INT UNSIGNED DEFAULT NULL, -- fk user
             menu_permission_id INT UNSIGNED DEFAULT NULL, -- fk menu detail
 
             created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
             CONSTRAINT pk_role_permission_id PRIMARY KEY(id),
-            CONSTRAINT fk_role_permission_user_id FOREIGN KEY(user_id) REFERENCES user(id)
+            -- CONSTRAINT fk_role_permission_user_id FOREIGN KEY(user_id) REFERENCES user(id)
+            --     ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_role_permission_username FOREIGN KEY(username) REFERENCES user(username)
                 ON DELETE RESTRICT ON UPDATE CASCADE,
             CONSTRAINT fk_role_permission_menu_permission_id FOREIGN KEY(menu_permission_id) REFERENCES menu_detail(id)
                 ON DELETE RESTRICT ON UPDATE CASCADE
@@ -174,7 +177,7 @@
             menu_id INT UNSIGNED NOT NULL UNIQUE, -- fk menu
             mask VARCHAR(255) DEFAULT NULL, -- format increment
             last_increment INT UNSIGNED DEFAULT 0,
-            description TEXT,
+            description TEXT DEFAULT NULL,
 
             created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -573,7 +576,7 @@
     -- Table Operasional
         DROP TABLE IF EXISTS operasional;
         CREATE TABLE IF NOT EXISTS operasional(
-            id INT UNSIGNED NOT NULL AUTO_INCREMENT, -- pk
+            id VARCHAR(50) NOT NULL UNIQUE, -- pk
 
             id_bank INT UNSIGNED DEFAULT NULL, -- fk bank
             id_kas_besar VARCHAR(10) DEFAULT NULL,
