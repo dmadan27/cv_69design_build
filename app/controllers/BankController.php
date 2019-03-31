@@ -56,9 +56,7 @@
 			);
 
 			$config = array(
-				'title' => array(
-					'title' => 'Menu Bank',
-				),
+				'title' => 'Menu Bank',
 				'property' => array(
                     'main' => 'Data Bank',
 					'sub' => 'List Semua Data Bank',

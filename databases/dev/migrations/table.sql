@@ -75,10 +75,13 @@
 
             created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            created_by INT UNSIGNED DEFAULT NULL, -- who created first
-            modified_by INT UNSIGNED DEFAULT NULL, -- who last edit
+            created_by VARCHAR(50) DEFAULT NULL, -- who created first
+            modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
+            -- created_by INT UNSIGNED DEFAULT NULL, -- who created first
+            -- modified_by INT UNSIGNED DEFAULT NULL, -- who last edit
 
             CONSTRAINT pk_user_username PRIMARY KEY(username),
+            -- CONSTRAINT pk_user_user_id PRIMARY KEY(id),
             -- CONSTRAINT fk_user_level_id FOREIGN KEY(level_id) REFERENCES level_lookup(id)
             --     ON DELETE RESTRICT ON UPDATE CASCADE,
             -- CONSTRAINT fk_user_status_id FOREIGN KEY(status_id) REFERENCES active_status_lookup(id)
@@ -87,6 +90,10 @@
                 ON DELETE SET NULL ON UPDATE CASCADE,
             CONSTRAINT fk_user_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
                 ON DELETE SET NULL ON UPDATE CASCADE
+            -- CONSTRAINT fk_user_created_by FOREIGN KEY(created_by) REFERENCES user(id)
+            --     ON DELETE SET NULL ON UPDATE CASCADE,
+            -- CONSTRAINT fk_user_modified_by FOREIGN KEY(modified_by) REFERENCES user(id)
+            --     ON DELETE SET NULL ON UPDATE CASCADE
         )ENGINE=InnoDb;
     -- End Table user
 
@@ -218,7 +225,7 @@
             nama VARCHAR(255) DEFAULT NULL,
             alamat TEXT DEFAULT NULL,
             no_telp VARCHAR(20) DEFAULT NULL,
-            email VARCHAR(50) NOT NULL UNIQUE, -- fk user
+            email VARCHAR(50) DEFAULT NULL UNIQUE, -- fk user
             foto TEXT DEFAULT NULL,
             status ENUM('AKTIF', 'NONAKTIF') DEFAULT NULL, -- status aktif kas besar
             -- status_id INT UNSIGNED DEFAULT NULL,
@@ -248,7 +255,7 @@
             nama VARCHAR(50) DEFAULT NULL, -- nama kas kecil
             alamat TEXT DEFAULT NULL,
             no_telp VARCHAR(20) DEFAULT NULL,
-            email VARCHAR(50) NOT NULL UNIQUE, -- fk user
+            email VARCHAR(50) DEFAULT NULL UNIQUE, -- fk user
             foto TEXT DEFAULT NULL,
             saldo DOUBLE(12,2) DEFAULT 0, -- saldo kas kecil, default 0
             status ENUM('AKTIF', 'NONAKTIF') DEFAULT NULL, -- status aktif kas kecil
@@ -279,7 +286,7 @@
             nama VARCHAR(255) DEFAULT NULL,
             alamat TEXT DEFAULT NULL,
             no_telp VARCHAR(20) DEFAULT NULL,
-            email VARCHAR(50) NOT NULL UNIQUE, -- username
+            email VARCHAR(50) DEFAULT NULL UNIQUE, -- username
             foto TEXT DEFAULT NULL, -- simpan urlnya
             saldo DOUBLE(12,2) DEFAULT 0, -- saldo master, default 0
             status ENUM('AKTIF', 'NONAKTIF') DEFAULT NULL, -- status aktif sub kas kecil
@@ -383,7 +390,7 @@
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, -- pk
 
             id_bank INT UNSIGNED DEFAULT NULL, -- fk bank
-            tgl DATE DEFAULT CURRENT_DATE,
+            tgl DATE DEFAULT NULL,
             uang_masuk DOUBLE(12,2) UNSIGNED DEFAULT 0,
             uang_keluar DOUBLE(12,2) UNSIGNED DEFAULT 0,
             saldo DOUBLE(12,2) DEFAULT 0, -- saldo per tanggal
@@ -410,7 +417,7 @@
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, -- pk
 
             id_kas_kecil VARCHAR(10) DEFAULT NULL, -- fk kas kecil
-            tgl DATE DEFAULT CURRENT_DATE,
+            tgl DATE DEFAULT NULL,
             uang_masuk DOUBLE(12,2) UNSIGNED DEFAULT 0,
             uang_keluar DOUBLE(12,2) UNSIGNED DEFAULT 0,
             saldo DOUBLE(12,2) DEFAULT 0, -- saldo saat pada mutasi per tanggal
@@ -437,7 +444,7 @@
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, -- pk
 
             id_sub_kas_kecil VARCHAR(10) DEFAULT NULL, -- fk sub kas kecil
-            tgl DATE DEFAULT CURRENT_DATE,
+            tgl DATE DEFAULT NULL,
             uang_masuk DOUBLE(12,2) UNSIGNED DEFAULT 0,
             uang_keluar DOUBLE(12,2) UNSIGNED DEFAULT 0,
             saldo DOUBLE(12,2) DEFAULT 0, -- saldo saat pada mutasi per tanggal
@@ -489,7 +496,7 @@
             id VARCHAR(50) NOT NULL UNIQUE, -- pk, otomatis
 
             pemilik VARCHAR(255) DEFAULT NULL,
-            tgl DATE DEFAULT CURRENT_DATE,
+            tgl DATE DEFAULT NULL,
             pembangunan VARCHAR(255) DEFAULT NULL, -- keterangan yg dibangun
             luas_area DOUBLE(10,2) UNSIGNED DEFAULT NULL,
             alamat TEXT DEFAULT NULL,
@@ -518,13 +525,13 @@
     -- End Table Proyek
 
     -- Table Detail Proyek - detail pembayaran
-        ROP TABLE IF EXISTS detail_proyek;
+        DROP TABLE IF EXISTS detail_proyek;
         CREATE TABLE IF NOT EXISTS detail_proyek(
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, -- pk
 
             id_proyek VARCHAR(50) DEFAULT NULL, -- fk proyek
             id_bank INT UNSIGNED DEFAULT NULL, -- fk bank
-            tgl DATE DEFAULT CURRENT_DATE,
+            tgl DATE DEFAULT NULL,
             nama VARCHAR(255) DEFAULT NULL, -- nama pembayaran
             total DOUBLE(12,2) UNSIGNED DEFAULT 0, -- total angsuran
             is_DP CHAR(1) DEFAULT '0', -- check DP atau bukan (1: DP, 0: Bukan)
@@ -580,7 +587,7 @@
 
             id_bank INT UNSIGNED DEFAULT NULL, -- fk bank
             id_kas_besar VARCHAR(10) DEFAULT NULL,
-            tgl DATE DEFAULT CURRENT_DATE,
+            tgl DATE DEFAULT NULL,
             nama VARCHAR(255) DEFAULT NULL,
             nominal DOUBLE(12,2) UNSIGNED DEFAULT 0,
             jenis ENUM('UANG MASUK', 'UANG KELUAR') DEFAULT NULL,
@@ -614,7 +621,7 @@
             id_proyek VARCHAR(50) DEFAULT NULL, -- fk proyek
             id_kas_besar VARCHAR(10) DEFAULT NULL, -- fk kas besar
             id_distributor VARCHAR(10) DEFAULT NULL, -- fk distributor
-            tgl DATE DEFAULT CURRENT_DATE,
+            tgl DATE DEFAULT NULL,
             nama VARCHAR(50) DEFAULT NULL, -- nama operasional
             jenis ENUM('TEKNIS', 'NON-TEKNIS') DEFAULT NULL, -- jenis operasional,
             -- jenis_id INT UNSIGNED DEFAULT NULL,
@@ -659,7 +666,7 @@
             id_operasional_proyek VARCHAR(50) DEFAULT NULL, -- fk operasional proyek
             id_bank INT UNSIGNED DEFAULT NULL,  -- fk bank 
             nama VARCHAR(255) DEFAULT NULL, -- nama angsuran (angsuran ke-n)
-            tgl DATE DEFAULT CURRENT_DATE, -- tanggl angsuran
+            tgl DATE DEFAULT NULL, -- tanggl angsuran
             total DOUBLE(12,2) UNSIGNED DEFAULT 0, -- total angsuran
 
             created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -687,8 +694,8 @@
             id_sub_kas_kecil VARCHAR(10) DEFAULT NULL, -- fk sub kecil
             id_proyek VARCHAR(50) DEFAULT NULL, -- fk proyek
             -- id_kas_kecil VARCHAR(10) DEFAULT NULL, -- fk kas kecil yang menyetujui
-            tgl DATE DEFAULT CURRENT_DATE, -- tgl pengajuan
-            tgl_laporan DATE DEFAULT CURRENT_DATE, -- tgl laporan
+            tgl DATE DEFAULT NULL, -- tgl pengajuan
+            tgl_laporan DATE DEFAULT NULL, -- tgl laporan
             nama VARCHAR(50) DEFAULT NULL,
             total DOUBLE(12,2) UNSIGNED DEFAULT 0, -- total pengajuan
             dana_disetujui DOUBLE(12,2) UNSIGNED DEFAULT 0, -- dana yg disetujui, default 0 atau sama dengan total
@@ -788,7 +795,7 @@
             id_kas_kecil VARCHAR(10) DEFAULT NULL, -- fk kas kecil
             -- id_kas_besar VARCHAR(10) DEFAULT NULL, -- fk kas besar
             id_bank INT UNSIGNED DEFAULT NULL, -- fk bank
-            tgl DATE DEFAULT CURRENT_DATE,
+            tgl DATE DEFAULT NULL,
             nama VARCHAR(50) DEFAULT NULL, -- nama pengajuan
             total DOUBLE(12,2) UNSIGNED DEFAULT 0, -- total pengajuan ke kas besar
             status CHAR(1) DEFAULT '0', -- status pengajuan, default 'pending'

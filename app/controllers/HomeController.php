@@ -62,9 +62,7 @@
 			);
 
 			$config = array(
-				'title' => array(
-					'title' => 'Beranda',
-				),
+				'title' => 'Beranda',
 				'property' => array(
 					'main' => 'Beranda',
 					'sub' => 'Dashboard Owner',
@@ -110,9 +108,7 @@
 			);
 
 			$config = array(
-				'title' => array(
-					'title' => 'Beranda',
-				),
+				'title' => 'Beranda',
 				'property' => array(
 					'main' => 'Beranda',
 					'sub' => 'Dashboard Kas Besar',
@@ -232,9 +228,7 @@
 			);
 
 			$config = array(
-				'title' => array(
-					'title' => 'Beranda',
-				),
+				'title' => 'Beranda',
 				'property' => array(
 					'main' => 'Beranda',
 					'sub' => 'Dashboard Kas Kecil',
