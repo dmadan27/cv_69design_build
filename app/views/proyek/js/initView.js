@@ -181,3 +181,61 @@ $(document).ready(function() {
         operasional_proyekTable.ajax.reload(null, false);
     }, 60000 );
 });
+
+/**
+ * 
+ */
+function getExport(type) {
+    var notif = {title: 'Pesan Pemberitahuan', message: 'Akses Ditolak', type: 'warning'};
+    if(LEVEL === 'KAS BESAR' || LEVEL === 'OWNER') {
+        var url = '';
+        var data = {};
+        if(type == 'detail_pembayaran') {
+            url = BASE_URL+'export/proyek-detail-pembayaran/'+$('#id').val().trim();
+        }
+        else if(type == 'pengajuan_skk') {
+            url = BASE_URL+'export/proyek-detail-pengajuan-skk/'+$('#id').val().trim();
+            data.tgl_awal = 
+        }
+        else if(type == 'operasional_proyek') {
+            url = BASE_URL+'export/proyek-detail-operasional-proyek/'+$('#id').val().trim();
+        }
+        else {
+            setNotif(notif, 'swal');
+            return;
+        }
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            dataType: 'JSON',
+            data: data,
+            beforeSend: function(){
+                console.log('Loading render file excel..');
+                $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+            },
+            success: function(response) {
+                console.log('%cResponse getExport Proyek: ', 'color: blue; font-weight: bold', response);
+                $('.box .overlay').remove();
+                $('#modalExport').modal('hide');
+                if(response.success) {
+                    var $a = $("<a>");
+                    $a.attr("href",response.file);
+                    $("body").append($a);
+                    $a.attr("download", response.filename);
+                    $a[0].click();
+                    $a.remove();   
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown){ // error handling
+                console.log('%cResponse Error getExport Proyek', 'color: red; font-weight: bold', {jqXHR, textStatus, errorThrown});
+                swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+                $('.box .overlay').remove();
+                $('#modalExport').modal('hide');
+            }
+        })
+    }
+    else {
+        setNotif(notif, 'swal');
+    }
+}

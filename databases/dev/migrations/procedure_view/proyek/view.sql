@@ -103,7 +103,7 @@
         p.id AS 'ID PROYEK', p.pemilik PEMILIK, p.tgl TANGGAL, p.pembangunan PEMBANGUNAN, 
         
         -- detail logistik proyek (skk)
-        skk.id AS 'ID SUB KAS KECIL', skk.nama
+        skk.id AS 'ID SUB KAS KECIL', skk.nama NAMA
         
     FROM proyek p
     JOIN logistik_proyek lp ON lp.id_proyek = p.id

@@ -5,7 +5,7 @@
 	 * Class Proyek extend ke Abstract Crud
 	 * Extend Abstract CrudAbstract
 	 */
-	class Proyek extends CrudAbstract
+	class Proyek extends Controller
 	{
 		
 		private $success = false;
@@ -925,66 +925,6 @@
 				echo json_encode($data);
 			}
 			else { die(ACCESS_DENIED); }
-		}
-
-		/**
-		 * Method export
-		 */
-		public function export() {
-			if($_SERVER['REQUEST_METHOD'] == 'POST' && 
-			($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER')) {
-				$tgl_awal = isset($_POST['tgl_awal']) ? $_POST['tgl_awal'] : false;
-				$tgl_akhir = isset($_POST['tgl_akhir']) ? $_POST['tgl_akhir'] : false;
-				
-				$row = $this->ProyekModel->export($tgl_awal, $tgl_akhir);
-				$column = array_keys($row[0]);
-
-				$detailRow = $this->ProyekModel->export_detail_pembayaran($tgl_awal, $tgl_akhir);
-				$detailColumn = array_keys($detailRow[0]);
-				$detail = array(
-					array(
-						'row' => $detailRow,
-						'column' => $detailColumn,
-						'sheet' => 'Data Detail Pembayaran Proyek'
-					)
-				);
-
-				// need validation data max and data null
-				if(empty($row)) {
-					die();
-				}
-				else if(count($row) > 20000) {
-					die();
-				}
-
-				$config = array(
-					'data' => array(
-						'main' => array(
-							'row' => $row,
-							'column' => $column,
-							'sheet' => 'Data Proyek'
-						),
-						'detail' => $detail
-					),
-					'property' => array(
-						'title' => 'Data Proyek Tanggal '.$tgl_awal.' s.d '.$tgl_akhir,
-						'subject' => 'Data Proyek Tanggal '.$tgl_awal.' s.d '.$tgl_akhir,
-						'description' => 'List Data Proyek Tanggal '.$tgl_awal.' s.d '.$tgl_akhir,
-					)
-				); 
-
-				$this->excel_v2->setProperty($config['property']);
-				$this->excel_v2->setData($config['data']['main'], $config['data']['detail']);
-				$this->excel_v2->getExcel(1, 2);
-			}
-			else { die(ACCESS_DENIED); }
-		}
-
-		/**
-		 * 
-		 */
-		public function export_detail($id) {
-
 		}
 
 		/**

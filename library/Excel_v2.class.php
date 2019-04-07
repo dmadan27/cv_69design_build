@@ -8,6 +8,7 @@
     class Excel_v2 {
         
         private $excel;
+        private $err = "Export Data Failed.</br>Please Contact Developer For Support.";
         public $property = array();
         public $data = array();
         
@@ -126,18 +127,12 @@
             $detail_data = (empty($this->data['detail']) || $this->data['detail'] === NULL) ? false : $this->data['detail'];
             if($detail_data) {
                 $i = 1;
-                $numRow = $start_row_data;
                 foreach ($detail_data['data'] as $item) {
-                    
+                    $numRow = $start_row_data;
                     $sheetDetail = $this->excel->createSheet($i);
                     $this->excel->setActiveSheetIndex($i);
 
                     foreach($item as $key => $row) {
-
-                        // echo '<pre>';
-                        // var_dump($key);
-                        // echo '</pre>';
-
                         if($key == "column") {
                             // set header
                             foreach($row as $header) {
@@ -166,10 +161,6 @@
                     $i++;
                 }   
             }
-
-            // echo '<pre>';
-            // var_dump($detail_data);
-            // echo '</pre>';
         }
 
         /**

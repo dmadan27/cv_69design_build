@@ -37,26 +37,9 @@ var mutasiBankTable = $("#mutasiBankTable").DataTable({
 	}
 });
 
-$(document).ready(function(){
-    setStatus();
+$(document).ready(function() {
 
-     //Date picker
-	$('#tgl_awal').datepicker({
-		autoclose: true,
-		format: "yyyy-mm-dd",
-		todayHighlight: true,
-		orientation:"bottom auto",
-		todayBtn: true,
-	  });
-
-	  //Date picker
-	$('#tgl_akhir').datepicker({
-		autoclose: true,
-		format: "yyyy-mm-dd",
-		todayHighlight: true,
-		orientation:"bottom auto",
-		todayBtn: true,
-	  });
+	init();
 
     // on click button edit
     $('#btn_edit').on('click', function(){
@@ -102,8 +85,34 @@ $(document).ready(function(){
 });
 
 /**
-*
-*/
+ * 
+ */
+function init() {
+	setStatus();
+
+     //Date picker
+	$('#tgl_awal').datepicker({
+		autoclose: true,
+		format: "yyyy-mm-dd",
+		todayHighlight: true,
+		orientation:"bottom auto",
+		todayBtn: true,
+	});
+
+	  //Date picker
+	$('#tgl_akhir').datepicker({
+		autoclose: true,
+		format: "yyyy-mm-dd",
+		todayHighlight: true,
+		orientation:"bottom auto",
+		todayBtn: true,
+	});
+}
+
+/**
+ * 
+ * @param {*} id 
+ */
 function export_excel(id) {
    
     console.log('Export Detail Clicked');
@@ -136,7 +145,7 @@ function export_excel(id) {
         })
     } else {
 		$.ajax({
-			url: BASE_URL+'bank/export-mutasi/'+id,
+			url: BASE_URL+'export/bank-detail-mutasi/'+id,
 			type: 'POST',
 			dataType: 'JSON',
 			data: {

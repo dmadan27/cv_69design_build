@@ -82,7 +82,7 @@ function init() {
 		todayHighlight: true,
 		orientation:"bottom auto",
 		todayBtn: true,
-	  });
+    });
 
 	$('#tgl_akhir').datepicker({
 		autoclose: true,
@@ -195,7 +195,7 @@ function getExport() {
     var notif = {title: 'Pesan Pemberitahuan', message: 'Akses Ditolak', type: 'warning'};
     if(LEVEL === 'KAS BESAR' || LEVEL === 'OWNER') {
         $.ajax({
-            url: BASE_URL+'proyek/export/',
+            url: BASE_URL+'export/proyek/',
             type: 'POST',
             dataType: 'JSON',
             data: {

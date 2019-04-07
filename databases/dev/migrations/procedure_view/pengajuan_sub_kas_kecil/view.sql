@@ -61,4 +61,31 @@
     ORDER BY tgl DESC;
 -- End View Pengajuan Sub Kas Kecil Export
 
+-- View Export Pengajuan Sub Kas Kecil
+    CREATE OR REPLACE VIEW v_pengajuan_sub_kas_kecil_export_v2 AS
+    SELECT 
+        id `ID PENGAJUAN`, id_sub_kas_kecil `ID SUB KAS KECIL`, nama_skk `SUB KAS KECIL`, nama_pengajuan `NAMA PENGAJUAN`,
+        id_proyek `ID PROYEK`, pemilik `PEMILIK PROYEK`, pembangunan `NAMA PEMBANGUNAN PROYEK`,
+        tgl `TANGGAL PENGAJUAN`, total `DANA DIAJUKAN`, status `STATUS PENGAJUAN`, dana_disetujui `DANA DISETUJUI`
+        -- , CONCAT(id_kas_kecil, ' - ', nama_kas_kecil) `DISETUJUI OLEH`
+    FROM `v_pengajuan_sub_kas_kecil_v2`
+    ORDER BY tgl DESC;
+-- End Export View Pengajuan Sub Kas Kecil
+
+-- View Export Detail Pengajuan Sub Kas Kecil
+    CREATE OR REPLACE VIEW v_export_detail_pengajuan_skk AS
+    SELECT
+        pskk.id `ID PENGAJUAN`, pskk.id_sub_kas_kecil `ID SUB KAS KECIL`, pskk.nama_skk `SUB KAS KECIL`, 
+        pskk.nama_pengajuan `NAMA PENGAJUAN`, pskk.tgl `TANGGAL PENGAJUAN`,
+        dskk.nama `NAMA BARANG/BAHAN`,
+        (CASE 
+            WHEN dskk.jenis = 'T' THEN 'TEKNIS' 
+            ELSE 'NON-TEKNIS'
+        END) `JENIS`,
+        dskk.satuan `SATUAN BARANG`, dskk.qty `QTY`, dskk.harga `HARGA SATUAN`, 
+        dskk.subtotal `SUBTOTAL`, dskk.harga_asli `SUBTOTAL ASLI`, dskk.sisa `SISA`
+    FROM detail_pengajuan_sub_kas_kecil dskk
+    JOIN v_pengajuan_sub_kas_kecil_v2 pskk ON pskk.id = dskk.id_pengajuan;
+-- End View Export Detail Pengajuan Sub Kas Kecil
+
 # End View Pengajuan Sub Kas Kecil #

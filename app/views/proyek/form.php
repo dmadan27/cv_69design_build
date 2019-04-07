@@ -136,7 +136,7 @@
                                     <!-- Status -->
                         			<div class="form-group field-status has-feedback">
                                         <label for="status">Status Proyek</label>           
-                                        <select class="form-control field select2" id="status"></select>
+                                        <select class="form-control field select2" id="status" style="width: 100%"></select>
                                         <span class="help-block small pesan pesan-status"></span>
                                     </div>
 

@@ -9,13 +9,14 @@ INSERT INTO menu (
 (4, 'Proyek', 'proyek', 'proyek', 'menu-proyek', 'fa fa-cubes', 4),
 (5, 'Operasional Proyek', 'operasional_proyek', 'operasional-proyek', 'menu-operasional-proyek', 'fa fa-usd', 5),
 (6, 'Operasional', 'operasional', 'operasional', 'menu-operasional', 'fa fa-usd', 6),
-(7, 'Pengajuan Kas Kecil', 'pengajuan_kas_kecil', 'pengajuan-kas-kecil', 'menu-pengajuan-kas-kecil', 'fa-pencil-square-o', 7),
+(7, 'Pengajuan Kas Kecil', 'pengajuan_kas_kecil', 'pengajuan-kas-kecil', 'menu-pengajuan-kas-kecil', 'fa fa-pencil-square-o', 7),
 (8, 'Pengajuan Sub Kas Kecil', 'pengajuan_sub_kas_kecil', 'pengajuan-sub-kas-kecil', 'menu-pengajuan-sub-kas-kecil', 'fa fa-pencil-square-o', 8),
 (9, 'Laporan Pengajuan SKK', 'pengajuan_sub_kas_kecil', 'laporan-sub-kas-kecil', 'menu-laporan-sub-kas-kecil', 'fa fa-check-square-o', 9),
-(10, 'Kas Besar', 'kas_besar', 'kas-besar', 'menu-kas-besar', 'fa fa-user-plus', 10),
-(11, 'Kas Kecil', 'kas_kecil', 'kas-kecil', 'menu-kas-kecil', 'fa fa-user', 11),
-(12, 'Sub Kas Kecil', 'sub_kas_kecil', 'sub-kas-kecil', 'menu-sub-kas-kecil', 'fa fa-users', 12),
-(13, 'User', 'user', 'user', 'menu-user', 'fa fa-users', 13),
-(14, 'Profile', NULL, NULL, NULL, NULL, NULL);
+(10, 'Saldo Kas Kecil', 'mutasi_saldo_kas_kecil', 'saldo-kas-kecil', 'menu-saldo-kas-kecil', 'fa fa-usd', 10),
+(11, 'Kas Besar', 'kas_besar', 'kas-besar', 'menu-kas-besar', 'fa fa-user-plus', 11),
+(12, 'Kas Kecil', 'kas_kecil', 'kas-kecil', 'menu-kas-kecil', 'fa fa-user', 12),
+(13, 'Sub Kas Kecil', 'sub_kas_kecil', 'sub-kas-kecil', 'menu-sub-kas-kecil', 'fa fa-users', 13),
+(14, 'User', 'user', 'user', 'menu-user', 'fa fa-users', 14),
+(15, 'Profile', NULL, NULL, NULL, NULL, NULL);
 
 # End Seeder Menu #

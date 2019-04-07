@@ -7,6 +7,11 @@ INSERT INTO user (username, password, level, status) VALUES
 ('owner1@69designbuild.com', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'OWNER', 'AKTIF'),
 ('owner2@69designbuild.com', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'OWNER', 'AKTIF');
 
+INSERT INTO owner (id, nama, email, status)
+VALUES 
+('OW001', 'OWNER 1', 'owner1@69designbuild.com', 'AKTIF'),
+('OW002', 'OWNER 2', 'owner2@69designbuild.com', 'AKTIF');
+
 -- INSERT INTO user (username, password, level, status) VALUES 
 -- ('owner1@69designbuild.com', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 1, 1),
 -- ('owner2@69designbuild.com', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 1, 1);

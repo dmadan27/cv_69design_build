@@ -66,7 +66,7 @@ $(document).ready(function() {
 function getExport() {
     if(LEVEL === 'KAS BESAR' || LEVEL === 'OWNER') {
         $.ajax({
-            url: BASE_URL+'bank/export/',
+            url: BASE_URL+'export/bank/',
             type: 'POST',
             dataType: 'JSON',
             data: {},

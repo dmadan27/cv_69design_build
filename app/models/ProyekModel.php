@@ -537,17 +537,42 @@
 		/**
 		 * 
 		 */
-		public function export_detail_pembayaran($tgl_awal, $tgl_akhir, $id = false) {
+		public function export_detail_pembayaran($tgl_awal = false, $tgl_akhir = false, $id = false) {
 			if($id) {
-				$query = "SELECT * FROM v_export_proyek_detail_pembayaran WHERE TANGGAL BETWEEN :tgl_awal AND :tgl_akhir AND `ID PROYEK` = :id;";
+				$query = "SELECT * FROM v_export_proyek_detail_pembayaran WHERE `ID PROYEK` = :id;";
 				$bindParam = array(
-					':tgl_awal' => $tgl_awal,
-					':tgl_akhir' => $tgl_akhir,
 					':id' => $id
 				);
 			}
 			else {
 				$query = "SELECT * FROM v_export_proyek_detail_pembayaran WHERE TANGGAL BETWEEN :tgl_awal AND :tgl_akhir;";
+				$bindParam = array(
+					':tgl_awal' => $tgl_awal,
+					':tgl_akhir' => $tgl_akhir,
+				);
+			}
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				$bindParam
+			);
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
+
+		/**
+		 * 
+		 */
+		public function export_detail_skk($tgl_awal = false, $tgl_akhir = false, $id = false) {
+			if($id) {
+				$query = "SELECT * FROM v_export_proyek_logistik_skk WHERE `ID PROYEK` = :id;";
+				$bindParam = array(
+					':id' => $id
+				);
+			}
+			else {
+				$query = "SELECT * FROM v_export_proyek_logistik_skk WHERE `ID PROYEK` IN ";
+				$query .= "(SELECT id FROM proyek WHERE tgl BETWEEN :tgl_awal AND :tgl_akhir);";
 				$bindParam = array(
 					':tgl_awal' => $tgl_awal,
 					':tgl_akhir' => $tgl_akhir,

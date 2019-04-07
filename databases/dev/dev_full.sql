@@ -218,6 +218,36 @@
     -- End Table Status Pengajuan Lookup
 
     -- Table Kas Besar
+        DROP TABLE IF EXISTS owner;
+        CREATE TABLE IF NOT EXISTS owner(
+            id VARCHAR(10) NOT NULL UNIQUE, -- pk
+
+            nama VARCHAR(255) DEFAULT NULL,
+            alamat TEXT DEFAULT NULL,
+            no_telp VARCHAR(20) DEFAULT NULL,
+            email VARCHAR(50) DEFAULT NULL UNIQUE, -- fk user
+            foto TEXT DEFAULT NULL,
+            status ENUM('AKTIF', 'NONAKTIF') DEFAULT NULL, -- status aktif kas besar
+            -- status_id INT UNSIGNED DEFAULT NULL,
+
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by VARCHAR(50) DEFAULT NULL, -- who created first
+            modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
+
+            CONSTRAINT pk_owner_id PRIMARY KEY(id),
+            CONSTRAINT fk_owner_email FOREIGN KEY(email) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE,
+            -- CONSTRAINT fk_owner_status_id FOREIGN KEY(status_id) REFERENCES active_status_lookup(id)
+            --     ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_owner_created_by FOREIGN KEY(created_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE,
+            CONSTRAINT fk_owner_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE
+        )ENGINE=InnoDb;
+    -- End Table Kas Besar
+
+    -- Table Kas Besar
         DROP TABLE IF EXISTS kas_besar;
         CREATE TABLE IF NOT EXISTS kas_besar(
             id VARCHAR(10) NOT NULL UNIQUE, -- pk
@@ -702,7 +732,7 @@
             status CHAR(1) DEFAULT '1', -- status pengajuan, default 1: 'pending'
                             -- 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI', 4: 'LANGSUNG', 5: 'DITOLAK'
             -- status_pengajuan_id INT UNSIGNED DEFAULT NULL,
-            status_laporan CHAR(1) DEFAULT '0', -- status laporan, default set null
+            status_laporan CHAR(1) DEFAULT NULL, -- status laporan, default set null
                             -- 0: 'BELUM DIKERJAKAN', 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI', 4: 'DITOLAK'
             -- status_laporan_id INT UNSIGNED DEFAULT NULL,
 
@@ -3135,6 +3165,33 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
     ORDER BY tgl DESC;
 -- End View Pengajuan Sub Kas Kecil Export
 
+-- View Export Pengajuan Sub Kas Kecil
+    CREATE OR REPLACE VIEW v_pengajuan_sub_kas_kecil_export_v2 AS
+    SELECT 
+        id `ID PENGAJUAN`, id_sub_kas_kecil `ID SUB KAS KECIL`, nama_skk `SUB KAS KECIL`, nama_pengajuan `NAMA PENGAJUAN`,
+        id_proyek `ID PROYEK`, pemilik `PEMILIK PROYEK`, pembangunan `NAMA PEMBANGUNAN PROYEK`,
+        tgl `TANGGAL PENGAJUAN`, total `DANA DIAJUKAN`, status `STATUS PENGAJUAN`, dana_disetujui `DANA DISETUJUI`
+        -- , CONCAT(id_kas_kecil, ' - ', nama_kas_kecil) `DISETUJUI OLEH`
+    FROM `v_pengajuan_sub_kas_kecil_v2`
+    ORDER BY tgl DESC;
+-- End Export View Pengajuan Sub Kas Kecil
+
+-- View Export Detail Pengajuan Sub Kas Kecil
+    CREATE OR REPLACE VIEW v_export_detail_pengajuan_skk AS
+    SELECT
+        pskk.id `ID PENGAJUAN`, pskk.id_sub_kas_kecil `ID SUB KAS KECIL`, pskk.nama_skk `SUB KAS KECIL`, 
+        pskk.nama_pengajuan `NAMA PENGAJUAN`, pskk.tgl `TANGGAL PENGAJUAN`,
+        dskk.nama `NAMA BARANG/BAHAN`,
+        (CASE 
+            WHEN dskk.jenis = 'T' THEN 'TEKNIS' 
+            ELSE 'NON-TEKNIS'
+        END) `JENIS`,
+        dskk.satuan `SATUAN BARANG`, dskk.qty `QTY`, dskk.harga `HARGA SATUAN`, 
+        dskk.subtotal `SUBTOTAL`, dskk.harga_asli `SUBTOTAL ASLI`, dskk.sisa `SISA`
+    FROM detail_pengajuan_sub_kas_kecil dskk
+    JOIN v_pengajuan_sub_kas_kecil_v2 pskk ON pskk.id = dskk.id_pengajuan;
+-- End View Export Detail Pengajuan Sub Kas Kecil
+
 # End View Pengajuan Sub Kas Kecil #
 
 
@@ -3654,7 +3711,7 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
         p.id AS 'ID PROYEK', p.pemilik PEMILIK, p.tgl TANGGAL, p.pembangunan PEMBANGUNAN, 
         
         -- detail logistik proyek (skk)
-        skk.id AS 'ID SUB KAS KECIL', skk.nama
+        skk.id AS 'ID SUB KAS KECIL', skk.nama NAMA
         
     FROM proyek p
     JOIN logistik_proyek lp ON lp.id_proyek = p.id
@@ -3901,7 +3958,15 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
 # View User #
 -- View User
 	-- view untuk semua user yang terdapat di sistem
-	CREATE OR REPLACE VIEW v_user AS
+	CREATE OR REPLACE VIEW v_all_user AS
+
+	SELECT
+		u.username, o.nama, u.status, u.level 
+	FROM user u 
+	JOIN owner o ON u.username = o.email
+
+	UNION
+
 	SELECT
 		u.username, kb.nama, u.status, u.level 
 	FROM user u 
@@ -3921,6 +3986,38 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
 	FROM user u 
 	JOIN sub_kas_kecil skk ON u.username = skk.email;
 -- End View User
+
+-- View user owner
+	CREATE OR REPLACE VIEW v_user_owner AS
+	SELECT
+		o.id, o.nama, o.alamat, o.no_telp, o.email, o.foto, o.status
+	FROM user u
+	JOIN owner o ON o.email = u.username;
+-- End View user owner
+
+-- View user kas besar
+	CREATE OR REPLACE VIEW v_user_kas_besar AS
+	SELECT
+		kb.id, kb.nama, kb.alamat, kb.no_telp, kb.email, kb.foto, kb.status
+	FROM user u
+	JOIN kas_besar kb ON kb.email = u.username;
+-- End View user kas besar
+
+-- View user kas kecil
+	CREATE OR REPLACE VIEW v_user_kas_kecil AS
+	SELECT
+		kk.id, kk.nama, kk.alamat, kk.no_telp, kk.email, kk.foto, kk.status
+	FROM user u
+	JOIN kas_kecil kk ON kk.email = u.username;
+-- End View user kas kecil
+
+-- View user sub kas kecil
+	CREATE OR REPLACE VIEW v_user_sub_kas_kecil AS
+	SELECT
+		skk.id, skk.nama, skk.alamat, skk.no_telp, skk.email, skk.foto, skk.status
+	FROM user u
+	JOIN sub_kas_kecil skk ON skk.email = u.username;
+-- End View user sub kas kecil
 
 # End View User #
 
@@ -3971,6 +4068,11 @@ INSERT INTO permission_lookup (
 INSERT INTO user (username, password, level, status) VALUES 
 ('owner1@69designbuild.com', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'OWNER', 'AKTIF'),
 ('owner2@69designbuild.com', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 'OWNER', 'AKTIF');
+
+INSERT INTO owner (id, nama, email, status)
+VALUES 
+('OW001', 'OWNER 1', 'owner1@69designbuild.com', 'AKTIF'),
+('OW002', 'OWNER 2', 'owner2@69designbuild.com', 'AKTIF');
 
 -- INSERT INTO user (username, password, level, status) VALUES 
 -- ('owner1@69designbuild.com', '$2y$10$xGiq.6J6z9CUeze4B3oqAOquc6hXvYvZehkYV1brgWYrxjpoG5fGG', 1, 1),
@@ -4024,14 +4126,15 @@ INSERT INTO menu (
 (4, 'Proyek', 'proyek', 'proyek', 'menu-proyek', 'fa fa-cubes', 4),
 (5, 'Operasional Proyek', 'operasional_proyek', 'operasional-proyek', 'menu-operasional-proyek', 'fa fa-usd', 5),
 (6, 'Operasional', 'operasional', 'operasional', 'menu-operasional', 'fa fa-usd', 6),
-(7, 'Pengajuan Kas Kecil', 'pengajuan_kas_kecil', 'pengajuan-kas-kecil', 'menu-pengajuan-kas-kecil', 'fa-pencil-square-o', 7),
-(8, 'Pengajuan Sub Kas Kecil', 'pengajuan_sub_kas_kecil', 'pengajuan-sub-kas-kecil', 'menu-pengajuan-sub-kas-kecil', 'fa-pencil-square-o', 8),
+(7, 'Pengajuan Kas Kecil', 'pengajuan_kas_kecil', 'pengajuan-kas-kecil', 'menu-pengajuan-kas-kecil', 'fa fa-pencil-square-o', 7),
+(8, 'Pengajuan Sub Kas Kecil', 'pengajuan_sub_kas_kecil', 'pengajuan-sub-kas-kecil', 'menu-pengajuan-sub-kas-kecil', 'fa fa-pencil-square-o', 8),
 (9, 'Laporan Pengajuan SKK', 'pengajuan_sub_kas_kecil', 'laporan-sub-kas-kecil', 'menu-laporan-sub-kas-kecil', 'fa fa-check-square-o', 9),
-(10, 'Kas Besar', 'kas_besar', 'kas-besar', 'menu-kas-besar', 'fa fa-user-plus', 10),
-(11, 'Kas Kecil', 'kas_kecil', 'kas-kecil', 'menu-kas-kecil', 'fa fa-user', 11),
-(12, 'Sub Kas Kecil', 'sub_kas_kecil', 'sub-kas-kecil', 'menu-sub-kas-kecil', 'fa fa-users', 12),
-(13, 'User', 'user', 'user', 'menu-user', 'fa fa-users', 13),
-(14, 'Profile', NULL, NULL, NULL, NULL, NULL);
+(10, 'Saldo Kas Kecil', 'mutasi_saldo_kas_kecil', 'saldo-kas-kecil', 'menu-saldo-kas-kecil', 'fa fa-usd', 10),
+(11, 'Kas Besar', 'kas_besar', 'kas-besar', 'menu-kas-besar', 'fa fa-user-plus', 11),
+(12, 'Kas Kecil', 'kas_kecil', 'kas-kecil', 'menu-kas-kecil', 'fa fa-user', 12),
+(13, 'Sub Kas Kecil', 'sub_kas_kecil', 'sub-kas-kecil', 'menu-sub-kas-kecil', 'fa fa-users', 13),
+(14, 'User', 'user', 'user', 'menu-user', 'fa fa-users', 14),
+(15, 'Profile', NULL, NULL, NULL, NULL, NULL);
 
 # End Seeder Menu #
 
@@ -4082,8 +4185,9 @@ VALUES
 (29, 3, 7),
 (30, 3, 8),
 (31, 3, 9),
-(32, 3, 12),
-(33, 3, 14);
+(32, 3, 10),
+(33, 3, 12),
+(34, 3, 14);
 
 # End Seeder Access Menu #
 

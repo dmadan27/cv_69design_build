@@ -2,30 +2,30 @@
 	Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung");
 
 	/**
-	* 
-	*/
+	 * 
+	 */
 	class UserModel extends Database implements ModelInterface 
 	{
 		
-		protected $koneksi;
+		private $koneksi;
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		public function __construct(){
 			$this->koneksi = $this->openConnection();
 		}
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		public function getAll(){
 			
 		}
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		public function getUser($username){
 			$query = "SELECT * FROM user WHERE BINARY username = :username";
 
@@ -38,11 +38,24 @@
 		}
 
 		/**
-		* 
-		*/
+		 * 
+		 */
+		public function getOwner($username){
+			$query = "SELECT * FROM v_user_owner WHERE BINARY username = :username;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':username', $username);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+
+		/**
+		 * 
+		 */
 		public function getKasBesar($username){
-			$query = "SELECT kb.id, kb.nama, kb.alamat, kb.no_telp, kb.email, kb.foto, kb.status ";
-			$query .= "FROM user u JOIN kas_besar kb ON kb.email = u.username WHERE u.username = :username";
+			$query = "SELECT * FROM v_user_kas_besar WHERE BINARY username = :username;";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':username', $username);
@@ -53,11 +66,10 @@
 		}
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		public function getKasKecil($username){
-			$query = "SELECT kk.id, kk.nama, kk.alamat, kk.no_telp, kk.email, kk.foto, kk.saldo, kk.status ";
-			$query .= "FROM user u JOIN kas_kecil kk ON kk.email = u.username WHERE u.username = :username";
+			$query = "SELECT * FROM v_user_kas_kecil WHERE BINARY username = :username;";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':username', $username);
@@ -68,25 +80,10 @@
 		}
 
 		/**
-		* 
-		*/
-		public function getSubKasKecil($username){
-			$query = "SELECT skk.id, skk.nama, skk.alamat, skk.no_telp, skk.email, skk.foto, skk.saldo, skk.status ";
-			$query .= "FROM user u JOIN sub_kas_kecil skk ON skk.email = u.username WHERE u.username = :username";
-
-			$statement = $this->koneksi->prepare($query);
-			$statement->bindParam(':username', $username);
-			$statement->execute();
-			$result = $statement->fetch(PDO::FETCH_ASSOC);
-
-			return $result;
-		}
-
-		/**
-		* 
-		*/
+		 * 
+		 */
 		public function getById($id){
-			$query = "SELECT * FROM user WHERE username = :username;";
+			$query = "SELECT * FROM user WHERE BINARY username = :username;";
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':username', $id);
@@ -97,8 +94,8 @@
 		}
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		public function insert($data){
 			// $query = "INSERT INTO bank (nama, saldo, status) VALUES (:nama, :saldo, :status);";
 
@@ -112,8 +109,8 @@
 		}
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		public function update($data){
 			// $query = "UPDATE bank SET nama = :nama, status = :status WHERE id = :id;";
 
@@ -127,8 +124,8 @@
 		}
 
 		/**
-		*
-		*/
+		 * 
+		 */
 		public function updatePassword($data, $lupa_password = false){
 			$query = "UPDATE user SET password = :password, modified_by = :modified_by WHERE username = :username";
 
@@ -161,8 +158,8 @@
 		}
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		private function delete_lupa_password($user){
 			$query = "DELETE FROM token_lupa_password WHERE username = :username";
 
@@ -173,8 +170,8 @@
 		}
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		public function delete($id){
 			// $query = "DELETE FROM bank WHERE id = :id";
 			
@@ -186,8 +183,8 @@
 		}		
 
 		/**
-		* 
-		*/
+		 * 
+		 */
 		public function __destruct(){
 			$this->closeConnection($this->koneksi);
 		}

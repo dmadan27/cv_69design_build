@@ -218,6 +218,36 @@
     -- End Table Status Pengajuan Lookup
 
     -- Table Kas Besar
+        DROP TABLE IF EXISTS owner;
+        CREATE TABLE IF NOT EXISTS owner(
+            id VARCHAR(10) NOT NULL UNIQUE, -- pk
+
+            nama VARCHAR(255) DEFAULT NULL,
+            alamat TEXT DEFAULT NULL,
+            no_telp VARCHAR(20) DEFAULT NULL,
+            email VARCHAR(50) DEFAULT NULL UNIQUE, -- fk user
+            foto TEXT DEFAULT NULL,
+            status ENUM('AKTIF', 'NONAKTIF') DEFAULT NULL, -- status aktif kas besar
+            -- status_id INT UNSIGNED DEFAULT NULL,
+
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_by VARCHAR(50) DEFAULT NULL, -- who created first
+            modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
+
+            CONSTRAINT pk_owner_id PRIMARY KEY(id),
+            CONSTRAINT fk_owner_email FOREIGN KEY(email) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE,
+            -- CONSTRAINT fk_owner_status_id FOREIGN KEY(status_id) REFERENCES active_status_lookup(id)
+            --     ON DELETE RESTRICT ON UPDATE CASCADE,
+            CONSTRAINT fk_owner_created_by FOREIGN KEY(created_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE,
+            CONSTRAINT fk_owner_modified_by FOREIGN KEY(modified_by) REFERENCES user(username)
+                ON DELETE SET NULL ON UPDATE CASCADE
+        )ENGINE=InnoDb;
+    -- End Table Kas Besar
+
+    -- Table Kas Besar
         DROP TABLE IF EXISTS kas_besar;
         CREATE TABLE IF NOT EXISTS kas_besar(
             id VARCHAR(10) NOT NULL UNIQUE, -- pk
@@ -702,7 +732,7 @@
             status CHAR(1) DEFAULT '1', -- status pengajuan, default 1: 'pending'
                             -- 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI', 4: 'LANGSUNG', 5: 'DITOLAK'
             -- status_pengajuan_id INT UNSIGNED DEFAULT NULL,
-            status_laporan CHAR(1) DEFAULT '0', -- status laporan, default set null
+            status_laporan CHAR(1) DEFAULT NULL, -- status laporan, default set null
                             -- 0: 'BELUM DIKERJAKAN', 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI', 4: 'DITOLAK'
             -- status_laporan_id INT UNSIGNED DEFAULT NULL,
 

@@ -5,7 +5,7 @@
 	 * Class Bank
 	 * Extend Abstract Crud_modalsAbstract
 	 */
-	class Bank extends Crud_modalsAbstract
+	class Bank extends Controller
 	{
 
 		private $success = false;
@@ -427,86 +427,6 @@
 				);
 
 				echo json_encode($output);
-			}
-			else { die(ACCESS_DENIED); }
-		}
-
-		/**
-		 * Method export
-		 */
-		public function export() {
-			if($_SERVER['REQUEST_METHOD'] == 'POST' && 
-			($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER')) {
-				$row = $this->BankModel->export();
-				$column = array_keys($row[0]);
-
-				// $detailRow = $this->BankModel->export_mutasi(3, '2018-01-01', '2019-02-27');
-				// $detailColumn = array_keys($detailRow[0]);
-				// $detailColumn[1] = 'ID BANK';
-				// $detail = array(
-				// 	array(
-				// 		'row' => $detailRow,
-				// 		'column' => $detailColumn,
-				// 		'sheet' => 'Data Mutasi'
-				// 	)
-				// );
-
-				$config = array(
-					'data' => array(
-						'main' => array(
-							'row' => $row,
-							'column' => $column,
-							'sheet' => 'Data Bank'
-						),
-						'detail' => NULL
-					),
-					'property' => array(
-						'title' => 'Data Bank',
-						'subject' => 'Data Bank CV. 69 Design Build',
-						'description' => 'List Semua Data Bank CV. 69 Design Build' 
-					)
-				); 
-				
-				$this->excel_v2->setProperty($config['property']);
-				$this->excel_v2->setData($config['data']['main'], $config['data']['detail']);
-				$this->excel_v2->getExcel(1, 2);
-			}
-			else { die(ACCESS_DENIED); }
-		}
-
-		/**
-		 * Method export_mutasi
-		 * @param id {integer}
-		 */
-		public function export_mutasi($id) {
-			if($_SERVER['REQUEST_METHOD'] == 'POST' && 
-			($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER')) {
-				$tgl_awal = isset($_POST['tgl_awal']) ? $_POST['tgl_awal'] : false;
-				$tgl_akhir = isset($_POST['tgl_akhir']) ? $_POST['tgl_akhir'] : false;
-
-				$row = $this->BankModel->export_mutasi($id, $tgl_awal, $tgl_akhir);
-				$column = array_keys($row[0]);
-				$column[0] = 'ID BANK';
-
-				$config = array(
-					'data' => array(
-						'main' => array(
-							'row' => $row,
-							'column' => $column,
-							'sheet' => 'Data Mutasi Bank '.$row[0]['BANK']
-						),
-						'detail' => NULL
-					),
-					'property' => array(
-						'title' => 'Data Mutasi Bank '.$row[0]['BANK'].' Tanggal '.$tgl_awal.' s.d '.$tgl_akhir,
-						'subject' => 'Data Mutasi Bank '.$row[0]['BANK'].' Tanggal '.$tgl_awal.' s.d '.$tgl_akhir,
-						'description' => 'Data Mutasi Bank '.$row[0]['BANK'].' Tanggal '.$tgl_awal.' s.d '.$tgl_akhir 
-					)
-				);
-
-				$this->excel_v2->setProperty($config['property']);
-				$this->excel_v2->setData($config['data']['main'], $config['data']['detail']);
-				$this->excel_v2->getExcel(1, 2);
 			}
 			else { die(ACCESS_DENIED); }
 		}

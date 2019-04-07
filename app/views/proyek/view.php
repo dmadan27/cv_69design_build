@@ -110,17 +110,7 @@
 					<div class="col-md-12">
 						<div class="box">
                             <div class="box-header with-border">
-                                <!-- <div class="row">
-                                    <div class="col-md-12"> -->
-                                        <h4 class="box-title">Detail Pembayaran Proyek</h4>
-                                    <!-- </div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-md-12"> -->
-                                        
-                                    <!-- </div>
-                                </div> -->
+                                <h4 class="box-title">Detail Pembayaran Proyek</h4>
                             </div>
 							<div class="box-body">
                                 <div class="form-group">
