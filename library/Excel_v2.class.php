@@ -79,7 +79,7 @@
         /**
          * 
          */
-        private function getData($start_column_header, $start_row_data) {
+        private function getData($start_column_header, $start_row_data, $numbering) {
             $main_sheet = $this->data['main']['sheet'];
 
             // set property
@@ -97,34 +97,49 @@
             $numRow = $start_row_data;
 
             // set main data
-            $main_data = $this->data['main'];
-            foreach ($main_data as $key => $value) {               
-                if($key == "column") {
-                    // set header
-                    foreach($value as $header) {
-                        $this->excel->setActiveSheetIndex(0)->setCellValue($column.$start_column_header, $header);
-                        $column++;
+            $main_data = (empty($this->data['main'])) ? false : $this->data['main'];
+            if($main_data) {
+                foreach ($main_data as $key => $value) {               
+                    if($key == "column") {
+                        if($numbering) {
+                            $this->excel->getActiveSheet()->getStyle($column.$start_column_header)->getFont()->setBold(TRUE);
+                            $this->excel->getActiveSheet()->setCellValue($column.$start_column_header, "NO");
+                            $column = 'B';
+                        }
+    
+                        // set header
+                        foreach($value as $header) {
+                            $this->excel->setActiveSheetIndex(0)->setCellValue($column.$start_column_header, $header);
+                            $this->excel->setActiveSheetIndex(0)->getStyle($column.$start_column_header)->getFont()->setBold(TRUE);
+                            $column++;
+                        }
+                        $column = 'A';
                     }
-                    $column = 'A';
-                }
-                // set data row
-                else if($key == "row") {
-                    // set data
-                    foreach($value as $row) {
-                    	foreach($row as $valueRow){
-                            $this->excel->setActiveSheetIndex(0)->setCellValue($column.$numRow, $valueRow);
-                            $this->excel->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
-                    		$column++;	
-                    	}
-                    	$numRow++;
-	                    $column = 'A';
+                    // set data row
+                    else if($key == "row") {
+                        // set data
+                        $number = 1;
+                        foreach($value as $row) {
+                            if($numbering) {
+                                $this->excel->getActiveSheet()->setCellValue($column.$numRow, $number);
+                                $column = 'B';
+                            }
+                            foreach($row as $valueRow){
+                                $this->excel->setActiveSheetIndex(0)->setCellValue($column.$numRow, $valueRow);
+                                $this->excel->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
+                                $column++;	
+                            }
+                            $numRow++;
+                            $number++;                        
+                            $column = 'A';
+                        }
+                        $column = 'A';
                     }
-                    $column = 'A';
                 }
             }
 
             // set detail data
-            $detail_data = (empty($this->data['detail']) || $this->data['detail'] === NULL) ? false : $this->data['detail'];
+            $detail_data = (empty($this->data['detail'])) ? false : $this->data['detail'];
             if($detail_data) {
                 $i = 1;
                 foreach ($detail_data['data'] as $item) {
@@ -135,25 +150,44 @@
                     foreach($item as $key => $row) {
                         if($key == "column") {
                             // set header
-                            foreach($row as $header) {
-                                $sheetDetail->setCellValue($column.$start_column_header, $header);
-                                $column++;
+                            if(!empty($row)) {
+                                if($numbering) {
+                                    $this->excel->getActiveSheet()->getStyle($column.$start_column_header)->getFont()->setBold(TRUE);
+                                    $this->excel->getActiveSheet()->setCellValue($column.$start_column_header, "NO");
+                                    $column = 'B';
+                                }
+                                foreach($row as $header) {
+                                    $sheetDetail->setCellValue($column.$start_column_header, $header);
+                                    $sheetDetail->getStyle($column.$start_column_header)->getFont()->setBold(TRUE);
+                                    $column++;
+                                }
+                                $column = 'A';
                             }
-                            $column = 'A';
+                            else {
+                                $this->excel->getActiveSheet()->setCellValue($column.$start_column_header, "TIDAK ADA DATA");
+                            }
                         }
                         // set data row
                         else if($key == "row") {
                             // set data
-                            foreach($row as $rows) {
-                                foreach($rows as $valueRow){
-                                    $sheetDetail->setCellValue($column.$numRow, $valueRow);
-                                    $this->excel->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
-                                    $column++;	
+                            if($row) {
+                                $number = 1;
+                                foreach($row as $rows) {
+                                    if($numbering) {
+                                        $this->excel->getActiveSheet()->setCellValue($column.$numRow, $number);
+                                        $column = 'B';
+                                    }
+                                    foreach($rows as $valueRow){
+                                        $sheetDetail->setCellValue($column.$numRow, $valueRow);
+                                        $this->excel->getActiveSheet()->getColumnDimension($column)->setAutoSize(true);
+                                        $column++;	
+                                    }
+                                    $numRow++;
+                                    $number++;
+                                    $column = 'A';
                                 }
-                                $numRow++;
                                 $column = 'A';
                             }
-                            $column = 'A';
                         }
                     }
 
@@ -168,27 +202,44 @@
          * @param start_column_header {integer}
          * @param start_row_data {integer}
          */
-        public function getExcel($start_column_header, $start_row_data) {
-            // render data ke excel
-            $this->getData($start_column_header, $start_row_data);
+        public function getExcel($start_column_header, $start_row_data, $numbering = false) {
             $filename = $this->property['title']."_".date('d-m-Y').".xlsx";
+
+            try {
+                // render data ke excel
+                $this->getData($start_column_header, $start_row_data, $numbering);
+                
+                // Proses pembentukan file excel
+                header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                header('Content-Disposition: attachment; filename="'.$filename.'"'); // Set nama file excel nya
+                header('Cache-Control: max-age=0');
+
+                ob_start();
+                $write = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
+                $write->save('php://output');
+                $xlsData = ob_get_contents();
+                ob_end_clean();
+                
+                $success = true;
+            } catch (Exception $e) {
+                $success = false;
+                $message = 'Error: '.$e->getMessage();
+            }
             
-            // Proses pembentukan file excel
-			header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-			header('Content-Disposition: attachment; filename="'.$filename.'"'); // Set nama file excel nya
-			header('Cache-Control: max-age=0');
+            if($success) {
+                $response =  array(
+                    'success' => $success,
+                    'filename' => $filename,
+                    'file' => "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,".base64_encode($xlsData)
+                );
+            }
+            else {
+                $response =  array(
+                    'success' => $success,
+                    'message' => $message
+                );
+            }
 
-            ob_start();
-            $write = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
-            $write->save('php://output');
-            $xlsData = ob_get_contents();
-            ob_end_clean();
-
-            $response =  array(
-                'success' => true,
-                'filename' => $filename,
-                'file' => "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,".base64_encode($xlsData)
-            );
             die(json_encode($response));
         }
     }
