@@ -174,12 +174,12 @@ $(document).ready(function() {
     });
 
     // auto refresh every 1 minutes
-    setInterval( function () {
-        console.log('%cAutomatically refresh table..', 'color: blue; font-style: italic');
-        detail_pembayaranTable.ajax.reload(null, false);
-        pengajuan_skkTable.ajax.reload(null, false);
-        operasional_proyekTable.ajax.reload(null, false);
-    }, 60000 );
+    // setInterval( function () {
+    //     console.log('%cAutomatically refresh table..', 'color: blue; font-style: italic');
+    //     detail_pembayaranTable.ajax.reload(null, false);
+    //     pengajuan_skkTable.ajax.reload(null, false);
+    //     operasional_proyekTable.ajax.reload(null, false);
+    // }, 60000 );
 });
 
 /**

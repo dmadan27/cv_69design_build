@@ -78,10 +78,10 @@ $(document).ready(function() {
     });
 
 	// auto refresh every 1 minutes
-    setInterval( function () {
-		console.log('%cAutomatically refresh table..', 'color: blue; font-style: italic');
-        mutasiBankTable.ajax.reload(null, false);
-    }, 60000 );
+    // setInterval( function () {
+	// 	console.log('%cAutomatically refresh table..', 'color: blue; font-style: italic');
+    //     mutasiBankTable.ajax.reload(null, false);
+    // }, 60000 );
 });
 
 /**
@@ -167,6 +167,7 @@ function export_excel(id) {
 					$a[0].click();
 					$a.remove();   
 				}
+				else { swal("Pesan", response.message, "info"); }
 			},
 			error: function (jqXHR, textStatus, errorThrown){ // error handling
 				console.log('%cResponse Error getExport Mutasi Bank', 'color: red; font-weight: bold', {jqXHR, textStatus, errorThrown});

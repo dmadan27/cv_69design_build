@@ -11,6 +11,7 @@
         private $err = "Export Data Failed.</br>Please Contact Developer For Support.";
         public $property = array();
         public $data = array();
+        public $json = true;
         
         /**
          * Method __construct
@@ -208,12 +209,16 @@
             try {
                 // render data ke excel
                 $this->getData($start_column_header, $start_row_data, $numbering);
+                if($this->json) {
+                    header('Content-Type: application/json');
+                }
+                else {
+                    // Proses pembentukan file excel
+                    header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                    header('Content-Disposition: attachment; filename="'.$filename.'"'); // Set nama file excel nya
+                    header('Cache-Control: max-age=0');
+                }
                 
-                // Proses pembentukan file excel
-                header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-                header('Content-Disposition: attachment; filename="'.$filename.'"'); // Set nama file excel nya
-                header('Cache-Control: max-age=0');
-
                 ob_start();
                 $write = PHPExcel_IOFactory::createWriter($this->excel, 'Excel2007');
                 $write->save('php://output');
@@ -226,20 +231,24 @@
                 $message = 'Error: '.$e->getMessage();
             }
             
-            if($success) {
-                $response =  array(
-                    'success' => $success,
-                    'filename' => $filename,
-                    'file' => "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,".base64_encode($xlsData)
-                );
-            }
-            else {
-                $response =  array(
-                    'success' => $success,
-                    'message' => $message
-                );
+            if($this->json) {
+                if($success) {
+                    $response =  array(
+                        'success' => $success,
+                        'filename' => $filename,
+                        'file' => "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,".base64_encode($xlsData)
+                    );
+                }
+                else {
+                    $response =  array(
+                        'success' => $success,
+                        'message' => $message
+                    );
+                }
+
+                die(json_encode($response));
             }
 
-            die(json_encode($response));
+            exit;
         }
     }
