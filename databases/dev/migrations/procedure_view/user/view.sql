@@ -49,7 +49,8 @@
 -- View user kas kecil
 	CREATE OR REPLACE VIEW v_user_kas_kecil AS
 	SELECT
-		u.username, kk.id, kk.nama, kk.alamat, kk.no_telp, kk.email, kk.foto, kk.status
+		u.username, kk.id, kk.nama, kk.alamat, kk.no_telp, kk.email, kk.foto, kk.status,
+		kk.saldo
 	FROM user u
 	JOIN kas_kecil kk ON kk.email = u.username;
 -- End View user kas kecil
@@ -57,7 +58,8 @@
 -- View user sub kas kecil
 	CREATE OR REPLACE VIEW v_user_sub_kas_kecil AS
 	SELECT
-		u.username, skk.id, skk.nama, skk.alamat, skk.no_telp, skk.email, skk.foto, skk.status
+		u.username, skk.id, skk.nama, skk.alamat, skk.no_telp, skk.email, skk.foto, skk.status,
+		skk.saldo
 	FROM user u
 	JOIN sub_kas_kecil skk ON skk.email = u.username;
 -- End View user sub kas kecil
