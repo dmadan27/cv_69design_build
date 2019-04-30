@@ -3990,7 +3990,7 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
 -- View user owner
 	CREATE OR REPLACE VIEW v_user_owner AS
 	SELECT
-		o.id, o.nama, o.alamat, o.no_telp, o.email, o.foto, o.status
+		u.username, o.id, o.nama, o.alamat, o.no_telp, o.email, o.foto, o.status
 	FROM user u
 	JOIN owner o ON o.email = u.username;
 -- End View user owner
@@ -3998,7 +3998,7 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
 -- View user kas besar
 	CREATE OR REPLACE VIEW v_user_kas_besar AS
 	SELECT
-		kb.id, kb.nama, kb.alamat, kb.no_telp, kb.email, kb.foto, kb.status
+		u.username, kb.id, kb.nama, kb.alamat, kb.no_telp, kb.email, kb.foto, kb.status
 	FROM user u
 	JOIN kas_besar kb ON kb.email = u.username;
 -- End View user kas besar
@@ -4006,7 +4006,8 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
 -- View user kas kecil
 	CREATE OR REPLACE VIEW v_user_kas_kecil AS
 	SELECT
-		kk.id, kk.nama, kk.alamat, kk.no_telp, kk.email, kk.foto, kk.status
+		u.username, kk.id, kk.nama, kk.alamat, kk.no_telp, kk.email, kk.foto, kk.status,
+		kk.saldo
 	FROM user u
 	JOIN kas_kecil kk ON kk.email = u.username;
 -- End View user kas kecil
@@ -4014,7 +4015,8 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
 -- View user sub kas kecil
 	CREATE OR REPLACE VIEW v_user_sub_kas_kecil AS
 	SELECT
-		skk.id, skk.nama, skk.alamat, skk.no_telp, skk.email, skk.foto, skk.status
+		u.username, skk.id, skk.nama, skk.alamat, skk.no_telp, skk.email, skk.foto, skk.status,
+		skk.saldo
 	FROM user u
 	JOIN sub_kas_kecil skk ON skk.email = u.username;
 -- End View user sub kas kecil
@@ -4173,21 +4175,20 @@ VALUES
 (19, 2, 5),
 (20, 2, 6),
 (21, 2, 7),
-(22, 2, 10),
-(23, 2, 11),
-(24, 2, 12),
-(25, 2, 13),
-(26, 2, 14),
+(22, 2, 11),
+(23, 2, 12),
+(24, 2, 13),
+(25, 2, 14),
 
 -- Kas Kecil
-(27, 3, 1),
-(28, 3, 4),
-(29, 3, 7),
-(30, 3, 8),
-(31, 3, 9),
-(32, 3, 10),
-(33, 3, 12),
-(34, 3, 14);
+(26, 3, 1),
+(27, 3, 4),
+(28, 3, 7),
+(29, 3, 8),
+(30, 3, 9),
+(31, 3, 10),
+(32, 3, 12),
+(33, 3, 14);
 
 # End Seeder Access Menu #
 
