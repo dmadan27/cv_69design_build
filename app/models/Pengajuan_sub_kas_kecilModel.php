@@ -235,7 +235,7 @@
 			}
 			else {
 				$query = "SELECT * FROM v_pengajuan_sub_kas_kecil_export_v2 WHERE `ID PROYEK` = :id_proyek ";
-				$query .= "AND (`TANGGAL PENGAJUAN` BETWEEN :tgl_awal AND :tgl_akhir));";
+				$query .= "AND (`TANGGAL PENGAJUAN` BETWEEN :tgl_awal AND :tgl_akhir);";
 				$bindParam = array(
 					':id_proyek' => $id_proyek,
 					':tgl_awal' => $tgl_awal,
