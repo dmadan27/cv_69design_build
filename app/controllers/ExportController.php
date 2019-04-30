@@ -51,6 +51,8 @@ class Export extends Controller {
                     'success' => false,
                     'message' => 'Tidak ada data yang bisa di export!'
                 );
+
+                header('Content-Type: application/json');
                 echo json_encode($response);
             }
         }
@@ -161,6 +163,8 @@ class Export extends Controller {
                     'success' => false,
                     'message' => 'Tidak ada data yang bisa di export!'
                 );
+
+                header('Content-Type: application/json');
                 echo json_encode($response);
             }
         }
@@ -185,13 +189,12 @@ class Export extends Controller {
                 ? false : $this->ProyekModel->export_detail_pembayaran(false, false, $id);
             if($row) {
                 $column = array_keys($row[0]);
-                $column[0] = 'ID PROYEK';
 
                 $mainData['row'] = $row;
                 $mainData['column'] = $column;
                 $mainData['sheet'] = 'Data Detail Pembayaran Proyek';
 
-                $property = 'Data Detail Pembayaran Proyek '.$row[0]['PROYEK'];
+                $property = 'Data Detail Pembayaran Proyek '.$row[0]['ID PROYEK'];
                 $properties['title'] = $properties['subject'] = $properties['description'] = $property;
 
                 $this->excel_v2->setProperty($properties);
@@ -203,6 +206,8 @@ class Export extends Controller {
                     'success' => false,
                     'message' => 'Tidak ada data yang bisa di export!'
                 );
+
+                header('Content-Type: application/json');
                 echo json_encode($response);
             }
         }
