@@ -10,6 +10,7 @@ define('DS', DIRECTORY_SEPARATOR); // pemisah direktori '\'
 /**
  * TYPE ENVIROMENT DEVELOPMENT
  * DEV --> for Local development
+ * DEV_LIVE --> for Dev live
  * TEST --> for Testing (Pre Production)
  * PROD --> for Production
  */
