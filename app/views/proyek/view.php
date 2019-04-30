@@ -108,7 +108,7 @@
 				<!-- detail pembayaran proyek -->
 				<div class="row">
 					<div class="col-md-12">
-						<div class="box">
+						<div class="box box-detail-pembayaran">
                             <div class="box-header with-border">
                                 <h4 class="box-title">Detail Pembayaran Proyek</h4>
                             </div>
@@ -264,19 +264,9 @@
         <!-- data pengajuan sub kas kecil -->
         <div class="row">
             <div class="col-md-12">
-                <div class="box">
+                <div class="box box-pengajuan_skk">
                     <div class="box-header with-border">
-                        <!-- <div class="row">
-                            <div class="col-md-12"> -->
-                                <h4 class="box-title">Detail Pengajuan Sub Kas Kecil</h4>
-                            <!-- </div>
-                        </div>
-                        <hr>
-                        <div class="row"> -->
-                            <!-- <div class="col-md-12"> -->
-                                
-                            <!-- </div>
-                        </div> -->
+                        <h4 class="box-title">Detail Pengajuan Sub Kas Kecil</h4>
                         <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                             </button>
@@ -315,19 +305,9 @@
         <!-- data operasional proyek -->
         <div class="row">
             <div class="col-md-12">
-                <div class="box">
+                <div class="box box-operasional_proyek">
                     <div class="box-header with-border">
-                        <!-- <div class="row">
-                            <div class="col-md-12"> -->
-                                <h4 class="box-title">Detail Operasional Proyek</h4>
-                            <!-- </div>
-                        </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-md-12"> -->
-                                
-                            <!-- </div>
-                        </div> -->
+                        <h4 class="box-title">Detail Operasional Proyek</h4>
                         <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                             </button>
@@ -389,5 +369,7 @@
   		</div>			
 	</section>
 	<!-- /.content -->
-
+    
+    <?php include_once(__DIR__.'/../form_export/form_start_end_date.php'); ?>
+    
 </div>

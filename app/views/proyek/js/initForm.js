@@ -6,14 +6,7 @@ $(document).ready(function () {
 
  	// event on change field
     $('.field').on('change', function(){
-    	if(this.value !== ""){
-    		$('.field-'+this.id).removeClass('has-error').addClass('has-success');
-    		$(".pesan-"+this.id).text('');
-    	}
-    	else{
-    		$('.field-'+this.id).removeClass('has-error').removeClass('has-success');
-    		$(".pesan-"+this.id).text('');
-    	}
+    	onChangeField(this);
     });
 
     // event on change tgl

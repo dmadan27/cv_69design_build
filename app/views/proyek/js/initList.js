@@ -39,6 +39,7 @@ var proyekTable = $("#proyekTable").DataTable({
 
 $(document).ready(function() {
     init();
+
     // btn tambah
     $('#tambah').on('click', function() {
         console.log('%cButton Tambah Proyek clicked...', 'font-style: italic');
@@ -53,7 +54,21 @@ $(document).ready(function() {
 
     $('#form_export').on('submit', function(e) {
         e.preventDefault();
-        getExport();
+        // jika salah satu kosong
+        if($('#tgl_awal').val().trim() != "" && $('#tgl_akhir').val().trim() != "") {
+            // jika tgl awal / akhir tidak sesuai
+            // if() {
+
+            // }
+            // else {
+            //     getExport();
+            // }
+            getExport();
+        }
+        else {
+            $('.field-tgl_export').addClass('has-error');
+            $('.pesan-tgl_export').text('Tanggal Awal atau Tanggal Akhir tidak boleh kosong');
+        }
         return false;
     });
 
@@ -62,13 +77,6 @@ $(document).ready(function() {
         console.log('Button Refresh Table Proyek clicked...');
         refreshTable(proyekTable, $(this));
     });
-
-    // auto refresh every 1 minutes
-    // setInterval( function () {
-    //     console.log('%cAutomatically refresh table..', 'color: blue; font-style: italic');
-    //     proyekTable.ajax.reload(null, false);
-    // }, 60000 );
-
 });
 
 /**
@@ -137,19 +145,17 @@ function getDelete(id) {
             type: 'post',
             dataType: 'json',
             data: {},
-            beforeSend: function(){
-                // tampilkan loading
+            beforeSend: function() {
+                $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
             },
             success: function(response){
-                // stop loading
-
+                $('.box .overlay').remove();
                 console.log('%cResponse getDelete Proyek: ', 'color: green; font-weight: bold', response);
                 if(response.success){ proyekTable.ajax.reload(null, false); }
                 swal(response.notif.title, response.notif.message, response.notif.type);
             },
             error: function (jqXHR, textStatus, errorThrown){ // error handling
-                // stop loading
-                
+                $('.box .overlay').remove();
                 console.log('%cResponse Error getDelete Proyek', 'color: red; font-weight: bold', jqXHR, textStatus, errorThrown);
                 swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
                 proyekTable.ajax.reload(null, false);
