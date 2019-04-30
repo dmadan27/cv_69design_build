@@ -204,7 +204,7 @@
          * @param start_row_data {integer}
          */
         public function getExcel($start_column_header, $start_row_data, $numbering = false) {
-            $filename = $this->property['title']."_".date('d-m-Y').".xlsx";
+            $filename = $this->property['title']."_(".date('d-m-Y').").xlsx";
 
             try {
                 // render data ke excel
