@@ -1062,6 +1062,35 @@ class Operasional_proyekModel extends Database implements ModelInterface
 	/**
 	 * 
 	 */
+	public function export_detail($tgl_awal = false, $tgl_akhir = false, $id_proyek = false, $id_operasional = false) {
+		if($id_operasional) {
+			$query = "SELECT * FROM v_export_detail_operasional_proyek WHERE `ID OPERASIONAL PROYEK` = :id_operasional;";
+			$bindParam = array(
+				':id_operasional' => $id_operasional
+			);
+		}
+		else {
+			$query = "SELECT * FROM v_export_detail_operasional_proyek WHERE `ID OPERASIONAL PROYEK` IN ";
+			$query .= "(SELECT id FROM operasional_proyek WHERE id_proyek = :id_proyek ";
+			$query .= "AND (tgl BETWEEN :tgl_awal AND :tgl_akhir));";
+			$bindParam = array(
+				':id_proyek' => $id_proyek,
+				':tgl_awal' => $tgl_awal,
+				':tgl_akhir' => $tgl_akhir,
+			);
+		}
+
+		$statement = $this->koneksi->prepare($query);
+		$statement->execute(
+			$bindParam
+		);
+		$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+		return $result;
+	}
+
+	/**
+	 * 
+	 */
 	public function __destruct(){
 		$this->closeConnection($this->koneksi);
 	}

@@ -773,9 +773,9 @@ class Proyek extends Controller
 			// config datatable
 			$config_dataTable = array(
 				'tabel' => 'v_operasional_proyek',
-				'kolomOrder' => array(null, 'id', 'tgl_pengajuan', 'nama_pengajuan', 'nama_kas_besar', 'jenis_pembayaran', 'status_lunas', 'total_pengajuan', null),
-				'kolomCari' => array('tgl_pengajuan', 'nama_pengajuan', 'id_kas_besar', 'nama_kas_besar', 'jenis_pembayaran', 'status_lunas', 'total_pengajuan'),
-				'orderBy' => array('tgl_pengajuan' => 'desc'),
+				'kolomOrder' => array(null, 'id', 'tgl_operasional', 'nama_operasional', 'nama_kas_besar', 'jenis_pembayaran', 'status_lunas', 'total', null),
+				'kolomCari' => array('tgl_operasional', 'nama_operasional', 'id_kas_besar', 'nama_kas_besar', 'jenis_pembayaran', 'status_lunas', 'total'),
+				'orderBy' => array('tgl_operasional' => 'desc'),
 				'kondisi' => 'WHERE id_proyek = "'.$proyek.'"',
 			);
 
@@ -787,8 +787,8 @@ class Proyek extends Controller
 				$no_urut++;
 
 				// button aksi
-				$aksiDetail = '<button onclick="getView('."'".strtolower($row["id"])."'".')" type="button" ';
-				$aksiDetail .= 'class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
+				$aksiDetail = '<button onclick="getView_operasionalProyek('."'".strtolower($row["id"])."'".')" type="button" ';
+				$aksiDetail .= 'class="btn btn-sm btn-info btn-flat" title="Lihat Detail Operasional Proyek"><i class="fa fa-eye"></i></button>';
 				
 				$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
 				
@@ -798,12 +798,12 @@ class Proyek extends Controller
 				$dataRow = array();
 				$dataRow[] = $no_urut;
 				$dataRow[] = $row['id'];
-				$dataRow[] = $this->helper->cetakTgl($row['tgl_pengajuan'], 'full');
-				$dataRow[] = $row['nama_pengajuan'];
+				$dataRow[] = $this->helper->cetakTgl($row['tgl_operasional'], 'full');
+				$dataRow[] = $row['nama_operasional'];
 				$dataRow[] = $row['id_kas_besar'].' - '.$row['nama_kas_besar'];
 				$dataRow[] = $row['jenis_pembayaran'];
 				$dataRow[] = $row['status_lunas'];
-				$dataRow[] = $this->helper->cetakRupiah($row['total_pengajuan']);
+				$dataRow[] = $this->helper->cetakRupiah($row['total']);
 				$dataRow[] = $aksi;
 
 				$data[] = $dataRow;

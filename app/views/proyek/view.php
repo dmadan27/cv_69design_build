@@ -108,7 +108,7 @@
 				<!-- detail pembayaran proyek -->
 				<div class="row">
 					<div class="col-md-12">
-						<div class="box box-detail-pembayaran">
+						<div class="box box-detail_pembayaran">
                             <div class="box-header with-border">
                                 <h4 class="box-title">Detail Pembayaran Proyek</h4>
                             </div>

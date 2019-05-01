@@ -259,11 +259,11 @@ function getExport() {
             data: data,
             beforeSend: function(){
                 console.log('Loading render file excel..');
-                $('.box box-'+type).append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+                $('.box-'+type).append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
             },
             success: function(response) {
                 console.log('%cResponse getExport Proyek: ', 'color: blue; font-weight: bold', response);
-                $('.box box-'+type+' .overlay').remove();
+                $('.box-'+type+' .overlay').remove();
                 $('#modalExport').modal('hide');
                 if(response.success) {
                     var $a = $("<a>");
@@ -278,7 +278,7 @@ function getExport() {
             error: function (jqXHR, textStatus, errorThrown){ // error handling
                 console.log('%cResponse Error getExport Proyek', 'color: red; font-weight: bold', {jqXHR, textStatus, errorThrown});
                 swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
-                $('.box box-'+type+' .overlay').remove();
+                $('.box-'+type+' .overlay').remove();
                 $('#modalExport').modal('hide');
             }
         })
