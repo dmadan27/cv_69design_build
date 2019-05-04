@@ -319,8 +319,10 @@ class Helper
 		);
 
 		$post_data = array(
-			'to' => "/topics/".STATUS_DEV,
+			'to' => "/topics/".TYPE,
 			'notification' => array(
+				'title' => $data['title'],
+				'body' => $data['body'],
 				'sound' => "default"
 			),
 			'data' => [
