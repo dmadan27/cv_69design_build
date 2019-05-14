@@ -613,7 +613,7 @@
     -- Table Operasional
         DROP TABLE IF EXISTS operasional;
         CREATE TABLE IF NOT EXISTS operasional(
-            id VARCHAR(50) NOT NULL UNIQUE, -- pk
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT, -- pk
 
             id_bank INT UNSIGNED DEFAULT NULL, -- fk bank
             id_kas_besar VARCHAR(10) DEFAULT NULL,
