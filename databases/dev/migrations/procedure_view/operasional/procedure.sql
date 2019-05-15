@@ -364,7 +364,7 @@
 		id_param int,
 		tgl_param date,
 		ket_param text,
-		modified_by varchar(50)
+		modified_by_param varchar(50)
 	)
 	BEGIN
         
