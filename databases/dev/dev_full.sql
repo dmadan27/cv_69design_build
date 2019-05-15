@@ -3051,6 +3051,7 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
         DECLARE id_sub_kas_kecil_param varchar(10);
         DECLARE id_proyek_param varchar(50);
         DECLARE nama_param varchar(255);
+        DECLARE nama_skk_param varchar(255);
         DECLARE get_saldo_kas_kecil double(12,2);
         DECLARE get_saldo_sub_kas_kecil double(12,2);
         DECLARE ket_kas_kecil_param text;
@@ -3058,6 +3059,9 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
 
         -- get id sub kas kecil
         SELECT id_sub_kas_kecil INTO id_sub_kas_kecil_param FROM pengajuan_sub_kas_kecil WHERE id = id_param;
+
+        -- get nama sub kas kecil
+        SELECT skk.nama INTO nama_skk_param FROM pengajuan_sub_kas_kecil pskk  inner join sub_kas_kecil skk where id = id_param;  
 
         -- get id proyek dan nama pengajuan
         SELECT id_proyek INTO id_proyek_param FROM pengajuan_sub_kas_kecil WHERE id = id_param;
@@ -3069,7 +3073,7 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
 
         -- set keterangan mutasi kas kecil dan sub kas kecil
         SELECT CONCAT('PERSETUJUAN PENGAJUAN SUB KAS KECIL DI PROYEK (', id_proyek_param, ') - ', id_param, ': ',nama_param) INTO ket_kas_kecil_param;
-        SELECT CONCAT('PERSETUJUAN PENGAJUAN ', id_param, ': ', nama_param) INTO ket_sub_kas_kecil_param;
+        SELECT CONCAT('PERSETUJUAN PENGAJUAN ', id_param, ': ', nama_param, ' UNTUK ', nama_skk_param ) INTO ket_sub_kas_kecil_param;
 
         -- update saldo kas kecil
         UPDATE kas_kecil SET 
