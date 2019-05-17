@@ -307,8 +307,7 @@ class Helper
 	 * 
 	 * @param data (array) Data yang ingin dikirimkan dalam notifikasi.
 	 * @param priority (string) Setting prioritas notifikasi ('HIGH' atau 'NORMAL').
-	 * @return message_id (string) Merupakan kode unik pemberitahuan notifikasi pesan telah dikirim, 
-	 * 						Jika message_id tidak dikembalikan oleh firebase maka method akan menghasilkan nilai false.
+	 * 
 	 */
 	public function sendNotif($data, $priority="HIGH") {
 		$url = "https://fcm.googleapis.com/fcm/send";
@@ -340,6 +339,30 @@ class Helper
 			'priority' => $priority
 		);
 
+		// kirim notif v1
+		$this->curlPostExecutor($url, $headers, $post_data);
+
+		// kirim notif v2
+		$headers = array(
+			"Authorization : ".KEY_FIREBASE_NOTIFICATION_2,
+			"Content-Type : application/json",
+		);
+		$this->curlPostExecutor($url, $headers, $post_data);
+
+		return true;
+	}
+
+	/**
+	 * Untuk mengirim data (POST).
+	 * 
+	 * @param url (string) alamat tujuan data POST.
+	 * @param headers (array) header POST.
+	 * @param post_data (array) data yang dikirimkan.
+	 * 
+	 * @return (string|bool) Merupakan kode unik pemberitahuan notifikasi pesan telah dikirim, 
+	 * 						Jika message_id tidak dikembalikan oleh firebase maka method akan menghasilkan nilai false.
+	 */
+	public function curlPostExecutor(string $url, array $headers, array $post_data) {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_POST, true);
@@ -351,9 +374,8 @@ class Helper
 		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_data));
 		$result = curl_exec($ch);
 		curl_close($ch);
-		
+
 		return json_decode($result, true)['message_id'] ?? false;
 	}
-
 
 }

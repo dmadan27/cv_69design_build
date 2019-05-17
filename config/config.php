@@ -7,6 +7,10 @@ define(
 	'KEY_FIREBASE_NOTIFICATION',
 	'key=AAAAVowCLac:APA91bGdY5WrVjAbVfKpqoRmehjfV2wu8Zkd_rQI3kSbTtVELkWDX8kEsGbKnOpRMrF26kD8kHpwdJ781JdkWKL2_KqGt5hFdHYmfS_TJB0fc2YqW0bQy8CVPCTdPS8DqpJEpLlwUifv'
 );
+define(
+	'KEY_FIREBASE_NOTIFICATION_2',
+	'key=AAAAiSJSJRw:APA91bEXBXeu-EwadWLoDx-nM7onqOSkFV2BHQ0nCfMuY6uX37_4rIEmIyrcBbgd2Ltg57clQoyQE16DmBvJA74Pq-3SeLY_gVVz5Zcg7DYNiFBw__GyCtlSv0golctYnVdxrh7nWOk-'
+);
 define('SEND_EMAIL', array('email' => 'simakpro@69designbuild.com', 'password' => '69db69db69db_email_admin_simakpro'));
 
 if(TYPE == 'DEV'){ // local
