@@ -663,12 +663,13 @@ class Export extends Controller {
         if($_SERVER['REQUEST_METHOD'] == 'POST' && 
         ($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'KAS KECIL' 
         || $_SESSION['sess_level'] === 'OWNER')) {
+            $this->model('Sub_kas_kecilModel');
+
             $mainData = $properties = array();
             
             $tgl_awal = isset($_POST['tgl_awal']) ? $_POST['tgl_awal'] : false;
             $tgl_akhir = isset($_POST['tgl_akhir']) ? $_POST['tgl_akhir'] : false;
-
-            $this->model('Sub_kas_kecilModel');
+            $nama_skk = $this->Sub_kas_kecilModel->getById($id)['nama'];
 
             $row = empty($this->Sub_kas_kecilModel->export_detail_pengajuan($id, $tgl_awal, $tgl_akhir)) 
                 ? false : $this->Sub_kas_kecilModel->export_detail_pengajuan($id, $tgl_awal, $tgl_akhir);
@@ -677,9 +678,9 @@ class Export extends Controller {
 
                 $mainData['row'] = $row;
                 $mainData['column'] = $column;
-                $mainData['sheet'] = 'Data Pengajuan Sub Kas Kecil';
+                $mainData['sheet'] = 'Data Histori Pengajuan '.$nama_skk;
 
-                $property = 'Data Pengajuan Sub Kas Kecil '.' Tanggal '.$tgl_awal.' s.d '.$tgl_akhir;
+                $property = 'Data Histori Pengajuan '.$nama_skk.' Tanggal '.$tgl_awal.' s.d '.$tgl_akhir;
                 $properties['title'] = $properties['subject'] = $properties['description'] = $property;
 
                 $this->excel_v2->setProperty($properties);

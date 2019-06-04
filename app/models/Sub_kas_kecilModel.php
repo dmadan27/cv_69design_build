@@ -334,6 +334,26 @@
 		}
 
 		/**
+		 * 
+		 */
+		public function export_detail_pengajuan($id, $tgl_awal, $tgl_akhir) {
+			$query = "SELECT * FROM v_pengajuan_sub_kas_kecil_export_v2 WHERE `ID SUB KAS KECIL` = :id_skk ";
+			$query .= "AND (`TANGGAL PENGAJUAN` BETWEEN :tgl_awal AND :tgl_akhir);";
+			$bindParam = array(
+				':id_skk' => $id,
+				':tgl_awal' => $tgl_awal,
+				':tgl_akhir' => $tgl_akhir,
+			);
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				$bindParam
+			);
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
+
+		/**
 		*
 		*/
 		public function __destruct(){

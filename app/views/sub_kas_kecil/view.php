@@ -26,15 +26,15 @@
                             <img class="profile-user-img img-responsive img-circle" src="<?= $this->data['foto']; ?>" alt="User profile picture">
                         </a>
                         <h3 class="profile-username text-center"><?= $this->data['nama']; ?></h3>
-						<p class="text-muted text-center"></p>
-						<p>
-							<center>
-								<div id="export-detail" class="btn btn-flat btn-success">
-									<i class="fa fa-file-excel-o"></i>
-									Ekspor Detail Data
-								</div>
-							</center>
-						</p>
+                        <p class="text-muted text-center"></p>
+                        <p>
+                            <center>
+                                <div id="export-detail" class="btn btn-flat btn-success">
+                                    <i class="fa fa-file-excel-o"></i>
+                                    Ekspor Detail Data
+                                </div>
+                            </center>
+                        </p>
                         <ul class="list-group list-group-unbordered">
                             <li class="list-group-item">
                                 <b>Email</b> <a class="pull-right"><?= $this->data['email']; ?></a>
@@ -126,7 +126,7 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <!-- export -->
-                                            <button type="button" class="btn btn-success btn-flat" id="exportExcel_mutasi"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+                                            <button type="button" class="btn btn-success btn-flat" id="exportExcel_mutasi"><i class="fa fa-file-excel-o"></i> Ekspor Excel</button>
                                             <button type="button" class="btn btn-info btn-flat pull-right" id="refreshTable_mutasi"><i class="fa fa-refresh"></i> Refresh</button>
                                         </div>
                                     </div>
@@ -162,10 +162,11 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <!-- export -->
-                                            <button type="button" class="btn btn-success btn-flat" id="exportExcel_pengajuan"><i class="fa fa-file-excel-o"></i> Export Excel</button>
+                                            <button type="button" class="btn btn-success btn-flat" id="export-pengajuan"><i class="fa fa-file-excel-o"></i> Ekspor Excel</button>
                                             <button type="button" class="btn btn-info btn-flat pull-right" id="refreshTable_pengajuan"><i class="fa fa-refresh"></i> Refresh</button>
                                         </div>
                                     </div>
+                                    <hr>
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="table-responsive">
@@ -188,7 +189,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
 
                         <!-- /.tab-pane -->
@@ -203,10 +203,11 @@
     </section>
     <!-- /.content -->
 
-    <?php 
-	include_once(__DIR__.'/../form_export/form_months_year.php');
-	// include('form.php');
-	// include('form_foto.php');
-	?>
+    <?php
+    include_once(__DIR__ . '/../form_export/form_months_year.php');
+    include_once(__DIR__ . '/../form_export/form_start_end_date.php');
+    // include('form.php');
+    // include('form_foto.php');
+    ?>
 
-</div> 
+</div>

@@ -1,5 +1,5 @@
 var mutasiSubKasKecilTable = $("#mutasiSubKasKecilTable").DataTable({
-    "language" : {
+    "language": {
         "lengthMenu": "Tampilkan _MENU_ data/page",
         "zeroRecords": "Data Tidak Ada",
         "info": "Menampilkan _START_ s.d _END_ dari _TOTAL_ data",
@@ -14,13 +14,13 @@ var mutasiSubKasKecilTable = $("#mutasiSubKasKecilTable").DataTable({
             "previous": "Sebelumnya"
         }
     },
-    "lengthMenu": [ 10, 25, 75, 100 ],
+    "lengthMenu": [10, 25, 75, 100],
     "pageLength": 10,
     order: [],
     processing: true,
     serverSide: true,
     ajax: {
-        url: BASE_URL+"sub-kas-kecil/get-mutasi/"+$('#id').val().trim(),
+        url: BASE_URL + "sub-kas-kecil/get-mutasi/" + $('#id').val().trim(),
         type: 'POST',
         data: {
             // "token_view" : $('#token_view').val().trim(),
@@ -29,13 +29,13 @@ var mutasiSubKasKecilTable = $("#mutasiSubKasKecilTable").DataTable({
     },
     "columnDefs": [
         {
-            "targets":[0, 4], // disable order di kolom 1 dan 3
-            "orderable":false,
+            "targets": [0, 4], // disable order di kolom 1 dan 3
+            "orderable": false,
         }
     ],
-    createdRow: function(row, data, dataIndex){
-        for(var i = 0; i < 5; i++){
-            if(i != 5) $('td:eq('+i+')', row).addClass('text-right');
+    createdRow: function (row, _, _) {
+        for (var i = 0; i < 5; i++) {
+            if (i != 5) $('td:eq(' + i + ')', row).addClass('text-right');
         }
 
         // console.log(data);
@@ -43,7 +43,7 @@ var mutasiSubKasKecilTable = $("#mutasiSubKasKecilTable").DataTable({
 });
 
 var pengajuanSubKasKecilTable = $("#pengajuanSubKasKecilTable").DataTable({
-    "language" : {
+    "language": {
         "lengthMenu": "Tampilkan _MENU_ data/page",
         "zeroRecords": "Data Tidak Ada",
         "info": "Menampilkan _START_ s.d _END_ dari _TOTAL_ data",
@@ -58,13 +58,13 @@ var pengajuanSubKasKecilTable = $("#pengajuanSubKasKecilTable").DataTable({
             "previous": "Sebelumnya"
         }
     },
-    "lengthMenu": [ 10, 25, 75, 100 ],
+    "lengthMenu": [10, 25, 75, 100],
     "pageLength": 10,
     order: [],
     processing: true,
     serverSide: true,
     ajax: {
-        url: BASE_URL+"sub-kas-kecil/get-history-pengajuan/"+$('#id').val().trim(),
+        url: BASE_URL + "sub-kas-kecil/get-history-pengajuan/" + $('#id').val().trim(),
         type: 'POST',
         data: {
             // "token_view" : $('#token_view').val().trim(),
@@ -73,43 +73,45 @@ var pengajuanSubKasKecilTable = $("#pengajuanSubKasKecilTable").DataTable({
     },
     "columnDefs": [
         {
-            "targets":[0, 5], // disable order di kolom 1 dan 3
-            "orderable":false,
+            "targets": [0, 5], // disable order di kolom 1 dan 3
+            "orderable": false,
         }
     ],
-    createdRow: function(row, data, dataIndex){
-        for(var i = 0; i < 5; i++){
-            if(i != 5) $('td:eq('+i+')', row).addClass('text-right');
+    createdRow: function (row, _, _) {
+        for (var i = 0; i < 5; i++) {
+            if (i != 5) $('td:eq(' + i + ')', row).addClass('text-right');
         }
         // console.log(data);
     }
 });
 
-$(document).ready(function() {
+$(document).ready(function () {
 
     // event on click refresh table
-    $('#refreshTable_mutasi').on('click', function() {
+    $('#refreshTable_mutasi').on('click', function () {
         console.log('Button Refresh Table Mutasi Sub Kas Kecil clicked...');
         refreshTable(mutasiSubKasKecilTable, $(this));
     });
 
-    $('#refreshTable_pengajuan').on('click', function() {
+    $('#refreshTable_pengajuan').on('click', function () {
         console.log('Button Refresh Table Pengajuan Sub Kas Kecil clicked...');
         refreshTable(pengajuanSubKasKecilTable, $(this));
     });
 
     // auto refresh every 1 minutes
-    setInterval( function () {
+    setInterval(function () {
         console.log('%cAutomatically refresh table..', 'color: blue; font-style: italic');
         mutasiSubKasKecilTable.ajax.reload(null, false);
         pengajuanSubKasKecilTable.ajax.reload(null, false);
-    }, 60000 );
+    }, 60000);
 
-    // menampilkan form export detail
+    // menampilkan form export detail (berdasarkan bulan dan tahun)
     $('#export-detail').on('click', function () {
 
-        // option
+        // set judul form
         $('.modal-export-title').html('Ekspor Data Detail Sub Kas Kecil');
+
+        // set method controller export
         $('#form-export-months-year').attr('action', BASE_URL + 'export/sub-kas-kecil-detail');
 
         // wajib
@@ -118,12 +120,28 @@ $(document).ready(function() {
         $('#modal-export-months-year').modal();
     });
 
+    // menampilkan form export histori pengajuan (berdasarkan tanggal awal dan akhir)
+    $('#export-pengajuan').on('click', function () {
+
+        // set judul form
+        $('.modal-export-title').html('Ekspor Data Histori Pengajuan');
+
+        // set nama method controller ekspor
+        $('#export-data').val(JSON.stringify({
+            'method': "skk-detail-pengajuan",
+            'id': $('#id').val().trim(),
+        }));
+
+        // menampilkan form export berdasarkan tanggal awal dan akhir
+        $('#modal-export-start-end-date').modal();
+    });
+
 });
 
 /**
 *
 */
-function getDelete(id){
+function getDelete(id) {
     swal({
         title: "Pesan Konfirmasi",
         text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
@@ -133,25 +151,25 @@ function getDelete(id){
         confirmButtonText: "Ya, Hapus!",
         cancelButtonText: "Batal",
         closeOnConfirm: false,
-    }, function(){
+    }, function () {
         $.ajax({
-            url: BASE_URL+'sub-kas-kecil/delete/'+id,
+            url: BASE_URL + 'sub-kas-kecil/delete/' + id,
             type: 'post',
             dataType: 'json',
             data: {},
-            beforeSend: function(){
+            beforeSend: function () {
 
             },
-            success: function(output){
+            success: function (output) {
                 console.log(output);
-                if(output){
+                if (output) {
                     swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
-                    setTimeout(function(){ 
-                            window.location.href = BASE_URL+'sub-kas-kecil/'; 
+                    setTimeout(function () {
+                        window.location.href = BASE_URL + 'sub-kas-kecil/';
                     }, 1500);
                 }
             },
-            error: function (jqXHR, textStatus, errorThrown){ // error handling
+            error: function (jqXHR, textStatus, errorThrown) { // error handling
                 console.log(jqXHR, textStatus, errorThrown);
                 swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
             }
@@ -162,13 +180,13 @@ function getDelete(id){
 /**
 *
 */
-function back(){
-    window.location.href = BASE_URL+'sub-kas-kecil/';
+function back() {
+    window.location.href = BASE_URL + 'sub-kas-kecil/';
 }
 
 /**
 *
 */
-function getView(){
+function getView() {
 
 }
