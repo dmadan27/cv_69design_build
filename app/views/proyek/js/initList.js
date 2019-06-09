@@ -38,7 +38,6 @@ var proyekTable = $("#proyekTable").DataTable({
 });
 
 $(document).ready(function() {
-    init();
 
     // btn tambah
     $('#tambah').on('click', function() {
@@ -52,54 +51,12 @@ $(document).ready(function() {
         showModalExport();
     });
 
-    $('#form_export').on('submit', function(e) {
-        e.preventDefault();
-        // jika salah satu kosong
-        if($('#tgl_awal').val().trim() != "" && $('#tgl_akhir').val().trim() != "") {
-            // jika tgl awal / akhir tidak sesuai
-            // if() {
-
-            // }
-            // else {
-            //     getExport();
-            // }
-            getExport();
-        }
-        else {
-            $('.field-tgl_export').addClass('has-error');
-            $('.pesan-tgl_export').text('Tanggal Awal atau Tanggal Akhir tidak boleh kosong');
-        }
-        return false;
-    });
-
     // event on click refresh table
     $('#refreshTable').on('click', function() {
         console.log('Button Refresh Table Proyek clicked...');
         refreshTable(proyekTable, $(this));
     });
 });
-
-/**
- * 
- */
-function init() {
-    //Date picker
-	$('#tgl_awal').datepicker({
-		autoclose: true,
-		format: "yyyy-mm-dd",
-		todayHighlight: true,
-		orientation:"bottom auto",
-		todayBtn: true,
-    });
-
-	$('#tgl_akhir').datepicker({
-		autoclose: true,
-		format: "yyyy-mm-dd",
-		todayHighlight: true,
-		orientation:"bottom auto",
-		todayBtn: true,
-    });
-}
 
 /**
  * Function getView
@@ -181,60 +138,17 @@ function add() {
  * 
  */
 function showModalExport() {
-    resetForm();
-    $('#modalExport').modal();
-}
-
-/**
- * 
- */
-function resetForm() {
-    $('#form_export').trigger('reset');
-	$('.pesan').text('');
-	$('.form-group').removeClass('has-success').removeClass('has-error');
-}
-
-/**
- * 
- */
-function getExport() {
-    var notif = {title: 'Pesan Pemberitahuan', message: 'Akses Ditolak', type: 'warning'};
-    if(LEVEL === 'KAS BESAR' || LEVEL === 'OWNER') {
-        $.ajax({
-            url: BASE_URL+'export/proyek/',
-            type: 'POST',
-            dataType: 'JSON',
-            data: {
-                'tgl_awal': $('#tgl_awal').val().trim(),
-				'tgl_akhir': $('#tgl_akhir').val().trim()
-            },
-            beforeSend: function(){
-                console.log('Loading render file excel..');
-                $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
-            },
-            success: function(response) {
-                console.log('%cResponse getExport Proyek: ', 'color: blue; font-weight: bold', response);
-                $('.box .overlay').remove();
-                $('#modalExport').modal('hide');
-                if(response.success) {
-                    var $a = $("<a>");
-                    $a.attr("href",response.file);
-                    $("body").append($a);
-                    $a.attr("download", response.filename);
-                    $a[0].click();
-                    $a.remove();   
-                }
-                else { swal("Pesan", response.message, "info"); }
-            },
-            error: function (jqXHR, textStatus, errorThrown){ // error handling
-                console.log('%cResponse Error getExport Proyek', 'color: red; font-weight: bold', {jqXHR, textStatus, errorThrown});
-                swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
-                $('.box .overlay').remove();
-                $('#modalExport').modal('hide');
-            }
-        })
-    }
-    else {
-        setNotif(notif, 'swal');
-    }
+    FormExportStartEndDate({
+        title: 'Export Data Proyek',
+        method: 'proyek',
+        onInitSubmit: () => {
+            $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+        },
+        onSubmitSuccess: () => {
+            $('#modal-export-start-end-date').modal('hide');
+        },
+        onSubmitFinished: () => {
+            $('.box .overlay').remove();
+        }
+    });
 }
