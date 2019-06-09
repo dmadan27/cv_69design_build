@@ -1,5 +1,5 @@
 var proyekTable = $("#proyekTable").DataTable({
-    "language" : {
+    "language": {
         "lengthMenu": "Tampilkan _MENU_ data/page",
         "zeroRecords": "Data Tidak Ada",
         "info": "Menampilkan _START_ s.d _END_ dari _TOTAL_ data",
@@ -14,45 +14,62 @@ var proyekTable = $("#proyekTable").DataTable({
             "previous": "Sebelumnya"
         }
     },
-    "lengthMenu": [ 10, 25, 75, 100 ],
+    "lengthMenu": [10, 25, 75, 100],
     "pageLength": 10,
     order: [],
     processing: true,
     serverSide: true,
     ajax: {
-        url: BASE_URL+"proyek/get-list/",
+        url: BASE_URL + "proyek/get-list/",
         type: 'POST',
         data: {}
     },
     "columnDefs": [
         {
-            "targets":[0, 9],
-            "orderable":false,
+            "targets": [0, 9],
+            "orderable": false,
         }
     ],
-    createdRow: function(row, data, dataIndex) {
-        if(data[0]) $('td:eq(0)', row).addClass('text-right');
-        if(data[6]) $('td:eq(6)', row).addClass('text-right');
-        if($(data[8]).text().toLowerCase() == "selesai") $(row).addClass('danger');
+    createdRow: function (row, data, dataIndex) {
+        if (data[0]) $('td:eq(0)', row).addClass('text-right');
+        if (data[6]) $('td:eq(6)', row).addClass('text-right');
+        if ($(data[8]).text().toLowerCase() == "selesai") $(row).addClass('danger');
     }
 });
 
-$(document).ready(function() {
+// init export start end date
+const exportExcelProyek = new FormExportStartEndDate({
+    method: 'proyek',
+    onInitSubmit: () => {
+        $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+    },
+    onSubmitSuccess: () => {
+        $('#modal-export-start-end-date').modal('hide');
+    },
+    onSubmitFinished: () => {
+        $('.box .overlay').remove();
+    }
+});
+// end init export start end date
+
+$(document).ready(function () {
 
     // btn tambah
-    $('#tambah').on('click', function() {
+    $('#tambah').on('click', function () {
         console.log('%cButton Tambah Proyek clicked...', 'font-style: italic');
         add();
     });
 
-     // btn Export
-    $('#exportExcel').on('click', function() {
+    // btn Export
+    $('#exportExcel').on('click', function () {
         console.log('%cButton Export Excel Proyek clicked...', 'font-style: italic');
-        showModalExport();
+        exportExcelProyek.show({
+            title: 'Export Data Proyek',
+        });
     });
 
     // event on click refresh table
-    $('#refreshTable').on('click', function() {
+    $('#refreshTable').on('click', function () {
         console.log('Button Refresh Table Proyek clicked...');
         refreshTable(proyekTable, $(this));
     });
@@ -64,8 +81,8 @@ $(document).ready(function() {
  */
 function getView(id) {
     console.log('%cButton View Proyek clicked...', 'font-style: italic');
-    
-    window.location.href = BASE_URL+'proyek/detail/'+id;
+
+    window.location.href = BASE_URL + 'proyek/detail/' + id;
 }
 
 /**
@@ -75,7 +92,7 @@ function getView(id) {
 function getEdit(id) {
     console.log('%cButton Edit Proyek clicked...', 'font-style: italic');
 
-    window.location.href = BASE_URL+'proyek/form/'+id;
+    window.location.href = BASE_URL + 'proyek/form/' + id;
 }
 
 /**
@@ -96,22 +113,22 @@ function getDelete(id) {
         confirmButtonText: "Ya, Hapus!",
         cancelButtonText: "Batal",
         closeOnConfirm: false,
-    }, function(){
+    }, function () {
         $.ajax({
-            url: BASE_URL+'proyek/delete/'+id.toLowerCase(),
+            url: BASE_URL + 'proyek/delete/' + id.toLowerCase(),
             type: 'post',
             dataType: 'json',
             data: {},
-            beforeSend: function() {
+            beforeSend: function () {
                 $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
             },
-            success: function(response){
+            success: function (response) {
                 $('.box .overlay').remove();
                 console.log('%cResponse getDelete Proyek: ', 'color: green; font-weight: bold', response);
-                if(response.success){ proyekTable.ajax.reload(null, false); }
+                if (response.success) { proyekTable.ajax.reload(null, false); }
                 swal(response.notif.title, response.notif.message, response.notif.type);
             },
-            error: function (jqXHR, textStatus, errorThrown){ // error handling
+            error: function (jqXHR, textStatus, errorThrown) { // error handling
                 $('.box .overlay').remove();
                 console.log('%cResponse Error getDelete Proyek', 'color: red; font-weight: bold', jqXHR, textStatus, errorThrown);
                 swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
@@ -125,30 +142,11 @@ function getDelete(id) {
  * 
  */
 function add() {
-    var notif = {title: 'Pesan Pemberitahuan', message: 'Akses Ditolak', type: 'warning'};
-    if(LEVEL === 'KAS BESAR') {
-        window.location.href = BASE_URL+'proyek/form/';
+    var notif = { title: 'Pesan Pemberitahuan', message: 'Akses Ditolak', type: 'warning' };
+    if (LEVEL === 'KAS BESAR') {
+        window.location.href = BASE_URL + 'proyek/form/';
     }
     else {
         setNotif(notif, 'swal');
     }
-}
-
-/**
- * 
- */
-function showModalExport() {
-    FormExportStartEndDate({
-        title: 'Export Data Proyek',
-        method: 'proyek',
-        onInitSubmit: () => {
-            $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
-        },
-        onSubmitSuccess: () => {
-            $('#modal-export-start-end-date').modal('hide');
-        },
-        onSubmitFinished: () => {
-            $('.box .overlay').remove();
-        }
-    });
 }

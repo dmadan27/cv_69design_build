@@ -158,6 +158,38 @@ var operasional_proyekTable = $("#operasional_proyekTable").DataTable({
 });
 // end init datatable
 
+// init export start end date
+// Export Pengajuan
+const exportPengajuan = new FormExportStartEndDate({
+    method: 'proyek-detail-pengajuan-skk',
+    id: $('#id').val().trim(),
+    onInitSubmit: () => {        
+        $('.box-pengajuan_skk').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+    },
+    onSubmitSuccess: () => {
+        $('#modal-export-start-end-date').modal('hide');
+    },
+    onSubmitFinished: () => {
+        $('.box-pengajuan_skk .overlay').remove();
+    }
+});
+
+// Export Operasional
+const exportOperasional = new FormExportStartEndDate({
+    method: 'proyek-detail-operasional-proyek',
+    id: $('#id').val().trim(),
+    onInitSubmit: () => {        
+        $('.box-operasional_proyek').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+    },
+    onSubmitSuccess: () => {
+        $('#modal-export-start-end-date').modal('hide');
+    },
+    onSubmitFinished: () => {
+        $('.box-operasional_proyek .overlay').remove();
+    }
+});
+// init export start end date
+
 $(document).ready(function () {
     // event on click refresh table
     $('#refreshTable_pembayaran').on('click', function () {
@@ -178,7 +210,7 @@ $(document).ready(function () {
 
     // event on click export
     $('#exportExcel_pembayaran').on('click', async function () {
-        $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+        $('.box-detail_pembayaran').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
 
         try {
             await Export.excel({
@@ -194,42 +226,20 @@ $(document).ready(function () {
             }
         }
 
-        $('.box .overlay').remove();
+        $('.box-detail_pembayaran .overlay').remove();
     });
 
     $('#exportExcel_pengajuan').on('click', function () {
-        // showModalExport('pengajuan_skk');
-        FormExportStartEndDate({
+        exportPengajuan.show({
             title: 'Export Detail Pengajuan Sub Kas Kecil',
-            method: 'proyek-detail-pengajuan-skk',
-            id: $('#id').val().trim(),
-            onInitSubmit: () => {
-                $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
-            },
-            onSubmitSuccess: () => {
-                $('#modal-export-start-end-date').modal('hide');
-            },
-            onSubmitFinished: () => {
-                $('.box .overlay').remove();
-            }
+            type: 'proyek-detail-pengajuan-skk',
         });
     });
 
     $('#exportExcel_operasional').on('click', function () {
-        // showModalExport('operasional_proyek');
-        FormExportStartEndDate({
+        exportOperasional.show({
             title: 'Export Detail Operasional Proyek',
-            method: 'proyek-detail-operasional-proyek',
-            id: $('#id').val().trim(),
-            onInitSubmit: () => {
-                $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
-            },
-            onSubmitSuccess: () => {
-                $('#modal-export-start-end-date').modal('hide');
-            },
-            onSubmitFinished: () => {
-                $('.box .overlay').remove();
-            }
+            type: 'proyek-detail-operasional-proyek',
         });
     });
     // end event on click export

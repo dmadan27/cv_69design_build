@@ -9,43 +9,42 @@
  * @param {functionCallback} onSubmitError Aksi yang ingin dilakukan saat aksi submit gagal (opsional). 
  * @param {functionCallback} onSubmitFinished Aksi yang ingin dilakukan saat aksi submit selesai dieksekusi (opsional). 
  */
-function FormExportStartEndDate({ title, method, id = "", onInitSubmit, onSubmitSuccess, onSubmitError, onSubmitFinished }) {
-	$(document).ready(function () {
-		$('#modal-export-start-end-date').modal();
+function FormExportStartEndDate({method, id = "", onInitSubmit, onSubmitSuccess, onSubmitError, onSubmitFinished }) {
+	$('#export-data').val("");
 
-		$('.modal-export-title').html(title);
+	// Setting datepicker tgl-awal.
+	$('#tgl-awal').datepicker({
+		autoclose: true,
+		format: "yyyy-mm-dd",
+		language: "id",
+		todayHighlight: true,
+		orientation: "bottom auto",
+		todayBtn: true,
+		endDate: new Date(),
+	});
 
-		// Setting datepicker tgl-awal.
-		$('#tgl-awal').datepicker({
-			autoclose: true,
-			format: "yyyy-mm-dd",
-			language: "id",
-			todayHighlight: true,
-			orientation: "bottom auto",
-			todayBtn: true,
-			endDate: new Date(),
-		});
+	// Setting datepicker tgl-akhir.
+	$('#tgl-akhir').datepicker({
+		autoclose: true,
+		format: "yyyy-mm-dd",
+		language: "id",
+		todayHighlight: true,
+		orientation: "bottom auto",
+		todayBtn: true,
+		endDate: new Date(),
+	});
 
-		// Setting datepicker tgl-akhir.
-		$('#tgl-akhir').datepicker({
-			autoclose: true,
-			format: "yyyy-mm-dd",
-			language: "id",
-			todayHighlight: true,
-			orientation: "bottom auto",
-			todayBtn: true,
-			endDate: new Date(),
-		});
+	// Setting kondisi saat modal export ditutup.
+	$('#modal-export-start-end-date').on('hidden.bs.modal', function () {
+		resetForm();
+		$('#export-data').val("");
+	});
 
-		// Setting kondisi saat modal export ditutup.
-		$('#modal-export-start-end-date').on('hidden.bs.modal', function () {
-			resetForm();
-		});
+	// Aksi saat form export dieksekusi.
+	$('#form-export-start-end-date').submit(async (e) => {
+		e.preventDefault();
 
-		// Aksi saat form export dieksekusi.
-		$('#form-export-start-end-date').submit(async (e) => {
-			e.preventDefault();
-
+		if ($('#export-data').val() == method) {
 			if (typeof onInitSubmit === "function" && onInitSubmit()) {
 				onInitSubmit();
 			}
@@ -85,8 +84,23 @@ function FormExportStartEndDate({ title, method, id = "", onInitSubmit, onSubmit
 			if (typeof onSubmitFinished === "function" && onSubmitFinished()) {
 				onSubmitFinished();
 			}
-		});
+		}
 	});
+
+	/**
+	 * Method untuk menampilan modal FormExportStartEndDate.
+	 * 
+	 * @param {string} title Judul modal.
+	 * @param {string} type Mengidentifikasi data yang ingin diexport 
+	 * 					(harus diisi dengan nama method saat inisialisasi 
+	 * 					jika FormExportStartEndDate diiplementasikan lebih dari satu kali dalam satu halaman).
+	 */
+	this.show = ({ title, type = method }) => {
+		$('.modal-export-title').html(title);
+		$('#export-data').val(type);
+		$('#modal-export-start-end-date').modal();
+	}
+	this.hide = () => $('#modal-export-start-end-date').modal('hide');
 }
 
 /**
