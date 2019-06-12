@@ -1,5 +1,5 @@
 var proyekTable = $("#proyekTable").DataTable({
-    "language" : {
+    "language": {
         "lengthMenu": "Tampilkan _MENU_ data/page",
         "zeroRecords": "Data Tidak Ada",
         "info": "Menampilkan _START_ s.d _END_ dari _TOTAL_ data",
@@ -14,92 +14,66 @@ var proyekTable = $("#proyekTable").DataTable({
             "previous": "Sebelumnya"
         }
     },
-    "lengthMenu": [ 10, 25, 75, 100 ],
+    "lengthMenu": [10, 25, 75, 100],
     "pageLength": 10,
     order: [],
     processing: true,
     serverSide: true,
     ajax: {
-        url: BASE_URL+"proyek/get-list/",
+        url: BASE_URL + "proyek/get-list/",
         type: 'POST',
         data: {}
     },
     "columnDefs": [
         {
-            "targets":[0, 9],
-            "orderable":false,
+            "targets": [0, 9],
+            "orderable": false,
         }
     ],
-    createdRow: function(row, data, dataIndex) {
-        if(data[0]) $('td:eq(0)', row).addClass('text-right');
-        if(data[6]) $('td:eq(6)', row).addClass('text-right');
-        if($(data[8]).text().toLowerCase() == "selesai") $(row).addClass('danger');
+    createdRow: function (row, data, dataIndex) {
+        if (data[0]) $('td:eq(0)', row).addClass('text-right');
+        if (data[6]) $('td:eq(6)', row).addClass('text-right');
+        if ($(data[8]).text().toLowerCase() == "selesai") $(row).addClass('danger');
     }
 });
 
-$(document).ready(function() {
-    init();
+// init export start end date
+const exportExcelProyek = new FormExportStartEndDate({
+    method: 'proyek',
+    onInitSubmit: () => {
+        $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+    },
+    onSubmitSuccess: () => {
+        $('#modal-export-start-end-date').modal('hide');
+    },
+    onSubmitFinished: () => {
+        $('.box .overlay').remove();
+    }
+});
+// end init export start end date
+
+$(document).ready(function () {
 
     // btn tambah
-    $('#tambah').on('click', function() {
+    $('#tambah').on('click', function () {
         console.log('%cButton Tambah Proyek clicked...', 'font-style: italic');
         add();
     });
 
-     // btn Export
-    $('#exportExcel').on('click', function() {
+    // btn Export
+    $('#exportExcel').on('click', function () {
         console.log('%cButton Export Excel Proyek clicked...', 'font-style: italic');
-        showModalExport();
-    });
-
-    $('#form_export').on('submit', function(e) {
-        e.preventDefault();
-        // jika salah satu kosong
-        if($('#tgl_awal').val().trim() != "" && $('#tgl_akhir').val().trim() != "") {
-            // jika tgl awal / akhir tidak sesuai
-            // if() {
-
-            // }
-            // else {
-            //     getExport();
-            // }
-            getExport();
-        }
-        else {
-            $('.field-tgl_export').addClass('has-error');
-            $('.pesan-tgl_export').text('Tanggal Awal atau Tanggal Akhir tidak boleh kosong');
-        }
-        return false;
+        exportExcelProyek.show({
+            title: 'Export Data Proyek',
+        });
     });
 
     // event on click refresh table
-    $('#refreshTable').on('click', function() {
+    $('#refreshTable').on('click', function () {
         console.log('Button Refresh Table Proyek clicked...');
         refreshTable(proyekTable, $(this));
     });
 });
-
-/**
- * 
- */
-function init() {
-    //Date picker
-	$('#tgl_awal').datepicker({
-		autoclose: true,
-		format: "yyyy-mm-dd",
-		todayHighlight: true,
-		orientation:"bottom auto",
-		todayBtn: true,
-    });
-
-	$('#tgl_akhir').datepicker({
-		autoclose: true,
-		format: "yyyy-mm-dd",
-		todayHighlight: true,
-		orientation:"bottom auto",
-		todayBtn: true,
-    });
-}
 
 /**
  * Function getView
@@ -107,8 +81,8 @@ function init() {
  */
 function getView(id) {
     console.log('%cButton View Proyek clicked...', 'font-style: italic');
-    
-    window.location.href = BASE_URL+'proyek/detail/'+id;
+
+    window.location.href = BASE_URL + 'proyek/detail/' + id;
 }
 
 /**
@@ -118,7 +92,7 @@ function getView(id) {
 function getEdit(id) {
     console.log('%cButton Edit Proyek clicked...', 'font-style: italic');
 
-    window.location.href = BASE_URL+'proyek/form/'+id;
+    window.location.href = BASE_URL + 'proyek/form/' + id;
 }
 
 /**
@@ -139,22 +113,22 @@ function getDelete(id) {
         confirmButtonText: "Ya, Hapus!",
         cancelButtonText: "Batal",
         closeOnConfirm: false,
-    }, function(){
+    }, function () {
         $.ajax({
-            url: BASE_URL+'proyek/delete/'+id.toLowerCase(),
+            url: BASE_URL + 'proyek/delete/' + id.toLowerCase(),
             type: 'post',
             dataType: 'json',
             data: {},
-            beforeSend: function() {
+            beforeSend: function () {
                 $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
             },
-            success: function(response){
+            success: function (response) {
                 $('.box .overlay').remove();
                 console.log('%cResponse getDelete Proyek: ', 'color: green; font-weight: bold', response);
-                if(response.success){ proyekTable.ajax.reload(null, false); }
+                if (response.success) { proyekTable.ajax.reload(null, false); }
                 swal(response.notif.title, response.notif.message, response.notif.type);
             },
-            error: function (jqXHR, textStatus, errorThrown){ // error handling
+            error: function (jqXHR, textStatus, errorThrown) { // error handling
                 $('.box .overlay').remove();
                 console.log('%cResponse Error getDelete Proyek', 'color: red; font-weight: bold', jqXHR, textStatus, errorThrown);
                 swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
@@ -168,71 +142,9 @@ function getDelete(id) {
  * 
  */
 function add() {
-    var notif = {title: 'Pesan Pemberitahuan', message: 'Akses Ditolak', type: 'warning'};
-    if(LEVEL === 'KAS BESAR') {
-        window.location.href = BASE_URL+'proyek/form/';
-    }
-    else {
-        setNotif(notif, 'swal');
-    }
-}
-
-/**
- * 
- */
-function showModalExport() {
-    resetForm();
-    $('#modalExport').modal();
-}
-
-/**
- * 
- */
-function resetForm() {
-    $('#form_export').trigger('reset');
-	$('.pesan').text('');
-	$('.form-group').removeClass('has-success').removeClass('has-error');
-}
-
-/**
- * 
- */
-function getExport() {
-    var notif = {title: 'Pesan Pemberitahuan', message: 'Akses Ditolak', type: 'warning'};
-    if(LEVEL === 'KAS BESAR' || LEVEL === 'OWNER') {
-        $.ajax({
-            url: BASE_URL+'export/proyek/',
-            type: 'POST',
-            dataType: 'JSON',
-            data: {
-                'tgl_awal': $('#tgl_awal').val().trim(),
-				'tgl_akhir': $('#tgl_akhir').val().trim()
-            },
-            beforeSend: function(){
-                console.log('Loading render file excel..');
-                $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
-            },
-            success: function(response) {
-                console.log('%cResponse getExport Proyek: ', 'color: blue; font-weight: bold', response);
-                $('.box .overlay').remove();
-                $('#modalExport').modal('hide');
-                if(response.success) {
-                    var $a = $("<a>");
-                    $a.attr("href",response.file);
-                    $("body").append($a);
-                    $a.attr("download", response.filename);
-                    $a[0].click();
-                    $a.remove();   
-                }
-                else { swal("Pesan", response.message, "info"); }
-            },
-            error: function (jqXHR, textStatus, errorThrown){ // error handling
-                console.log('%cResponse Error getExport Proyek', 'color: red; font-weight: bold', {jqXHR, textStatus, errorThrown});
-                swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
-                $('.box .overlay').remove();
-                $('#modalExport').modal('hide');
-            }
-        })
+    var notif = { title: 'Pesan Pemberitahuan', message: 'Akses Ditolak', type: 'warning' };
+    if (LEVEL === 'KAS BESAR') {
+        window.location.href = BASE_URL + 'proyek/form/';
     }
     else {
         setNotif(notif, 'swal');

@@ -49,6 +49,8 @@ class Proyek extends Controller
 			'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 			'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 			'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
+			'assets/bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.id.min.js',
+			'assets/js/library/export.js',
 			'app/views/form_export/js/initFormStartEndDate.js',
 			'app/views/proyek/js/initList.js',
 		);
@@ -563,6 +565,7 @@ class Proyek extends Controller
 			'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 			'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 			'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
+			'assets/js/library/export.js',
 			'app/views/form_export/js/initFormStartEndDate.js',
 			'app/views/proyek/js/initView.js',
 		);
