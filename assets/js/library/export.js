@@ -16,7 +16,7 @@ const Export = {
         });
 
         if (res.status == 200) {
-            const data = await res.json();
+            const data = await res.json();            
             if (data.success) {
                 let $a = $("<a>");
                 $a.attr("href", data.file);
@@ -34,7 +34,10 @@ const Export = {
         // $.ajax({
         //     type: "POST",
         //     url: BASE_URL + 'export/' + method + "/" + id,
-        //     data: body,
+        //     data: {
+        //         bulan: 06,
+        //         tahun: 2019,
+        //     },
         //     dataType: "JSON",
         //     success: (response) => {
         //         console.log('%cResponse getExport: ', 'color: blue; font-weight: bold', response);

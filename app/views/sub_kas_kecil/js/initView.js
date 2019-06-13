@@ -86,6 +86,23 @@ var pengajuanSubKasKecilTable = $("#pengajuanSubKasKecilTable").DataTable({
 });
 
 // inisialisasi export
+// export detail sub kas kecil
+const exportSubKasKecil = new FormExportMonthsYear({
+    method: 'sub-kas-kecil-detail',
+    id: $('#id').val().trim(),
+    onInitSubmit: () => {        
+        console.log('before export detail skk');
+        // $('.box-pengajuan_skk').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+    },
+    onSubmitSuccess: () => {
+        $('#modal-export-start-end-date').modal('hide');
+    },
+    onSubmitFinished: () => {
+        console.log('after export detail skk');
+        // $('.box-pengajuan_skk .overlay').remove();
+    }
+});
+
 // export mutasi
 const exportMutasi = new FormExportStartEndDate({
     method: 'skk-detail-mutasi',
@@ -119,7 +136,6 @@ const exportHistoriPengajuan = new FormExportStartEndDate({
         // $('.box-pengajuan_skk .overlay').remove();
     }
 });
-
 // end inisialisasi export
 
 $(document).ready(function() {
@@ -160,15 +176,10 @@ $(document).ready(function() {
 
     // menampilkan form export detail
     $('#export-detail').on('click', function () {
-
-        // option
-        $('.modal-export-title').html('Ekspor Data Detail Sub Kas Kecil');
-        $('#form-export-months-year').attr('action', BASE_URL + 'export/sub-kas-kecil-detail');
-
-        // wajib
-        $('#tahun').val('').attr('readonly', true);
-        $('#bulan').val('').attr('readonly', true).datepicker("destroy");
-        $('#modal-export-months-year').modal();
+        exportSubKasKecil.show({
+            title: 'Export Detail Data Sub Kas Kecil',
+            type: 'sub-kas-kecil-detail',
+        });
     });
 
 });

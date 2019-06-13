@@ -211,10 +211,10 @@
 		 * 
 		 */
 		public function getByIdSKKTglExport($id_skk, $tgl) {
-			$id_skk = "%".$id_skk."%";
-			$tgl = "%".$tgl;
+			$query = "SELECT * FROM v_pengajuan_sub_kas_kecil_export_v2 ";
+			$query .= "WHERE `ID SUB KAS KECIL` = :id_skk ";
+			$query .= "AND `TANGGAL PENGAJUAN` LIKE :tgl ORDER BY `TANGGAL PENGAJUAN` DESC;";	
 
-			$query = "SELECT * FROM v_pengajuan_sub_kas_kecil_export WHERE `ID PENGAJUAN` LIKE :id_skk AND `TANGGAL PENGAJUAN` LIKE :tgl";
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id_skk', $id_skk);
 			$statement->bindParam(':tgl', $tgl);
