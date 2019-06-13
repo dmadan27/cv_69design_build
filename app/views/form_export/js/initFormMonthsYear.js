@@ -63,9 +63,10 @@ function FormExportMonthsYear({method, id = "", onInitSubmit, onSubmitSuccess, o
 			}
 
             const tahun = $('#tahun').val().trim();
-            const bulan = $('#bulan').data('datepicker').getFormattedDate('mm');            
 
             if (tahun != "") {
+                const bulan = $('#bulan').data('datepicker').getFormattedDate('mm');  
+
                 const formData = new FormData();
                 formData.append('tahun', tahun);
                 formData.append('bulan', bulan);
