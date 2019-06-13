@@ -28,7 +28,7 @@ const Export = {
                 throw new InfoException(data.message);
             }
         } else {
-            throw ("Tidak dapat terhubung ke server (" + res.status + ").");
+            throw new Error("Tidak dapat terhubung ke server (" + res.status + ").");
         }
 
         // $.ajax({

@@ -311,6 +311,27 @@
 		}
 
 		/**
+		 * 
+		 */
+		public function export_detail_mutasi($id_skk, $tgl_awal, $tgl_akhir) {
+			$query = "SELECT * FROM v_mutasi_saldo_sub_kas_kecil_export ";
+			$query .= "WHERE `ID SUB KAS KECIL`=:id_skk ";
+			$query .= "AND TANGGAL BETWEEN :tgl_awal AND :tgl_akhir ";
+			$query .= "ORDER BY `ID` DESC;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id_skk' => $id_skk,
+					':tgl_awal' => $tgl_awal,
+					':tgl_akhir' => $tgl_akhir
+				)
+			);
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
+
+		/**
 		*
 		*/
 		public function getByIdExport($id){

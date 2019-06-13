@@ -5,7 +5,7 @@
     SELECT 
         id ID,
         id_sub_kas_kecil `ID SUB KAS KECIL`,
-        DATE_FORMAT(tgl, "%d/%m/%Y") TANGGAL, 
+        tgl TANGGAL, 
         uang_masuk `UANG MASUK`, 
         uang_keluar `UANG KELUAR`, 
         saldo SALDO, 
