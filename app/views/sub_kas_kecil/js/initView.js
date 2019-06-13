@@ -103,6 +103,23 @@ const exportMutasi = new FormExportStartEndDate({
     }
 });
 
+// export histori pengajuan
+const exportHistoriPengajuan = new FormExportStartEndDate({
+    method: 'skk-detail-pengajuan',
+    id: $('#id').val().trim(),
+    onInitSubmit: () => {        
+        console.log('before export histori pengajuan');
+        // $('.box-pengajuan_skk').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+    },
+    onSubmitSuccess: () => {
+        $('#modal-export-start-end-date').modal('hide');
+    },
+    onSubmitFinished: () => {
+        console.log('after export histori pengajuan');
+        // $('.box-pengajuan_skk .overlay').remove();
+    }
+});
+
 // end inisialisasi export
 
 $(document).ready(function() {
@@ -130,6 +147,14 @@ $(document).ready(function() {
         exportMutasi.show({
             title: 'Export Mutasi Sub Kas Kecil',
             type: 'skk-detail-mutasi',
+        });
+    });
+
+    // menampilkan form export pengajuan
+    $('#exportExcel_pengajuan').on('click', () => {
+        exportHistoriPengajuan.show({
+            title: 'Export Histori Pengajuan Sub Kas Kecil',
+            type: 'skk-detail-pengajuan',
         });
     });
 

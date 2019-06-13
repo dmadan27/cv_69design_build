@@ -673,13 +673,15 @@ class Export extends Controller {
             $row = empty($this->Sub_kas_kecilModel->export_detail_pengajuan($id, $tgl_awal, $tgl_akhir)) 
                 ? false : $this->Sub_kas_kecilModel->export_detail_pengajuan($id, $tgl_awal, $tgl_akhir);
             if($row) {
+                $skk = $this->Sub_kas_kecilModel->getById($id);
+
                 $column = array_keys($row[0]);
 
                 $mainData['row'] = $row;
                 $mainData['column'] = $column;
                 $mainData['sheet'] = 'Data Pengajuan Sub Kas Kecil';
 
-                $property = 'Data Pengajuan Sub Kas Kecil '.' Tanggal '.$tgl_awal.' s.d '.$tgl_akhir;
+                $property = 'Data Histori Pengajuan SKK ('.$skk["nama"].') Tanggal '.$tgl_awal.' s.d '.$tgl_akhir;
                 $properties['title'] = $properties['subject'] = $properties['description'] = $property;
 
                 $this->excel_v2->setProperty($properties);
