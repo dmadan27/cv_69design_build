@@ -164,6 +164,7 @@
                                             <!-- export -->
                                             <button type="button" class="btn btn-success btn-flat" id="exportExcel_pengajuan"><i class="fa fa-file-excel-o"></i> Export Excel</button>
                                             <button type="button" class="btn btn-info btn-flat pull-right" id="refreshTable_pengajuan"><i class="fa fa-refresh"></i> Refresh</button>
+                                            <hr>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -204,7 +205,8 @@
     <!-- /.content -->
 
     <?php 
-	include_once(__DIR__.'/../form_export/form_months_year.php');
+    include_once(__DIR__.'/../form_export/form_months_year.php');
+    include_once(__DIR__.'/../form_export/form_start_end_date.php');
 	// include('form.php');
 	// include('form_foto.php');
 	?>

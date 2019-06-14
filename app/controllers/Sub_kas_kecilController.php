@@ -45,6 +45,7 @@
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 				'assets/bower_components/dropify/dist/js/dropify.min.js',
 				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
+				'assets/js/library/export.js',
 				'app/views/sub_kas_kecil/js/initList.js',
 				'app/views/sub_kas_kecil/js/initForm.js',
 			);
@@ -348,8 +349,10 @@
 				'assets/bower_components/Magnific-Popup-master/dist/jquery.magnific-popup.min.js',
 				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
 				'assets/bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.id.min.js',
-				'app/views/sub_kas_kecil/js/initView.js',
+				'assets/js/library/export.js',
+				'app/views/form_export/js/initFormStartEndDate.js',
 				'app/views/form_export/js/initFormMonthsYear.js',
+				'app/views/sub_kas_kecil/js/initView.js',
 			);
 
 			$config = array(

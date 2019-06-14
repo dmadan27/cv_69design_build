@@ -578,19 +578,41 @@ class Export extends Controller {
      * Export Seluruh Data Sub Kas Kecil
      * Export khusus di list sub kas kecil
      * Hak Akses: Kas Besar, Kas Kecil dan Owner
-     * 
-     * Note: Disesuaikan ulang dengan excelV2
      */
     public function sub_kas_kecil() {
-        $this->model('Sub_kas_kecilModel');
-        $this->excel->setProperty('Data Sub Kas Kecil','Data Sub Kas Kecil','Data Sub Kas Kecil '.date('d/m/Y'));
+        if($_SERVER['REQUEST_METHOD'] == 'POST' && 
+        ($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'KAS KECIL' 
+        || $_SESSION['sess_level'] === 'OWNER')) {
+            $this->model('Sub_kas_kecilModel');
 
-        $row = $this->Sub_kas_kecilModel->export();
-        $header = array_keys($row[0] ?? []); 
-        $this->excel->setData($header, $row);
-        $this->excel->getData('DATA SUB KAS KECIL', 'DATA SUB KAS KECIL', 4, 5);
+            $mainData = $properties = array();
 
-        $this->excel->getExcel('DATA_SUB_KAS_KECIL');
+            $row = empty($this->Sub_kas_kecilModel->export()) ? false : $this->Sub_kas_kecilModel->export();
+
+            if ($row) {
+                $column = array_keys($row[0]);
+
+                $mainData['row'] = $row;
+                $mainData['column'] = $column;
+                $mainData['sheet'] = 'Data Sub Kas Kecil';
+                
+                $property = 'Data Sub Kas Kecil';
+                $properties['title'] = $properties['subject'] = $property;
+                $properties['description'] = 'List Data Sub Kas Kecil';
+
+                $this->excel_v2->setProperty($properties);
+                $this->excel_v2->setData($mainData, NULL);
+                $this->excel_v2->getExcel(1, 2, true);
+            } else {
+                $response =  array(
+                    'success' => false,
+                    'message' => 'Tidak ada data yang bisa di export!'
+                );
+
+                header('Content-Type: application/json');
+                echo json_encode($response);
+            }
+        } else { die(ACCESS_DENIED); }
     }
 
     /**
@@ -600,55 +622,66 @@ class Export extends Controller {
      * Export khusus di view sub kas kecil
      * Hak Akses: Kas Besar, Kas Kecil dan Owner
      * @param string $id id sub kas kecil
-     * 
-     * Note: Disesuaikan ulang dengan excelV2
      */
     public function sub_kas_kecil_detail($id) {
-        if ($_SERVER['REQUEST_METHOD'] != "POST") $this->redirect(BASE_URL."sub-kas-kecil");
+        if($_SERVER['REQUEST_METHOD'] == 'POST' && 
+        ($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'KAS KECIL' 
+        || $_SESSION['sess_level'] === 'OWNER')) {
+            $this->model('Sub_kas_kecilModel');
+            $this->model('Mutasi_saldo_sub_kas_kecilModel');
+            $this->model('Pengajuan_sub_kas_kecilModel');
 
-        $this->model('Mutasi_saldo_sub_kas_kecilModel');
+            $mainData = $properties = $detail = array();
 
-        $id_skk = $_POST['id'] ?? false;
-        $nama = $_POST['nama'] ?? false;
-        $tahun = $_POST['tahun'] ?? false;
-        $bulan = $_POST['bulan'] ?? false;
+            $tahun = $_POST['tahun'] ?? false;
+            $bulan = $_POST['bulan'] ?? false;
 
-        if ($id_skk && $nama && $tahun) {
-            
-            $data_skk = $this->Sub_kas_kecilModel->getByIdExport($id_skk);
-            $data_mutasi = $this->Mutasi_saldo_sub_kas_kecilModel->getByIdSKKTglExport($id_skk, $bulan."/".$tahun);
-            $data_pengajuan = $this->Pengajuan_sub_kas_kecilModel->getByIdSKKTglExport($id_skk, $bulan."/".$tahun);
+            $row = empty($this->Sub_kas_kecilModel->getByIdExport($id)) ? false : $this->Sub_kas_kecilModel->getByIdExport($id);
 
-            $this->excel->setProperty('info-detail-skk-'.$id_skk.'-'.$nama, 'Info Detail SKK '.$nama.' '.date('d/m/Y'), 'Detail Data SKK '.$nama);
+            if($row) {
+                $skk = $this->Sub_kas_kecilModel->getById($id);
 
-            $this->excel->setContent([
-                [
-                    'sheet_name' => 'DATA SKK '.$nama." (".$id_skk.")",
-                    'title' => 'DATA SKK '.$nama." (".$id_skk.")",
-                    'table_header' => array_keys($data_skk[0] ?? []),
-                    'table_content' => $data_skk,
-                    'table_row_start' => 4,
-                    'enable_numbering' => false,
-                ],[
-                    'sheet_name' => 'DATA MUTASI SKK '.$nama." (".$id_skk.") ".$bulan.$tahun,
-                    'title' => 'DATA MUTASI SKK '.$nama." (".$id_skk.") ".$bulan.$tahun,
-                    'table_header' => array_keys($data_mutasi[0] ?? []),
-                    'table_content' => $data_mutasi,
-                    'table_row_start' => 4,
-                    'enable_numbering' => true,
-                ],[
-                    'sheet_name' => "DATA HISTORI PENGAJUAN SKK ".$nama." (".$id_skk.") ".$bulan.$tahun,
-                    'title' => "DATA HISTORI PENGAJUAN SKK ".$nama." (".$id_skk.") ".$bulan.$tahun,
-                    'table_header' => array_keys($data_pengajuan[0] ?? []),
-                    'table_content' => $data_pengajuan,
-                    'table_row_start' => 4,
-                    'enable_numbering' => true,
-                ],
-            ]);
+                $column = array_keys($row[0]);
 
-            $this->excel->getExcel("DATA_DETAIL_SKK_".$id_skk."_".$nama."_".$bulan.$tahun);
+                $detailRow_mutasi = empty($this->Mutasi_saldo_sub_kas_kecilModel->getByIdSKKTglExport($id, $tahun."-".$bulan."%")) 
+                    ? false : $this->Mutasi_saldo_sub_kas_kecilModel->getByIdSKKTglExport($id, $tahun."-".$bulan."%");
+                $detailColumn_mutasi = $detailRow_mutasi ? array_keys($detailRow_mutasi[0]) : NULL;
+                
+                $detailRow_pengajuan = empty($this->Pengajuan_sub_kas_kecilModel->getByIdSKKTglExport($id, $tahun."-".$bulan."%")) 
+                    ? false : $this->Pengajuan_sub_kas_kecilModel->getByIdSKKTglExport($id, $tahun."-".$bulan."%");
+                $detailColumn_pengajuan = $detailRow_pengajuan ? array_keys($detailRow_pengajuan[0]) : NULL;
 
-        } else $this->redirect(BASE_URL."sub-kas-kecil");	
+                $detail[0]['row'] = $detailRow_mutasi;
+                $detail[0]['column'] = $detailColumn_mutasi;
+                $detail[0]['sheet'] = 'Data Mutasi SKK ('.$skk['nama'].')';
+
+                $detail[1]['row'] = $detailRow_pengajuan;
+                $detail[1]['column'] = $detailColumn_pengajuan;
+                $detail[1]['sheet'] = 'Data Pengajuan SKK ('.$skk['nama'].')';
+
+                $mainData['row'] = $row;
+                $mainData['column'] = $column;
+                $mainData['sheet'] = 'Data SKK ('.$skk['nama'].')';
+
+                $property = 'Data SKK ('.$skk['nama'].') '.$bulan.$tahun;
+                $properties['title'] = $properties['subject'] = $property;
+                $properties['description'] = 'List Data SKK ('.$skk['nama'].') '.$bulan.$tahun;
+
+                $this->excel_v2->setProperty($properties);
+                $this->excel_v2->setData($mainData, $detail);
+                $this->excel_v2->getExcel(1, 2, true);
+            }
+            else {
+                $response =  array(
+                    'success' => false,
+                    'message' => 'Tidak ada data yang bisa di export!'
+                );
+
+                header('Content-Type: application/json');
+                echo json_encode($response);
+            }
+        }
+        else { die(ACCESS_DENIED); }
     }
 
     /**
@@ -673,13 +706,15 @@ class Export extends Controller {
             $row = empty($this->Sub_kas_kecilModel->export_detail_pengajuan($id, $tgl_awal, $tgl_akhir)) 
                 ? false : $this->Sub_kas_kecilModel->export_detail_pengajuan($id, $tgl_awal, $tgl_akhir);
             if($row) {
+                $skk = $this->Sub_kas_kecilModel->getById($id);
+
                 $column = array_keys($row[0]);
 
                 $mainData['row'] = $row;
                 $mainData['column'] = $column;
                 $mainData['sheet'] = 'Data Pengajuan Sub Kas Kecil';
 
-                $property = 'Data Pengajuan Sub Kas Kecil '.' Tanggal '.$tgl_awal.' s.d '.$tgl_akhir;
+                $property = 'Data Histori Pengajuan SKK ('.$skk["nama"].') Tanggal '.$tgl_awal.' s.d '.$tgl_akhir;
                 $properties['title'] = $properties['subject'] = $properties['description'] = $property;
 
                 $this->excel_v2->setProperty($properties);
@@ -719,13 +754,15 @@ class Export extends Controller {
             $row = empty($this->Sub_kas_kecilModel->export_detail_mutasi($id, $tgl_awal, $tgl_akhir)) 
                 ? false : $this->Sub_kas_kecilModel->export_detail_mutasi($id, $tgl_awal, $tgl_akhir);
             if($row) {
+                $skk = $this->Sub_kas_kecilModel->getById($id);
+
                 $column = array_keys($row[0]);
 
                 $mainData['row'] = $row;
                 $mainData['column'] = $column;
                 $mainData['sheet'] = 'Data Mutasi Saldo Sub Kas Kecil';
 
-                $property = 'Data Mutasi Saldo Sub Kas Kecil '.' Tanggal '.$tgl_awal.' s.d '.$tgl_akhir;
+                $property = 'Data Mutasi Saldo SKK ('.$skk["nama"].') Tanggal '.$tgl_awal.' s.d '.$tgl_akhir;
                 $properties['title'] = $properties['subject'] = $properties['description'] = $property;
 
                 $this->excel_v2->setProperty($properties);

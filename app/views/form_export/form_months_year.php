@@ -7,14 +7,12 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title modal-export-title">Ekspor Data Sub Kas Kecil</h4>
+                <h4 class="modal-title modal-export-title">Ekspor Data</h4>
             </div>
 
             <form id="form-export-months-year" role="form" enctype="multipart/form-data">
                 <div class="modal-body">
-
-                    <input type="hidden" id="id" name="id" value="<?= $this->data['id']; ?>">
-                    <input type="hidden" id="nama" name="nama" value="<?= $this->data['nama']; ?>">
+                    <input type="hidden" id="export-data" name="export-data">
 
                     <div class="form-group field-tahun">
                         <label for="tahun">Tahun</label>
@@ -42,7 +40,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-flat btn-default pull-left" data-dismiss="modal">Batal</button>
-                    <button type="button" id="btn-export-months-year" class="btn btn-flat btn-success">Ekspor</button>
+                    <button type="submit" id="btn-export-months-year" class="btn btn-flat btn-success">Ekspor</button>
                 </div>
 
             </form>
