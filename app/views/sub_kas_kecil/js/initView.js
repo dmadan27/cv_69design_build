@@ -95,7 +95,7 @@ const exportSubKasKecil = new FormExportMonthsYear({
         // $('.box-pengajuan_skk').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
     },
     onSubmitSuccess: () => {
-        $('#modal-export-start-end-date').modal('hide');
+        $('#modal-export-months-year').modal('hide');
     },
     onSubmitFinished: () => {
         console.log('after export detail skk');

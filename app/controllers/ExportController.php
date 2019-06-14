@@ -627,7 +627,7 @@ class Export extends Controller {
                 
                 $detailRow_pengajuan = empty($this->Pengajuan_sub_kas_kecilModel->getByIdSKKTglExport($id, $tahun."-".$bulan."%")) 
                     ? false : $this->Pengajuan_sub_kas_kecilModel->getByIdSKKTglExport($id, $tahun."-".$bulan."%");
-                $detailColumn_pengajuan = $detailRow_pengajuan ? array_keys($detailRow_skk[0]) : NULL;
+                $detailColumn_pengajuan = $detailRow_pengajuan ? array_keys($detailRow_pengajuan[0]) : NULL;
 
                 $detail[0]['row'] = $detailRow_mutasi;
                 $detail[0]['column'] = $detailColumn_mutasi;

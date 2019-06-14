@@ -314,7 +314,7 @@
 		 * 
 		 */
 		public function export_detail_mutasi($id_skk, $tgl_awal, $tgl_akhir) {
-			$query = "SELECT * FROM v_mutasi_saldo_sub_kas_kecil_export ";
+			$query = "SELECT `ID SUB KAS KECIL`, TANGGAL, `UANG MASUK`, `UANG KELUAR`, SALDO, KETERANGAN FROM v_mutasi_saldo_sub_kas_kecil_export ";
 			$query .= "WHERE `ID SUB KAS KECIL`=:id_skk ";
 			$query .= "AND TANGGAL BETWEEN :tgl_awal AND :tgl_akhir ";
 			$query .= "ORDER BY `ID` DESC;";
