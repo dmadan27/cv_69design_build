@@ -226,22 +226,28 @@
 		/**
 		 * 
 		 */
-		public function export($tgl_awal = false, $tgl_akhir = false, $id_proyek = false, $id_pengajuan = false) {
-			if($id_pengajuan) {
-				$query = "SELECT * FROM v_pengajuan_sub_kas_kecil_export_v2 WHERE `ID PENGAJUAN` = :id_pengajuan;";
-				$bindParam = array(
-					':id_pengajuan' => $id_pengajuan
-				);
-			}
-			else {
-				$query = "SELECT * FROM v_pengajuan_sub_kas_kecil_export_v2 WHERE `ID PROYEK` = :id_proyek ";
-				$query .= "AND (`TANGGAL PENGAJUAN` BETWEEN :tgl_awal AND :tgl_akhir);";
-				$bindParam = array(
-					':id_proyek' => $id_proyek,
-					':tgl_awal' => $tgl_awal,
-					':tgl_akhir' => $tgl_akhir,
-				);
-			}
+		public function export($tgl_awal, $tgl_akhir) {
+			$query = "SELECT * FROM v_pengajuan_sub_kas_kecil_export_v2 ";
+			$query .= "WHERE `TANGGAL PENGAJUAN` BETWEEN :tgl_awal AND :tgl_akhir;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(array(
+				':tgl_awal' => $tgl_awal,
+				':tgl_akhir' => $tgl_akhir,
+			));
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			
+			return $result;
+		}
+
+		/**
+		 * 
+		 */
+		public function export_by_pengajuan($id_pengajuan) {
+			$query = "SELECT * FROM v_pengajuan_sub_kas_kecil_export_v2 WHERE `ID PENGAJUAN` = :id_pengajuan;";
+			$bindParam = array(
+				':id_pengajuan' => $id_pengajuan
+			);
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
@@ -254,23 +260,67 @@
 		/**
 		 * 
 		 */
-		public function export_detail($tgl_awal = false, $tgl_akhir = false, $id_proyek = false, $id_pengajuan = false) {
-			if($id_pengajuan) {
-				$query = "SELECT * FROM v_export_detail_pengajuan_skk WHERE `ID PENGAJUAN` = :id_pengajuan;";
-				$bindParam = array(
-					':id_pengajuan' => $id_pengajuan
-				);
-			}
-			else {
-				$query = "SELECT * FROM v_export_detail_pengajuan_skk WHERE `ID PENGAJUAN` IN ";
-				$query .= "(SELECT id FROM pengajuan_sub_kas_kecil WHERE id_proyek = :id_proyek ";
-				$query .= "AND (tgl BETWEEN :tgl_awal AND :tgl_akhir));";
-				$bindParam = array(
-					':id_proyek' => $id_proyek,
-					':tgl_awal' => $tgl_awal,
-					':tgl_akhir' => $tgl_akhir,
-				);
-			}
+		public function export_by_proyek($tgl_awal, $tgl_akhir, $id_proyek) {
+			$query = "SELECT * FROM v_pengajuan_sub_kas_kecil_export_v2 WHERE `ID PROYEK` = :id_proyek ";
+			$query .= "AND (`TANGGAL PENGAJUAN` BETWEEN :tgl_awal AND :tgl_akhir);";
+			$bindParam = array(
+				':id_proyek' => $id_proyek,
+				':tgl_awal' => $tgl_awal,
+				':tgl_akhir' => $tgl_akhir,
+			);
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				$bindParam
+			);
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
+
+		/**
+		 * 
+		 */
+		public function export_detail($tgl_awal, $tgl_akhir) {
+			$query = "SELECT * FROM v_export_detail_pengajuan_skk WHERE `ID PENGAJUAN` IN ";
+			$query .= "(SELECT id FROM pengajuan_sub_kas_kecil ";
+			$query .= "WHERE tgl BETWEEN :tgl_awal AND :tgl_akhir);";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(array(
+				':tgl_awal' => $tgl_awal,
+				':tgl_akhir' => $tgl_akhir,
+			));
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			
+			return $result;
+		}
+
+		/**
+		 * 
+		 */
+		public function export_detail_by_pengajuan($id_pengajuan) {
+			$query = "SELECT * FROM v_export_detail_pengajuan_skk WHERE `ID PENGAJUAN` = :id_pengajuan;";
+			$bindParam = array(
+				':id_pengajuan' => $id_pengajuan
+			);
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				$bindParam
+			);
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
+
+		public function export_detail_by_proyek($tgl_awal, $tgl_akhir, $id_proyek) {
+			$query = "SELECT * FROM v_export_detail_pengajuan_skk WHERE `ID PENGAJUAN` IN ";
+			$query .= "(SELECT id FROM pengajuan_sub_kas_kecil WHERE id_proyek = :id_proyek ";
+			$query .= "AND (tgl BETWEEN :tgl_awal AND :tgl_akhir));";
+			$bindParam = array(
+				':id_proyek' => $id_proyek,
+				':tgl_awal' => $tgl_awal,
+				':tgl_akhir' => $tgl_akhir,
+			);
 
 			$statement = $this->koneksi->prepare($query);
 			$statement->execute(
