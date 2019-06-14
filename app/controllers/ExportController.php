@@ -578,19 +578,41 @@ class Export extends Controller {
      * Export Seluruh Data Sub Kas Kecil
      * Export khusus di list sub kas kecil
      * Hak Akses: Kas Besar, Kas Kecil dan Owner
-     * 
-     * Note: Disesuaikan ulang dengan excelV2
      */
     public function sub_kas_kecil() {
-        $this->model('Sub_kas_kecilModel');
-        $this->excel->setProperty('Data Sub Kas Kecil','Data Sub Kas Kecil','Data Sub Kas Kecil '.date('d/m/Y'));
+        if($_SERVER['REQUEST_METHOD'] == 'POST' && 
+        ($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'KAS KECIL' 
+        || $_SESSION['sess_level'] === 'OWNER')) {
+            $this->model('Sub_kas_kecilModel');
 
-        $row = $this->Sub_kas_kecilModel->export();
-        $header = array_keys($row[0] ?? []); 
-        $this->excel->setData($header, $row);
-        $this->excel->getData('DATA SUB KAS KECIL', 'DATA SUB KAS KECIL', 4, 5);
+            $mainData = $properties = array();
 
-        $this->excel->getExcel('DATA_SUB_KAS_KECIL');
+            $row = empty($this->Sub_kas_kecilModel->export()) ? false : $this->Sub_kas_kecilModel->export();
+
+            if ($row) {
+                $column = array_keys($row[0]);
+
+                $mainData['row'] = $row;
+                $mainData['column'] = $column;
+                $mainData['sheet'] = 'Data Sub Kas Kecil';
+                
+                $property = 'Data Sub Kas Kecil';
+                $properties['title'] = $properties['subject'] = $property;
+                $properties['description'] = 'List Data Sub Kas Kecil';
+
+                $this->excel_v2->setProperty($properties);
+                $this->excel_v2->setData($mainData, NULL);
+                $this->excel_v2->getExcel(1, 2, true);
+            } else {
+                $response =  array(
+                    'success' => false,
+                    'message' => 'Tidak ada data yang bisa di export!'
+                );
+
+                header('Content-Type: application/json');
+                echo json_encode($response);
+            }
+        } else { die(ACCESS_DENIED); }
     }
 
     /**
