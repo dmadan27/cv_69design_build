@@ -37,20 +37,33 @@ var pengajuan_sub_kas_kecilTable = $("#pengajuan_sub_kas_kecilTable").DataTable(
     }
 });
 
+// inisialisasi export
+// export pengajuan sub kas kecil
+const exportPengajuanSKK = new FormExportStartEndDate({
+    method: 'pengajuan-sub-kas-kecil',
+    onInitSubmit: () => {        
+        console.log('before export pengajuan skk');
+        $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+    },
+    onSubmitSuccess: () => {
+        $('#modal-export-start-end-date').modal('hide');
+    },
+    onSubmitFinished: () => {
+        console.log('after export pengajuan skk');
+        $('.box .overlay').remove();
+    }
+});
+
+// end inisialisasi export
+
 $(document).ready(function(){
 
     // btn Export
     // menampilkan form export pengajuan sub kas kecil
 	$('#exportExcel').on('click', function () {
-
-        // option
-        $('.modal-export-title').html('Ekspor Data Pengajuan Sub Kas Kecil');
-        $('#form-export-months-year').attr('action', BASE_URL + 'export/pengajuan-sub-kas-kecil');
-
-        // wajib
-        $('#tahun').val('').attr('readonly', true);
-        $('#bulan').val('').attr('readonly', true).datepicker("destroy");
-        $('#modal-export-months-year').modal();
+        exportPengajuanSKK.show({
+            title: "Export Data Pengajuan Sub Kas Kecil",
+        });
     });
 
     // event on click refresh table

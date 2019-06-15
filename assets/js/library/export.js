@@ -16,7 +16,8 @@ const Export = {
         });
 
         if (res.status == 200) {
-            const data = await res.json();            
+            const data = await res.json();
+            console.log(data);
             if (data.success) {
                 let $a = $("<a>");
                 $a.attr("href", data.file);

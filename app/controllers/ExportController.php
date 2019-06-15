@@ -232,12 +232,12 @@ class Export extends Controller {
             
             $this->model('Pengajuan_sub_kas_kecilModel');
 
-            $row = empty($this->Pengajuan_sub_kas_kecilModel->export($tgl_awal, $tgl_akhir, $id)) 
-                ? false : $this->Pengajuan_sub_kas_kecilModel->export($tgl_awal, $tgl_akhir, $id);
+            $row = empty($this->Pengajuan_sub_kas_kecilModel->export_by_proyek($tgl_awal, $tgl_akhir, $id)) 
+                ? false : $this->Pengajuan_sub_kas_kecilModel->export_by_proyek($tgl_awal, $tgl_akhir, $id);
             if($row) {
                 $column = array_keys($row[0]);
 
-                $detailRow = $this->Pengajuan_sub_kas_kecilModel->export_detail($tgl_awal, $tgl_akhir, $id);
+                $detailRow = $this->Pengajuan_sub_kas_kecilModel->export_detail_by_proyek($tgl_awal, $tgl_akhir, $id);
                 $detailColumn = array_keys($detailRow[0]);
 
                 $detail[0]['row'] = $detailRow;
@@ -790,27 +790,50 @@ class Export extends Controller {
      * Tanggal mulai dan akhir berupa POST
      * Export khusus di list pengajuan sub kas kecil
      * Hak Akses: Kas Besar, Kas Kecil, dan Owner
-     * 
-     * Note: Sesuaikan ulang dengan excelV2
      */
     public function pengajuan_sub_kas_kecil(){
-        if ($_SERVER['REQUEST_METHOD'] != "POST") $this->redirect(BASE_URL."pengajuan-sub-kas-kecil");
+        if($_SERVER['REQUEST_METHOD'] == 'POST' && 
+        ($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'KAS KECIL' 
+        || $_SESSION['sess_level'] === 'OWNER')) {
+            $this->model('Pengajuan_sub_kas_kecilModel');
 
-        $this->model('Pengajuan_sub_kas_kecilModel');
+            $mainData = $properties = $detail = array();
 
-        $tahun = $_POST['tahun'] ?? false;
-        $bulan = $_POST['bulan'] ?? false;
+            $tgl_awal = $_POST['tgl_awal'] ?? false;
+            $tgl_akhir = $_POST['tgl_akhir'] ?? false;
 
-        if ($tahun) {
+            $row = $this->Pengajuan_sub_kas_kecilModel->export($tgl_awal, $tgl_akhir) ?? false;
 
-            $data_pengajuan = $this->Pengajuan_sub_kas_kecilModel->getByTglExport($bulan."/".$tahun);
+            if ($row) {
+                $column = array_keys($row[0]);
 
-            $this->excel->setProperty('Data Pengajuan Sub Kas Kecil '.$bulan."/".$tahun, 'Export Data Pengajuan SKK', 'Dokumen di Ekspor Tanggal '.Date('d/m/Y'));
-            $this->excel->setData(array_keys($data_pengajuan[0] ?? []), $data_pengajuan);
-            $this->excel->getData('DATA PENGAJUAN SUB KAS KECIL '.$bulan.$tahun, 'DATA PENGAJUAN SUB KAS KECIL '.$bulan.$tahun, 4, 5, 0, true);
-            $this->excel->getExcel('DATA_PENGAJUAN_SUB_KAS_KECIL_'.$bulan.$tahun);
+                $detailRow_detail = $this->Pengajuan_sub_kas_kecilModel->export_detail($tgl_awal, $tgl_akhir) ?? false;
+                $detailColumn_detail = $detailRow_detail ? array_keys($detailRow_detail[0]) : NULL;
 
-        } else $this->redirect(BASE_URL."pengajuan-sub-kas-kecil");
+                $detail[0]['row'] = $detailRow_detail;
+                $detail[0]['column'] = $detailColumn_detail;
+                $detail[0]['sheet'] = 'Data Detail Pengajuan SKK';
+
+                $mainData['row'] = $row;
+                $mainData['column'] = $column;
+                $mainData['sheet'] = 'Data Pengajuan SKK';
+
+                $property = 'Data Pengajuan Sub Kas Kecil '.$tgl_awal.' s.d '.$tgl_akhir;
+                $properties['title'] = $properties['subject'] = $property;
+                $properties['description'] = 'List Data Pengajuan Sub Kas Kecil '.$tgl_awal.' s.d '.$tgl_akhir;
+
+                $this->excel_v2->setProperty($properties);
+                $this->excel_v2->setData($mainData, $detail);
+                $this->excel_v2->getExcel(1, 2, true);
+
+            } else {
+                $response =  array(
+                    'success' => false,
+                    'message' => 'Tidak ada data yang bisa di export!'
+                );
+                echo json_encode($response);
+            }
+        } else { die(ACCESS_DENIED); }
     }
 
     /**
@@ -828,8 +851,8 @@ class Export extends Controller {
 
             $this->model('Pengajuan_sub_kas_kecilModel');
 
-            $row = empty($this->Pengajuan_sub_kas_kecilModel->export_detail($id)) 
-                ? false : $this->Pengajuan_sub_kas_kecilModel->export_detail($id);
+            $row = empty($this->Pengajuan_sub_kas_kecilModel->export_detail_by_pengajuan($id)) 
+                ? false : $this->Pengajuan_sub_kas_kecilModel->export_detail_by_pengajuan($id);
             if($row) {
                 $column = array_keys($row[0]);
 
