@@ -279,6 +279,63 @@
 		/**
 		 * 
 		 */
+		public function export_by_id($id) {
+			$query = "SELECT ";
+			$query .= "id ID, nama NAMA, alamat ALAMAT, no_telp NO_TELP, email EMAIL, saldo SALDO, status STATUS ";
+			$query .= "FROM kas_kecil ";
+			$query .= "WHERE id=:id";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(array(
+				':id' => $id,
+			));
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
+
+		/**
+		 * 
+		 */
+		public function export_detail_mutasi($tgl_awal, $tgl_akhir, $id) {
+			$query = "SELECT `ID KAS KECIL`, TANGGAL, `UANG MASUK`, `UANG KELUAR`, `KETERANGAN` ";
+			$query .= "FROM v_saldo_kas_kecil_export WHERE TANGGAL BETWEEN :tgl_awal AND :tgl_akhir ";
+			$query .= "AND `ID KAS KECIL` = :id ORDER BY id DESC;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':tgl_awal' => $tgl_awal,
+					':tgl_akhir' => $tgl_akhir,
+					':id' => $id
+				)
+			);
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
+
+		/**
+		 * 
+		 */
+		function export_detail_pengajuan($tgl_awal, $tgl_akhir, $id) {
+			$query = "SELECT `ID PENGAJUAN`, `KAS KECIL`, PENGAJUAN, TANGGAL, `TOTAL PENGAJUAN`, `TOTAL DISETUJUI`, `STATUS` FROM v_pengajuan_kas_kecil_export ";
+			$query .= "WHERE TANGGAL BETWEEN :tgl_awal AND :tgl_akhir ";
+			$query .= "AND id=:id ORDER BY `ID PENGAJUAN` DESC;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':tgl_awal' => $tgl_awal,
+					':tgl_akhir' => $tgl_akhir,
+					':id' => $id
+				)
+			);
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
+
+		/**
+		 * 
+		 */
 		public function __destruct() {
 			$this->closeConnection($this->koneksi);
 		}
