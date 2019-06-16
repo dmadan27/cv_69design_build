@@ -1224,12 +1224,43 @@ class Export extends Controller {
      */
     public function saldo_kas_kecil($id) {
         if($_SERVER['REQUEST_METHOD'] == 'POST' && ($_SESSION['sess_level'] === 'KAS KECIL')) {
-            if(strtolower($_SESSION['sess_id']) !== strtolower($id)) {
-                die(ACCESS_DENIED);
-            }
-            else {
+            // if(strtolower($_SESSION['sess_id']) !== strtolower($id)) {
+            //     die(ACCESS_DENIED);
+            // }
+            // else {
+                $this->model('Kas_kecilModel');
 
-            }
+                $mainData = $properties = array();
+                
+                $tgl_awal = $_POST['tgl_awal'] ?? false;
+                $tgl_akhir = $_POST['tgl_akhir'] ?? false;
+                $id = $_SESSION['sess_id'];
+                
+                $row = $this->Kas_kecilModel->export_detail_mutasi($tgl_awal, $tgl_akhir, $id) ?? false;
+
+                if ($row) {
+                    $kas_kecil = $this->Kas_kecilModel->getById($id);
+                    $column = array_keys($row[0]);
+                
+                    $mainData['row'] = $row;
+                    $mainData['column'] = $column;
+                    $mainData['sheet'] = 'Data Mutasi Kas Kecil';
+                    
+                    $properties['title'] = 'Data Mutasi Kas Kecil ('.$kas_kecil['nama'].') Tanggal '.$tgl_awal.' s.d '.$tgl_akhir;
+                    $properties['subject'] = 'Data Mutasi Kas Kecil CV. 69 Design Build';
+                    $properties['description'] = 'List Mutasi Kas Kecil ('.$kas_kecil['nama'].') Tanggal '.$tgl_awal.' s.d '.$tgl_akhir;
+
+                    $this->excel_v2->setProperty($properties);
+                    $this->excel_v2->setData($mainData, NULL);
+                    $this->excel_v2->getExcel(1, 2, true);
+                } else {
+                    $response =  array(
+                        'success' => false,
+                        'message' => 'Tidak ada data yang bisa di export!'
+                    );
+                    echo json_encode($response);
+                }
+            // }
         }
         else { die(ACCESS_DENIED); }
     }
