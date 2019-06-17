@@ -1068,7 +1068,57 @@ class Export extends Controller {
     public function kas_kecil_detail($id) {
         if($_SERVER['REQUEST_METHOD'] == 'POST' && 
         ($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER')) {
+            $this->model('Kas_kecilModel');
+            $this->model('Mutasi_saldo_kas_kecilModel');
+            $this->model('Pengajuan_kasKecilModel');
 
+            $mainData = $properties = $detail = array();
+
+            $tahun = $_POST['tahun'] ?? false;
+            $bulan = $_POST['bulan'] ?? false;
+
+            $row = $this->Kas_kecilModel->export_by_id($id) ?? false;
+
+            if ($row) {
+                $kas_kecil = $this->Kas_kecilModel->getById($id);
+
+                $column = array_keys($row[0]);
+
+                $detailRow_mutasi = empty($this->Mutasi_saldo_kas_kecilModel->export_by_id_bulan_tahun($id, $tahun."-".$bulan."%")) 
+                    ? false : $this->Mutasi_saldo_kas_kecilModel->export_by_id_bulan_tahun($id, $tahun."-".$bulan."%");
+                $detailColumn_mutasi = $detailRow_mutasi ? array_keys($detailRow_mutasi[0]) : NULL;
+
+                $detailRow_pengajuan = empty($this->Pengajuan_kasKecilModel->export_by_id_bulan_tahun($id, $tahun."-".$bulan."%")) 
+                    ? false : $this->Pengajuan_kasKecilModel->export_by_id_bulan_tahun($id, $tahun."-".$bulan."%");
+                $detailColumn_pengajuan = $detailRow_pengajuan ? array_keys($detailRow_pengajuan[0]) : NULL;
+
+                $detail[0]['row'] = $detailRow_mutasi;
+                $detail[0]['column'] = $detailColumn_mutasi;
+                $detail[0]['sheet'] = 'Data Mutasi Kas Kecil ('.$kas_kecil['nama'].')';
+
+                $detail[1]['row'] = $detailRow_pengajuan;
+                $detail[1]['column'] = $detailColumn_pengajuan;
+                $detail[1]['sheet'] = 'Data Histori Pengajuan Kas Kecil ('.$kas_kecil['nama'].')';
+                
+                $mainData['row'] = $row;
+                $mainData['column'] = $column;
+                $mainData['sheet'] = 'Data Kas Kecil ('.$kas_kecil['nama'].')';
+
+                $property = 'Data Detail Kas Kecil ('.$kas_kecil['nama'].') '.$bulan.$tahun;
+                $properties['title'] = $properties['subject'] = $property;
+                $properties['description'] = 'List Detail Kas Kecil ('.$kas_kecil['nama'].') '.$bulan.$tahun;
+
+                $this->excel_v2->setProperty($properties);
+                $this->excel_v2->setData($mainData, $detail);
+                $this->excel_v2->getExcel(1, 2, true);
+            } else {
+                $response =  array(
+                    'success' => false,
+                    'message' => 'Tidak ada data yang bisa di export!'
+                );
+                echo json_encode($response);
+            }
+            
         }
         else { die(ACCESS_DENIED); }
     }
@@ -1084,7 +1134,37 @@ class Export extends Controller {
     public function kas_kecil_detail_mutasi($id) {
         if($_SERVER['REQUEST_METHOD'] == 'POST' && 
         ($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER')) {
+            $this->model('Kas_kecilModel');
 
+            $mainData = $properties = array();
+            
+            $tgl_awal = $_POST['tgl_awal'] ?? false;
+            $tgl_akhir = $_POST['tgl_akhir'] ?? false;
+            
+            $row = $this->Kas_kecilModel->export_detail_mutasi($tgl_awal, $tgl_akhir, $id) ?? false;
+
+            if ($row) {
+                $kas_kecil = $this->Kas_kecilModel->getById($id);
+                $column = array_keys($row[0]);
+            
+                $mainData['row'] = $row;
+                $mainData['column'] = $column;
+                $mainData['sheet'] = 'Data Mutasi Kas Kecil';
+                
+                $properties['title'] = 'Data Mutasi Kas Kecil ('.$kas_kecil['nama'].') Tanggal '.$tgl_awal.' s.d '.$tgl_akhir;
+                $properties['subject'] = 'Data Mutasi Kas Kecil CV. 69 Design Build';
+                $properties['description'] = 'List Mutasi Kas Kecil ('.$kas_kecil['nama'].') Tanggal '.$tgl_awal.' s.d '.$tgl_akhir;
+
+                $this->excel_v2->setProperty($properties);
+                $this->excel_v2->setData($mainData, NULL);
+                $this->excel_v2->getExcel(1, 2, true);
+            } else {
+                $response =  array(
+                    'success' => false,
+                    'message' => 'Tidak ada data yang bisa di export!'
+                );
+                echo json_encode($response);
+            }
         }
         else { die(ACCESS_DENIED); }
     }
@@ -1100,7 +1180,37 @@ class Export extends Controller {
     public function kas_kecil_detail_pengajuan($id) {
         if($_SERVER['REQUEST_METHOD'] == 'POST' && 
         ($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER')) {
+            $this->model('Kas_kecilModel');
 
+            $mainData = $properties = array();
+            
+            $tgl_awal = $_POST['tgl_awal'] ?? false;
+            $tgl_akhir = $_POST['tgl_akhir'] ?? false;
+            
+            $row = $this->Kas_kecilModel->export_detail_pengajuan($tgl_awal, $tgl_akhir, $id) ?? false;
+
+            if ($row) {
+                $kas_kecil = $this->Kas_kecilModel->getById($id);
+                $column = array_keys($row[0]);
+            
+                $mainData['row'] = $row;
+                $mainData['column'] = $column;
+                $mainData['sheet'] = 'Data Histori Pengajuan Kas Kecil';
+                
+                $properties['title'] = 'Data Histori Pengajuan Kas Kecil ('.$kas_kecil['nama'].') Tanggal '.$tgl_awal.' s.d '.$tgl_akhir;
+                $properties['subject'] = 'Data Histori Pengajuan Kas Kecil CV. 69 Design Build';
+                $properties['description'] = 'List Histori Pengajuan Kas Kecil ('.$kas_kecil['nama'].') Tanggal '.$tgl_awal.' s.d '.$tgl_akhir;
+
+                $this->excel_v2->setProperty($properties);
+                $this->excel_v2->setData($mainData, NULL);
+                $this->excel_v2->getExcel(1, 2, true);
+            } else {
+                $response =  array(
+                    'success' => false,
+                    'message' => 'Tidak ada data yang bisa di export!'
+                );
+                echo json_encode($response);
+            }
         }
         else { die(ACCESS_DENIED); }
     }
@@ -1114,12 +1224,43 @@ class Export extends Controller {
      */
     public function saldo_kas_kecil($id) {
         if($_SERVER['REQUEST_METHOD'] == 'POST' && ($_SESSION['sess_level'] === 'KAS KECIL')) {
-            if(strtolower($_SESSION['sess_id']) !== strtolower($id)) {
-                die(ACCESS_DENIED);
-            }
-            else {
+            // if(strtolower($_SESSION['sess_id']) !== strtolower($id)) {
+            //     die(ACCESS_DENIED);
+            // }
+            // else {
+                $this->model('Kas_kecilModel');
 
-            }
+                $mainData = $properties = array();
+                
+                $tgl_awal = $_POST['tgl_awal'] ?? false;
+                $tgl_akhir = $_POST['tgl_akhir'] ?? false;
+                $id = $_SESSION['sess_id'];
+                
+                $row = $this->Kas_kecilModel->export_detail_mutasi($tgl_awal, $tgl_akhir, $id) ?? false;
+
+                if ($row) {
+                    $kas_kecil = $this->Kas_kecilModel->getById($id);
+                    $column = array_keys($row[0]);
+                
+                    $mainData['row'] = $row;
+                    $mainData['column'] = $column;
+                    $mainData['sheet'] = 'Data Mutasi Kas Kecil';
+                    
+                    $properties['title'] = 'Data Mutasi Kas Kecil ('.$kas_kecil['nama'].') Tanggal '.$tgl_awal.' s.d '.$tgl_akhir;
+                    $properties['subject'] = 'Data Mutasi Kas Kecil CV. 69 Design Build';
+                    $properties['description'] = 'List Mutasi Kas Kecil ('.$kas_kecil['nama'].') Tanggal '.$tgl_awal.' s.d '.$tgl_akhir;
+
+                    $this->excel_v2->setProperty($properties);
+                    $this->excel_v2->setData($mainData, NULL);
+                    $this->excel_v2->getExcel(1, 2, true);
+                } else {
+                    $response =  array(
+                        'success' => false,
+                        'message' => 'Tidak ada data yang bisa di export!'
+                    );
+                    echo json_encode($response);
+                }
+            // }
         }
         else { die(ACCESS_DENIED); }
     }

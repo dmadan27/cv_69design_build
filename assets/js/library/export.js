@@ -15,9 +15,11 @@ const Export = {
             body: body,
         });
 
+        const log = await res.clone().text();
+        console.log("%c Export Response: " + log, 'color: #0000ff');
+
         if (res.status == 200) {
-            const data = await res.json();
-            console.log(data);
+            const data = await res.clone().json();
             if (data.success) {
                 let $a = $("<a>");
                 $a.attr("href", data.file);

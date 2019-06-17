@@ -101,6 +101,22 @@
 			return $result;	
 		}
 
+		public function export_by_id_bulan_tahun($id, $tgl) {
+			$query = "SELECT `ID PENGAJUAN`, `KAS KECIL`, PENGAJUAN, TANGGAL, `TOTAL PENGAJUAN`, `TOTAL DISETUJUI`, `STATUS` FROM v_pengajuan_kas_kecil_export ";
+			$query .= "WHERE TANGGAL LIKE :tgl ";
+			$query .= "AND id=:id ORDER BY `ID PENGAJUAN` DESC;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id' => $id,
+					':tgl' => $tgl,
+				)
+			);
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
+
 		/**
 		 * 
 		 */

@@ -39,6 +39,22 @@ var mutasi_saldo_kas_kecilTable = $("#mutasi_saldo_kas_kecilTable").DataTable({
     }
 });
 
+// inisialisasi export
+const exportSaldo = new FormExportStartEndDate({
+    method: 'saldo-kas-kecil',
+    onInitSubmit: () => {        
+        $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+    },
+    onSubmitSuccess: () => {
+        $('#modal-export-start-end-date').modal('hide');
+    },
+    onSubmitFinished: () => {
+        $('.box .overlay').remove();
+    }
+});
+
+// end inisialisasi export
+
 $(document).ready(function(){
 
     //Date picker
@@ -60,10 +76,11 @@ $(document).ready(function(){
 	  });
 
      // btn Export
-     $('#exportExcel').on('click', function(){
-        // if(this.value.trim() != "") 
-        $('#modalTanggalExport').modal()         
+     $('#exportExcel').on('click', function(){      
         console.log('Button exportExcel Clicked');
+        exportSaldo.show({
+            title: "Export Data Mutasi Saldo Kas Kecil",
+        });
     });
 
     // event on click refresh table
@@ -81,33 +98,3 @@ $(document).ready(function(){
     }, 60000 );
 
 });
-
-/**
-*
-*/
-function export_excel() {
-   
-    console.log('Export Detail Clicked');
-
-    var tgl_awal = $('#tgl_awal').val().trim();
-    var tgl_akhir = $('#tgl_akhir').val().trim();
-
-    if(tgl_awal == '' && tgl_akhir == ''){
-        swal({
-            type: 'error',
-            title: 'Tanggal Harus Diisi!',
-        })
-    } else if(tgl_awal == '' && tgl_akhir != ''){
-        swal({
-            type: 'error',
-            title: 'Tanggal Awal Harus Diisi!',
-        })
-    } else if(tgl_awal != '' && tgl_akhir == ''){
-        swal({
-            type: 'error',
-            title: 'Tanggal Akhir Harus Diisi!',
-        })
-    } else {
-    window.location.href = BASE_URL+'saldo-kas-kecil/export?tgl_awal=' + tgl_awal + '&tgl_akhir=' + tgl_akhir;
-    }
-}

@@ -106,6 +106,25 @@
 		}
 
 		/**
+		 * 
+		 */
+		public function export_by_id_bulan_tahun($id, $tgl) {
+			$query = "SELECT `ID KAS KECIL`, `TANGGAL`, `UANG MASUK`, `UANG KELUAR`, `KETERANGAN` FROM v_saldo_kas_kecil_export ";
+			$query .= "WHERE TANGGAL LIKE :tgl AND `ID KAS KECIL` = :id ";
+			$query .= "ORDER BY id DESC;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':tgl' => $tgl,
+					':id' => $id
+				)
+			);
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
+
+		/**
 		* 
 		*/
 		// public function getUser($username){

@@ -26,6 +26,9 @@
 							<img class="profile-user-img img-responsive img-circle" src="<?= $this->data['foto']; ?>" alt="User profile picture">
 						</a>
 						<h3 class="profile-username text-center"><?= $this->data['nama']; ?></h3>
+						<center>
+							<button class="btn btn-success btn-flat" id="exportExcel_detail">Export Detail Data</button>
+						</center>
               			<p class="text-muted text-center"></p>
               			<ul class="list-group list-group-unbordered">
 		                	<li class="list-group-item">
@@ -188,6 +191,8 @@
 	<!-- /.content -->
 
 	<?php 
+	include_once(__DIR__.'/../form_export/form_months_year.php');
+	include_once(__DIR__.'/../form_export/form_start_end_date.php');
 		// include('form.php');
 		// include('form_foto.php');
 	?>
