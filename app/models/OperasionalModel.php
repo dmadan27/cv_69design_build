@@ -371,6 +371,23 @@
 			$statement->closeCursor();
 		}
 
+		// METHOD EXPORT ===============VVVVVVVVVV====================================================================
+
+		public function export($tgl_awal, $tgl_akhir) {
+			$query = "SELECT * FROM v_operasional_export WHERE TANGGAL BETWEEN :tgl_awal AND :tgl_akhir;";
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':tgl_awal' => $tgl_awal,
+					':tgl_akhir' => $tgl_akhir
+				)
+			);
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
+
+		// END METHOD EXPORT =========================================================================================
+
 		/**
 		 * 
 		 */
