@@ -41,8 +41,21 @@ var distributorTable = $("#distributorTable").DataTable({
 $(document).ready(function(){
 
     // btn Export
-    $('#exportExcel').on('click', function(){
-        window.location.href = BASE_URL+'distributor/export/';
+    $('#exportExcel').on('click', async function(){
+        $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+        try {
+            await Export.excel({
+                method: 'distributor',
+            });
+        } catch (error) {
+            if (error.code == "InfoException") {
+                swal("Pesan", error.message, "info");
+            } else {
+                console.log("Log Export Sub Kas Kecil: " + error.message);
+                swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+            }
+        }
+        $('.box .overlay').remove();
     });
 
     // event on click refresh table
