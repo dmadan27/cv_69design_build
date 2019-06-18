@@ -528,14 +528,17 @@ class Export extends Controller {
         ($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'KAS KECIL' 
         || $_SESSION['sess_level'] === 'OWNER')) {
             $mainData = $properties = array();
+            $nama_kk = "";
 
             $tgl_awal = isset($_POST['tgl_awal']) ? $_POST['tgl_awal'] : false;
             $tgl_akhir = isset($_POST['tgl_akhir']) ? $_POST['tgl_akhir'] : false;
             
             $this->model('Pengajuan_kasKecilModel');
+
             if($_SESSION['sess_level'] === 'KAS KECIL') {
-                $row = empty($this->Pengajuan_kasKecilModel->export($tgl_awal, $tgl_akhir, $_SESSION['sess_id'])) 
-                    ? false : $this->Pengajuan_kasKecilModel->export($tgl_awal, $tgl_akhir, $_SESSION['sess_id']);
+                $row = empty($this->Pengajuan_kasKecilModel->export_by_id($tgl_awal, $tgl_akhir, $_SESSION['sess_id'])) 
+                    ? false : $this->Pengajuan_kasKecilModel->export_by_id($tgl_awal, $tgl_akhir, $_SESSION['sess_id']);
+                if ($row) $nama_kk = '('.$_SESSION['sess_nama'].') ';
             }
             else {
                 $row = empty($this->Pengajuan_kasKecilModel->export($tgl_awal, $tgl_akhir)) 
@@ -549,9 +552,9 @@ class Export extends Controller {
                 $mainData['column'] = $column;
                 $mainData['sheet'] = 'Data Pengajuan Kas Kecil';
                 
-                $property = 'Data Pengajuan Kas Kecil Tanggal '.$tgl_awal.' s.d '.$tgl_akhir;
+                $property = 'Data Pengajuan Kas Kecil '.$nama_kk.'Tanggal '.$tgl_awal.' s.d '.$tgl_akhir;
                 $properties['title'] = $properties['subject'] = $property;
-                $properties['description'] = 'List Data Pengajuan Kas Kecil Tanggal '.$tgl_awal.' s.d '.$tgl_akhir;
+                $properties['description'] = 'List Data Pengajuan Kas Kecil '.$nama_kk.'Tanggal '.$tgl_awal.' s.d '.$tgl_akhir;
 
                 $this->excel_v2->setProperty($properties);
                 $this->excel_v2->setData($mainData, NULL);
