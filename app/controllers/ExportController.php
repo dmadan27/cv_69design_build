@@ -237,8 +237,8 @@ class Export extends Controller {
             if($row) {
                 $column = array_keys($row[0]);
 
-                $detailRow = $this->Pengajuan_sub_kas_kecilModel->export_detail_by_proyek($tgl_awal, $tgl_akhir, $id);
-                $detailColumn = array_keys($detailRow[0]);
+                $detailRow = $this->Pengajuan_sub_kas_kecilModel->export_detail_by_proyek($tgl_awal, $tgl_akhir, $id) ?? false;
+                $detailColumn = $detailRow ? array_keys($detailRow[0]) : NULL;
 
                 $detail[0]['row'] = $detailRow;
                 $detail[0]['column'] = $detailColumn;
@@ -290,8 +290,8 @@ class Export extends Controller {
             if($row) {
                 $column = array_keys($row[0]);
 
-                $detailRow = $this->Operasional_proyekModel->export_detail($tgl_awal, $tgl_akhir, $id);
-                $detailColumn = array_keys($detailRow[0]);
+                $detailRow = $this->Operasional_proyekModel->export_detail($tgl_awal, $tgl_akhir, $id) ?? false;
+                $detailColumn = $detailRow ? array_keys($detailRow[0]) : NULL;
 
                 $detail[0]['row'] = $detailRow;
                 $detail[0]['column'] = $detailColumn;
