@@ -37,13 +37,33 @@ var operasionalTable = $("#operasionalTable").DataTable({
     }
 });
 
+// inisialisasi export
+// export operasioan
+const exportOperasional = new FormExportStartEndDate({
+    method: 'operasional',
+    onInitSubmit: () => {        
+        $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+    },
+    onSubmitSuccess: () => {
+        $('#modal-export-start-end-date').modal('hide');
+    },
+    onSubmitFinished: () => {
+        $('.box .overlay').remove();
+    }
+});
+
+// end inisialisasi export
+
 $(document).ready(function() {
 
     // btn Export
-    $('#exportExcel').on('click', function(){
+    $('#exportExcel').on('click', async function(){
         // if(this.value.trim() != "") 
-        $('#modalTanggalExport').modal()         
+        // $('#modalTanggalExport').modal()         
         console.log('Button exportExcel Clicked');
+        exportOperasional.show({
+            title: 'Export Data Operasional',
+        });
     });
 
     // event on click refresh table

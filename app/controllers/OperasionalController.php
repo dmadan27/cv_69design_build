@@ -54,6 +54,9 @@
 				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
 				'assets/bower_components/select2/dist/js/select2.full.min.js',
 				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
+				'assets/bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.id.min.js',
+				'assets/js/library/export.js',
+				'app/views/form_export/js/initFormStartEndDate.js',
 				'app/views/operasional/js/initList.js',
 				'app/views/operasional/js/initForm.js',
 			);
