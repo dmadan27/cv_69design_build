@@ -435,8 +435,8 @@ class Export extends Controller {
 
             $this->model('Operasional_proyekModel');
 
-            $row = empty($this->Operasional_proyekModel->export_detail(false, false, $id)) 
-                ? false : $this->Operasional_proyekModel->export_detail(false, false, $id);
+            $row = empty($this->Operasional_proyekModel->export_detail_by_id($id)) 
+                ? false : $this->Operasional_proyekModel->export_detail_by_id($id);
             if($row) {
                 $column = array_keys($row[0]);
 
