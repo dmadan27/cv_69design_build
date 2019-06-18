@@ -1031,29 +1031,20 @@ class Operasional_proyekModel extends Database implements ModelInterface
 		return $result;
 	}
 
+	// METHOD EXPORT ===============vvvvvvvvvvvv========================================================================
+
 	/**
 	 * 
 	 */
-	public function export($tgl_awal = false, $tgl_akhir = false, $id_proyek = false, $id_operasional = false) {
-		if($id_operasional) {
-			$query = "SELECT * FROM v_operasional_proyek_export WHERE `ID OPERASIONAL PROYEK` = :id_operasional;";
-			$bindParam = array(
-				':id_operasional' => $id_operasional
-			);
-		}
-		else {
-			$query = "SELECT * FROM v_operasional_proyek_export WHERE `ID PROYEK` = :id_proyek ";
-			$query .= "AND (`TANGGAL` BETWEEN :tgl_awal AND :tgl_akhir);";
-			$bindParam = array(
-				':id_proyek' => $id_proyek,
-				':tgl_awal' => $tgl_awal,
-				':tgl_akhir' => $tgl_akhir,
-			);
-		}
+	public function export($tgl_awal, $tgl_akhir) {
+		$query = "SELECT * FROM v_operasional_proyek_export WHERE TANGGAL BETWEEN :tgl_awal AND :tgl_akhir;";
 
 		$statement = $this->koneksi->prepare($query);
 		$statement->execute(
-			$bindParam
+			array(
+				'tgl_awal' => $tgl_awal,
+				'tgl_akhir' => $tgl_akhir,
+			)
 		);
 		$result = $statement->fetchAll(PDO::FETCH_ASSOC);
 		return $result;
@@ -1062,31 +1053,89 @@ class Operasional_proyekModel extends Database implements ModelInterface
 	/**
 	 * 
 	 */
-	public function export_detail($tgl_awal = false, $tgl_akhir = false, $id_proyek = false, $id_operasional = false) {
-		if($id_operasional) {
-			$query = "SELECT * FROM v_export_detail_operasional_proyek WHERE `ID OPERASIONAL PROYEK` = :id_operasional;";
-			$bindParam = array(
-				':id_operasional' => $id_operasional
-			);
-		}
-		else {
-			$query = "SELECT * FROM v_export_detail_operasional_proyek WHERE `ID OPERASIONAL PROYEK` IN ";
-			$query .= "(SELECT id FROM operasional_proyek WHERE id_proyek = :id_proyek ";
-			$query .= "AND (tgl BETWEEN :tgl_awal AND :tgl_akhir));";
-			$bindParam = array(
-				':id_proyek' => $id_proyek,
-				':tgl_awal' => $tgl_awal,
-				':tgl_akhir' => $tgl_akhir,
-			);
-		}
+	public function export_by_id($id_operasional) {
+		$query = "SELECT * FROM v_operasional_proyek_export WHERE `ID OPERASIONAL PROYEK` = :id_operasional;";
 
 		$statement = $this->koneksi->prepare($query);
 		$statement->execute(
-			$bindParam
+			array(
+				':id_operasional' => $id_operasional
+			)
 		);
 		$result = $statement->fetchAll(PDO::FETCH_ASSOC);
 		return $result;
 	}
+
+	public function export_by_proyek($tgl_awal, $tgl_akhir, $id_proyek) {
+		$query = "SELECT * FROM v_operasional_proyek_export WHERE `ID PROYEK` = :id_proyek ";
+		$query .= "AND (`TANGGAL` BETWEEN :tgl_awal AND :tgl_akhir);";
+
+		$statement = $this->koneksi->prepare($query);
+		$statement->execute(
+			array(
+				':id_proyek' => $id_proyek,
+				':tgl_awal' => $tgl_awal,
+				':tgl_akhir' => $tgl_akhir,
+			)
+		);
+		$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+		return $result;
+	}
+
+	/**
+	 * 
+	 */
+	public function export_detail($tgl_awal, $tgl_akhir) {
+		$query = "SELECT * FROM v_export_detail_operasional_proyek WHERE `TANGGAL DETAIL` BETWEEN :tgl_awal AND :tgl_akhir;";
+
+		$statement = $this->koneksi->prepare($query);
+		$statement->execute(
+			array(
+				'tgl_awal' => $tgl_awal,
+				'tgl_akhir' => $tgl_akhir,
+			)
+		);
+		$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+		return $result;
+	}
+
+	/**
+	 * 
+	 */
+	public function export_detail_by_id($id_operasional) {
+		$query = "SELECT * FROM v_export_detail_operasional_proyek WHERE `ID OPERASIONAL PROYEK` = :id_operasional;";
+
+		$statement = $this->koneksi->prepare($query);
+		$statement->execute(
+			array(
+				':id_operasional' => $id_operasional
+			)
+		);
+		$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+		return $result;
+	}
+
+	/**
+	 * 
+	 */
+	public function export_detail_by_proyek($tgl_awal, $tgl_akhir, $id_proyek) {
+		$query = "SELECT * FROM v_export_detail_operasional_proyek WHERE `ID OPERASIONAL PROYEK` IN ";
+		$query .= "(SELECT id FROM operasional_proyek WHERE id_proyek = :id_proyek ";
+		$query .= "AND (tgl BETWEEN :tgl_awal AND :tgl_akhir));";
+
+		$statement = $this->koneksi->prepare($query);
+		$statement->execute(
+			array(
+				':id_proyek' => $id_proyek,
+				':tgl_awal' => $tgl_awal,
+				':tgl_akhir' => $tgl_akhir,
+			)
+		);
+		$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+		return $result;
+	}
+
+	// END METHOD EXPORT ===================================================================================================
 
 	/**
 	 * 
