@@ -61,6 +61,20 @@
 		}
 
 		/**
+		 * 
+		 */
+		public function getByEmail($email) {
+			$query = "SELECT * FROM sub_kas_kecil WHERE email = :email;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':email', $email);
+			$statement->execute();
+			$result = $statement->fetch(PDO::FETCH_ASSOC);
+
+			return $result;
+		}
+
+		/**
 		*
 		*/
 		public function checkExistEmail($email){

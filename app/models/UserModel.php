@@ -180,7 +180,16 @@
 			// $result = $statement->execute();
 
 			// return $result;
-		}		
+		}
+		
+		public function export() {
+			$query = "SELECT username USERNAME, nama NAMA, status STATUS, level LEVEL FROM v_all_user";
+			
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute();
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
 
 		/**
 		 * 
