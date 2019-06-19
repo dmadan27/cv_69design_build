@@ -118,6 +118,44 @@
 		}
 
 		/**
+		 * Export untuk kas besar/owner
+		 */
+		public function export($tgl_awal, $tgl_akhir) {
+			$query = "SELECT `ID PENGAJUAN`, `KAS KECIL`, PENGAJUAN, TANGGAL, `TOTAL PENGAJUAN`, `TOTAL DISETUJUI`, `STATUS` FROM v_pengajuan_kas_kecil_export ";
+			$query .= "WHERE TANGGAL BETWEEN :tgl_awal AND :tgl_akhir ORDER BY `ID PENGAJUAN` DESC;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':tgl_awal' => $tgl_awal,
+					':tgl_akhir' => $tgl_akhir
+				)
+			);
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
+
+		/**
+		 * Export untuk kas kecil
+		 */
+		public function export_by_id($tgl_awal, $tgl_akhir, $id_kk) {
+			$query = "SELECT `ID PENGAJUAN`, `KAS KECIL`, PENGAJUAN, TANGGAL, `TOTAL PENGAJUAN`, `TOTAL DISETUJUI`, `STATUS` FROM v_pengajuan_kas_kecil_export ";
+			$query .= "WHERE (TANGGAL BETWEEN :tgl_awal AND :tgl_akhir) ";
+			$query .= "AND id=:id ORDER BY `ID PENGAJUAN` DESC;";
+
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':tgl_awal' => $tgl_awal,
+					':tgl_akhir' => $tgl_akhir,
+					':id' => $id_kk,
+				)
+			);
+			$result = $statement->fetchAll(PDO::FETCH_ASSOC);
+			return $result;
+		}
+
+		/**
 		 * 
 		 */
 		public function getExport($tgl_awal, $tgl_akhir) {

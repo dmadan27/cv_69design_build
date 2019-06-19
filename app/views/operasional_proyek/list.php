@@ -76,7 +76,10 @@
 		</div>			
 	</section>
 	<!-- /.content -->
-	<?php include_once('modal.php'); ?>
+	<?php 
+		include_once(__DIR__.'/../form_export/form_start_end_date.php');
+		// include_once('modal.php'); 
+	?>
 </div>
 
 

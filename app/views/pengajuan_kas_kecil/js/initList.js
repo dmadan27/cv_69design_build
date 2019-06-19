@@ -36,12 +36,31 @@ var pengajuanKasKecilTable = $("#pengajuanKasKecilTable").DataTable({
     }
 });
 
+// inisialisasi export
+// export histori pengajuan
+const exportPengajuanKasKecil = new FormExportStartEndDate({
+    method: 'pengajuan-kas-kecil',
+    onInitSubmit: () => {
+        $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+    },
+    onSubmitSuccess: () => {
+        $('#modal-export-start-end-date').modal('hide');
+    },
+    onSubmitFinished: () => {
+        $('.box .overlay').remove();
+    }
+});
+
+// end inisialisasi export
+
 $(document).ready(function() {
 
     // btn Export
     $('#exportExcel').on('click', function(){
-        $('#modalTanggalExport').modal()
         console.log('Button exportExcel Clicked');
+        exportPengajuanKasKecil.show({
+            title: 'Export Data Pengajuan Kas Kecil',
+        });
     });
 
     // event on click refresh table
@@ -57,45 +76,6 @@ $(document).ready(function() {
     }, 60000 );
        
 });
-
-    /**
-    *
-    */
-    function export_excel() {
-
-    console.log('Export Detail Clicked');
-
-    var tgl_awal = $('#tgl_awal').val().trim();
-    var tgl_akhir = $('#tgl_akhir').val().trim();
-
-    if(tgl_awal == '' && tgl_akhir == ''){
-        swal({
-            type: 'error',
-            title: 'Tanggal Tidak Boleh Kosong!',
-        })
-    } else if(tgl_awal == '' && tgl_akhir != ''){
-        swal({
-            type: 'error',
-            title: 'Tanggal Awal Harus Diisi!',
-            text: 'Isi atau kosongkan keduanya !'
-        })
-    } else if(tgl_awal != '' && tgl_akhir == ''){
-        swal({
-            type: 'error',
-            title: 'Tanggal Akhir Harus Diisi!',
-            text: 'Isi atau kosongkan keduanya !'
-        })
-    } else if(new Date(tgl_awal) > new Date(tgl_akhir)){
-        swal({
-            type: 'error',
-            title: 'Kesalahan Input !',
-            text: 'Tanggal Awal Melebihi Tanggal Akhir!'
-        })
-    }else {
-        window.location.href = BASE_URL+'pengajuan-kas-kecil/export?tgl_awal=' + tgl_awal + '&tgl_akhir=' + tgl_akhir;
-    }
-}
-
 
 /**
 *

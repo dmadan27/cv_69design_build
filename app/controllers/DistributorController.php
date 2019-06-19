@@ -45,6 +45,7 @@
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
+				'assets/js/library/export.js',
 				'app/views/distributor/js/initList.js',
 				'app/views/distributor/js/initForm.js',
 			);
@@ -359,20 +360,6 @@
 				echo json_encode($this->status);
 			}
 			else { $this->redirect(); }
-		}
-
-		/**
-		 * Export data ke format Excel
-		 */
-		public function export() {
-			$row = $this->DistributorModel->export();
-			$header = array_keys($row[0]); 
-
-			$this->excel->setProperty('distributor','distributor','distributor');
-			$this->excel->setData($header, $row);
-			$this->excel->getData('distributor', 'distributor', 4, 5 );
-
-			$this->excel->getExcel('distributor');
 		}
 
 		/**
