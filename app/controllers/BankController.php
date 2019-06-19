@@ -51,6 +51,7 @@
 				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
+				'assets/js/library/export.js',
 				'app/views/bank/js/initList.js',
 				'app/views/bank/js/initForm.js',
 			);
@@ -314,6 +315,8 @@
 					'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 					'assets/bower_components/select2/dist/js/select2.full.min.js',
 					'assets/plugins/input-mask/jquery.inputmask.bundle.js',
+					'assets/js/library/export.js',
+					'app/views/form_export/js/initFormStartEndDate.js',
 					'app/views/bank/js/initView.js'
 				);
 

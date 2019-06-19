@@ -37,6 +37,20 @@ var mutasiBankTable = $("#mutasiBankTable").DataTable({
 	}
 });
 
+const exportExcelMutasiBank = new FormExportStartEndDate({
+	method: 'bank-detail-mutasi',
+	id: document.getElementById('id').value,
+    onInitSubmit: () => {
+        $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+    },
+    onSubmitSuccess: () => {
+        $('#modal-export-start-end-date').modal('hide');
+    },
+    onSubmitFinished: () => {
+        $('.box .overlay').remove();
+    }
+});
+
 $(document).ready(function() {
 
 	init();
@@ -57,8 +71,11 @@ $(document).ready(function() {
 
      // btn Export
      $('#exportExcel').on('click', function(){
-        $('#modalTanggalExport').modal()         
-        console.log('Button exportExcel Clicked');
+		console.log('Button exportExcel Clicked');
+
+		exportExcelMutasiBank.show({
+            title: 'Export Data Mutasi Bank',
+        });
     });
 
     // event on submit form bank
@@ -77,11 +94,6 @@ $(document).ready(function() {
         refreshTable(mutasiBankTable, $(this));
     });
 
-	// auto refresh every 1 minutes
-    // setInterval( function () {
-	// 	console.log('%cAutomatically refresh table..', 'color: blue; font-style: italic');
-    //     mutasiBankTable.ajax.reload(null, false);
-    // }, 60000 );
 });
 
 /**
@@ -89,93 +101,6 @@ $(document).ready(function() {
  */
 function init() {
 	setStatus();
-
-     //Date picker
-	$('#tgl_awal').datepicker({
-		autoclose: true,
-		format: "yyyy-mm-dd",
-		todayHighlight: true,
-		orientation:"bottom auto",
-		todayBtn: true,
-	});
-
-	  //Date picker
-	$('#tgl_akhir').datepicker({
-		autoclose: true,
-		format: "yyyy-mm-dd",
-		todayHighlight: true,
-		orientation:"bottom auto",
-		todayBtn: true,
-	});
-}
-
-/**
- * 
- * @param {*} id 
- */
-function export_excel(id) {
-   
-    console.log('Export Detail Clicked');
-
-    var tgl_awal = $('#tgl_awal').val().trim();
-    var tgl_akhir = $('#tgl_akhir').val().trim();
-
-    if(tgl_awal == '' && tgl_akhir == ''){
-        swal({
-            type: 'error',
-            title: 'Tanggal Tidak Boleh Kosong!',
-        })
-    } else if(tgl_awal == '' && tgl_akhir != ''){
-        swal({
-            type: 'error',
-            title: 'Tanggal Awal Harus Diisi!',
-            text: 'Isi atau kosongkan keduanya !'
-        })
-    } else if(tgl_awal != '' && tgl_akhir == ''){
-        swal({
-            type: 'error',
-            title: 'Tanggal Akhir Harus Diisi!',
-            text: 'Isi atau kosongkan keduanya !'
-        })
-    } else if(new Date(tgl_awal) > new Date(tgl_akhir)){
-        swal({
-            type: 'error',
-            title: 'Kesalahan Input !',
-            text: 'Tanggal Awal Melebihi Tanggal Akhir!'
-        })
-    } else {
-		$.ajax({
-			url: BASE_URL+'export/bank-detail-mutasi/'+id,
-			type: 'POST',
-			dataType: 'JSON',
-			data: {
-				'tgl_awal': tgl_awal,
-				'tgl_akhir': tgl_akhir
-			},
-			beforeSend: function(){
-				console.log('Loading render file excel..');
-				$('.box-mutasi').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
-			},
-			success: function(response) {
-				console.log('%cResponse getExport Mutasi Bank: ', 'color: blue; font-weight: bold', response);
-				$('.box-mutasi .overlay').remove();
-				if(response.success) {
-					var $a = $("<a>");
-					$a.attr("href",response.file);
-					$("body").append($a);
-					$a.attr("download", response.filename);
-					$a[0].click();
-					$a.remove();   
-				}
-				else { swal("Pesan", response.message, "info"); }
-			},
-			error: function (jqXHR, textStatus, errorThrown){ // error handling
-				console.log('%cResponse Error getExport Mutasi Bank', 'color: red; font-weight: bold', {jqXHR, textStatus, errorThrown});
-				swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
-				$('.box-mutasi .overlay').remove();
-			}
-		})
-    }
 }
 
 /**

@@ -40,9 +40,23 @@ var bankTable = $("#bankTable").DataTable({
 $(document).ready(function() {
 
     // btn Export
-    $('#exportExcel').on('click', function(){
+    $('#exportExcel').on('click', async function(){
         console.log('Button Export Excel Bank clicked...');
-        getExport();
+        
+        $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+        try {
+            await Export.excel({
+                method: 'bank',
+            });
+        } catch (error) {
+            if (error.code == "InfoException") {
+                swal("Pesan", error.message, "info");
+            } else {
+                console.log("Log Export Bank: " + error.message);
+                swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+            }
+        }
+        $('.box .overlay').remove();
     });
 
     // event on click refresh table
@@ -51,53 +65,8 @@ $(document).ready(function() {
         refreshTable(bankTable, $(this));
     });
 
-    // auto refresh every 1 minutes
-    // setInterval( function () {
-    //     console.log('%cAutomatically refresh table..', 'color: blue; font-style: italic');
-    //     bankTable.ajax.reload(null, false);
-    // }, 60000 );
-
 });
 
-/**
- * Function getExport
- * Proses request get data untuk di export ke excel
- */
-function getExport() {
-    if(LEVEL === 'KAS BESAR' || LEVEL === 'OWNER') {
-        $.ajax({
-            url: BASE_URL+'export/bank/',
-            type: 'POST',
-            dataType: 'JSON',
-            data: {},
-            beforeSend: function(){
-                console.log('Loading render file excel..');
-                $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
-            },
-            success: function(response) {
-                console.log('%cResponse getExport Bank: ', 'color: blue; font-weight: bold', response);
-                $('.box .overlay').remove();
-                if(response.success) {
-                    var $a = $("<a>");
-                    $a.attr("href",response.file);
-                    $("body").append($a);
-                    $a.attr("download", response.filename);
-                    $a[0].click();
-                    $a.remove();   
-                }
-                else { swal("Pesan", response.message, "info"); }
-            },
-            error: function (jqXHR, textStatus, errorThrown){ // error handling
-                console.log('%cResponse Error getExport Bank', 'color: red; font-weight: bold', {jqXHR, textStatus, errorThrown});
-                swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
-                $('.box .overlay').remove();
-            }
-        });
-    }
-    else {
-
-    }
-}
 
 /**
  * Function getView
@@ -128,7 +97,7 @@ function getDelete(id){
         confirmButtonText: "Ya, Hapus!",
         cancelButtonText: "Batal",
         closeOnConfirm: false,
-	}, function(){
+	}, function() {
 		$.ajax({
 			url: BASE_URL+'bank/delete/'+id,
 			type: 'post',
