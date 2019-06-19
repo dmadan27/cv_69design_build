@@ -130,7 +130,7 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 				$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
 				$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 				
-				if($level == 'KAS BESAR') {
+				if($level == 'KAS KECIL') {
 					// pending dan perbaiki
 					if($row['status'] == "0" || $row['status'] == "1") {
 						$aksi .= $aksiDetail.$aksiEdit.$aksiHapus;
@@ -140,15 +140,16 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 						$aksi .= $aksiDetail;
 					}
 				}
-				else if($level == 'KAS KECIL') {
+				else if($level == 'KAS BESAR') {
 					// pending dan perbaiki
 					if($row['status'] == "0" || $row['status'] == "1") {
 						$aksi .= $aksiDetail.$aksiEdit.$aksiHapus;
 					}
-					// disetujui dan ditolak
+					// disetujui
 					else if($row['status'] == "2") {
 						$aksi .= $aksiDetail;
 					}
+					// ditolak
 					else if($row['status'] == "3") {
 						$aksi .= $aksiDetail.$aksiHapus;
 					}
