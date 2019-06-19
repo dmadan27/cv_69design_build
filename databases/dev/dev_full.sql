@@ -4243,7 +4243,7 @@ CALL p_tambah_bank ('CIMB NIAGA', 27828000, 'AKTIF', NULL);
 # Seeder Proyek #
 
 -- Proyek
--- CALL p_tambah_proyek ('PRY20170001', 'UDIN TEMPEST', '2017-04-01', 'RUMAH TINGKAT 2', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
+CALL p_tambah_proyek ('PRY20170001', 'UDIN TEMPEST', '2017-04-01', 'RUMAH TINGKAT 2', 120, 'Padalarang', 'Cianjur', 0, '', '', '', '', 'BERJALAN', NULL);
 -- CALL p_tambah_proyek ('PRY20170002', 'MULI IMRON', '2017-06-01', 'KOSTAN 10 KAMAR', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
 -- CALL p_tambah_proyek ('PRY20170003', 'BIMO MURE', '2017-09-01', 'APARTEMENT 100 KAMAR', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
 -- CALL p_tambah_proyek ('PRY20180001', 'JAKA PRATAMA', '2018-01-01', 'LAPANGAN FUTSAL', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
@@ -4257,7 +4257,7 @@ CALL p_tambah_bank ('CIMB NIAGA', 27828000, 'AKTIF', NULL);
 -- CALL p_tambah_proyek ('PRY20190005', 'ABQORI GUNAWAN', CURRENT_DATE, 'RUMAH TINGKAT 3', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
 
 -- -- SKK Proyek
--- CALL p_tambah_detail_skk_proyek ('PRY20170001');
+CALL p_tambah_detail_skk_proyek ('PRY20170001','SKK001','kas_besar1@69designbuild.com');
 -- CALL p_tambah_detail_skk_proyek ('PRY20170001');
 
 -- CALL p_tambah_detail_skk_proyek ('PRY20170002');
@@ -4294,7 +4294,7 @@ CALL p_tambah_bank ('CIMB NIAGA', 27828000, 'AKTIF', NULL);
 -- CALL p_tambah_detail_skk_proyek ('PRY20190005');
 
 -- -- Detail Proyek
--- CALL p_tambah_detail_proyek ('PRY20170001');
+CALL p_tambah_detail_proyek ('PRY20170001',1,'2019-06-17 21:22:46','DP',1000,'1','hehe','kas_besar1@69designbuild.com');
 -- CALL p_tambah_detail_proyek ('PRY20170001');
 
 -- CALL p_tambah_detail_proyek ('PRY20170002');

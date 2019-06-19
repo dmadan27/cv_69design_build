@@ -1,7 +1,7 @@
 # Seeder Proyek #
 
 -- Proyek
- 	CALL p_tambah_proyek ('PRY20170001', 'UDIN TEMPEST', '2017-04-01', 'RUMAH TINGKAT 2', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
+ 	CALL p_tambah_proyek ('PRY20170001', 'UDIN TEMPEST', '2017-04-01', 'RUMAH TINGKAT 2', 120, 'Padalarang', 'Cianjur', 0, '', '', '', '', '', NULL);
 -- CALL p_tambah_proyek ('PRY20170002', 'MULI IMRON', '2017-06-01', 'KOSTAN 10 KAMAR', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
 -- CALL p_tambah_proyek ('PRY20170003', 'BIMO MURE', '2017-09-01', 'APARTEMENT 100 KAMAR', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
 -- CALL p_tambah_proyek ('PRY20180001', 'JAKA PRATAMA', '2018-01-01', 'LAPANGAN FUTSAL', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
