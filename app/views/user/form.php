@@ -17,7 +17,7 @@
 				<div class="modal-body">
 					<!-- field username -->
 					<div class="form-group field-username has-feedback">
-						<label for="suername">Username</label>
+						<label for="username">Username</label>
 						<input type="text" name="username" id="username" class="form-control field" placeholder="Masukkan Username">
 						<span class="help-block small pesan pesan-username"></span>
 					</div>
@@ -33,8 +33,11 @@
 					<div class="form-group field-level has-feedback">
 						<label for="level">Level</label>
 						<select name="level" id="level" class="form-control field">
+							<option value="">-- PILIH LEVEL --</option>
 							<option value="KAS BESAR">KAS BESAR</option>
 							<option value="KAS KECIL">KAS KECIL</option>
+							<option value="SUB KAS KECIL">SUB KAS KECIL</option>
+							<option value="OWNER">OWNER</option>
 						</select>
 						<span class="help-block small pesan pesan-status"></span>
 					</div>					

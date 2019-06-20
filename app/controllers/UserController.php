@@ -88,11 +88,11 @@
 
 				// button aksi
 				$aksiDetail = '<button onclick="getView('."'".$row["username"]."','".$row["level"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-				$aksiEdit = '<button onclick="getEdit('."'".$row["username"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+				$aksiEdit = '<button onclick="getEdit('."'".$row["username"]."','".$row["level"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
 				$aksiHapus = '<button onclick="getDelete('."'".$row["username"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 				
 				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
-				
+
 				$dataRow = array();
 				$dataRow[] = $no_urut;
 				$dataRow[] = $row['username'];

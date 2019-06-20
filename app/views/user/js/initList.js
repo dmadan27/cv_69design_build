@@ -95,42 +95,10 @@ async function getView(username, level) {
     $('.box .overlay').remove();
 }
 
-/**
-*
-*/
-function getDelete(id, token) {
-    // if(token.trim() != ""){
-    //     swal({
-    //         title: "Pesan Konfirmasi",
-    //         text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
-    //         type: "warning",
-    //         showCancelButton: true,
-    //         confirmButtonColor: "#DD6B55",
-    //         confirmButtonText: "Ya, Hapus!",
-    //         cancelButtonText: "Batal",
-    //         closeOnConfirm: false,
-    //     }, function(){
-    //         $.ajax({
-    //             url: BASE_URL+'bank/delete/'+id.toLowerCase(),
-    //             type: 'post',
-    //             dataType: 'json',
-    //             data: {"token_delete": token},
-    //             beforeSend: function(){
-
-    //             },
-    //             success: function(output){
-    //                 console.log(output);
-    //                 if(output){
-    //                     swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
-    //                     $("#bankTable").DataTable().ajax.reload();
-    //                 }
-    //             },
-    //             error: function (jqXHR, textStatus, errorThrown){ // error handling
-    //                 console.log(jqXHR, textStatus, errorThrown);
-    //                 swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
-    //             }
-    //         })
-    //     });
-    // }
-    // else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+function getEdit(username, level) {    
+    console.log(username + " " + level);
+    FormUser.show({
+        username: username,
+        level: level,
+    });
 }
