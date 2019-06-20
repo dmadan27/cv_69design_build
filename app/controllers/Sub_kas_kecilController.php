@@ -501,7 +501,7 @@
 			
 			// config datatable
 			$config_dataTable = array(
-				'tabel' => 'pengajuan_sub_kas_kecil',
+				'tabel' => 'v_pengajuan_sub_kas_kecil_v2',
 				'kolomOrder' => array(null, 'tgl', 'total', 'dana_disetujui', 'status'),
 				'kolomCari' => array('tgl', 'total', 'dana_disetujui', 'status'),
 				'orderBy' => array('id' => 'desc'),
@@ -515,6 +515,32 @@
 			foreach($dataMutasi as $row){
 				$no_urut++;
 
+				switch ($row['status']) {
+					case 'PENDING':
+						$status = '<span class="label label-primary">PENDING</span>';
+						break;
+					
+					case 'PERBAIKI':
+						$status = '<span class="label label-warning">PERBAIKI</span>';
+						break;
+
+					case 'DISETUJUI':
+						$status = '<span class="label label-success">DISETUJUI</span>';
+						break;
+					
+					case 'LANGSUNG':
+						$status = '<span class="label label-success">LANGSUNG</span>';
+						break;	
+
+					case 'DITOLAK':
+						$status = '<span class="label label-danger">DITOLAK</span>';
+						break;
+
+					default:
+						$status = $row['status'];
+						break;
+				}
+
 				// button aksi
 				$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
 				$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
@@ -524,7 +550,7 @@
 				$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
 				$dataRow[] = $this->helper->cetakRupiah($row['total']);
 				$dataRow[] = $this->helper->cetakRupiah($row['dana_disetujui']);
-				$dataRow[] = $row['status'];
+				$dataRow[] = $status;
 				$dataRow[] = $aksi;
 
 				$data[] = $dataRow;
