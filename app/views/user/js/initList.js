@@ -95,6 +95,13 @@ async function getView(username, level) {
     $('.box .overlay').remove();
 }
 
+/**
+*
+*/
+function getDelete(id, token) {
+
+}
+
 function getEdit(username, level) {    
     console.log(username + " " + level);
     FormUser.show({
