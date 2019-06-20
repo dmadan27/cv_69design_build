@@ -408,12 +408,13 @@
 		* 	Edit Pengajuan Kas Kecil. Dilakukkan Oleh Kas Kecil selama pengajuan belum di-review oleh Kas Besar  
 		*/
 		private function editPengajuan($data) {
-			$query = "UPDATE pengajuan_kas_kecil SET nama = :nama, tgl = :tgl, total = :total, modified_by = :modified_by WHERE id = :id";
+			$query = "UPDATE pengajuan_kas_kecil SET nama = :nama, tgl = :tgl, total = :total, status = :status, modified_by = :modified_by WHERE id = :id";
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id', $data['id']);
 			$statement->bindParam(':nama', $data['nama']);
 			$statement->bindParam(':tgl', $data['tgl']);
 			$statement->bindParam(':total', $data['total']);
+			$statement->bindParam(':status', $data['status']);
 			$statement->bindParam(':modified_by', $_SESSION['sess_email']);
 
 			$result = $statement->execute();
