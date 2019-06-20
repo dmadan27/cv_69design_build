@@ -527,11 +527,15 @@
 					case 'DISETUJUI':
 						$status = '<span class="label label-success">DISETUJUI</span>';
 						break;
+					
+					case 'LANGSUNG':
+						$status = '<span class="label label-success">LANGSUNG</span>';
+						break;	
 
 					case 'DITOLAK':
 						$status = '<span class="label label-danger">DITOLAK</span>';
 						break;
-						
+
 					default:
 						$status = $row['status'];
 						break;
