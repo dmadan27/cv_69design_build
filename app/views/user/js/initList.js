@@ -101,11 +101,3 @@ async function getView(username, level) {
 function getDelete(id, token) {
 
 }
-
-function getEdit(username, level) {    
-    console.log(username + " " + level);
-    FormUser.show({
-        username: username,
-        level: level,
-    });
-}
