@@ -8,7 +8,7 @@
 				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
-                <h4 class="modal-title">Form Data User</h4>
+                <h4 class="modal-title">Form Reset Password User</h4>
 			</div>
 			<form id="form_user" role="form">
 				<input type="hidden" id="id">
@@ -28,24 +28,12 @@
 			                <input type="password" name="password" id="password" class="form-control field" placeholder="Masukkan Password">
 						<span class="help-block small pesan pesan-password"></span>
 					</div>
-
-					<!-- level -->
-					<div class="form-group field-level has-feedback">
-						<label for="level">Level</label>
-						<select name="level" id="level" class="form-control field">
-							<option value="">-- PILIH LEVEL --</option>
-							<option value="KAS BESAR">KAS BESAR</option>
-							<option value="KAS KECIL">KAS KECIL</option>
-							<option value="SUB KAS KECIL">SUB KAS KECIL</option>
-							<option value="OWNER">OWNER</option>
-						</select>
-						<span class="help-block small pesan pesan-status"></span>
-					</div>					
+					
 				</div>
 				<!-- modal footer -->
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Kembali</button>
-	                <button type="submit" id="submit_user" class="btn btn-primary" value="tambah">Simpan Data</button>
+	                <button type="submit" id="submit_user" class="btn btn-primary" value="tambah">Reset Password</button>
 				</div>
 			</form>
 		</div>
