@@ -444,7 +444,7 @@ class Export extends Controller {
                 $mainData['column'] = $column;
                 $mainData['sheet'] = 'Data Detail Operasional Proyek';
 
-                $property = 'Data Detail Operasional Proyek '.$row[0]['PROYEK'];
+                $property = 'Data Detail Operasional Proyek '.$row[0]['OPERASIONAL'];
                 $properties['title'] = $properties['subject'] = $properties['description'] = $property;
 
                 $this->excel_v2->setProperty($properties);

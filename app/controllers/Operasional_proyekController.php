@@ -487,19 +487,10 @@ class Operasional_proyek extends CrudAbstract{
 	 */
 	public function detail($id){
 		$id = strtoupper($id);
-		$dataOperasionalProyek = !empty($this->Operasional_proyekModel->getById_fromView($id)) ? $this->Operasional_proyekModel->getById_fromView($id) : false;
-
-		$dataDetailOperasionalProyek = !empty($this->Operasional_proyekModel->getDetailById_fromView($id)) ? $this->Operasional_proyekModel->getDetailById_fromView($id) : false;
-
-		$dataHistoryPembelanjaan = !empty($this->Operasional_proyekModel->getBYid_fromHistoryPembelian($id)) ? $this->Operasional_proyekModel->getBYid_fromHistoryPembelian($id) : false;
-
-		// var_dump($dataHistoryPembelanjaan);
-
-		// if((empty($id) || $id == "") || !$dataOperasionalProyek) $this->redirect(BASE_URL."operasional-proyek/");
-
-
-		// if((empty($id) || $id == "") || !$dataHistoryPembelanjaan) $this->redirect(BASE_URL."operasional-proyek/");
 		
+		$dataOperasionalProyek = !empty($this->Operasional_proyekModel->getById_fromView($id)) ? $this->Operasional_proyekModel->getById_fromView($id) : false;
+		
+		if((empty($id) || $id == "") || !$dataOperasionalProyek) { $this->redirect(BASE_URL."operasional-proyek/"); }
 
 		$css = array(
 			'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
@@ -527,78 +518,80 @@ class Operasional_proyek extends CrudAbstract{
 			'js' => $js,
 		);
 
-		$dataOperasionalProyek = array(
-
+		$parsing_dataOperasionalProyek = array(
 			'id' => $dataOperasionalProyek['id'],
-			'id_proyek' =>   $dataOperasionalProyek['id_proyek'],
-			'pemilik_proyek' =>   $dataOperasionalProyek['pemilik_proyek'],
-			'nama_pembangunan' =>   $dataOperasionalProyek['nama_pembangunan'],
+			'id_proyek' => $dataOperasionalProyek['id_proyek'],
+			'nama_pembangunan' => $dataOperasionalProyek['nama_pembangunan'],
+			'tgl_operasional' => $this->helper->cetakTgl($dataOperasionalProyek['tgl_operasional'], 'full'),
+			'nama_pembangunan' => $dataOperasionalProyek['nama_pembangunan'],
 			'id_kas_besar' => $dataOperasionalProyek['id_kas_besar'],
 			'nama_kas_besar' => $dataOperasionalProyek['nama_kas_besar'],
 			'id_distributor' => $dataOperasionalProyek['id_distributor'],
 			'nama_distributor' => $dataOperasionalProyek['nama_distributor'],
-			'tgl_pengajuan' => $this->helper->cetakTgl($dataOperasionalProyek['tgl_pengajuan'], 'full'),
-			'nama_pengajuan' => $dataOperasionalProyek['nama_pengajuan'],
-			'jenis_pengajuan' => $dataOperasionalProyek['jenis_pengajuan'],
-			'total_pengajuan' => $this->helper->cetakRupiah($dataOperasionalProyek['total_pengajuan']),
-			'sisa_pengajuan' => $this->helper->cetakRupiah($dataOperasionalProyek['sisa_pengajuan']),
-			'jenis_pembayaran' => $dataOperasionalProyek['jenis_pembayaran'],
-			'status_lunas' => $dataOperasionalProyek['status_lunas'],
-			'keterangan' => $dataOperasionalProyek['keterangan'],
-			'id_bank' => $dataOperasionalProyek['id_bank'],
-			'nama_detail' => $dataOperasionalProyek['nama_detail'],
-			'tgl_detail' => $dataOperasionalProyek['tgl_detail'],
-			'total_detail' => $this->helper->cetakRupiah($dataOperasionalProyek['total_detail']),
-				
-		);
-
-		$dataDetailOperasionalProyek = array(
-			'id_bank' => $dataOperasionalProyek['id_bank'],
-			'nama_detail' => $dataOperasionalProyek['nama_detail'],
-			'tgl_detail' => $dataOperasionalProyek['tgl_detail'],
-			'total_detail' => $dataOperasionalProyek['total_detail'],
-		);
-
-		$dataHistoryPembelanjaan = array(
-			'id' => $dataHistoryPembelanjaan['id'],
-			'tgl' => $dataHistoryPembelanjaan['tgl'],
-			'nama' => $dataHistoryPembelanjaan['nama'],
-			'total' => $this->helper->cetakRupiah($dataHistoryPembelanjaan['total']),
-			'status_lunas' => $dataHistoryPembelanjaan['status_lunas'],
-			'ID_DISTRIBUTOR' => $dataHistoryPembelanjaan['ID_DISTRIBUTOR'],
-			'NAMA_DISTRIBUTOR' => $dataHistoryPembelanjaan['NAMA_DISTRIBUTOR'],
-			'pemilik' => $dataHistoryPembelanjaan['pemilik'],
-				
-		);
-
-
-
-
-		// foreach ($this->Operasional_proyekModel->getBYid_fromHistoryPembelian($id) as $row) {
+			'nama_operasional' => $dataOperasionalProyek['nama_operasional'],
+			'jenis_pembayaran' => (strtolower($dataOperasionalProyek['jenis_pembayaran']) == 'tunai') ?
+				'<span class="label label-success">'.$dataOperasionalProyek['jenis_pembayaran'].'</span>' :
+				'<span class="label label-warning">'.$dataOperasionalProyek['jenis_pembayaran'].'</span>',
+			'jenis_operasional' => $dataOperasionalProyek['jenis_operasional'],
+			'total' => $this->helper->cetakRupiah($dataOperasionalProyek['total']),
+			'sisa_operasional' => $this->helper->cetakRupiah($dataOperasionalProyek['sisa_operasional']),
+			'status_lunas' => (strtolower($dataOperasionalProyek['status_lunas']) == 'lunas') ?
+				'<span class="label label-success">'.$dataOperasionalProyek['status_lunas'].'</span>' :
+				'<span class="label label-danger">'.$dataOperasionalProyek['status_lunas'].'</span>',
+			'keterangan' => $dataOperasionalProyek['keterangan']
 			
-		// 	$dataRow = array();
-		// 	$dataRow['id'] = $row['id'];
-		// 	$dataRow['tgl'] = $row['tgl'];
-		// 	$dataRow['nama'] = $row['nama'];
-		// 	$dataRow['total'] = $row['total'];
-		// 	$dataRow['status_lunas'] = $row['status_lunas'];
-		// 	$dataRow['ID_DISTRIBUTOR'] = $row['ID_DISTRIBUTOR'];
-		// 	$dataRow['NAMA_DISTRIBUTOR'] = $row['NAMA_DISTRIBUTOR'];
-		// 	$dataRow['pemilik'] = $row['pemilik'];
-			
-		// 	$dataHistoryPembelanjaan[] = $dataRow;
-		// }
+		);
 		
 		$data = array(
-			'dataOperasionalProyek' => $dataOperasionalProyek,
-			'dataDetailOperasionalProyek' => $dataDetailOperasionalProyek,
-			'dataHistoryPembelanjaan' => $dataHistoryPembelanjaan,
-			'id_operasional_proyek' => $id
+			'data_operasionalProyek' => $dataOperasionalProyek,
+			'id' => $id
 		);
 
 		$this->layout('operasional_proyek/view', $config, $data);
+	}
 
+	/**
+	 * 
+	 */
+	public function get_list_detail($id) {
+		if($_SERVER['REQUEST_METHOD'] == "POST") {
+			$id = strtoupper($id);
+			// config datatable
+			$config_dataTable = array(
+				'tabel' => 'v_detail_operasional_proyek',
+				'kolomOrder' => array(null, 'tgl', 'nama', 'nama_bank', 'total'),
+				'kolomCari' => array('tgl', 'nama', 'nama_bank', 'total'),
+				'orderBy' => array('tgl' => 'desc'),
+				'kondisi' => 'WHERE id_operasional_proyek = "'.$id.'"',
+			);
 
+			$dataDetail = $this->DataTableModel->getAllDataTable($config_dataTable);
+
+			$data = array();
+			$no_urut = $_POST['start'];
+			foreach($dataDetail as $row){
+				$no_urut++;
+				
+				$dataRow = array();
+				$dataRow[] = $no_urut;
+				$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
+				$dataRow[] = $row['nama'];
+				$dataRow[] = $row['nama_bank'];
+				$dataRow[] = $this->helper->cetakRupiah($row['total']);
+
+				$data[] = $dataRow;
+			}
+
+			$output = array(
+				'draw' => $_POST['draw'],
+				'recordsTotal' => $this->DataTableModel->recordTotal(),
+				'recordsFiltered' => $this->DataTableModel->recordFilter(),
+				'data' => $data,
+			);
+
+			echo json_encode($output);
+		}
+		else { die(ACCESS_DENIED); }
 	}
 
 	/**
@@ -910,57 +903,6 @@ class Operasional_proyek extends CrudAbstract{
 				$dataRow[] = $row['pemilik'];
 
 				$data[] = $dataRow;
-			}
-
-			$output = array(
-				'draw' => $_POST['draw'],
-				'recordsTotal' => $this->DataTableModel->recordTotal(),
-				'recordsFiltered' => $this->DataTableModel->recordFilter(),
-				'data' => $data,
-			);
-
-			echo json_encode($output);
-		}
-		else{ $this->redirect(); }
-	}
-
-	/**
-	 * 
-	 */
-	public function get_detail_operasional_proyek($id){
-		// print_r($id);
-		// exit;
-		if($_SERVER['REQUEST_METHOD'] == "POST"){
-			$config_dataTable = array(
-				'tabel' => 'v_operasional_proyek',
-				'kolomOrder' => array(null, 'tgl_detail', 'nama_detail', 'nama_bank','total_detail'),
-				'kolomCari' => array('nama_bank', 'nama_detail', 'tgl_detail','total_detail'),
-				'orderBy' => array('id_bank' => 'asc'),
-				'kondisi' => 'WHERE id = "'.$id.'"',
-			);
-			
-			$dataDetailOperasionalProyek = $this->DataTableModel->getAllDataTable($config_dataTable);
-			
-			$data = array();
-			$no_urut = $_POST['start'];
-			foreach($dataDetailOperasionalProyek as $row){
-				$no_urut++;
-				$dataRow = array();
-
-				if($row['nama_detail'] == ""){
-					unset($row['nama_bank']);
-					unset($row['nama_detail']);
-					unset($row['tgl_detail']);
-					unset($row['total_detail']);
-				} else {
-					$dataRow[] = $no_urut;
-					$dataRow[] = $this->helper->cetakTgl($row['tgl_detail'], 'full');
-					$dataRow[] = $row['nama_detail'];
-					$dataRow[] = $row['nama_bank'];					
-					$dataRow[] = $this->helper->cetakRupiah($row['total_detail']);
-					$data[] = $dataRow;
-				}
-				
 			}
 
 			$output = array(
