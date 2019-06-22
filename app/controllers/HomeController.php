@@ -256,9 +256,9 @@
 				$config_dataTable = array(
 					'tabel' => 'sub_kas_kecil',
 					'kolomOrder' => array(null, 'id', 'nama', 'saldo', null),
-					'kolomCari' => array('id', 'nama', 'saldo'),
+					'kolomCari' => array('id', 'nama', 'saldo','status'),
 					'orderBy' => array('id' => 'asc'),
-					'kondisi' => 'WHERE saldo < 0',
+					'kondisi' => 'WHERE status = "AKTIF" ',
 				);
 
 				$dataSkk = $this->HomeModel->getAllDataTable($config_dataTable);

@@ -88,10 +88,23 @@
 
 				// button aksi
 				$aksiDetail = '<button onclick="getView('."'".$row["username"]."','".$row["level"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
-				$aksiEdit = '<button onclick="getEdit('."'".$row["username"]."','".$row["level"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
-				$aksiHapus = '<button onclick="getDelete('."'".$row["username"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+				$aksiEdit = '<button onclick="getEdit('."'".$row["username"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
+				// $aksiHapus = '<button onclick="getDelete('."'".$row["username"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 				
-				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
+				switch ($_SESSION['sess_level']) {
+					case 'OWNER':
+						$aksi = $aksiDetail;
+						break;
+					
+					case 'KAS BESAR':
+						$aksi = $aksiDetail.$aksiEdit;
+						break;	
+
+					default:
+						$aksi = '';
+						break;
+				}
+				$aksi = '<div class="btn-group">'.$aksi.'</div>';
 
 				$dataRow = array();
 				$dataRow[] = $no_urut;
@@ -118,7 +131,8 @@
 		 * Mendapatkan link detail data user.
 		 */
 		public function get_link_detail() {
-			if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_SESSION['sess_level'] === 'OWNER')) {
+			if (($_SERVER['REQUEST_METHOD'] == 'POST') && 
+				($_SESSION['sess_level'] === 'OWNER' || $_SESSION['sess_level'] === 'KAS BESAR')) {
 
 				$username = $_POST['username'] ?? false;
 				$level = $_POST['level'] ?? false;
@@ -155,7 +169,7 @@
 						$this->model("Sub_kas_kecilModel");
 
 						$skk = $this->Sub_kas_kecilModel->getByEmail($username) ?? false;
-						if ($kas_kecil) {
+						if ($skk) {
 							$response['success'] = true;
 							$response['link'] = BASE_URL.'sub-kas-kecil/detail/'.$skk["id"];
 							unset($response['message']);
@@ -171,50 +185,32 @@
 		}
 
 		/**
-		 * Function get_mutasi
-		 * method yang berfungsi untuk get data mutasi bank sesuai dengan id
-		 * dipakai di detail data
+		 * Melakukan aksi reset password.
 		 */
-		public function get_mutasi(){
-			$data = isset($_POST) ? $_POST : false;
-			// cek token
-			$this->auth->cekToken($_SESSION['token_bank']['view'], $data['token_view'], 'bank');
-			
-			// config datatable
-			$config_dataTable = array(
-				'tabel' => 'mutasi_bank',
-				'kolomOrder' => array(null, 'tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
-				'kolomCari' => array('tgl', 'uang_masuk', 'uang_keluar', 'saldo', 'ket'),
-				'orderBy' => array('id' => 'desc'),
-				'kondisi' => 'WHERE id = '.$data['id'].' ',
-			);
+		public function reset_password() {
+			if (($_SERVER['REQUEST_METHOD'] == 'POST') && ($_SESSION['sess_level'] === 'KAS BESAR')) {
+				$username = $_POST['username'] ?? false;
+				$password = $_POST['password'] ?? false;
 
-			$dataMutasi = $this->DataTableModel->getAllDataTable($config_dataTable);
+				if ($username && $password) {
+					$data_input = array(
+						'username' => $username,
+						'password' => password_hash($this->validation->validInput($password, false), PASSWORD_BCRYPT),
+					);
 
-			$data = array();
-			$no_urut = $_POST['start'];
-			foreach($dataMutasi as $row){
-				$no_urut++;
-				
-				$dataRow = array();
-				$dataRow[] = $no_urut;
-				$dataRow[] = $row['tgl'];
-				$dataRow[] = $this->helper->cetakRupiah($row['uang_masuk']);
-				$dataRow[] = $this->helper->cetakRupiah($row['uang_keluar']);
-				$dataRow[] = $this->helper->cetakRupiah($row['saldo']);
-				$dataRow[] = $row['ket'];
-
-				$data[] = $dataRow;
-			}
-
-			$output = array(
-				'draw' => $_POST['draw'],
-				'recordsTotal' => $this->DataTableModel->recordTotal(),
-				'recordsFiltered' => $this->DataTableModel->recordFilter(),
-				'data' => $data,
-			);
-
-			echo json_encode($output);
+					if ($this->UserModel->updatePassword($data_input)) {
+						echo json_encode([
+							'success' => true,
+							'message' => 'Password '.$username.' berhasil direset.',
+						]);
+					}
+				} else {
+					echo json_encode([
+						'success' => false,
+						'message' => "Data yang dimasukkan tidak valid!",
+					]);
+				}
+			} else { die(ACCESS_DENIED); }	
 		}
 
 		/**
@@ -222,25 +218,6 @@
 		 */
 		public function export(){
 
-		}
-
-		/**
-		 * Fungsi set_validation
-		 * method yang berfungsi untuk validasi inputan secara server side
-		 * param $data didapat dari post yang dilakukan oleh user
-		 * return berupa array, status hasil pengecekan dan error tiap validasi inputan
-		 */
-		private function set_validation($data){
-			// $required = ($data['action'] == "action-edit") ? 'not_required' : 'required';
-
-			// // nama bank
-			// $this->validation->set_rules($data['nama'], 'Nama Bank', 'nama', 'string | 1 | 255 | required');
-			// // saldo awal
-			// $this->validation->set_rules($data['saldo'], 'Saldo Awal Bank', 'saldo', 'nilai | 0 | 99999999999 | '.$required);
-			// // status
-			// $this->validation->set_rules($data['status'], 'Status Bank', 'status', 'string | 1 | 255 | required');
-
-			// return $this->validation->run();
 		}
 
 	}

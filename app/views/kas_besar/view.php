@@ -36,7 +36,7 @@
 		                	</li>
 		              	</ul>
 		              	
-		              	<a href="<?= BASE_URL.'kas-besar';  ?>" class="btn btn-default btn-block" role="button"><b>Kembali</b></a>
+		              	<button onclick="goBack();" class="btn btn-default btn-block" role="button"><b>Kembali</b></button>
 					</div>
 				</div>
 			</div>

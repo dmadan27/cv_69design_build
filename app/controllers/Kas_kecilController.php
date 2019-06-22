@@ -542,13 +542,35 @@
 				$no_urut = $_POST['start'];
 				foreach($dataMutasi as $row){
 					$no_urut++;
+
+					switch ($row['status']) {
+						case '0':
+							$status = '<span class="label label-primary">PENDING</span>';
+							break;
+						
+						case '1':
+							$status = '<span class="label label-warning">PERBAIKI</span>';
+							break;
+	
+						case '2':
+							$status = '<span class="label label-success">DISETUJUI</span>';
+							break;
+	
+						case '3':
+							$status = '<span class="label label-danger">DITOLAK</span>';
+							break;
+							
+						default:
+							$status = $row['status'];
+							break;
+					}
 					
 					$dataRow = array();
 					$dataRow[] = $no_urut;
 					$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
 					$dataRow[] = $row['nama'];
 					$dataRow[] = $this->helper->cetakRupiah($row['total']);
-					$dataRow[] = $row['status'];
+					$dataRow[] = $status;
 
 					$data[] = $dataRow;
 				}
