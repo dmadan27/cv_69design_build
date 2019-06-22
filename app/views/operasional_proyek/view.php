@@ -104,7 +104,7 @@
 							<div class="box-body">
                                 <div class="form-group">
                                     <button type="button" class="btn btn-success btn-flat" id="exportExcel"><i class="fa fa-file-excel-o"></i> Export Excel</button>
-                                    <button type="button" class="btn btn-info btn-flat pull-right" id="refreshTable_pembayaran"><i class="fa fa-refresh"></i> Refresh</button>
+                                    <button type="button" class="btn btn-info btn-flat pull-right" id="refreshTable"><i class="fa fa-refresh"></i> Refresh</button>
                                 </div>
 								<div class="table-responsive">
 									<table id="detailOperasionalProyek" class="table table-bordered table-hover" style="width: 100%;">
