@@ -543,7 +543,7 @@ class Operasional_proyek extends CrudAbstract{
 		);
 		
 		$data = array(
-			'data_operasionalProyek' => $dataOperasionalProyek,
+			'data_operasionalProyek' => $parsing_dataOperasionalProyek,
 			'id' => $id
 		);
 
