@@ -318,7 +318,7 @@ class Helper
 		);
 
 		$post_data = array(
-			'to' => "/topics/".TYPE,
+			'to' => "/topics/".TYPE.$data['id_skk'],
 			'notification' => array(
 				'title' => $data['title'],
 				'body' => $data['body'],
