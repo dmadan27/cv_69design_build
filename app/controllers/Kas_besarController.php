@@ -96,8 +96,16 @@
 					$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
 					$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
 					$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
+
+
+					if($_SESSION['sess_level'] === 'KAS BESAR') {
+						$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
+					}
+					else if($_SESSION['sess_level'] === 'OWNER') {
+						$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
+					}
+					else { $aksi = ''; }
 					
-					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
 					
 					$dataRow = array();
 					$dataRow[] = $no_urut;
