@@ -71,7 +71,7 @@ $(document).ready(function(){
 			
 		// menu laporan pengajuan sub kas kecil
 		case 'laporan-sub-kas-kecil':
-			$('.menu-pengajuan-sub-kas-kecil').addClass('active');
+			$('.menu-laporan-sub-kas-kecil').addClass('active');
 			$('.menu-laporan').addClass('active');
 			break;
 		
