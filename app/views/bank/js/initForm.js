@@ -1,22 +1,14 @@
 $(document).ready(function(){
-	setStatus();
-	
-	// input mask
-	$('.input-mask-uang').inputmask({ 
-    	alias : 'currency',
-    	prefix: '', 
-    	radixPoint: ',',
-    	digits: 0,
-    	groupSeparator: '.', 
-    	clearMaskOnLostFocus: true, 
-    	digitsOptional: false,
-	});
-	
-	$('#submit_bank').prop('disabled', true);
+	init();
 
 	// event on click button tambah
-	$('#tambah').on('click', function(){
+	$('#tambah').on('click', function() {
 		console.log('Button Tambah Bank Clicked...');
+		
+		if(LEVEL !== 'KAS BESAR') {
+			setNotif(notifAccessDenied, 'swal')
+			return
+		}
 
 		resetForm();
 		$('.field-saldo').css('display', 'block');
@@ -38,14 +30,7 @@ $(document).ready(function(){
 
 	// event on change field
 	$('.field').on('change', function(){
-		if(this.value !== ""){
-			$('.field-'+this.id).removeClass('has-error').addClass('has-success');
-			$(".pesan-"+this.id).text('');
-		}
-		else{
-			$('.field-'+this.id).removeClass('has-error').removeClass('has-success');
-			$(".pesan-"+this.id).text('');	
-		}
+		onChangeField(this)
 	});
 });
 
@@ -53,7 +38,20 @@ $(document).ready(function(){
  * 
  */
 function init() {
+	setStatus();
 	
+	// input mask
+	$('.input-mask-uang').inputmask({ 
+    	alias : 'currency',
+    	prefix: '', 
+    	radixPoint: ',',
+    	digits: 0,
+    	groupSeparator: '.', 
+    	clearMaskOnLostFocus: true, 
+    	digitsOptional: false,
+	});
+	
+	$('#submit_bank').prop('disabled', true);
 }
 
 /**

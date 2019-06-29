@@ -19,7 +19,7 @@
 	<section class="content container-fluid">
 		<div class="row">
 			<!-- panel info data bank -->
-			<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+			<div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
 				<input type="hidden" id="id" value="<?=$this->data['id_bank']?>">
 				<div class="box box-widget widget-user-2">
 					<div class="widget-user-header bg-aqua">
@@ -32,26 +32,10 @@
                 			<li><a href="javascript:void(0)"><strong>Status </strong><div class="pull-right"><?= $this->data['status']; ?></div></a></li>
 						</ul>
 					</div>
-					<div class="box-footer text-center">
-						<div class="btn-group">
-							<?php 
-								if($_SESSION['sess_level'] === 'KAS BESAR') {
-									?>
-									<!-- edit -->
-									<button id="btn_edit" type="button" class="btn btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>
-									<!-- hapus -->
-									<button id="btn_delete" type="button" class="btn btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>
-									<?php
-								}
-							?>
-							<!-- kembali -->
-							<button onclick="back()" type="button" class="btn btn-info btn-flat" title="Kembali"><i class="fa fa-reply"></i></button>
-						</div>
-					</div>
 				</div>
 			</div>
 			<!-- panel info tabel mutasi bank -->
-			<div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+			<div class="col-lg-8 col-md-8 col-sm-8 col-xs-12">
 				<div class="box box-mutasi">
 					<!-- box header -->
 					<div class="box-header with-border">
@@ -92,7 +76,32 @@
 					</div>
 				</div>
 			</div>
-		</div>		
+		</div>
+
+		<!-- panel button aksi -->
+		<div class="row">
+  			<div class="col-lg-12 col-md-12 col-xs-12">    				
+  				<div class="box box-info"> 
+                    <div class="box-body">
+                    	<div class="row">
+                    		<div class="col-md-12 col-xs-12">
+                    			<div class="btn-group">
+									<button class="btn btn-default btn-flat btn-lg" onclick="goBack()">Kembali</button>
+	                    			<?php
+                                        if($_SESSION['sess_level'] === 'KAS BESAR') {
+                                            ?>
+											<!-- edit -->
+											<button id="btn_edit" type="button" class="btn btn-success btn-flat btn-lg" title="Edit Data">Edit</button>
+                                            <?php
+                                        }
+                                    ?>
+                                </div>		
+                       		</div>
+                    	</div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+  			</div>		
 	</section>
 	<!-- /.content -->
 

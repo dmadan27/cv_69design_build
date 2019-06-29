@@ -37,6 +37,8 @@ var bankTable = $("#bankTable").DataTable({
     }
 });
 
+const nofitAccessDenied = { title: 'Pesan Pemberitahuan', message: 'Akses Ditolak', type: 'warning' };
+
 $(document).ready(function() {
 
     // btn Export
@@ -87,6 +89,11 @@ function getView(id){
  */
 function getDelete(id){
     console.log('Button Hapus Bank clicked...');
+
+    if(LEVEL !== 'KAS BESAR') {
+        setNotif(notifAccessDenied, 'swal')
+        return
+    }
 
 	swal({
 		title: "Pesan Konfirmasi",
