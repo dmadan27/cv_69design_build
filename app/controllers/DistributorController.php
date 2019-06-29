@@ -36,7 +36,7 @@ class Distributor extends Controller {
 	 * Menampilkan list semua data proyek
 	 * Passing data css dan js yang dibutuhkan di list distributor
 	 */
-	protected function list() {
+	private function list() {
 		// set config untuk layouting
 		$css = array(
 			'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
@@ -69,7 +69,8 @@ class Distributor extends Controller {
 	 * Request berupa POST dan output berupa JSON
 	 */
 	public function get_list(){
-		if($_SERVER['REQUEST_METHOD'] == "POST") {
+		if($_SERVER['REQUEST_METHOD'] == "POST" && 
+			($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER')) {
 			// config datatable
 			$config_dataTable = array(
 				'tabel' => 'distributor',
@@ -94,12 +95,12 @@ class Distributor extends Controller {
 				$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 				
 				if($_SESSION['sess_level'] === 'KAS BESAR') {
-						$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
-					}
-					else if($_SESSION['sess_level'] === 'OWNER') {
-						$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
-					}
-					else { $aksi = ''; }
+					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
+				}
+				else if($_SESSION['sess_level'] === 'OWNER') {
+					$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
+				}
+				else { $aksi = ''; }
 				
 				$dataRow = array();
 				$dataRow[] = $no_urut;
@@ -121,8 +122,7 @@ class Distributor extends Controller {
 
 			echo json_encode($output);
 		}
-		else $this->redirect();		
-
+		else { die(ACCESS_DENIED); }	
 	}
 
 	/**
@@ -134,7 +134,7 @@ class Distributor extends Controller {
 	 * error => error apa saja yang ada dari hasil validasi
 	 */
 	public function action_add() {
-		if($_SERVER['REQUEST_METHOD'] == "POST") {
+		if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
 			$data = isset($_POST) ? $_POST : false;
 
 			if(!$data){
@@ -200,7 +200,7 @@ class Distributor extends Controller {
 
 			echo json_encode($output);	
 		}
-		else $this->redirect();
+		else { die(ACCESS_DENIED); }
 		
 		
 	}
@@ -212,13 +212,13 @@ class Distributor extends Controller {
 	 * return berupa json
 	 */
 	public function edit($id) {
-		if($_SERVER['REQUEST_METHOD'] == "POST") {
+		if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
 			$id = strtoupper($id);
 			$data = !empty($this->DistributorModel->getById($id)) ? $this->DistributorModel->getById($id) : false;
 
 			echo json_encode($data);
 		}
-		else { $this->redirect(); }
+		else { die(ACCESS_DENIED); }
 
 	}
 
@@ -231,7 +231,7 @@ class Distributor extends Controller {
 	 * error => error apa saja yang ada dari hasil validasi
 	 */
 	public function action_edit() {
-		if($_SERVER['REQUEST_METHOD'] == "POST") {
+		if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
 			$data = isset($_POST) ? $_POST : false;
 
 			if(!$data){
@@ -297,7 +297,7 @@ class Distributor extends Controller {
 
 			echo json_encode($output);
 		}
-		else { $this->redirect(); }
+		else { die(ACCESS_DENIED); }
 	}
 
 	/**
@@ -306,48 +306,51 @@ class Distributor extends Controller {
 	 * param $id didapat dari url
 	 */
 	public function detail($id) {
-		$id = strtoupper($id);
+		if($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER') {
+			$id = strtoupper($id);
 
-		$data_detail = !empty($this->DistributorModel->getById($id)) ? $this->DistributorModel->getById($id) : false;
+			$data_detail = !empty($this->DistributorModel->getById($id)) ? $this->DistributorModel->getById($id) : false;
 
-		if(!$data_detail || (empty($id) || $id == "")) { $this->redirect(BASE_URL."distributor/"); }
+			if(!$data_detail || (empty($id) || $id == "")) { $this->redirect(BASE_URL."distributor/"); }
 
-		$css = array(
-			'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
-			'assets/bower_components/dropify/dist/css/dropify.min.css'
-		);
-		$js = array(
-			'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
-			'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
-			'assets/bower_components/dropify/dist/js/dropify.min.js',
-			'app/views/distributor/js/initView.js',
-			'app/views/distributor/js/initForm.js',
-		);
+			$css = array(
+				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+				'assets/bower_components/dropify/dist/css/dropify.min.css'
+			);
+			$js = array(
+				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
+				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/bower_components/dropify/dist/js/dropify.min.js',
+				'app/views/distributor/js/initView.js',
+				'app/views/distributor/js/initForm.js',
+			);
 
-		$config = array(
-			'title' => 'Menu Distributor - Detail',
-			'property' => array(
-				'main' => 'Data Distributor',
-				'sub' => 'Detail Data Distributor',
-			),
-			'css' => $css,
-			'js' => $js,
-		);
+			$config = array(
+				'title' => 'Menu Distributor - Detail',
+				'property' => array(
+					'main' => 'Data Distributor',
+					'sub' => 'Detail Data Distributor',
+				),
+				'css' => $css,
+				'js' => $js,
+			);
 
-		$status = ($data_detail['status'] == "AKTIF") ? 
-			'<span class="label label-success">'.$data_detail['status'].'</span>' : 
-			'<span class="label label-danger">'.$data_detail['status'].'</span>';
-		
-		$data = array(
-			'id' => strtoupper($data_detail['id']),
-			'nama' => $data_detail['nama'],
-			'alamat' => $data_detail['alamat'],
-			'no_telp' => $data_detail['no_telp'],
-			'pemilik' => $data_detail['pemilik'],
-			'status' => $status
-		);
+			$status = ($data_detail['status'] == "AKTIF") ? 
+				'<span class="label label-success">'.$data_detail['status'].'</span>' : 
+				'<span class="label label-danger">'.$data_detail['status'].'</span>';
+			
+			$data = array(
+				'id' => strtoupper($data_detail['id']),
+				'nama' => $data_detail['nama'],
+				'alamat' => $data_detail['alamat'],
+				'no_telp' => $data_detail['no_telp'],
+				'pemilik' => $data_detail['pemilik'],
+				'status' => $status
+			);
 
-		$this->layout('distributor/view', $config, $data);
+			$this->layout('distributor/view', $config, $data);
+		}
+		else { die(ACCESS_DENIED); }
 	}
 
 	/**
@@ -357,22 +360,42 @@ class Distributor extends Controller {
 	 * return json
 	 */
 	public function delete($id) {
-		if($_SERVER['REQUEST_METHOD'] == "POST") {
+		if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
 			$id = strtoupper($id);
 			if(empty($id) || $id == "") $this->redirect(BASE_URL."distributor/");
 
-			if($this->DistributorModel->delete($id)) $this->status = true;
+			$delete_distributor = $this->DistributorModel->delete($id);
+			if($delete_distributor['success']) {
+				$this->success = true;
+				$this->notif = array(
+					'type' => 'success',
+					'title' => 'Pesan Sukses',
+					'message' => 'Data Berhasil Dihapus',
+				);
+			}
+			else {
+				$this->message = $delete_distributor['error'];
+				$this->notif = array(
+					'type' => 'error',
+					'title' => 'Pesan Error',
+					'message' => 'Terjadi Kesalahan Teknis, Silahkan Coba Kembali',
+				);
+			}
 
-			echo json_encode($this->status);
+			echo json_encode(array(
+				'success' => $this->success,
+				'message' => $this->message,
+				'notif' => $this->notif
+			));
 		}
-		else { $this->redirect(); }
+		else { die(ACCESS_DENIED); }
 	}
 
 	/**
 	 * Fungsi generate id otomatis
 	 */
 	public function get_last_id() {
-		if($_SERVER['REQUEST_METHOD'] == "POST") {
+		if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
 			$data = !empty($this->DistributorModel->getLastID()['id']) ? $this->DistributorModel->getLastID()['id'] : false;
 			
 			if(!$data) { $id = 'DIS0001'; }
@@ -388,7 +411,7 @@ class Distributor extends Controller {
 
 			echo json_encode($id);
 		}
-		else { $this->redirect(); }
+		else { die(ACCESS_DENIED); }
 	}
 
 	/**
@@ -396,7 +419,8 @@ class Distributor extends Controller {
 	 * di menu Distributor
 	 */
 	public function get_history_distributor($id) {
-		if($_SERVER['REQUEST_METHOD'] == "POST") {
+		if($_SERVER['REQUEST_METHOD'] == "POST" && 
+			($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER')) {
 			
 			// config datatable
 			$config_dataTable = array(
@@ -434,7 +458,7 @@ class Distributor extends Controller {
 
 			echo json_encode($output);
 		}
-		else { $this->redirect(); }
+		else { die(ACCESS_DENIED); }
 	}
 
 	/**
