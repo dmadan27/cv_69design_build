@@ -76,7 +76,14 @@ function getView(id){
 /**
 *
 */
-function getDelete(id){
+function getDelete(id) {
+    console.log('%cButton Hapus Distributor clicked...', 'font-style: italic');
+
+    if(LEVEL !== 'KAS BESAR') {
+        setNotif(notifAccessDenied, 'swal');
+        return;
+    }
+
 	swal({
 		title: "Pesan Konfirmasi",
 		text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
@@ -92,15 +99,16 @@ function getDelete(id){
 			type: 'post',
 			dataType: 'json',
 			data: {},
-			beforeSend: function(){
-
+			beforeSend: function() {
 			},
-			success: function(output){
-				console.log(output);
-				if(output){
-					swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
-					$("#distributorTable").DataTable().ajax.reload();
-				}
+			success: function(response) {
+				console.log('%cResponse getDelete Distributor: ', 'color: green; font-weight: bold', response);
+				if (response.success) { distributorTable.ajax.reload(null, false); }
+                setNotif({
+                    'title': response.notif.title, 
+                    'message': response.notif.message, 
+                    'type': response.notif.type
+                }, 'swal');
 			},
 			error: function (jqXHR, textStatus, errorThrown){ // error handling
 	            console.log(jqXHR, textStatus, errorThrown);

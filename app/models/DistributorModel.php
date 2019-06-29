@@ -128,15 +128,30 @@
 		 * 
 		 */
 		public function delete($id) {
-			// $query = "DELETE FROM distributor WHERE id = :id";
 			$query = "CALL p_hapus_distributor (:id);";
 			
-			$statement = $this->koneksi->prepare($query);
-			$statement->bindParam(':id', $id);
-			$result = $statement->execute();
+			try {
+				$this->koneksi->beginTransaction();
+				
+				$statement = $this->koneksi->prepare($query);
+				$statement->bindParam(':id', $id);
+				$statement->execute();
 
-			return $result;
-			
+				$statement->closeCursor();				
+				$this->koneksi->commit();
+
+				return array(
+					'success' => true,
+					'error' => null
+				);
+			}
+			catch(PDOException $e) {
+				$this->koneksi->rollback();
+				return array(
+					'success' => false,
+					'error' => $e->getMessage()
+				);
+			}
 		}
 		
 		/**
