@@ -171,15 +171,23 @@ class Helper
 	/**
 	 * 
 	 */
-	public function requestError($error = 403, $json = false) {
+	public function requestError($error = 403, $json = false, $customMessage = "") {
 		http_response_code($error);
 		switch ($error) {
+			case 400:
+				$message = ($customMessage == "") ? "Bad Request. Check your parameters." : $customMessage;
+				break;
+			
 			case 403:
-				$message = "You do not have access to this page.";
+				$message = ($customMessage == "") ? "You do not have access to this page." : $customMessage;
 				break;
 			
 			case 404:
-				$message = "The page you were looking for could not be found.";
+				$message = ($customMessage == "") ? "The page you were looking for could not be found." : $customMessage;
+				break;
+
+			case 500:
+				$message = ($customMessage == "") ? "Whoopps, something went wrong in server." : $customMessage;
 				break;
 
 			default:
@@ -188,7 +196,7 @@ class Helper
 				break;
 		}
 		
-		if(!$json) {
+		if(!$json) { 
 			require_once ROOT.DS.'app'.DS.'views'.DS.'auth'.DS.'error.php';
 		}
 		else {
@@ -198,6 +206,8 @@ class Helper
 				'message' => $message
 			), JSON_PRETTY_PRINT);
 		}
+
+		die();
 	}
 
 	/**
