@@ -268,6 +268,7 @@
 							$data = array(
 								'id' => $this->validation->validInput($data['id']),
 								'status' => $this->validation->validInput($data['status']),
+								'ket' => $this->validation->validInput($data['ket']),
 								'modified_by' => $_SESSION['sess_email']
 							);
 	

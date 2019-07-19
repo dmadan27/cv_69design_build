@@ -102,6 +102,18 @@
                         </div>
                     </div>
 
+                    <div class="data-keterangan">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12 col-lg-12">
+                                <div class="form-group field-keterangan has-feedback">
+                                    <label for="keterangan">Keterangan</label>
+                                    <textarea class="form-control field" name="keterangan" id="keterangan" rows="3"></textarea>
+                                    <span class="help-block small pesan pesan-keterangan"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="data-pengajuan" style="display: none">
                         <!-- sisa saldo dan dana disetujui -->
                         <div class="row">
