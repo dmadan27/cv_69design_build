@@ -994,11 +994,11 @@ JOIN menu m ON m.id = am.menu_id;
 
 -- View proyek dashboard
     CREATE OR REPLACE VIEW v_proyek_list AS
-    SELECT id, pemilik, tgl, pembangunan, kota, SUM(total+cco) AS 'total', progress, status
-        FROM proyek
--- End View proyek dashboard
+        SELECT id, pemilik, tgl, pembangunan, kota, SUM(total+cco) AS 'total', progress, status
+            FROM proyek
+-- End View proyek list
 
-# End View Dashboard #
+# End View Proyek List #
 
 
 
