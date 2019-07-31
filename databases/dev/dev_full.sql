@@ -990,6 +990,18 @@ JOIN menu m ON m.id = am.menu_id;
 
 # End View Dashboard #
 
+# View List Proyek #
+
+-- View proyek dashboard
+    CREATE OR REPLACE VIEW v_proyek_list AS
+        SELECT id, pemilik, tgl, pembangunan, kota, SUM(total+cco) AS 'total', progress, status
+            FROM proyek
+-- End View proyek list
+
+# End View Proyek List #
+
+
+
 # Procedure, Function, and Trigger Distributor #
 
 -- Procedure Tambah Distributor

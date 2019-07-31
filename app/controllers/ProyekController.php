@@ -77,8 +77,8 @@ class Proyek extends Controller
 	public function get_list() {
 		if($_SERVER['REQUEST_METHOD'] == "POST") {
 			$config_dataTable = array(
-				'tabel' => 'proyek',
-				'kolomOrder' => array(null, 'id', 'pemilik', 'tgl', 'pembangunan', 'kota', 'total', 'progress', 'status', null),
+				'tabel' => 'v_proyek_list',
+				'kolomOrder' => array(null, 'id', 'pemilik', 'tgl', 'pembangunan', 'kota', 'total', 'progress', 'status',null),
 				'kolomCari' => array('id', 'pemilik', 'tgl', 'pembangunan', 'luas_area', 'kota', 'total', 'status', 'progress'),
 				'orderBy' => array('id' => 'desc', 'status' => 'asc'),
 				'kondisi' => false,
