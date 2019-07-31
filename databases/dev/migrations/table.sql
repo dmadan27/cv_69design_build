@@ -735,6 +735,7 @@
             status_laporan CHAR(1) DEFAULT NULL, -- status laporan, default set null
                             -- 0: 'BELUM DIKERJAKAN', 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI', 4: 'DITOLAK'
             -- status_laporan_id INT UNSIGNED DEFAULT NULL,
+            ket TEXT DEFAULT NULL,
 
             created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

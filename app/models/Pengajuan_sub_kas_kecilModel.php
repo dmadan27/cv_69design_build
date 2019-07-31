@@ -163,13 +163,14 @@
 			try {
 				$this->koneksi->beginTransaction();
 
-				$query	= "UPDATE pengajuan_sub_kas_kecil SET status = :status, modified_by = :modified_by WHERE id = :id";
+				$query	= "UPDATE pengajuan_sub_kas_kecil SET status = :status, ket = :ket, modified_by = :modified_by WHERE id = :id";
 
 				$statment = $this->koneksi->prepare($query);
 				$statment->execute(
 					array(
 						':id' => $data['id'],
 						':status' => $data['status'],
+						':ket' => $data['ket'],
 						':modified_by' => $data['modified_by']
 					)
 				);
