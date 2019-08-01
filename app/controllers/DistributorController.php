@@ -21,14 +21,15 @@ class Distributor extends Controller {
 		$this->model('DataTableModel');
 		$this->helper();
 		$this->validation();
-		$this->excel();
 	}
 
 	/**
 	 * Method pertama kali yang diakses
 	 */
 	public function index() {
-		$this->list();
+		if($_SESSION['sess_level'] === 'KAS BESAR' 
+			|| $_SESSION['sess_level'] === 'OWNER') { $this->list(); }
+		else { $this->helper->requestError(403); }
 	}
 
 	/**
@@ -40,11 +41,13 @@ class Distributor extends Controller {
 		// set config untuk layouting
 		$css = array(
 			'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+			'assets/bower_components/select2/dist/css/select2.min.css'
 		);
 		$js = array(
 			'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 			'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 			'assets/plugins/input-mask/jquery.inputmask.bundle.js',
+			'assets/bower_components/select2/dist/js/select2.full.min.js',
 			'assets/js/library/export.js',
 			'app/views/distributor/js/initList.js',
 			'app/views/distributor/js/initForm.js',
@@ -87,7 +90,8 @@ class Distributor extends Controller {
 			foreach($dataDistributor as $row) {
 				$no_urut++;
 
-				$status = ($row['status'] == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : '<span class="label label-danger">'.$row['status'].'</span>';
+				$status = ($row['status'] == "AKTIF") ? '<span class="label label-success">'.$row['status'].'</span>' : 
+														'<span class="label label-danger">'.$row['status'].'</span>';
 
 				// button aksi
 				$aksiDetail = '<button onclick="getView('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-info btn-flat" title="Lihat Detail"><i class="fa fa-eye"></i></button>';
@@ -122,7 +126,7 @@ class Distributor extends Controller {
 
 			echo json_encode($output);
 		}
-		else { die(ACCESS_DENIED); }	
+		else { $this->helper->requestError(403, true); }	
 	}
 
 	/**
@@ -200,9 +204,7 @@ class Distributor extends Controller {
 
 			echo json_encode($output);	
 		}
-		else { die(ACCESS_DENIED); }
-		
-		
+		else { $this->helper->requestError(403, true); }
 	}
 
 	/**
@@ -218,7 +220,7 @@ class Distributor extends Controller {
 
 			echo json_encode($data);
 		}
-		else { die(ACCESS_DENIED); }
+		else { $this->helper->requestError(403, true); }
 
 	}
 
@@ -259,7 +261,6 @@ class Distributor extends Controller {
 						'modified_by' => $_SESSION['sess_email']
 					);
 
-					// update bank
 					$update = $this->DistributorModel->update($data);
 					if($update['success']) {
 						$this->success = true;
@@ -297,7 +298,7 @@ class Distributor extends Controller {
 
 			echo json_encode($output);
 		}
-		else { die(ACCESS_DENIED); }
+		else { $this->helper->requestError(403, true); }
 	}
 
 	/**
@@ -350,7 +351,7 @@ class Distributor extends Controller {
 
 			$this->layout('distributor/view', $config, $data);
 		}
-		else { die(ACCESS_DENIED); }
+		else { $this->helper->requestError(403); }
 	}
 
 	/**
@@ -388,30 +389,27 @@ class Distributor extends Controller {
 				'notif' => $this->notif
 			));
 		}
-		else { die(ACCESS_DENIED); }
+		else { $this->helper->requestError(403, true); }
 	}
 
 	/**
-	 * Fungsi generate id otomatis
+	 * Method getIncrement
 	 */
-	public function get_last_id() {
+	public function get_increment() {
 		if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
-			$data = !empty($this->DistributorModel->getLastID()['id']) ? $this->DistributorModel->getLastID()['id'] : false;
-			
-			if(!$data) { $id = 'DIS0001'; }
-			else {
-				$kode = 'DIS';
-				$noUrut = (int)substr($data, 3, 4);
-				$noUrut++;
 
-				$id = $kode.sprintf("%04s", $noUrut);
-				// print_r($data);
-				// exit;
-			}
+			$this->model('IncrementModel');
+            $increment_number = '';
+            $increment = $this->IncrementModel->get_increment('distributor');
+            
+            if($increment['success']) {
+                $getMask = explode('-', $increment['mask']);
+                $increment_number = $getMask[0].'-'.sprintf("%04s", $increment['increment']);
+            }
 
-			echo json_encode($id);
+            echo json_encode($increment_number);
 		}
-		else { die(ACCESS_DENIED); }
+		else { $this->helper->requestError(403, true); }
 	}
 
 	/**

@@ -1,31 +1,13 @@
 $(document).ready(function(){
-	// set status
-	setStatus();
-	// set jenis HERE !!
-	//setJenis();
-
-	
-	$('#id').prop('disabled', true);
-	// $('#nama').prop('disabled', true);
-
-
-
-	$('#submit_distributor').prop('disabled', true);
-	
+	init();
 
 	// button tambah
-	$('#tambah').on('click', function(){
-		resetForm();
-		
-		generateID();
-		$('#submit_distributor').prop('value', 'action-add');
-		$('#submit_distributor').prop('disabled', false);
-		$('#submit_distributor').html('Simpan Data');
-		$('#modalDistributor').modal();
+	$('#tambah').on('click', function() {
+		onClickAdd();
 	});
 
 	// submit bank
-	$('#form_distributor').submit(function(e){
+	$('#form_distributor').submit(function(e) {
 		e.preventDefault();
 		submit();
 
@@ -33,27 +15,51 @@ $(document).ready(function(){
 	});
 
 	// on change field
-	$('.field').on('change', function(){
-		if(this.value !== ""){
-			$('.field-'+this.id).removeClass('has-error').addClass('has-success');
-			$(".pesan-"+this.id).text('');
-		}
-		else{
-			$('.field-'+this.id).removeClass('has-error').removeClass('has-success');
-			$(".pesan-"+this.id).text('');	
-		}
+	$('.field').on('change', function() {
+		onChangeField(this);
 	});
 
-
-
 });
+
+/**
+ * 
+ */
+function init() {
+	$('#status').select2({
+    	placeholder: "Pilih Status",
+		allowClear: true
+	});
+
+	setStatus();
+	
+	$('#id').prop('disabled', true);
+	$('#submit_distributor').prop('disabled', true);
+}
+
+/**
+ * 
+ */
+function onClickAdd() {
+	resetForm();
+		
+	getLastIncrement(function(response) {
+		if(response.success) {
+			$('#id').val(response.data);
+		}
+
+		$('#submit_distributor').prop('value', 'action-add');
+		$('#submit_distributor').prop('disabled', false);
+		$('#submit_distributor').html('Simpan Data');
+		$('#modalDistributor').modal();
+	});
+}
 
 /**
 * Fungsi getDataForm()
 * untuk mendapatkan semua value di field
 * return berupa object data
 */
-function getDataForm(){
+function getDataForm() {
 	var data = new FormData();
 
 	if($('#submit_distributor').val().trim().toLowerCase() == "action-edit"){
@@ -75,15 +81,13 @@ function getDataForm(){
 	data.append('status', $('#status').val().trim()); // status distributor
 	data.append('action', $('#submit_distributor').val().trim()); // action
 
-	
-
 	return data;
 }
 
 /**
 *
 */
-function submit(edit_view){
+function submit() {
 	var data = getDataForm();
 
 	$.ajax({
@@ -115,7 +119,11 @@ function submit(edit_view){
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling
 			$("#modalDistributor").modal('hide');
-            console.log(jqXHR, textStatus, errorThrown);
+			console.log('%c Response Error submit: ', 'color: red; font-weight: bold', {
+				jqXHR: jqXHR, 
+				textStatus: textStatus, 
+				errorThrown: errorThrown
+			});
             swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
         }
 	})
@@ -124,7 +132,7 @@ function submit(edit_view){
 /**
 *
 */
-function getEdit(id){
+function getEdit(id) {
 	resetForm();
 	
 	$('#submit_distributor').prop('value', 'action-edit');
@@ -136,27 +144,32 @@ function getEdit(id){
 		type: 'post',
 		dataType: 'json',
 		data: {},
-		beforeSend: function(){
+		beforeSend: function() {
 		},
-		success: function(output){
-			if(output){
+		success: function(response) {
+			console.log('%c Response getEdit Distributor: ', 'color: green; font-weight: bold', response);
+
+			if(response) {
 				$('#modalDistributor').modal();
-				setValue(output);
+				setValue(response);
 			}	
 		},
-		error: function (jqXHR, textStatus, errorThrown){ // error handling
-            console.log(jqXHR, textStatus, errorThrown);
+		error: function (jqXHR, textStatus, errorThrown) {
+            console.log('%c Response Error getEdit: ', 'color: red; font-weight: bold', {
+				jqXHR: jqXHR, 
+				textStatus: textStatus, 
+				errorThrown: errorThrown
+			});
             swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
         }
 	})
-	
 }
 
 /**
 *
 */
-function setError(error){
-	$.each(error, function(index, item){
+function setError(error) {
+	$.each(error, function(index, item) {
 		console.log(index);
 
 		if(item != ""){
@@ -173,9 +186,9 @@ function setError(error){
 /**
 *
 */
-function setValue(value){
-	$.each(value, function(index, item){
-		item = (parseFloat(item)) ? (parseFloat(item)) : item;
+function setValue(value) {
+	$.each(value, function(index, item) {
+		item = (parseFloat(item) && index != 'no_telp') ? (parseFloat(item)) : item;
 		$('#'+index).val(item);
 	});
 }
@@ -183,7 +196,7 @@ function setValue(value){
 /**
 *
 */
-function setStatus(){
+function setStatus() {
 	var status = [
 		{value: "AKTIF", text: "AKTIF"},
 		{value: "NONAKTIF", text: "NONAKTIF"},
@@ -191,35 +204,20 @@ function setStatus(){
 
 	$.each(status, function(index, item){
 		var option = new Option(item.text, item.value);
-		$("#status").append(option);
+		$("#status").append(option).trigger('change');
 	});
+
+	$('#status').val(null).trigger('change');
 }
 
 /**
-*
-*/
-function setJenis(){
-	var jenis = [
-		{value: "TEKNIS", text: "TEKNIS"},
-		{value: "NONTEKNIS", text: "NONTEKNIS"},
-	];
-
-	$.each(jenis, function(index, item){
-		var option = new Option(item.text, item.value);
-		$("#jenis").append(option);
-	});
-}
-
-
-
-
-/**
-*
-*/
-function resetForm(){
+ * 
+ */
+function resetForm() {
 	// trigger reset form
 	$('#form_distributor').trigger('reset');
-
+	$('#status').val(null).trigger('change');
+	
 	// hapus semua pesan
 	$('.pesan').text('');
 
@@ -228,21 +226,34 @@ function resetForm(){
 }
 
 /**
-*
-*/
-function generateID(){
+ * Method getLastIncrement
+ */
+function getLastIncrement(callback) {
 	$.ajax({
-		url: BASE_URL+'distributor/get-last-id/',
+		url: BASE_URL+'distributor/get-increment/',
 		type: 'post',
 		dataType: 'json',
 		data: {},
-		beforeSend: function(){},
-		success: function(output){
-			$('#id').val(output);	
+		beforeSend: function() {
 		},
-		error: function (jqXHR, textStatus, errorThrown){ // error handling
-            console.log(jqXHR, textStatus, errorThrown);
-            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+		success: function(response) {
+			console.log('%c Response getLastIncrement: ', 'color: green; font-weight: bold', response);
+			
+			callback({
+				success: true,
+				data: response
+			});	
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+            console.log('%c Response Error getLastIncrement: ', 'color: red; font-weight: bold', {
+				jqXHR: jqXHR, 
+				textStatus: textStatus, 
+				errorThrown: errorThrown
+			});
+
+			swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+
+			callback({success: false});
         }
 	})
 }

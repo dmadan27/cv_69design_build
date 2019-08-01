@@ -14,6 +14,7 @@
 		</ol>
 		<!-- end breadcrumb -->
 	</section>
+	
 	<!-- Main content -->
 	<section class="content container-fluid">
 		<div class="row">
@@ -144,7 +145,4 @@
 		</div>
 	</section>
 	<!-- /.content -->
-
-	
-
 </div>
