@@ -352,7 +352,7 @@ class Bank extends Controller
 	 * @param id {string}
 	 * @return result 
 	 */
-	public function delete($id){
+	public function delete($id) {
 		if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
 			$id = strtoupper($id);
 			if(empty($id) || $id == "") { $this->redirect(BASE_URL."bank/"); }
