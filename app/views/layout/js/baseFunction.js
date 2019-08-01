@@ -1,3 +1,5 @@
+const notifAccessDenied = { title: 'Pesan Pemberitahuan', message: 'Akses Ditolak', type: 'warning' };
+
 /**
  * Method setActiveMenu
  * @param {object} url windows.location.href
