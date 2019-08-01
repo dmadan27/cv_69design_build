@@ -268,6 +268,7 @@
 							$data = array(
 								'id' => $this->validation->validInput($data['id']),
 								'status' => $this->validation->validInput($data['status']),
+								'ket' => $this->validation->validInput($data['ket']),
 								'modified_by' => $_SESSION['sess_email']
 							);
 	
@@ -279,11 +280,12 @@
 								// KIRIM NOTIF KE ANDROID
 								$id_skk = explode("-",$data['id'])[2];
 								$status_pengajuan = $this->helper->getNamaStatusPengajuanSKK($data['status']);
+								$body = ($data['status'] == "5") ? "Pengajuan ".$data['id']." ditolak karena ".$data['ket'] : "Pengajuan ".$data['id']." ".$status_pengajuan.".";
 								$this->helper->sendNotif(array(
 									'show' => "1",
 									'id_skk' => $id_skk,
 									'title' => "Pengajuan ".$status_pengajuan,
-									'body' => "Pengajuan ".$data['id']." ".$status_pengajuan.".",
+									'body' => $body,
 									'refresh' => "1"
 								));
 

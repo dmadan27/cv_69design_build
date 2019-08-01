@@ -57,6 +57,7 @@
 			status = '3',
 			status_laporan = '0',
 			tgl_laporan = tgl_param,
+			ket = '-',
 			modified_by = modified_by_param
 		WHERE id = id_param;
 

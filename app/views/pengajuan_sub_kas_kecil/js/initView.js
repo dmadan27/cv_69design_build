@@ -1,3 +1,4 @@
+var ket_pengajuan_skk = "";
 $(document).ready(function(){
     var table_detail = $("#table_detail").DataTable({
         "language" : {
@@ -55,8 +56,21 @@ $(document).ready(function(){
 	});
 
 	$('#status_order').on('change', function(){
-		if(this.value === "3") { $('.data-pengajuan').slideDown(); }
-		else { $('.data-pengajuan').slideUp(); }
+		$('#submit_pengajuan_skc').slideDown();
+		if(this.value === "3") { 
+			$('.data-keterangan').slideUp();
+			$('.data-pengajuan').slideDown(); 
+		} else { 
+			$('.data-pengajuan').slideUp(); 
+			$('.data-keterangan').slideDown();
+			$('#keterangan').attr("readonly", false);
+
+			if (this.value === "1") {
+				$('#keterangan').attr("readonly", true);
+				$('#keterangan').val(ket_pengajuan_skk);
+				$('#submit_pengajuan_skc').slideUp();
+			}
+		}
 	});
 });
 
@@ -103,6 +117,7 @@ function getDataForm(){
 	data.append('status', status); // status
 	data.append('action', $('#submit_pengajuan_skc').val().trim()); // action
 	data.append('dana_disetujui', dana_disetujui); // dana disetujui
+	data.append('keterangan', $('#keterangan').val().trim() || "-"); // keterangan
 	
 	return data;
 }
@@ -292,6 +307,8 @@ function setError(error){
  * 
  */
 function setValue(value) {	
+	ket_pengajuan_skk = value.ket;
+
 	$('#id').val(value.id);
 	$('#id_sub_kas_kecil').val(value.id_sub_kas_kecil);
 	$('#sub_kas_kecil').val(value.id_sub_kas_kecil + " - " + value.nama_skk);
