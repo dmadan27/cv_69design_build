@@ -3,20 +3,7 @@ $(document).ready(function(){
 
 	// event on click button tambah
 	$('#tambah').on('click', function(){
-		
-		resetForm();
-		$('.field-saldo').css('display', 'block');
-		$('.field-password').css('display', 'block');
-		$('.field-email').css('display', 'block');
-		$('.field-password_confirm').css('display', 'block');
-		$('.field-foto').css('display', 'block');
-
-		generateID();
-		$('#submit_kas_besar').prop('value', 'action-add');
-		$('#submit_kas_besar').prop('disabled', false);
-		$('#submit_kas_besar').html('Simpan Data');	
-		$('#modalKasBesar').modal();
-
+		onClickAdd();
 	});
 
 	// event on submit
@@ -29,14 +16,7 @@ $(document).ready(function(){
 
 	// on change field
 	$('.field').on('change', function(){
-		if(this.value !== ""){
-			$('.field-'+this.id).removeClass('has-error').addClass('has-success');
-			$(".pesan-"+this.id).text('');
-		}
-		else{
-			$('.field-'+this.id).removeClass('has-error').removeClass('has-success');
-			$(".pesan-"+this.id).text('');	
-		}
+		onChangeField(this);
 	});
 
 	// event on change field foto
@@ -56,6 +36,31 @@ function init() {
 	$('#id').prop('disabled', true);
 
 	setStatus();
+}
+
+/**
+ * 
+ */
+function onClickAdd() {
+	resetForm();
+
+	getLastIncrement(function(response) {
+		if(response.success) {
+			$('#id').val(response.data);
+		}
+
+		$('.field-saldo').css('display', 'block');
+		$('.field-password').css('display', 'block');
+		$('.field-email').css('display', 'block');
+		$('.field-password_confirm').css('display', 'block');
+		$('.field-foto').css('display', 'block');
+
+		
+		$('#submit_kas_besar').prop('value', 'action-add');
+		$('#submit_kas_besar').prop('disabled', false);
+		$('#submit_kas_besar').html('Simpan Data');	
+		$('#modalKasBesar').modal();
+	});
 }
 
 /**
@@ -242,24 +247,36 @@ function resetForm(){
 }
 
 /**
- * Function generateID
+ * Function getLastIncrement
  * Proses request ID kas besar ke server
  * @return {object} response
  */
-function generateID(){
+function getLastIncrement(callback) {
 	$.ajax({
-		url: BASE_URL+'kas-besar/get-last-id/',
+		url: BASE_URL+'kas-besar/get-increment/',
 		type: 'post',
 		dataType: 'json',
 		data: {},
-		beforeSend: function(){},
-		success: function(response){
-			console.log('%cResponse generateID Kas Besar: ', 'color: blue; font-style: italic', response);
-			$('#id').val(response);	
+		beforeSend: function() {
 		},
-		error: function (jqXHR, textStatus, errorThrown){
-            console.log('%cResponse Error generateID Kas Besar: ', 'color: red; font-style: italic', jqXHR, textStatus, errorThrown);
-            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+		success: function(response) {
+			console.log('%c Response getLastIncrement: ', 'color: green; font-weight: bold', response);
+			
+			callback({
+				success: true,
+				data: response
+			});	
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+            console.log('%c Response Error getLastIncrement: ', 'color: red; font-weight: bold', {
+				jqXHR: jqXHR, 
+				textStatus: textStatus, 
+				errorThrown: errorThrown
+			});
+
+			swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+
+			callback({success: false});
         }
 	})
 }
