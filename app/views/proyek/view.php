@@ -351,7 +351,7 @@
                     	<div class="row">
                     		<div class="col-md-12 col-xs-12">
                     			<div class="btn-group">
-									<a href="<?= BASE_URL.'proyek/'; ?>" class="btn btn-default btn-flat btn-lg" role="button">Kembali</a>
+									<button class="btn btn-default btn-flat btn-lg" onclick="goBack()">Kembali</button>
 	                    			<?php
                                         if($_SESSION['sess_level'] === 'KAS BESAR') {
                                             ?>

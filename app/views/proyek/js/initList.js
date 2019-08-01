@@ -142,11 +142,10 @@ function getDelete(id) {
  * 
  */
 function add() {
-    var notif = { title: 'Pesan Pemberitahuan', message: 'Akses Ditolak', type: 'warning' };
     if (LEVEL === 'KAS BESAR') {
         window.location.href = BASE_URL + 'proyek/form/';
     }
     else {
-        setNotif(notif, 'swal');
+        setNotif(nofitAccessDenied, 'swal');
     }
 }

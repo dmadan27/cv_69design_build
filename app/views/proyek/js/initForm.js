@@ -1,9 +1,6 @@
 $(document).ready(function () {
 	init();
 
-	if($('#submit_proyek').val() == 'action-add') { generateID(); }
-	else if($('#submit_proyek').val() == 'action-edit') { getEdit($('#id').val().trim()); }
-
  	// event on change field
     $('.field').on('change', function(){
     	onChangeField(this);
@@ -127,6 +124,9 @@ function init(){
 	setStatusDetail();
 	setSkk();
 	setBank();
+
+	if($('#submit_proyek').val() == 'action-add') { generateID(); }
+	else if($('#submit_proyek').val() == 'action-edit') { getEdit($('#id').val().trim()); }
 }
 
 // ===================== Function skk ======================== //

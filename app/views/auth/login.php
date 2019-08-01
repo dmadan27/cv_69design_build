@@ -90,6 +90,6 @@
 			});
 		</script>
 		<!-- js custom -->
-		<script type="text/javascript" src="<?= BASE_URL."app/views/login/js/initLogin.js" ?>"></script>
+		<script type="text/javascript" src="<?= BASE_URL."app/views/auth/login/js/initLogin.js" ?>"></script>
 	</body>
 </html>
