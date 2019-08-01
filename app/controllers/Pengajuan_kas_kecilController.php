@@ -501,7 +501,7 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 			// nama pengajuan kas kecil
 			$this->validation->set_rules($data['nama'], 'Nama Pengajuan', 'nama', 'string | 1 | 255 | required');
 			// total
-			$this->validation->set_rules($data['total'], 'Total Pengajuan', 'total', 'nilai | 1 | 99999999 | required');
+			$this->validation->set_rules($data['total'], 'Total Pengajuan', 'total', 'nilai | 1 | 99999999999 | required');
 				
 		} else if($data['action'] == 'action-edit'){
 

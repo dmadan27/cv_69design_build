@@ -947,9 +947,9 @@ class Operasional_proyek extends CrudAbstract{
 			// jenis
 			$this->validation->set_rules($data['jenis'], 'Jenis Pengajuan', 'jenis', 'string | 1 | 255 | required');
 			// total
-			$this->validation->set_rules($data['total'], 'Total Pengajuan', 'total', 'nilai | 1 | 9999999 | required');
+			$this->validation->set_rules($data['total'], 'Total Pengajuan', 'total', 'nilai | 1 | 99999999999 | required');
 			// sisa
-			$this->validation->set_rules($data['sisa'], 'Sisa Pengajuan', 'sisa', 'nilai | 0 | 9999999 | required');
+			$this->validation->set_rules($data['sisa'], 'Sisa Pengajuan', 'sisa', 'nilai | 0 | 99999999999 | required');
 			// status
 			$this->validation->set_rules($data['jenis'], 'Status Pengajuan', 'status', 'string | 1 | 255 | required');
 			// status lunas
@@ -983,9 +983,9 @@ class Operasional_proyek extends CrudAbstract{
 			// jenis
 			$this->validation->set_rules($data['jenis'], 'Jenis Pengajuan', 'jenis', 'string | 1 | 255 | required');
 			// total
-			$this->validation->set_rules($data['total'], 'Total Pengajuan', 'total', 'nilai | 1 | 9999999 | required');
+			$this->validation->set_rules($data['total'], 'Total Pengajuan', 'total', 'nilai | 1 | 99999999999 | required');
 			// sisa
-			$this->validation->set_rules($data['sisa'], 'Sisa Pengajuan', 'sisa', 'nilai | 0 | 9999999 | required');
+			$this->validation->set_rules($data['sisa'], 'Sisa Pengajuan', 'sisa', 'nilai | 0 | 99999999999 | required');
 			// status
 			$this->validation->set_rules($data['jenis'], 'Status Pengajuan', 'status', 'string | 1 | 255 | required');
 			// status lunas

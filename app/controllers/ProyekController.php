@@ -988,7 +988,7 @@ class Proyek extends Controller
 		// id bank
 		$this->validation->set_rules($data['id_bank'], 'Bank', 'id_bank', 'string | 1 | 1 | required');
 		// total
-		$this->validation->set_rules($data['total_detail'], 'Total Angsuran', 'total_detail', 'nilai | 1 | 9999999999 | required');
+		$this->validation->set_rules($data['total_detail'], 'Total Angsuran', 'total_detail', 'nilai | 1 | 99999999999 | required');
 		
 
 		return $this->validation->run();
