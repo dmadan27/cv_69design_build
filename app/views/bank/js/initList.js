@@ -37,12 +37,10 @@ var bankTable = $("#bankTable").DataTable({
     }
 });
 
-const nofitAccessDenied = { title: 'Pesan Pemberitahuan', message: 'Akses Ditolak', type: 'warning' };
-
 $(document).ready(function() {
 
     // btn Export
-    $('#exportExcel').on('click', async function(){
+    $('#exportExcel').on('click', async function() {
         console.log('Button Export Excel Bank clicked...');
         
         $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
@@ -75,10 +73,15 @@ $(document).ready(function() {
  * Proses request data detail bank
  * @param {string} id 
  */
-function getView(id){
+function getView(id) {
     console.log('Button View Bank clicked...');
 
-	window.location.href = BASE_URL+'bank/detail/'+id.toLowerCase();
+    if(LEVEL === 'KAS BESAR' || LEVEL === 'OWNER') {
+        window.location.href = BASE_URL+'bank/detail/'+id.toLowerCase();
+        return;
+    }
+
+    setNotif(notifAccessDenied, 'swal');
 }
 
 /**
@@ -87,12 +90,12 @@ function getView(id){
  * @param {string} id
  * @return {object} response
  */
-function getDelete(id){
+function getDelete(id) {
     console.log('Button Hapus Bank clicked...');
 
     if(LEVEL !== 'KAS BESAR') {
-        setNotif(notifAccessDenied, 'swal')
-        return
+        setNotif(notifAccessDenied, 'swal');
+        return;
     }
 
 	swal({
@@ -110,15 +113,26 @@ function getDelete(id){
 			type: 'post',
 			dataType: 'json',
 			data: {},
-			beforeSend: function(){
+			beforeSend: function() {
+                $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
 			},
-			success: function(response){
-				console.log('Response getDelete Bank: ', response);
-				if(response.success) { bankTable.ajax.reload(); }
+			success: function(response) {
+				console.log('%c Response getDelete Bank: ', 'color: green; font-weight: bold', response);
+                
+                $('.box .overlay').remove();
+
+                if(response.success) { bankTable.ajax.reload(); }
                 swal(response.notif.title, response.notif.message, response.notif.type);
 			},
-			error: function (jqXHR, textStatus, errorThrown){ // error handling
-	            console.log('Response Error getDelete Bank', jqXHR, textStatus, errorThrown);
+			error: function (jqXHR, textStatus, errorThrown) {
+	            console.log('%c Response Error getDelete: ', 'color: red; font-weight: bold', {
+                    jqXHR: jqXHR, 
+                    textStatus: textStatus, 
+                    errorThrown: errorThrown
+                });
+
+                $('.box .overlay').remove();
+
                 swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
                 bankTable.ajax.reload();
 	        }

@@ -36,7 +36,7 @@
 					<!-- status -->
 					<div class="form-group field-status has-feedback">
 						<label for="status">Status</label>
-						<select id="status" class="form-control field"></select>
+						<select id="status" class="form-control field select2" style="width: 100%"></select>
 						<span class="help-block small pesan pesan-status"></span>
 					</div>					
 				</div>

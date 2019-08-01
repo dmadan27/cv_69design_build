@@ -151,9 +151,11 @@ function getDataForm(){
 		
 	if($('#submit_bank').val().trim().toLowerCase() == "action-edit") data.append('id', $('#id').val().trim());
 
+	let status = ($('#status').val() != "" && $('#status').val() != null) ? $('#status').val().trim() : "";
+
     data.append('nama', $('#nama').val().trim()); // nama bank
     data.append('saldo', saldo); // saldo
-	data.append('status', $('#status').val().trim()); // status bank
+	data.append('status', status); // status bank
 	data.append('action', $('#submit_bank').val().trim()); // action
 
 	return data;

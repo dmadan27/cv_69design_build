@@ -71,7 +71,7 @@
 		</div>			
 	</section>
 	<!-- /.content -->
-
-	<!-- load form -->
-	<?php include_once('form.php'); ?>
 </div>
+
+<!-- load form -->
+<?php include_once('form.php'); ?>

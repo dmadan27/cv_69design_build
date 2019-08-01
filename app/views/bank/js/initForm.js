@@ -1,25 +1,14 @@
-$(document).ready(function(){
+$(document).ready(function() {
 	init();
 
 	// event on click button tambah
 	$('#tambah').on('click', function() {
 		console.log('Button Tambah Bank Clicked...');
-		
-		if(LEVEL !== 'KAS BESAR') {
-			setNotif(notifAccessDenied, 'swal')
-			return
-		}
-
-		resetForm();
-		$('.field-saldo').css('display', 'block');
-		$('#submit_bank').prop('value', 'action-add');
-		$('#submit_bank').prop('disabled', false);
-		$('#submit_bank').html('Simpan Data');
-		$('#modalBank').modal({backdrop: 'static'});
+		onClickAdd();
 	});
 
 	// event on submit form bank
-	$('#form_bank').submit(function(e){
+	$('#form_bank').submit(function(e) {
 		console.log('Submit Bank Clicked...');
 		
 		e.preventDefault();
@@ -29,8 +18,8 @@ $(document).ready(function(){
 	});
 
 	// event on change field
-	$('.field').on('change', function(){
-		onChangeField(this)
+	$('.field').on('change', function() {
+		onChangeField(this);
 	});
 });
 
@@ -38,6 +27,11 @@ $(document).ready(function(){
  * 
  */
 function init() {
+	$('#status').select2({
+    	placeholder: "Pilih Status",
+		allowClear: true
+	});
+
 	setStatus();
 	
 	// input mask
@@ -55,11 +49,28 @@ function init() {
 }
 
 /**
+ * 
+ */
+function onClickAdd() {
+	if(LEVEL !== 'KAS BESAR') {
+		setNotif(notifAccessDenied, 'swal')
+		return
+	}
+
+	resetForm();
+	$('.field-saldo').css('display', 'block');
+	$('#submit_bank').prop('value', 'action-add');
+	$('#submit_bank').prop('disabled', false);
+	$('#submit_bank').html('Simpan Data');
+	$('#modalBank').modal({backdrop: 'static'});
+}
+
+/**
  * Function getDataForm
  * Proses mendapatkan semua value di field
  * @return {FormData} data
  */
-function getDataForm(){
+function getDataForm() {
 	var data = new FormData();
 
 	var saldo = ($('#saldo').inputmask) ? 
@@ -70,9 +81,11 @@ function getDataForm(){
 		
 	if($('#submit_bank').val().trim().toLowerCase() == "action-edit") data.append('id', $('#id').val().trim());
 
+	let status = ($('#status').val() != "" && $('#status').val() != null) ? $('#status').val().trim() : "";
+	
 	data.append('nama', $('#nama').val().trim()); // nama bank
 	data.append('saldo', saldo); // saldo awal
-	data.append('status', $('#status').val().trim()); // status bank
+	data.append('status', status); // status bank
 	data.append('action', $('#submit_bank').val().trim()); // action
 
 	return data;
@@ -83,7 +96,7 @@ function getDataForm(){
  * Proses submit data ke server baik saat add / edit
  * @return {object} response
  */
-function submit(){
+function submit() {
 	var data = getDataForm();
 
 	$.ajax({
@@ -127,7 +140,7 @@ function submit(){
  * @param {string} id
  * @return {object} response
  */
-function getEdit(id){
+function getEdit(id) {
 	console.log('edit clicked');
 	resetForm();
 	$('.field-saldo').css('display', 'none');
@@ -182,7 +195,12 @@ function setError(error){
 function setValue(value){
 	$.each(value, function(index, item){
 		item = (parseFloat(item)) ? (parseFloat(item)) : item;
-		$('#'+index).val(item);
+		if(index == 'status') {
+			$('#'+index).val(item).trigger('change');
+		} 
+		else {
+			$('#'+index).val(item);
+		}
 	});
 }
 
@@ -190,7 +208,7 @@ function setValue(value){
  * Function setStatus
  * Proses pengisian value pada select status
  */
-function setStatus(){
+function setStatus() {
 	var status = [
 		{value: "AKTIF", text: "AKTIF"},
 		{value: "NONAKTIF", text: "NONAKTIF"},
@@ -198,17 +216,20 @@ function setStatus(){
 
 	$.each(status, function(index, item){
 		var option = new Option(item.text, item.value);
-		$("#status").append(option);
+		$("#status").append(option).trigger('change');
 	});
+
+	$('#status').val(null).trigger('change');
 }
 
 /**
  * Function resetForm
  * Proses reset form
  */
-function resetForm(){
+function resetForm() {
 	// trigger reset form
 	$('#form_bank').trigger('reset');
+	$('#status').val(null).trigger('change');
 
 	// hapus semua pesan
 	$('.pesan').text('');

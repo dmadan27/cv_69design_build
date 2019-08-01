@@ -24,7 +24,6 @@ class Bank extends Controller
 		$this->model('DataTableModel');
 		$this->helper();
 		$this->validation();
-		$this->excel_v2();
 	}	
 
 	/**
@@ -34,7 +33,7 @@ class Bank extends Controller
 	public function index() {
 		if($_SESSION['sess_level'] === 'KAS BESAR' 
 			|| $_SESSION['sess_level'] === 'OWNER') { $this->list(); } 
-		else { die(ACCESS_DENIED); }
+		else { $this->helper->requestError(403); }
 	}
 
 	/**
@@ -45,11 +44,13 @@ class Bank extends Controller
 		// set config untuk layouting
 		$css = array(
 			'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+			'assets/bower_components/select2/dist/css/select2.min.css',
 		);
 		$js = array(
 			'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
 			'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
 			'assets/plugins/input-mask/jquery.inputmask.bundle.js',
+			'assets/bower_components/select2/dist/js/select2.full.min.js',
 			'assets/js/library/export.js',
 			'app/views/bank/js/initList.js',
 			'app/views/bank/js/initForm.js',
@@ -128,7 +129,7 @@ class Bank extends Controller
 
 			echo json_encode($output);
 		}
-		else { die(ACCESS_DENIED); }				
+		else { $this->helper->requestError(403, true); }				
 	}
 
 	/**
@@ -200,7 +201,7 @@ class Bank extends Controller
 
 			echo json_encode($output);	
 		}
-		else { die(ACCESS_DENIED); }
+		else { $this->helper->requestError(403, true); }
 	}
 
 	/**
@@ -216,7 +217,7 @@ class Bank extends Controller
 			
 			echo json_encode($data);
 		}
-		else { die(ACCESS_DENIED); }
+		else { $this->helper->requestError(403, true); }
 	}
 
 	/**
@@ -288,7 +289,7 @@ class Bank extends Controller
 
 			echo json_encode($output);
 		}
-		else { die(ACCESS_DENIED); }
+		else { $this->helper->requestError(403, true); }
 	}
 
 	/**
@@ -342,7 +343,7 @@ class Bank extends Controller
 
 			$this->layout('bank/view', $config, $data);
 		}
-		else { die(ACCESS_DENIED); }
+		else { $this->helper->requestError(403); }
 	}
 
 	/**
@@ -380,7 +381,7 @@ class Bank extends Controller
 				'notif' => $this->notif
 			));
 		}
-		else { die(ACCESS_DENIED); }	
+		else { $this->helper->requestError(403, true); }	
 	}
 
 	/**
@@ -430,7 +431,7 @@ class Bank extends Controller
 
 			echo json_encode($output);
 		}
-		else { die(ACCESS_DENIED); }
+		else { $this->helper->requestError(403, true); }
 	}
 
 	/**
