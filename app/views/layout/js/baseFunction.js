@@ -1,4 +1,9 @@
 const notifAccessDenied = { title: 'Pesan Pemberitahuan', message: 'Akses Ditolak', type: 'warning' };
+const logStyle = {
+    success: 'color: green; font-weight: bold',
+    info: 'color: blue; font-weight: italic',
+    error: 'color: red; font-weight: bold'
+};
 
 /**
  * Method setActiveMenu
