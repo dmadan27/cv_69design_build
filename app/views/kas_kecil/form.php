@@ -96,7 +96,7 @@
                        <!-- status -->
                       <div class="form-group field-status has-feedback">
                         <label for="status">Status</label>
-                        <select name="status" class="form-control field" id="status">
+                        <select name="status" class="form-control field select2" id="status" style="width: 100%">
                         </select>
                         <span class="help-block small pesan pesan-status"></span>
                       </div>
