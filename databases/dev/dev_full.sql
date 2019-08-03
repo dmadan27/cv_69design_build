@@ -28,20 +28,20 @@
         )ENGINE=InnoDb;
     -- End Table level lookup
 
-    -- Table active status lookup
-        DROP TABLE IF EXISTS active_status_lookup;
-        CREATE TABLE IF NOT EXISTS active_status_lookup (
-            id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    -- -- Table active status lookup
+    --     DROP TABLE IF EXISTS active_status_lookup;
+    --     CREATE TABLE IF NOT EXISTS active_status_lookup (
+    --         id INT UNSIGNED NOT NULL AUTO_INCREMENT,
 
-            name VARCHAR(255) NOT NULL,
-            description TEXT DEFAULT NULL,
+    --         name VARCHAR(255) NOT NULL,
+    --         description TEXT DEFAULT NULL,
 
-            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    --         created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    --         modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-            CONSTRAINT pk_active_status_lookup_id PRIMARY KEY(id)
-        )ENGINE=InnoDb;
-    -- End Table active status lookup
+    --         CONSTRAINT pk_active_status_lookup_id PRIMARY KEY(id)
+    --     )ENGINE=InnoDb;
+    -- -- End Table active status lookup
 
     -- Table permission lookup
         DROP TABLE IF EXISTS permission_lookup;
@@ -287,7 +287,7 @@
             no_telp VARCHAR(20) DEFAULT NULL,
             email VARCHAR(50) DEFAULT NULL UNIQUE, -- fk user
             foto TEXT DEFAULT NULL,
-            saldo DOUBLE(12,2) DEFAULT 0, -- saldo kas kecil, default 0
+            saldo DOUBLE(14,2) DEFAULT 0, -- saldo kas kecil, default 0
             status ENUM('AKTIF', 'NONAKTIF') DEFAULT NULL, -- status aktif kas kecil
             -- status_id INT UNSIGNED DEFAULT NULL,
 
@@ -318,7 +318,7 @@
             no_telp VARCHAR(20) DEFAULT NULL,
             email VARCHAR(50) DEFAULT NULL UNIQUE, -- username
             foto TEXT DEFAULT NULL, -- simpan urlnya
-            saldo DOUBLE(12,2) DEFAULT 0, -- saldo master, default 0
+            saldo DOUBLE(14,2) DEFAULT 0, -- saldo master, default 0
             status ENUM('AKTIF', 'NONAKTIF') DEFAULT NULL, -- status aktif sub kas kecil
             -- status_id INT UNSIGNED DEFAULT NULL,
 
@@ -395,7 +395,7 @@
             id INT UNSIGNED NOT NULL AUTO_INCREMENT, -- pk
 
             nama VARCHAR(255) DEFAULT NULL, -- nama bank / jenis bank, Bank BCA, Giro BCA, Mandiri, dll
-            saldo DOUBLE(12,2) DEFAULT 0, -- saldo bank
+            saldo DOUBLE(14,2) DEFAULT 0, -- saldo bank
             status ENUM('AKTIF', 'NONAKTIF') DEFAULT NULL, -- status aktif bank
             -- status_id INT UNSIGNED DEFAULT NULL,
 
@@ -421,9 +421,9 @@
 
             id_bank INT UNSIGNED DEFAULT NULL, -- fk bank
             tgl DATE DEFAULT NULL,
-            uang_masuk DOUBLE(12,2) UNSIGNED DEFAULT 0,
-            uang_keluar DOUBLE(12,2) UNSIGNED DEFAULT 0,
-            saldo DOUBLE(12,2) DEFAULT 0, -- saldo per tanggal
+            uang_masuk DOUBLE(14,2) UNSIGNED DEFAULT 0,
+            uang_keluar DOUBLE(14,2) UNSIGNED DEFAULT 0,
+            saldo DOUBLE(14,2) DEFAULT 0, -- saldo per tanggal
             ket TEXT DEFAULT NULL,
 
             created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -448,9 +448,9 @@
 
             id_kas_kecil VARCHAR(10) DEFAULT NULL, -- fk kas kecil
             tgl DATE DEFAULT NULL,
-            uang_masuk DOUBLE(12,2) UNSIGNED DEFAULT 0,
-            uang_keluar DOUBLE(12,2) UNSIGNED DEFAULT 0,
-            saldo DOUBLE(12,2) DEFAULT 0, -- saldo saat pada mutasi per tanggal
+            uang_masuk DOUBLE(14,2) UNSIGNED DEFAULT 0,
+            uang_keluar DOUBLE(14,2) UNSIGNED DEFAULT 0,
+            saldo DOUBLE(14,2) DEFAULT 0, -- saldo saat pada mutasi per tanggal
             ket TEXT DEFAULT NULL,
 
             created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -475,9 +475,9 @@
 
             id_sub_kas_kecil VARCHAR(10) DEFAULT NULL, -- fk sub kas kecil
             tgl DATE DEFAULT NULL,
-            uang_masuk DOUBLE(12,2) UNSIGNED DEFAULT 0,
-            uang_keluar DOUBLE(12,2) UNSIGNED DEFAULT 0,
-            saldo DOUBLE(12,2) DEFAULT 0, -- saldo saat pada mutasi per tanggal
+            uang_masuk DOUBLE(14,2) UNSIGNED DEFAULT 0,
+            uang_keluar DOUBLE(14,2) UNSIGNED DEFAULT 0,
+            saldo DOUBLE(14,2) DEFAULT 0, -- saldo saat pada mutasi per tanggal
             ket TEXT DEFAULT NULL,
 
             created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -532,9 +532,9 @@
             alamat TEXT DEFAULT NULL,
             kota VARCHAR(100) DEFAULT NULL,
             estimasi SMALLINT UNSIGNED DEFAULT NULL, -- estimasi waktu dalam bulan
-            total DOUBLE(12,2) UNSIGNED DEFAULT 0, -- total nilai rab
-            dp DOUBLE(12,2) UNSIGNED DEFAULT 0, -- dp
-            cco DOUBLE(12,2) UNSIGNED DEFAULT 0, -- change contract order
+            total DOUBLE(14,2) UNSIGNED DEFAULT 0, -- total nilai rab
+            dp DOUBLE(14,2) UNSIGNED DEFAULT 0, -- dp
+            cco DOUBLE(14,2) UNSIGNED DEFAULT 0, -- change contract order
             progress TINYINT UNSIGNED DEFAULT 0,
             status ENUM('SELESAI', 'BERJALAN') DEFAULT NULL, -- status proyek
             -- status_id INT UNSIGNED DEFAULT NULL,
@@ -563,7 +563,7 @@
             id_bank INT UNSIGNED DEFAULT NULL, -- fk bank
             tgl DATE DEFAULT NULL,
             nama VARCHAR(255) DEFAULT NULL, -- nama pembayaran
-            total DOUBLE(12,2) UNSIGNED DEFAULT 0, -- total angsuran
+            total DOUBLE(14,2) UNSIGNED DEFAULT 0, -- total angsuran
             is_DP CHAR(1) DEFAULT '0', -- check DP atau bukan (1: DP, 0: Bukan)
 
             created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -619,7 +619,7 @@
             id_kas_besar VARCHAR(10) DEFAULT NULL,
             tgl DATE DEFAULT NULL,
             nama VARCHAR(255) DEFAULT NULL,
-            nominal DOUBLE(12,2) UNSIGNED DEFAULT 0,
+            nominal DOUBLE(14,2) UNSIGNED DEFAULT 0,
             jenis ENUM('UANG MASUK', 'UANG KELUAR') DEFAULT NULL,
             -- jenis_id INT UNSIGNED DEFAULT NULL,
             ket TEXT DEFAULT NULL,
@@ -655,8 +655,8 @@
             nama VARCHAR(50) DEFAULT NULL, -- nama operasional
             jenis ENUM('TEKNIS', 'NON-TEKNIS') DEFAULT NULL, -- jenis operasional,
             -- jenis_id INT UNSIGNED DEFAULT NULL,
-            total DOUBLE(12,2) UNSIGNED DEFAULT 0, -- total operasional
-            sisa DOUBLE(12,2) UNSIGNED DEFAULT 0, -- sisa jika bayar secara cicil, default 0
+            total DOUBLE(14,2) UNSIGNED DEFAULT 0, -- total operasional
+            sisa DOUBLE(14,2) UNSIGNED DEFAULT 0, -- sisa jika bayar secara cicil, default 0
             status ENUM('TUNAI', 'KREDIT') DEFAULT NULL, -- T: Tunai, K: Kredit
             -- jenis_pembayaran_id INT UNSIGNED DEFAULT NULL,
             status_lunas ENUM('LUNAS', 'BELUM LUNAS') DEFAULT NULL, -- L: Lunas, B: Belum Lunas
@@ -697,7 +697,7 @@
             id_bank INT UNSIGNED DEFAULT NULL,  -- fk bank 
             nama VARCHAR(255) DEFAULT NULL, -- nama angsuran (angsuran ke-n)
             tgl DATE DEFAULT NULL, -- tanggl angsuran
-            total DOUBLE(12,2) UNSIGNED DEFAULT 0, -- total angsuran
+            total DOUBLE(14,2) UNSIGNED DEFAULT 0, -- total angsuran
 
             created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -727,14 +727,15 @@
             tgl DATE DEFAULT NULL, -- tgl pengajuan
             tgl_laporan DATE DEFAULT NULL, -- tgl laporan
             nama VARCHAR(50) DEFAULT NULL,
-            total DOUBLE(12,2) UNSIGNED DEFAULT 0, -- total pengajuan
-            dana_disetujui DOUBLE(12,2) UNSIGNED DEFAULT 0, -- dana yg disetujui, default 0 atau sama dengan total
+            total DOUBLE(14,2) UNSIGNED DEFAULT 0, -- total pengajuan
+            dana_disetujui DOUBLE(14,2) UNSIGNED DEFAULT 0, -- dana yg disetujui, default 0 atau sama dengan total
             status CHAR(1) DEFAULT '1', -- status pengajuan, default 1: 'pending'
                             -- 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI', 4: 'LANGSUNG', 5: 'DITOLAK'
             -- status_pengajuan_id INT UNSIGNED DEFAULT NULL,
             status_laporan CHAR(1) DEFAULT NULL, -- status laporan, default set null
                             -- 0: 'BELUM DIKERJAKAN', 1: 'PENDING', 2: 'PERBAIKI', 3: 'DISETUJUI', 4: 'DITOLAK'
             -- status_laporan_id INT UNSIGNED DEFAULT NULL,
+            ket TEXT DEFAULT NULL,
 
             created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -770,10 +771,10 @@
             -- jenis_id INT UNSIGNED DEFAULT NULL,
             satuan VARCHAR(50) DEFAULT NULL, -- satuan barang/bahan
             qty SMALLINT UNSIGNED DEFAULT 1, -- jumlah barang/bahan
-            harga DOUBLE(12,2) UNSIGNED DEFAULT 0, -- harga satuan per barang/bahan
-            subtotal DOUBLE(12,2) UNSIGNED DEFAULT 0, -- total per detail pengajuan
-            harga_asli DOUBLE(12,2) UNSIGNED DEFAULT 0,
-            sisa DOUBLE(12,2) UNSIGNED DEFAULT 0,
+            harga DOUBLE(14,2) UNSIGNED DEFAULT 0, -- harga satuan per barang/bahan
+            subtotal DOUBLE(14,2) UNSIGNED DEFAULT 0, -- total per detail pengajuan
+            harga_asli DOUBLE(14,2) UNSIGNED DEFAULT 0,
+            sisa DOUBLE(14,2) UNSIGNED DEFAULT 0,
 
             created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -827,10 +828,11 @@
             id_bank INT UNSIGNED DEFAULT NULL, -- fk bank
             tgl DATE DEFAULT NULL,
             nama VARCHAR(50) DEFAULT NULL, -- nama pengajuan
-            total DOUBLE(12,2) UNSIGNED DEFAULT 0, -- total pengajuan ke kas besar
+            total DOUBLE(14,2) UNSIGNED DEFAULT 0, -- total pengajuan ke kas besar
             status CHAR(1) DEFAULT '0', -- status pengajuan, default 'pending'
                         -- 0: 'PENDING', 1: 'PERBAIKI', 2: 'DISETUJUI', 3: 'DITOLAK'
-            total_disetujui DOUBLE(12,2) UNSIGNED DEFAULT 0,
+            total_disetujui DOUBLE(14,2) UNSIGNED DEFAULT 0,
+            ket TEXT DEFAULT NULL,
 
             created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -990,18 +992,6 @@ JOIN menu m ON m.id = am.menu_id;
 
 # End View Dashboard #
 
-# View List Proyek #
-
--- View proyek dashboard
-    CREATE OR REPLACE VIEW v_proyek_list AS
-        SELECT id, pemilik, tgl, pembangunan, kota, SUM(total+cco) AS 'total', progress, status
-            FROM proyek
--- End View proyek list
-
-# End View Proyek List #
-
-
-
 # Procedure, Function, and Trigger Distributor #
 
 -- Procedure Tambah Distributor
@@ -1099,6 +1089,42 @@ JOIN menu m ON m.id = am.menu_id;
 -- End View Distributor
 
 # End View Distributor #
+
+# Procedure, Function, and Trigger Increment #
+
+-- Function get increment
+    DROP FUNCTION IF EXISTS f_get_increment;
+    delimiter //
+    CREATE FUNCTION f_get_increment(table_name_param varchar(255)) RETURNS int 
+    DETERMINISTIC
+    BEGIN
+        DECLARE table_id_param int;
+        DECLARE last_increment_param int;
+
+        SELECT id INTO table_id_param FROM menu WHERE table_name = table_name_param;
+        SELECT last_increment INTO last_increment_param FROM increment WHERE menu_id = table_id_param;
+
+        UPDATE increment SET last_increment = (last_increment_param + 1) WHERE menu_id = table_id_param;
+
+        RETURN (last_increment_param + 1);
+    END //
+    delimiter ;
+-- End Function get increment
+
+# End Procedure, Function, and Trigger Increment #
+
+# View Increment #
+
+-- View Increment
+    CREATE OR REPLACE VIEW v_increment AS
+    SELECT
+        i.id, i.menu_id, m.name menu_name, m.table_name,
+        i.mask, i.last_increment, i.description
+    FROM increment i
+    JOIN menu m ON m.id = i.menu_id;
+-- End View Increment
+
+# End View Increment #
 
 # Procedure, Function, and Trigger Kas Besar #
 
@@ -3103,6 +3129,7 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
 			status = '3',
 			status_laporan = '0',
 			tgl_laporan = tgl_param,
+			ket = '-',
 			modified_by = modified_by_param
 		WHERE id = id_param;
 
@@ -3147,7 +3174,7 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
             WHEN pskk.status_laporan = '3' THEN 'DISETUJUI'
             ELSE 'BELUM DIKERJAKAN' END
         ) status_laporan, 
-        pskk.tgl_laporan, pskk.status status_order, pskk.status_laporan status_laporan_order
+        pskk.tgl_laporan, pskk.status status_order, pskk.status_laporan status_laporan_order, pskk.ket
     FROM pengajuan_sub_kas_kecil pskk
     JOIN proyek p ON p.id = pskk.id_proyek
     JOIN sub_kas_kecil skk ON skk.id = pskk.id_sub_kas_kecil;
@@ -4230,9 +4257,9 @@ INSERT INTO increment (id, menu_id, mask, last_increment) VALUES
 (4, 6, 'OPR-yyyy-0001', 0),
 (5, 7, 'PKK-yyyy-0001', 0),
 (6, 8, 'PSKK-yyyy-0001', 0),
-(7, 10, 'KB-001', 4),
-(8, 11, 'KK-001', 6),
-(9, 12, 'SKK-001', 6);
+(7, 11, 'KB-001', 4),
+(8, 12, 'KK-001', 6),
+(9, 13, 'SKK-001', 6);
 
 # End Seeder Increment #
 
@@ -4255,7 +4282,7 @@ CALL p_tambah_bank ('CIMB NIAGA', 27828000, 'AKTIF', NULL);
 # Seeder Proyek #
 
 -- Proyek
-CALL p_tambah_proyek ('PRY20170001', 'UDIN TEMPEST', '2017-04-01', 'RUMAH TINGKAT 2', 120, 'Padalarang', 'Cianjur', 0, '', '', '', '', 'BERJALAN', NULL);
+ 	CALL p_tambah_proyek ('PRY20170001', 'UDIN TEMPEST', '2017-04-01', 'RUMAH TINGKAT 2', 120, 'Padalarang', 'Cianjur', 0, '', '', '', '', '', NULL);
 -- CALL p_tambah_proyek ('PRY20170002', 'MULI IMRON', '2017-06-01', 'KOSTAN 10 KAMAR', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
 -- CALL p_tambah_proyek ('PRY20170003', 'BIMO MURE', '2017-09-01', 'APARTEMENT 100 KAMAR', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
 -- CALL p_tambah_proyek ('PRY20180001', 'JAKA PRATAMA', '2018-01-01', 'LAPANGAN FUTSAL', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
@@ -4269,8 +4296,8 @@ CALL p_tambah_proyek ('PRY20170001', 'UDIN TEMPEST', '2017-04-01', 'RUMAH TINGKA
 -- CALL p_tambah_proyek ('PRY20190005', 'ABQORI GUNAWAN', CURRENT_DATE, 'RUMAH TINGKAT 3', 0, NULL, NULL, 0, '', '', '', '', '', NULL);
 
 -- -- SKK Proyek
-CALL p_tambah_detail_skk_proyek ('PRY20170001','SKK001','kas_besar1@69designbuild.com');
--- CALL p_tambah_detail_skk_proyek ('PRY20170001');
+ 	CALL p_tambah_detail_skk_proyek ('PRY20170001','SKK001','kas_besar1@69designbuild.com');
+
 
 -- CALL p_tambah_detail_skk_proyek ('PRY20170002');
 -- CALL p_tambah_detail_skk_proyek ('PRY20170002');
@@ -4306,7 +4333,7 @@ CALL p_tambah_detail_skk_proyek ('PRY20170001','SKK001','kas_besar1@69designbuil
 -- CALL p_tambah_detail_skk_proyek ('PRY20190005');
 
 -- -- Detail Proyek
-CALL p_tambah_detail_proyek ('PRY20170001',1,'2019-06-17 21:22:46','DP',1000,'1','hehe','kas_besar1@69designbuild.com');
+	CALL p_tambah_detail_proyek ('PRY20170001',1,'2019-06-17 21:22:46','DP',1000,'1','hehe','kas_besar1@69designbuild.com');
 -- CALL p_tambah_detail_proyek ('PRY20170001');
 
 -- CALL p_tambah_detail_proyek ('PRY20170002');
