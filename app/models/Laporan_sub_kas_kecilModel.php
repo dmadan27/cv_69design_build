@@ -70,13 +70,14 @@
 			try {
 				$this->koneksi->beginTransaction();
 
-				$query	= "UPDATE pengajuan_sub_kas_kecil SET status_laporan = :status_laporan, modified_by = :modified_by WHERE id = :id";
+				$query	= "UPDATE pengajuan_sub_kas_kecil SET status_laporan = :status_laporan, ket = :ket, modified_by = :modified_by WHERE id = :id";
 
 				$statment = $this->koneksi->prepare($query);
 				$statment->execute(
 					array(
 						':id' => $data['id'],
 						':status_laporan' => $data['status_laporan'],
+						':ket' => $data['ket'],
 						':modified_by' => $data['modified_by']
 					)
 				);
@@ -104,7 +105,7 @@
 			try {
 				$this->koneksi->beginTransaction();
 				
-				$query	= "CALL p_ganti_status_perbaiki_laporan_sub_kas_kecil (:id, :id_sub_kas_kecil, :tgl, :modified_by);";
+				$query	= "CALL p_ganti_status_perbaiki_laporan_sub_kas_kecil (:id, :id_sub_kas_kecil, :tgl, :ket, :modified_by);";
 
 				$statment = $this->koneksi->prepare($query);
 				$statment->execute(
@@ -112,6 +113,7 @@
 						':id' => $data['id'],
 						':id_sub_kas_kecil' => $data['id_sub_kas_kecil'],
 						':tgl' => date('Y-m-d'),
+						':ket' => $data['ket'],
 						':modified_by' => $data['modified_by']
 					)
 				);

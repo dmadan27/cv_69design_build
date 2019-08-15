@@ -179,6 +179,7 @@
 							$data_update = array(
 								'id' => $this->validation->validInput($data['id']),
 								'status_laporan' => $this->validation->validInput($data['status_laporan']),
+								'ket' => (($data['status_laporan'] != '3') || ($data['ket'] != "")) ? $this->validation->validInput($data['ket']) : "-",
 								'modified_by' => $_SESSION['sess_email']
 							);
 	
@@ -217,6 +218,7 @@
 							$data_update = array(
 								'id' => $this->validation->validInput($data['id']),
 								'id_sub_kas_kecil' => explode("-", $this->validation->validInput($data['id']))[2],
+								'ket' => ($data['ket'] != "") ? $this->validation->validInput($data['ket']) : "-",
 								'modified_by' => $_SESSION['sess_email']
 							);
 	

@@ -1,3 +1,4 @@
+var ket_laporan_skk = "";
 var table_detail = $("#table_detail").DataTable({
 	"language" : {
 		"lengthMenu": "Tampilkan _MENU_ data/page",
@@ -42,7 +43,7 @@ $(document).ready(function() {
 
 	init();
 	
-	// event on submi laporan
+	// event on submit laporan
 	$('#form_laporan_skc').on('submit', function(e) {
 		e.preventDefault();
 		submit();
@@ -55,7 +56,25 @@ $(document).ready(function() {
         console.log('Button Refresh Table Detail Laporan SKK clicked...');
         refreshTable(table_detail, $(this));
 	});
-	
+
+	// event on change status laporan
+	$("#status_laporan").on("change", function() {	
+
+		$('#submit_laporan_skc').slideDown();
+		if(this.value === "3") { 
+			$('.data-keterangan').slideUp(); 
+		} else {
+			$('.data-keterangan').slideDown();
+			$('#keterangan').attr("readonly", false);
+
+			if (this.value === "1") {
+				$('#keterangan').attr("readonly", true);
+				$('#keterangan').val(ket_laporan_skk);
+				$('#submit_laporan_skc').slideUp();
+			}
+		}
+	});
+
 	// auto refresh every 1 minutes
     // setInterval( function () {
     //     console.log('%cAutomatically refresh table..', 'color: blue; font-style: italic');
@@ -127,7 +146,8 @@ function submit() {
 		dataType: 'json',
 		data: {
 			id: $('#id').val().trim(),
-			status_laporan: $('#status_laporan').val().trim()
+			status_laporan: $('#status_laporan').val().trim(),
+			ket: $('#keterangan').val().trim(),
 		},
 		beforeSend: function() {
 			$('#submit_laporan_skc').prop('disabled', true);
@@ -175,6 +195,7 @@ function setStatus() {
  * 
  */
 function setValue(value) {	
+	ket_laporan_skk = value.ket;
 	$('#id').val(value.id);
 	$('#status_laporan').val(value.status_order).trigger('change');
 }
