@@ -63,6 +63,7 @@
         IN id_pengajuan_param varchar(50),
         IN id_sub_kas_kecil_param varchar(10),
         IN tgl_mutasi_param date,
+        IN ket_param text,
         IN modified_by_param varchar(50)
     )
     BEGIN
@@ -106,6 +107,7 @@
         UPDATE pengajuan_sub_kas_kecil
         SET 
             status_laporan = '2',
+            ket = ket_param,
             modified_by = modified_by_param
         WHERE id = id_pengajuan_param;
 
