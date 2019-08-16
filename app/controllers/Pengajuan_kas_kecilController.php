@@ -221,7 +221,8 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 						'tgl' => $this->validation->validInput($data['tgl']),
 						'nama' => $this->validation->validInput($data['nama']),
 						'total' => $this->validation->validInput($data['total']),
-						'status' => '0',								
+						'status' => '0',
+						'alasan' => $this->validation->validInput($data['alasan'])
 					);
 					$res = $this->Pengajuan_kasKecilModel->insert($data);
 					// insert pengajuan kas kecil
@@ -239,7 +240,7 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 							'message' => "Saldo anda masih mencukupi",
 						);
 					} else {
-						$this->notif = array(
+					$this->notif = array(
 							'type' => "error",
 							'title' => "Pesan Gagal",
 							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
@@ -507,7 +508,9 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 
 			if($_SESSION['sess_level'] == "KAS KECIL"){
 				//status
-				$this->validation->set_rules($data['status'], 'Status Pengajuan', 'status', 'string | 1 | 255 | ');	
+				$this->validation->set_rules($data['status'], 'Status Pengajuan', 'status', 'string | 1 | 255 | ');
+				// alasan pengajuan 
+				$this->validation->set_rules($data['alasan']), 'Alasan Pengajuan' 'alasan', 'string | 1 | 255 | required');	
 			} else {
 				//status
 				$this->validation->set_rules($data['status'], 'Status Pengajuan', 'status', 'string | 1 | 255 | required');	

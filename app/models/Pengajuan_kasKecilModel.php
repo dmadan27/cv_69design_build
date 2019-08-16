@@ -275,7 +275,8 @@
 				:nama,
 				:total,
 				:status,
-				:created_by
+				:created_by,
+				:alasan
 			)";
 			$statement = $this->koneksi->prepare($query);
 			$result = $statement->execute(
@@ -286,7 +287,8 @@
 					':nama' => $data['nama'],
 					':total' => $data['total'],
 					':status' => $data['status'],
-					':created_by' => $_SESSION['sess_email']
+					':created_by' => $_SESSION['sess_email'],
+					':alasan' => $data['alasan']
 				)
 			);
 			$statement->closeCursor();

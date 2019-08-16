@@ -78,6 +78,9 @@ function init() {
 	$('#id_bank_pengajuan').prop('disabled', true);
 	$('#total_disetujui_pengajuan').prop('disabled', true);
 	$('#submit_pengajuan_kas_kecil').prop('disabled', true);
+
+	// DISABLED 
+	$('#')/
 }
 
 
