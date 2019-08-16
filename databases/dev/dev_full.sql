@@ -838,6 +838,7 @@
             modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             created_by VARCHAR(50) DEFAULT NULL, -- who created first
             modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
+            alasan VARCHAR(50) DEFAULT NULL,
 
             CONSTRAINT pk_pengajuan_kas_kecil_id PRIMARY KEY(id),
             CONSTRAINT fk_pengajuan_kas_kecil_id_kas_kecil FOREIGN KEY(id_kas_kecil) REFERENCES kas_kecil(id)
@@ -1526,6 +1527,7 @@ JOIN menu m ON m.id = am.menu_id;
         IN id_pengajuan_param varchar(50),
         IN id_sub_kas_kecil_param varchar(10),
         IN tgl_mutasi_param date,
+        IN ket_param text,
         IN modified_by_param varchar(50)
     )
     BEGIN
@@ -1569,6 +1571,7 @@ JOIN menu m ON m.id = am.menu_id;
         UPDATE pengajuan_sub_kas_kecil
         SET 
             status_laporan = '2',
+            ket = ket_param,
             modified_by = modified_by_param
         WHERE id = id_pengajuan_param;
 
@@ -1652,7 +1655,7 @@ JOIN menu m ON m.id = am.menu_id;
             WHEN pskk.status_laporan = '3' THEN 'DISETUJUI'
 			WHEN pskk.status_laporan = '4' THEN 'DITOLAK'
             ELSE 'BELUM DIKERJAKAN' END
-        ) status_laporan, pskk.status_laporan status_order
+        ) status_laporan, pskk.status_laporan status_order, pskk.ket
 	-- ) status_laporan, pskk.status_laporan status_order
 	FROM pengajuan_sub_kas_kecil pskk
 	LEFT JOIN detail_pengajuan_sub_kas_kecil dpskk ON dpskk.id_pengajuan = pskk.id
@@ -2968,17 +2971,18 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
 		IN nama_param varchar(50),
 		IN total_param double(12,2),
 		IN status_param char(1),
-		IN created_by_param varchar(50)
+		IN created_by_param varchar(50),
+		IN alasan_param varchar(50)
 	)
 
 	BEGIN
 
 		-- insert ke pengajuan kas kecil
 		INSERT into pengajuan_kas_kecil 
-			(id, id_kas_kecil, tgl, nama, total, status, created_by, modified_by)
+			(id, id_kas_kecil, tgl, nama, total, status, created_by, modified_by, alasan)
 		VALUES
 			(id_param, id_kas_kecil_param, tgl_param, nama_param, total_param, status_param, 
-			created_by_param, created_by_param);
+			created_by_param, created_by_param, alasan_param);
 			
 	END //
 
