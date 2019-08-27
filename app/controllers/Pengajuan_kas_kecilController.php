@@ -431,6 +431,7 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 			'nama' => $data_detail['nama'],
 			'total' => $this->helper->cetakRupiah($data_detail['total']),
 			'total_disetujui' => $this->helper->cetakRupiah($data_detail['total_disetujui']),
+			'ket' => $data_detail['ket'],
 			'status' => $data_detail['status']
 		);
 
@@ -515,7 +516,7 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 			} else {
 				//status
 				$this->validation->set_rules($data['status'], 'Status Pengajuan', 'status', 'string | 1 | 255 | required');	
-				$this->validation->set_rules($data['ket'], 'Keterangan Pengajuan', 'ket', 'string | 1 | | 255 | ');
+				$this->validation->set_rules($data['ket'], 'Keterangan Pengajuan', 'ket', 'string | 1 | 255 | ');
 			}
 
 			

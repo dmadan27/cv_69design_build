@@ -80,6 +80,13 @@
                 							<td><strong>Status Pengajuan</strong></td>
                 							<td><?= $this->data['status']; ?></td>
                 						</tr>
+
+                                        <!-- Status -->
+                                        <tr>
+                                            <td><strong>Keterangan Pengajuan</strong></td>
+                                            <td><?= $this->data['ket']; ?></td>
+                                        </tr>
+                                        
                 					</table>
                 				</div>
                 			</div>

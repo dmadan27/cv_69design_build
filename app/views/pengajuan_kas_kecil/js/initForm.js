@@ -118,7 +118,7 @@ function getDataForm(){
 
 		var id_bank = ($('#id_bank_pengajuan').val() != "" && $('#id_bank_pengajuan').val() != null) ? $('#id_bank_pengajuan').val().trim() : "";
 		var status = ($('#status_pengajuan').val() != "" && $('#status_pengajuan').val() != null) ? $('#status_pengajuan').val().trim() : "";
-		var ket = ($('#ket').val() == null) ? $('#ket').val().trim() : null;
+		var ket = ($('#ket').val() != "") ? $('#ket').val().trim() : null;
 
 
 		var total_disetujui = ($('#total_disetujui_pengajuan').inputmask) ? 
@@ -226,7 +226,12 @@ function getEdit(id){
 					}
 					// DIPERBAIKI
 					else if ($('#status_pengajuan').val() == "1"){
-						$('#ket').prop('disabled', false);	
+						$('#ket').prop('disabled', false);
+						// $('#id_bank_pengajuan').prop('disabled', true);
+						// $('#total_disetujui_pengajuan').prop('disabled', true);
+
+						// $('#id_bank_pengajuan').val(null).trigger('change');
+						// $('#total_disetujui_pengajuan').val(null).trigger('change');
 					}
 					else {
 						$('#id_bank_pengajuan').prop('disabled', true);
