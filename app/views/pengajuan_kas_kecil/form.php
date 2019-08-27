@@ -1,26 +1,30 @@
 <?php Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung"); ?>
 
 <div class="modal fade" id="modalPengajuan_kasKecil">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<!-- header modal -->
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- header modal -->
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
                 <h4 class="modal-title">Form Data Pengajuan Kas Kecil</h4>
-			</div>
-			<form id="form_pengajuan_kas_kecil" role="form">
-				<!-- body modal -->
-				<div class="modal-body">
+            </div>
+            <form id="form_pengajuan_kas_kecil" role="form">
+                <!-- body modal -->
+                <div class="modal-body">
 
-                <?php 
+
+
+                    <?php
                     $level = $_SESSION['sess_level'];
-                    if($level == "KAS BESAR"){
-                ?>
+                    if ($level == "KAS BESAR") {
+                        ?>
+
+                    <input type="hidden" name="level" id="level" value="<?= $level ?>">
 
                     <div class="row">
-						<div class="col-md-12">
+                        <div class="col-md-12">
 
                             <div class="row">
                                 <div class="col-md-4">
@@ -33,10 +37,10 @@
                                     </div>
                                 </div>
                                 <div class="col-md-8">
-                                   <!-- field nama -->
+                                    <!-- field nama -->
                                     <div class="form-group field-nama has-feedback">
                                         <label for="nama">Nama Kebutuhan</label>
-                                            <input type="text" name="nama" id="nama_pengajuan" class="form-control field" placeholder="Masukan Nama" disabled>
+                                        <input type="text" name="nama" id="nama_pengajuan" class="form-control field" placeholder="Masukan Nama" disabled>
                                         <span class="help-block small pesan pesan-nama"></span>
                                     </div>
                                 </div>
@@ -48,7 +52,7 @@
                                 <input type="text" name="tgl" id="tgl_pengajuan" class="form-control datepicker field" placeholder="Masukan Tanggal" disabled>
                                 <span class="help-block small pesan pesan-tgl"></span>
                             </div>
-                            
+
 
                             <div class="row">
                                 <div class="col-md-6">
@@ -57,14 +61,14 @@
                                         <label for="saldo">Sisa Saldo Kas Kecil:</label>
                                         <div class="input-group">
                                             <span class="input-group-addon">Rp.</span>
-                                            <input type="text" name="saldo" id="saldo_pengajuan" class="form-control field input-mask-uang" disabled> 
+                                            <input type="text" name="saldo" id="saldo_pengajuan" class="form-control field input-mask-uang" disabled>
                                             <span class="input-group-addon">,00-</span>
                                         </div>
                                         <span class="help-block small pesan pesan-saldo"></span>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                   <!-- field total -->
+                                    <!-- field total -->
                                     <div class="form-group field-total has-feedback">
                                         <label for="total">Total</label>
                                         <div class="input-group">
@@ -96,11 +100,11 @@
                                             <select style="width: 100% !important;" name="id_bank" class="form-control field select2" id="id_bank_pengajuan"></select>
                                         </div>
                                         <span class="help-block small pesan pesan-id_bank"></span>
-                                    </div>  
+                                    </div>
                                 </div>
                                 <div class="col-md-6">
-                                   <!-- field total yg disetujui-->
-                                   <div class="form-group field-total_disetujui has-feedback">
+                                    <!-- field total yg disetujui-->
+                                    <div class="form-group field-total_disetujui has-feedback">
                                         <label for="total_disetujui">Total Yang Disetujui</label>
                                         <div class="input-group">
                                             <span class="input-group-addon">Rp.</span>
@@ -112,24 +116,21 @@
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group field-ket has-feedback">
-                                        <label for="ket"> Keterangan </label>
-                                        <div class="input-group">
-                                            <textarea disabled name="ket" id="ket" class="form-control field" placeholder="Masukan Keterangan"></textarea>
-                                        </div> 
-                                    </div>
-                                </div>                                
+                            <div class="form-group field-ket has-feedback">
+                                <label for="ket"> Keterangan </label>
+                                <div class="input-group" style="width: 100% !important;">
+                                    <textarea disabled name="ket" id="ket" class="form-control field" placeholder="Masukan Keterangan"></textarea>
+                                </div>
                             </div>
+                            
+                        </div>
                     </div>
-                </div>
 
-                <?php } else if($level == "KAS KECIL") { ?>
+                    <?php } else if ($level == "KAS KECIL") { ?>
 
-					<div class="row">
-						<div class="col-md-12">
-                        <input type="hidden" name="id_kas_kecil" id="id_kas_kecil" value="<?php echo $_SESSION['sess_id'];?>">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input type="hidden" name="id_kas_kecil" id="id_kas_kecil" value="<?php echo $_SESSION['sess_id']; ?>">
                             <!-- field id pengajuan-->
                             <div class="form-group field-id has-feedback">
                                 <label for="id">ID Pengajuan Kas Kecil</label>
@@ -147,14 +148,14 @@
                             <!-- field nama -->
                             <div class="form-group field-nama has-feedback">
                                 <label for="nama">Nama Kebutuhan</label>
-                                    <input type="text" name="nama" id="nama_pengajuan" class="form-control field" placeholder="Masukan Nama">
+                                <input type="text" name="nama" id="nama_pengajuan" class="form-control field" placeholder="Masukan Nama">
                                 <span class="help-block small pesan pesan-nama"></span>
                             </div>
 
                             <!-- field Saldo terbaru -->
                             <div class="form-group">
                                 <label for="saldo">Sisa Saldo Kas Kecil:</label>
-                                <p id="saldo_pengajuan"> <?php echo $this->data['saldo']; ?> </p>       
+                                <p id="saldo_pengajuan"> <?php echo $this->data['saldo']; ?> </p>
                             </div>
 
                             <!-- field total -->
@@ -177,18 +178,27 @@
                                 <span class="help-block small pesan pesan-status"></span>
                             </div>
 
+                            <!-- Keterangan -->
+                            <div class="form-group field-ket has-feedback">
+                                <label for="ket"> Keterangan </label>
+                                <div class="input-group" style="width: 100% !important;">
+                                    <textarea disabled name="ket" id="ket" class="form-control field" placeholder="Masukan Keterangan"></textarea>
+                                </div>
+                                <span class="help-block small pesan pesan-ket"></span>
+                            </div>
+
                         </div>
-					</div>
-                
-                <?php } ?>
-				
-					<!-- modal footer -->
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default pull-left" data-dismiss="modal">Kembali</button>
-		                <button type="submit" id="submit_pengajuan_kas_kecil" class="btn btn-primary" value="tambah">Simpan Data</button>
-					</div>
-				</div>
-			</form>
-		</div>
-	</div>
+                    </div>
+
+                    <?php } ?>
+
+                    <!-- modal footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default btn-flat pull-left" data-dismiss="modal">Kembali</button>
+                        <button type="submit" id="submit_pengajuan_kas_kecil" class="btn btn-primary btn-flat" value="tambah">Simpan Data</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
