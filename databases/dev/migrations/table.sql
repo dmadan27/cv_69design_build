@@ -838,7 +838,6 @@
             modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             created_by VARCHAR(50) DEFAULT NULL, -- who created first
             modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
-            alasan VARCHAR(50) DEFAULT NULL,
 
             CONSTRAINT pk_pengajuan_kas_kecil_id PRIMARY KEY(id),
             CONSTRAINT fk_pengajuan_kas_kecil_id_kas_kecil FOREIGN KEY(id_kas_kecil) REFERENCES kas_kecil(id)

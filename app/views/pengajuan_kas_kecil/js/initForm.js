@@ -78,9 +78,10 @@ function init() {
 	$('#id_bank_pengajuan').prop('disabled', true);
 	$('#total_disetujui_pengajuan').prop('disabled', true);
 	$('#submit_pengajuan_kas_kecil').prop('disabled', true);
+	$('#ket').prop('disabled', true);
 
 	// DISABLED 
-	$('#')/
+	// $('#')/
 }
 
 
@@ -117,6 +118,8 @@ function getDataForm(){
 
 		var id_bank = ($('#id_bank_pengajuan').val() != "" && $('#id_bank_pengajuan').val() != null) ? $('#id_bank_pengajuan').val().trim() : "";
 		var status = ($('#status_pengajuan').val() != "" && $('#status_pengajuan').val() != null) ? $('#status_pengajuan').val().trim() : "";
+		var ket = ($('#ket').val() == null) ? $('#ket').val().trim() : null;
+
 
 		var total_disetujui = ($('#total_disetujui_pengajuan').inputmask) ? 
 		( parseFloat($('#total_disetujui_pengajuan').inputmask('unmaskedvalue')) ?
@@ -137,6 +140,7 @@ function getDataForm(){
 		data.append('id_bank', id_bank); // id_bank
 		data.append('total', total); // total
 		data.append('total_disetujui', total_disetujui); // total_disetujui
+		data.append('ket', $('#ket').val().trim());
 		data.append('status', status); //status
 		data.append('action', $('#submit_pengajuan_kas_kecil').val().trim()); // action
 
@@ -210,18 +214,27 @@ function getEdit(id){
 				console.log('%cgetEdit Response:','',output);
 				
 				$('#status_pengajuan').on('change', function(){
+					// DISETUJUI
 					if($('#status_pengajuan').val() == "2"){
 						$('#id_bank_pengajuan').prop('disabled', false);
 						$('#total_disetujui_pengajuan').prop('disabled', false);
+						$('#ket').prop('disabled', false);	
 
 						var total_disetujui = output.total - output.saldo;
 						$('#total_disetujui_pengajuan').val(total_disetujui);
 
-					} else {
+					}
+					// DIPERBAIKI
+					else if ($('#status_pengajuan').val() == "1"){
+						$('#ket').prop('disabled', false);	
+					}
+					else {
 						$('#id_bank_pengajuan').prop('disabled', true);
 						$('#id_bank_pengajuan').val(null).trigger('change');
 						$('#total_disetujui_pengajuan').prop('disabled', true);
 						$('#total_disetujui_pengajuan').val(null).trigger('change');
+						$('#ket').prop('disabled', true);
+						$('#ket').val(null).trigger('change');
 					}
 				});
 

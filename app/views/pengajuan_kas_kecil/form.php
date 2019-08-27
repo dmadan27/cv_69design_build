@@ -112,6 +112,16 @@
                                 </div>
                             </div>
 
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group field-ket has-feedback">
+                                        <label for="ket"> Keterangan </label>
+                                        <div class="input-group">
+                                            <textarea disabled name="ket" id="ket" class="form-control field" placeholder="Masukan Keterangan"></textarea>
+                                        </div> 
+                                    </div>
+                                </div>                                
+                            </div>
                     </div>
                 </div>
 

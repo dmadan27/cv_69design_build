@@ -222,7 +222,6 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 						'nama' => $this->validation->validInput($data['nama']),
 						'total' => $this->validation->validInput($data['total']),
 						'status' => '0',
-						'alasan' => $this->validation->validInput($data['alasan'])
 					);
 					$res = $this->Pengajuan_kasKecilModel->insert($data);
 					// insert pengajuan kas kecil
@@ -318,6 +317,7 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 						'tgl' => $this->validation->validInput($data['tgl']),
 						'id_bank' => $this->validation->validInput($data['id_bank']),
 						'total_disetujui' => $this->validation->validInput($data['total_disetujui']),
+						'ket' => $data['ket'],
 						'status' => $this->validation->validInput($data['status'])
 					);
 
@@ -503,17 +503,19 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 			$this->validation->set_rules($data['nama'], 'Nama Pengajuan', 'nama', 'string | 1 | 255 | required');
 			// total
 			$this->validation->set_rules($data['total'], 'Total Pengajuan', 'total', 'nilai | 1 | 99999999999 | required');
+			// ket {Keterangan Pengajuan}
+
 				
 		} else if($data['action'] == 'action-edit'){
 
 			if($_SESSION['sess_level'] == "KAS KECIL"){
 				//status
 				$this->validation->set_rules($data['status'], 'Status Pengajuan', 'status', 'string | 1 | 255 | ');
-				// alasan pengajuan 
-				$this->validation->set_rules($data['alasan']), 'Alasan Pengajuan' 'alasan', 'string | 1 | 255 | required');	
+				
 			} else {
 				//status
 				$this->validation->set_rules($data['status'], 'Status Pengajuan', 'status', 'string | 1 | 255 | required');	
+				$this->validation->set_rules($data['ket'], 'Keterangan Pengajuan', 'ket', 'string | 1 | | 255 | ');
 			}
 
 			

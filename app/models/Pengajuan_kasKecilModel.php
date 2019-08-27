@@ -275,8 +275,7 @@
 				:nama,
 				:total,
 				:status,
-				:created_by,
-				:alasan
+				:created_by
 			)";
 			$statement = $this->koneksi->prepare($query);
 			$result = $statement->execute(
@@ -288,7 +287,6 @@
 					':total' => $data['total'],
 					':status' => $data['status'],
 					':created_by' => $_SESSION['sess_email'],
-					':alasan' => $data['alasan']
 				)
 			);
 			$statement->closeCursor();
@@ -395,11 +393,12 @@
 		* 	Review Pengajuan Kas Kecil. Dilakukkan Oleh Kas Besar
 		*/
 		private function revPengajuan($data) {
-			$query = "UPDATE pengajuan_kas_kecil SET status = :status, modified_by = :modified_by WHERE id = :id";
+			$query = "UPDATE pengajuan_kas_kecil SET status = :status, ket = :ket, modified_by = :modified_by WHERE id = :id";
 			
 			$statement = $this->koneksi->prepare($query);
 			$statement->bindParam(':id', $data['id']);
 			$statement->bindParam(':status', $data['status']);
+			$statement->bindParam(':ket', $data['ket']);
 			$statement->bindParam(':modified_by', $_SESSION['sess_email']);
 			$result = $statement->execute();
 
