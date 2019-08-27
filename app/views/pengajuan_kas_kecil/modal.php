@@ -48,7 +48,11 @@
                                     <td><strong>Status Pengajuan</strong></td>
                                     <td id="status"></td>
                                 </tr>
-                               
+                               <!-- Keterangan Perbaiki/Ditolak -->
+                               <tr>
+                                    <td><strong>Alasan Perbaiki</strong></td>
+                                    <td id="alasan_perbaiki"></td>
+                                </tr>
                             </table>
                         </div>
 

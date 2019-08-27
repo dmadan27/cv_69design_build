@@ -1,5 +1,5 @@
 var pengajuanKasKecilTable = $("#pengajuanKasKecilTable").DataTable({
-    "language" : {
+    "language": {
         "lengthMenu": "Tampilkan _MENU_ data/page",
         "zeroRecords": "Data Tidak Ada",
         "info": "Menampilkan _START_ s.d _END_ dari _TOTAL_ data",
@@ -14,25 +14,25 @@ var pengajuanKasKecilTable = $("#pengajuanKasKecilTable").DataTable({
             "previous": "Sebelumnya"
         }
     },
-    "lengthMenu": [ 10, 25, 75, 100 ],
+    "lengthMenu": [10, 25, 75, 100],
     "pageLength": 10,
     order: [],
     processing: true,
     serverSide: true,
     ajax: {
-        url: BASE_URL+"pengajuan-kas-kecil/get-list/",
+        url: BASE_URL + "pengajuan-kas-kecil/get-list/",
         type: 'POST',
         data: {}
     },
     "columnDefs": [
         {
-            "targets":[0, 7],
-            "orderable":false,
+            "targets": [0, 7],
+            "orderable": false,
         }
     ],
-    createdRow: function(row, data, dataIndex){
-        if(data[0]) $('td:eq(0)', row).addClass('text-right');
-        if(data[5]) $('td:eq(5)', row).addClass('text-right');
+    createdRow: function (row, data, dataIndex) {
+        if (data[0]) $('td:eq(0)', row).addClass('text-right');
+        if (data[5]) $('td:eq(5)', row).addClass('text-right');
     }
 });
 
@@ -53,10 +53,10 @@ const exportPengajuanKasKecil = new FormExportStartEndDate({
 
 // end inisialisasi export
 
-$(document).ready(function() {
+$(document).ready(function () {
 
     // btn Export
-    $('#exportExcel').on('click', function(){
+    $('#exportExcel').on('click', function () {
         console.log('Button exportExcel Clicked');
         exportPengajuanKasKecil.show({
             title: 'Export Data Pengajuan Kas Kecil',
@@ -64,49 +64,50 @@ $(document).ready(function() {
     });
 
     // event on click refresh table
-    $('#refreshTable').on('click', function() {
+    $('#refreshTable').on('click', function () {
         console.log('Button Refresh Table Pengajuan Kas Kecil clicked...');
         refreshTable(pengajuanKasKecilTable, $(this));
     });
 
     // auto refresh every 1 minutes
-    setInterval( function () {
+    setInterval(function () {
         console.log('%cAutomatically refresh table..', 'color: blue; font-style: italic');
         pengajuanKasKecilTable.ajax.reload(null, false);
-    }, 60000 );
-       
+    }, 60000);
+
 });
 
 /**
 *
 */
-function getView(id){
+function getView(id) {
     // window.location.href = BASE_URL+'pengajuan-kas-kecil/detail/'+id;
     $('#modalView_PKK').modal();
     $.ajax({
-        url: BASE_URL+'pengajuan-kas-kecil/detail/'+id.toLowerCase(),
+        url: BASE_URL + 'pengajuan-kas-kecil/detail/' + id.toLowerCase(),
         type: 'post',
         dataType: 'json',
         data: {},
-        beforeSend: function(){
+        beforeSend: function () {
 
         },
-        success: function(output){
+        success: function (output) {
+
+            $('#modalView_PKK').modal();
+            console.log('%cgetView Response:', '', output);
+
+            $('#res_id').html(output.id);
+            $('#id').html(output.id_kas_kecil);
+            $('#kas_kecil').html(output.kas_kecil);
+            $('#tgl').html(output.tgl);
+            $('#nama').html(output.nama);
+            $('#total').html(output.total);
+            $('#total_disetujui').html(output.total_disetujui);
+            $('#status').html(output.status);
+            $('#alasan_perbaiki').html(output.ket || "-");
             
-                $('#modalView_PKK').modal();
-                console.log('%cgetView Response:','',output);
-                
-                $('#res_id').html(output.id);
-                $('#id').html(output.id_kas_kecil); 
-                $('#kas_kecil').html(output.kas_kecil);     
-                $('#tgl').html(output.tgl);   
-                $('#nama').html(output.nama);   
-                $('#total').html(output.total);
-                $('#total_disetujui').html(output.total_disetujui);
-                $('#status').html(output.status);            
-        
         },
-        error: function (jqXHR, textStatus, errorThrown){ // error handling
+        error: function (jqXHR, textStatus, errorThrown) { // error handling
             console.log(jqXHR, textStatus, errorThrown);
         }
     })
@@ -115,36 +116,36 @@ function getView(id){
 /**
 *
 */
-function getDelete(id, token){
-	swal({
-            title: "Pesan Konfirmasi",
-            text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#DD6B55",
-            confirmButtonText: "Ya, Hapus!",
-            cancelButtonText: "Batal",
-            closeOnConfirm: false,
-        }, function(){
-            $.ajax({
-                url: BASE_URL+'pengajuan-kas-kecil/delete/'+id.toLowerCase(),
-                type: 'post',
-                dataType: 'json',
-                data: {},
-                beforeSend: function(){
+function getDelete(id, token) {
+    swal({
+        title: "Pesan Konfirmasi",
+        text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Hapus!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: false,
+    }, function () {
+        $.ajax({
+            url: BASE_URL + 'pengajuan-kas-kecil/delete/' + id.toLowerCase(),
+            type: 'post',
+            dataType: 'json',
+            data: {},
+            beforeSend: function () {
 
-                },
-                success: function(output){
-                    console.log(output);
-                    if(output){
-                        swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
-                        $("#pengajuanKasKecilTable").DataTable().ajax.reload();
-                    }
-                },
-                error: function (jqXHR, textStatus, errorThrown){ // error handling
-                    console.log(jqXHR, textStatus, errorThrown);
-                    swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+            },
+            success: function (output) {
+                console.log(output);
+                if (output) {
+                    swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
+                    $("#pengajuanKasKecilTable").DataTable().ajax.reload();
                 }
-            })
-        });
+            },
+            error: function (jqXHR, textStatus, errorThrown) { // error handling
+                console.log(jqXHR, textStatus, errorThrown);
+                swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+            }
+        })
+    });
 }
