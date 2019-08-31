@@ -838,7 +838,6 @@
             modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             created_by VARCHAR(50) DEFAULT NULL, -- who created first
             modified_by VARCHAR(50) DEFAULT NULL, -- who last edit
-            alasan VARCHAR(50) DEFAULT NULL,
 
             CONSTRAINT pk_pengajuan_kas_kecil_id PRIMARY KEY(id),
             CONSTRAINT fk_pengajuan_kas_kecil_id_kas_kecil FOREIGN KEY(id_kas_kecil) REFERENCES kas_kecil(id)
@@ -2971,18 +2970,17 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
 		IN nama_param varchar(50),
 		IN total_param double(12,2),
 		IN status_param char(1),
-		IN created_by_param varchar(50),
-		IN alasan_param varchar(50)
+		IN created_by_param varchar(50)
 	)
 
 	BEGIN
 
 		-- insert ke pengajuan kas kecil
 		INSERT into pengajuan_kas_kecil 
-			(id, id_kas_kecil, tgl, nama, total, status, created_by, modified_by, alasan)
+			(id, id_kas_kecil, tgl, nama, total, status, created_by, modified_by)
 		VALUES
 			(id_param, id_kas_kecil_param, tgl_param, nama_param, total_param, status_param, 
-			created_by_param, created_by_param, alasan_param);
+			created_by_param, created_by_param);
 			
 	END //
 
@@ -3772,6 +3770,13 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
     JOIN logistik_proyek lp ON lp.id_proyek = p.id
     JOIN sub_kas_kecil skk ON skk.id = lp.id_sub_kas_kecil;
 -- End View Export Proyek logistik (SKK)
+
+
+-- View proyek list 
+    CREATE OR REPLACE VIEW v_proyek_list AS
+    SELECT id, pemilik, tgl, pembangunan, kota, SUM(total+cco) AS 'total', progress, status
+        FROM proyek
+-- End View proyek list
 
 # End View Proyek #
 

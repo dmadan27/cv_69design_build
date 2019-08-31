@@ -110,4 +110,11 @@
     JOIN sub_kas_kecil skk ON skk.id = lp.id_sub_kas_kecil;
 -- End View Export Proyek logistik (SKK)
 
+
+-- View proyek list 
+    CREATE OR REPLACE VIEW v_proyek_list AS
+    SELECT id, pemilik, tgl, pembangunan, kota, SUM(total+cco) AS 'total', progress, status
+        FROM proyek
+-- End View proyek list
+
 # End View Proyek #
