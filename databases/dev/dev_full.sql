@@ -29,18 +29,18 @@
     -- End Table level lookup
 
     -- -- Table active status lookup
-    --     DROP TABLE IF EXISTS active_status_lookup;
-    --     CREATE TABLE IF NOT EXISTS active_status_lookup (
-    --         id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+        DROP TABLE IF EXISTS active_status_lookup;
+        CREATE TABLE IF NOT EXISTS active_status_lookup (
+            id INT UNSIGNED NOT NULL AUTO_INCREMENT,
 
-    --         name VARCHAR(255) NOT NULL,
-    --         description TEXT DEFAULT NULL,
+            name VARCHAR(255) NOT NULL,
+            description TEXT DEFAULT NULL,
 
-    --         created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    --         modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            created_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            modified_on DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-    --         CONSTRAINT pk_active_status_lookup_id PRIMARY KEY(id)
-    --     )ENGINE=InnoDb;
+            CONSTRAINT pk_active_status_lookup_id PRIMARY KEY(id)
+        )ENGINE=InnoDb;
     -- -- End Table active status lookup
 
     -- Table permission lookup
