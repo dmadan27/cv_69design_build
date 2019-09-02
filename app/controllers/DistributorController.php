@@ -404,7 +404,7 @@ class Distributor extends Controller {
             
             if($increment['success']) {
                 $getMask = explode('-', $increment['mask']);
-                $increment_number = $getMask[0].'-'.sprintf("%04s", $increment['increment']);
+                $increment_number = $getMask[0].sprintf("%04s", $increment['increment']);
             }
 
             echo json_encode($increment_number);
@@ -456,7 +456,7 @@ class Distributor extends Controller {
 
 			echo json_encode($output);
 		}
-		else { die(ACCESS_DENIED); }
+		else { $this->helper->requestError(403, true); }
 	}
 
 	/**

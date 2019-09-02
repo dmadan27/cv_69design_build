@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(document).ready(function() {
 	init();
 
 	// button tambah
@@ -61,6 +61,7 @@ function onClickAdd() {
 */
 function getDataForm() {
 	var data = new FormData();
+	let status = ($('#status').val() != "" && $('#status').val() != null) ? $('#status').val().trim() : "";
 
 	if($('#submit_distributor').val().trim().toLowerCase() == "action-edit"){
 		// data.append('id', $('#id').val().trim());
@@ -78,7 +79,7 @@ function getDataForm() {
 	data.append('alamat', $('#alamat').val().trim()); // alamat distributor
 	data.append('no_telp', $('#no_telp').val().trim()); // no_telp distributor
 	data.append('pemilik', $('#pemilik').val().trim()); // pemilik distributor
-	data.append('status', $('#status').val().trim()); // status distributor
+	data.append('status', status); // status distributor
 	data.append('action', $('#submit_distributor').val().trim()); // action
 
 	return data;
@@ -98,28 +99,28 @@ function submit() {
 		contentType: false,
 		cache: false,
 		processData: false,
-		beforeSend: function(){
+		beforeSend: function() {
 			$('#submit_distributor').prop('disabled', true);
 			$('#submit_distributor').prepend('<i class="fa fa-spin fa-refresh"></i> ');
 		},
-		success: function(output){
-			console.log(output);
-			if(!output.status) {
+		success: function(response) {
+			console.log('%c Response submit Distributor: ', logStyle.success, response);
+
+			if(!response.status) {
 				$('#submit_distributor').prop('disabled', false);
 				$('#submit_distributor').html($('#submit_distributor').text());
-				setError(output.error);
-				toastr.warning(output.notif.message, output.notif.title);
+				setError(response.error);
 			}
-			else{
-				toastr.success(output.notif.message, output.notif.title);
+			else {
 				resetForm();
 				$("#modalDistributor").modal('hide');
 				$("#distributorTable").DataTable().ajax.reload();
 			}
+			setNotif(response.notif);
 		},
-		error: function (jqXHR, textStatus, errorThrown){ // error handling
+		error: function (jqXHR, textStatus, errorThrown) {
 			$("#modalDistributor").modal('hide');
-			console.log('%c Response Error submit: ', 'color: red; font-weight: bold', {
+			console.log('%c Response Error submit: ', logStyle.error, {
 				jqXHR: jqXHR, 
 				textStatus: textStatus, 
 				errorThrown: errorThrown
@@ -133,6 +134,8 @@ function submit() {
 *
 */
 function getEdit(id) {
+	console.log('Button Edit Distributor Clicked...');
+
 	resetForm();
 	
 	$('#submit_distributor').prop('value', 'action-edit');
@@ -147,7 +150,7 @@ function getEdit(id) {
 		beforeSend: function() {
 		},
 		success: function(response) {
-			console.log('%c Response getEdit Distributor: ', 'color: green; font-weight: bold', response);
+			console.log('%c Response getEdit Distributor: ', logStyle.success, response);
 
 			if(response) {
 				$('#modalDistributor').modal();
@@ -155,7 +158,7 @@ function getEdit(id) {
 			}	
 		},
 		error: function (jqXHR, textStatus, errorThrown) {
-            console.log('%c Response Error getEdit: ', 'color: red; font-weight: bold', {
+            console.log('%c Response Error getEdit: ', logStyle.error, {
 				jqXHR: jqXHR, 
 				textStatus: textStatus, 
 				errorThrown: errorThrown
@@ -237,7 +240,7 @@ function getLastIncrement(callback) {
 		beforeSend: function() {
 		},
 		success: function(response) {
-			console.log('%c Response getLastIncrement: ', 'color: green; font-weight: bold', response);
+			console.log('%c Response getLastIncrement: ', logStyle.success, response);
 			
 			callback({
 				success: true,
@@ -245,7 +248,7 @@ function getLastIncrement(callback) {
 			});	
 		},
 		error: function (jqXHR, textStatus, errorThrown) {
-            console.log('%c Response Error getLastIncrement: ', 'color: red; font-weight: bold', {
+            console.log('%c Response Error getLastIncrement: ', logStyle.error, {
 				jqXHR: jqXHR, 
 				textStatus: textStatus, 
 				errorThrown: errorThrown
