@@ -749,10 +749,10 @@ class Operasional_proyekModel extends Database implements ModelInterface
 	/**
 	* 	Edit Data Operasional Proyek Jenis Pembayaran Kredit
 	*/
-	private function p_edit_operasionalProyek_kredit($data) {
+	private function edit_operasionalProyek_kredit($data) {
 		// print_r($data);
 		// exit;
-		$query = "CALL edit_operasional_proyek_kredit (
+		$query = "CALL p_edit_operasional_proyek_kredit (
 			:id, 
 			:id_proyek, 
 			:id_distributor,
