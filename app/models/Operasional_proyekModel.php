@@ -996,7 +996,7 @@ class Operasional_proyekModel extends Database implements ModelInterface
 				':total_detail'	=> $data['total_detail'],
 				':tgl' 			=> $data['tgl_detail'],
 				':ket'			=> $ket_mutasi,
-				':modified_by' => $_SESSION['sess_email']					
+				':modified_by' 	=> $_SESSION['sess_email']					
 			)
 		);
 		$statement->closeCursor();

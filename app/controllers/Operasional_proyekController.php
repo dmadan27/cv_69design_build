@@ -5,7 +5,8 @@ Defined("BASE_PATH") or die(ACCESS_DENIED);
 /**
  * 
  */
-class Operasional_proyek extends CrudAbstract{
+class Operasional_proyek extends Controller 
+{
 
 	private $success = false;
 	private $notif = array();
@@ -15,28 +16,28 @@ class Operasional_proyek extends CrudAbstract{
 	/**
 	 * 
 	 */
-	public function __construct(){
+	public function __construct() {
 		$this->auth();
 		$this->auth->cekAuth();
 		$this->model('Operasional_proyekModel');
 		$this->model('DataTableModel');
 		$this->helper();
 		$this->validation();
-		$this->excel();
 	}
 
 	/**
 	 * 
 	 */
-	public function index(){
-		$this->list();
+	public function index() {
+		if($_SESSION['sess_level'] === 'KAS BESAR' 
+			|| $_SESSION['sess_level'] === 'OWNER') { $this->list(); } 
+		else { $this->helper->requestError(403); }
 	}
 
 	/**
 	 * 
 	 */
-	protected function list(){
-		// set config untuk layouting
+	protected function list() {
 		$css = array(
 			'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
 			'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
@@ -70,9 +71,10 @@ class Operasional_proyek extends CrudAbstract{
 	/**
 	 * 
 	 */
-	public function get_list(){
-		if($_SERVER['REQUEST_METHOD'] == "POST"){
-			// config datatable
+	public function get_list() {
+		if($_SERVER['REQUEST_METHOD'] == "POST" && ($_SESSION['sess_level'] === 'KAS BESAR' 
+			|| $_SESSION['sess_level'] === 'OWNER')) {
+
 			$config_dataTable = array(
 				'tabel' => 'operasional_proyek',
 				'kolomOrder' => array(null, 'id', 'tgl', 'nama', 'id_proyek', 'id_kas_besar', 'id_distributor', 'total', null),
@@ -95,7 +97,13 @@ class Operasional_proyek extends CrudAbstract{
 				$aksiEdit = '<button onclick="getEdit('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-success btn-flat" title="Edit Data"><i class="fa fa-pencil"></i></button>';
 				$aksiHapus = '<button onclick="getDelete('."'".$row["id"]."'".')" type="button" class="btn btn-sm btn-danger btn-flat" title="Hapus Data"><i class="fa fa-trash"></i></button>';
 				
-				$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
+				if($_SESSION['sess_level'] === 'KAS BESAR') {
+					$aksi = '<div class="btn-group">'.$aksiDetail.$aksiEdit.$aksiHapus.'</div>';
+				}
+				else if($_SESSION['sess_level'] === 'OWNER') {
+					$aksi = '<div class="btn-group">'.$aksiDetail.'</div>';
+				}
+				else { $aksi = ''; }
 				
 				$jenis_pembayaran = ($row['status'] == 'TUNAI') ? 
 					'<span class="label label-success">'.$row['status'].'</span>' : 
@@ -129,22 +137,24 @@ class Operasional_proyek extends CrudAbstract{
 			echo json_encode($output);	
 
 		}
-		else $this->redirect();	
+		else { $this->helper->requestError(403, true); }
 	}
 
 	/**
 	 * 
 	 */
-	public function form($id){
-		if($id)	$this->edit(strtoupper($id));
-		else $this->add();
-
+	public function form($id) {
+		if($_SESSION['sess_level'] === 'KAS BESAR') {
+			if($id)	{ $this->edit(strtoupper($id)); }
+			else { $this->add(); }
+		}
+		else { $this->helper->requestError(403); }
 	}
 
 	/**
 	 * 
 	 */
-	protected function add(){
+	protected function add() {
 		$css = array(
 			'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
 			'assets/bower_components/select2/dist/css/select2.min.css',
@@ -171,19 +181,7 @@ class Operasional_proyek extends CrudAbstract{
 
 		$data = array(
 			'action' => 'action-add',
-			'id' => '',
-			'id_proyek' => '',
-			'id_bank' => '',
-			'id_kas_besar' => '',
-			'id_distributor' => '',
-			'tgl' => '',
-			'nama' => '',
-			'jenis' => '',
-			'total' => '',
-			'sisa' => '',
-			'status' => '',
-			'status_lunas' => '',
-			'ket' => '',	
+			'id' => '',	
 		);
 
 		$this->layout('operasional_proyek/form', $config, $data);
@@ -192,22 +190,20 @@ class Operasional_proyek extends CrudAbstract{
 	/**
 	 * 
 	 */
-	public function action_add(){
-		if($_SERVER['REQUEST_METHOD'] == "POST"){
+	public function action_add() {
+		if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
 			$data = isset($_POST) ? $_POST : false;
 			$dataOperasionalProyek = isset($_POST['dataOperasionalProyek']) ? json_decode($_POST['dataOperasionalProyek'], true) : false;
-			// print_r($dataOperasionalProyek);
-			// exit;
 			$dataDetail = isset($_POST['listDetail']) ? json_decode($_POST['listDetail'], true) : false;
 			
 			if(!$data){
-				
 				$this->notif = array(
 					'type' => "error",
 					'title' => "Pesan Gagal",
 					'message' => "Terjadi kesalahan teknis, silahkan coba kembali",
 				);
-			} else {
+			}
+			else {
 				// validasi data
 				$validasi = $this->set_validation($dataOperasionalProyek, $data['action']);
 				$cek = $validasi['cek'];
@@ -240,7 +236,7 @@ class Operasional_proyek extends CrudAbstract{
 					);
 					
 					$res = $this->Operasional_proyekModel->insert($dataInsert);
-					if($res['success']){
+					if($res['success']) {
 						$this->success = true;
 						$_SESSION['notif'] = array(
 							'type' => "success",
@@ -249,7 +245,8 @@ class Operasional_proyek extends CrudAbstract{
 						);
 						$this->notif['default'] = $_SESSION['notif'];
 
-					} else if($res['invalidtotaldetail'] == "invalidTotal") {
+					} 
+					else if($res['invalidtotaldetail'] == "invalidTotal") {
 
 						$this->notif['default'] = array(
 							'type' => "warning",
@@ -257,7 +254,8 @@ class Operasional_proyek extends CrudAbstract{
 							'message' => "Cek Kembali List Detail / Total Detail Anda",
 						);
 
-					} else {
+					} 
+					else {
 
 						$this->notif['default'] = array(
 							'type' => "error",
@@ -266,7 +264,8 @@ class Operasional_proyek extends CrudAbstract{
 						);
 
 					}
-				} else {
+				} 
+				else {
 					$this->notif['default'] = array(
 						'type' => 'warning',
 						'title' => "Pesan Pemberitahuan",
@@ -282,14 +281,13 @@ class Operasional_proyek extends CrudAbstract{
 				'error' => $this->error,
 				'cek' => array(
 					'cek' => $cek,
-					
 				),
 				'data' => $data,
 				'dataOperasionalProyek' => $dataOperasionalProyek,
 			);
 			echo json_encode($output);
 		}
-		else $this->redirect();
+		else { $this->helper->requestError(403, true); }
 	}
 
 	/**
@@ -299,7 +297,7 @@ class Operasional_proyek extends CrudAbstract{
 		$id = strtoupper($id);
 
 		$dataOperasionalProyek = !empty($this->Operasional_proyekModel->getById($id)) ? $this->Operasional_proyekModel->getById($id) :false;
-		$id_bank = !empty($this->Operasional_proyekModel->getBankById($id)) ? $this->Operasional_proyekModel->getBankById($id) :false;
+		// $id_bank = !empty($this->Operasional_proyekModel->getBankById($id)) ? $this->Operasional_proyekModel->getBankById($id) :false;
 
 		if(empty($id) || $id == "") $this->redirect(BASE_URL."operasional-proyek/");
 
@@ -326,24 +324,27 @@ class Operasional_proyek extends CrudAbstract{
 			'js' => $js,
 		);
 
-		$data = array(
-			'action' => 'action-edit',
-			'id' => $dataOperasionalProyek['id'],
-			'id_proyek'=> $dataOperasionalProyek['id_proyek'],
-			'id_bank'=> $id_bank['id_bank'],
-			'id_kas_besar'=> $dataOperasionalProyek['id_kas_besar'],
-			'id_distributor'=> $dataOperasionalProyek['id_distributor'],
-			'tgl'=> $dataOperasionalProyek['tgl'],
-			'nama'=> $dataOperasionalProyek['nama'],
-			'jenis'=> $dataOperasionalProyek['jenis'],
-			'total'=> $dataOperasionalProyek['total'],
-			'sisa'=> $dataOperasionalProyek['sisa'],
-			'status'=> $dataOperasionalProyek['status'],
-			'status_lunas'=> $dataOperasionalProyek['status_lunas'],
-			'ket'=> $dataOperasionalProyek['ket'],
-		);
+		if($dataOperasionalProyek) {
+			$data = array(
+				'action' => 'action-edit',
+				'id' => $dataOperasionalProyek['id'],
+				// 'id_proyek'=> $dataOperasionalProyek['id_proyek'],
+				// 'id_bank'=> $id_bank['id_bank'],
+				// 'id_kas_besar'=> $dataOperasionalProyek['id_kas_besar'],
+				// 'id_distributor'=> $dataOperasionalProyek['id_distributor'],
+				// 'tgl'=> $dataOperasionalProyek['tgl'],
+				// 'nama'=> $dataOperasionalProyek['nama'],
+				// 'jenis'=> $dataOperasionalProyek['jenis'],
+				// 'total'=> $dataOperasionalProyek['total'],
+				// 'sisa'=> $dataOperasionalProyek['sisa'],
+				// 'status'=> $dataOperasionalProyek['status'],
+				// 'status_lunas'=> $dataOperasionalProyek['status_lunas'],
+				// 'ket'=> $dataOperasionalProyek['ket'],
+			);
 
-		$this->layout('operasional_proyek/form', $config, $data);
+			$this->layout('operasional_proyek/form', $config, $data);
+		}
+		else { $this->helper->requestError(404); }
 	}
 
 	/**
@@ -352,9 +353,9 @@ class Operasional_proyek extends CrudAbstract{
 	 * Parameter id => id proyek
 	 */
 	public function get_edit($id){
-		if($_SERVER['REQUEST_METHOD'] == "POST"){
+		if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR'){
 			$id = strtoupper($id);
-			if(empty($id) || $id == "") $this->redirect(BASE_URL."operasional-proyek/");
+			if(empty($id) || $id == "") $this->helper->requestError(403, true);
 
 			$dataOperasionalProyek = $this->Operasional_proyekModel->getById($id);
 			$dataDetail = $this->Operasional_proyekModel->getDetailById($id);
@@ -379,14 +380,14 @@ class Operasional_proyek extends CrudAbstract{
 
 			echo json_encode($output);
 		}
-		else $this->redirect();	
+		else { $this->helper->requestError(403); }
 	}
 
 	/**
 	 * 
 	 */
 	public function action_edit(){
-		if($_SERVER['REQUEST_METHOD'] == "POST") {
+		if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
 			$data = isset($_POST) ? $_POST :false;
 			$dataOperasionalProyek = isset($_POST['dataOperasionalProyek']) ? json_decode($_POST['dataOperasionalProyek'], true) : false;
 			$dataDetail = isset($_POST['listDetail']) ? json_decode($_POST['listDetail'], true) : false;	
@@ -479,82 +480,87 @@ class Operasional_proyek extends CrudAbstract{
 			);
 
 			echo json_encode($output);			
-		} else $this->redirect();
+		}
+		else { $this->helper->requestError(403, true); }
 	}
 
 	/**
 	 * 
 	 */
 	public function detail($id){
-		$id = strtoupper($id);
-		
-		$dataOperasionalProyek = !empty($this->Operasional_proyekModel->getById_fromView($id)) ? $this->Operasional_proyekModel->getById_fromView($id) : false;
-		
-		if((empty($id) || $id == "") || !$dataOperasionalProyek) { $this->redirect(BASE_URL."operasional-proyek/"); }
-
-		$css = array(
-			'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
-			'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
-			'assets/bower_components/select2/dist/css/select2.min.css',
-		);
-		$js = array(
-			'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
-			'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
-			'assets/plugins/input-mask/jquery.inputmask.bundle.js',
-			'assets/bower_components/select2/dist/js/select2.full.min.js',
-			'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
-			'assets/bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.id.min.js',
-			'assets/js/library/export.js',
-			'app/views/operasional_proyek/js/initView.js',
-		);
-
-		$config = array(
-			'title' => 'Menu Operasional Proyek - Detail',
-			'property' => array(
-				'main' => 'Data Operasional Proyek',
-				'sub' => 'Detail Data Operasional Proyek',
-			),
-			'css' => $css,
-			'js' => $js,
-		);
-
-		$parsing_dataOperasionalProyek = array(
-			'id' => $dataOperasionalProyek['id'],
-			'id_proyek' => $dataOperasionalProyek['id_proyek'],
-			'nama_pembangunan' => $dataOperasionalProyek['nama_pembangunan'],
-			'tgl_operasional' => $this->helper->cetakTgl($dataOperasionalProyek['tgl_operasional'], 'full'),
-			'nama_pembangunan' => $dataOperasionalProyek['nama_pembangunan'],
-			'id_kas_besar' => $dataOperasionalProyek['id_kas_besar'],
-			'nama_kas_besar' => $dataOperasionalProyek['nama_kas_besar'],
-			'id_distributor' => $dataOperasionalProyek['id_distributor'],
-			'nama_distributor' => $dataOperasionalProyek['nama_distributor'],
-			'nama_operasional' => $dataOperasionalProyek['nama_operasional'],
-			'jenis_pembayaran' => (strtolower($dataOperasionalProyek['jenis_pembayaran']) == 'tunai') ?
-				'<span class="label label-success">'.$dataOperasionalProyek['jenis_pembayaran'].'</span>' :
-				'<span class="label label-warning">'.$dataOperasionalProyek['jenis_pembayaran'].'</span>',
-			'jenis_operasional' => $dataOperasionalProyek['jenis_operasional'],
-			'total' => $this->helper->cetakRupiah($dataOperasionalProyek['total']),
-			'sisa_operasional' => $this->helper->cetakRupiah($dataOperasionalProyek['sisa_operasional']),
-			'status_lunas' => (strtolower($dataOperasionalProyek['status_lunas']) == 'lunas') ?
-				'<span class="label label-success">'.$dataOperasionalProyek['status_lunas'].'</span>' :
-				'<span class="label label-danger">'.$dataOperasionalProyek['status_lunas'].'</span>',
-			'keterangan' => $dataOperasionalProyek['keterangan']
+		if($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER') {
+			$id = strtoupper($id);
 			
-		);
-		
-		$data = array(
-			'data_operasionalProyek' => $parsing_dataOperasionalProyek,
-			'id' => $id
-		);
+			$dataOperasionalProyek = !empty($this->Operasional_proyekModel->getById_fromView($id)) ? $this->Operasional_proyekModel->getById_fromView($id) : false;
+			
+			if((empty($id) || $id == "") || !$dataOperasionalProyek) { $this->redirect(BASE_URL."operasional-proyek/"); }
 
-		$this->layout('operasional_proyek/view', $config, $data);
+			$css = array(
+				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
+				'assets/bower_components/select2/dist/css/select2.min.css',
+			);
+			$js = array(
+				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
+				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
+				'assets/bower_components/select2/dist/js/select2.full.min.js',
+				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',
+				'assets/bower_components/bootstrap-datepicker/dist/locales/bootstrap-datepicker.id.min.js',
+				'assets/js/library/export.js',
+				'app/views/operasional_proyek/js/initView.js',
+			);
+
+			$config = array(
+				'title' => 'Menu Operasional Proyek - Detail',
+				'property' => array(
+					'main' => 'Data Operasional Proyek',
+					'sub' => 'Detail Data Operasional Proyek',
+				),
+				'css' => $css,
+				'js' => $js,
+			);
+
+			$parsing_dataOperasionalProyek = array(
+				'id' => $dataOperasionalProyek['id'],
+				'id_proyek' => $dataOperasionalProyek['id_proyek'],
+				'nama_pembangunan' => $dataOperasionalProyek['nama_pembangunan'],
+				'tgl_operasional' => $this->helper->cetakTgl($dataOperasionalProyek['tgl_operasional'], 'full'),
+				'nama_pembangunan' => $dataOperasionalProyek['nama_pembangunan'],
+				'id_kas_besar' => $dataOperasionalProyek['id_kas_besar'],
+				'nama_kas_besar' => $dataOperasionalProyek['nama_kas_besar'],
+				'id_distributor' => $dataOperasionalProyek['id_distributor'],
+				'nama_distributor' => $dataOperasionalProyek['nama_distributor'],
+				'nama_operasional' => $dataOperasionalProyek['nama_operasional'],
+				'jenis_pembayaran' => (strtolower($dataOperasionalProyek['jenis_pembayaran']) == 'tunai') ?
+					'<span class="label label-success">'.$dataOperasionalProyek['jenis_pembayaran'].'</span>' :
+					'<span class="label label-warning">'.$dataOperasionalProyek['jenis_pembayaran'].'</span>',
+				'jenis_operasional' => $dataOperasionalProyek['jenis_operasional'],
+				'total' => $this->helper->cetakRupiah($dataOperasionalProyek['total']),
+				'sisa_operasional' => $this->helper->cetakRupiah($dataOperasionalProyek['sisa_operasional']),
+				'status_lunas' => (strtolower($dataOperasionalProyek['status_lunas']) == 'lunas') ?
+					'<span class="label label-success">'.$dataOperasionalProyek['status_lunas'].'</span>' :
+					'<span class="label label-danger">'.$dataOperasionalProyek['status_lunas'].'</span>',
+				'keterangan' => $dataOperasionalProyek['keterangan']
+				
+			);
+			
+			$data = array(
+				'data_operasionalProyek' => $parsing_dataOperasionalProyek,
+				'id' => $id
+			);
+
+			$this->layout('operasional_proyek/view', $config, $data);
+		}
+		else { $this->helper->requestError(403); }
 	}
 
 	/**
 	 * 
 	 */
 	public function get_list_detail($id) {
-		if($_SERVER['REQUEST_METHOD'] == "POST") {
+		if($_SERVER['REQUEST_METHOD'] == "POST" && ($_SESSION['sess_level'] === 'KAS BESAR' 
+			|| $_SESSION['sess_level'] === 'OWNER')) {
 			$id = strtoupper($id);
 			// config datatable
 			$config_dataTable = array(
@@ -591,14 +597,14 @@ class Operasional_proyek extends CrudAbstract{
 
 			echo json_encode($output);
 		}
-		else { die(ACCESS_DENIED); }
+		else { $this->helper->requestError(403, true); }
 	}
 
 	/**
 	 * 
 	 */
 	public function delete($id){
-		if($_SERVER['REQUEST_METHOD'] == "POST" && $id != ''){
+		if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
 			$id = strtoupper($id);
 			
 			if(empty($id) || $id == "") { $this->redirect(BASE_URL."operasional-proyek/"); }
@@ -633,139 +639,78 @@ class Operasional_proyek extends CrudAbstract{
 				'message' => $this->message,
 				'notif' => $this->notif
 			));
-		} else { 
-			$this->redirect(); 
-		}	
-	}
-
-	/**
-	 * Export data ke format Excel
-	 */
-	public function export(){
-		$tgl_awal = $_GET['tgl_awal'];
-		$tgl_akhir = $_GET['tgl_akhir'];
-
-		$row = $this->Operasional_proyekModel->getExport($tgl_awal, $tgl_akhir);
-		$header = array_keys($row[0]); 
-	
-		$this->excel->setProperty('Laporan Operasional Proyek','Laporan Operasional Proyek','Data Laporan Operasional Proyek');
-		$this->excel->setData($header, $row);
-		$this->excel->getData('Data Operasional Proyek', 'Data Operasional Proyek', 4, 5 );
-
-		$this->excel->getExcel('Data Operasional Proyek');		
-		
-	}
-
-	/**
-	 * Export data detail ke format Excel
-	 */
-	public function export_detail(){
-
-		$id = $_GET['id'];
-		$tgl_awal = $_GET['tgl_awal'];
-		$tgl_akhir = $_GET['tgl_akhir'];
-
-		$row = $this->Operasional_proyekModel->getExportDetail($id, $tgl_awal, $tgl_akhir);
-		$header = array_keys($row[0]); 
-	
-		$this->excel->setProperty('Laporan Detail Operasional Proyek','Laporan Detail Operasional Proyek','Data Laporan Detail Operasional Proyek');
-		$this->excel->setData($header, $row);
-		$this->excel->getData('Data Detail Operasional Proyek', 'Data Detail Operasional Proyek', 4, 5 );
-
-		$this->excel->getExcel('Data Detail Operasional Proyek');		
-		
-	}
-
-	/**
-	 * Export data detail ke format Excel
-	 */
-	public function export_history(){
-
-		$id = $_GET['id'];
-
-		$row = $this->Operasional_proyekModel->getExportHistory($id);
-		$header = array_keys($row[0]); 
-	
-		$this->excel->setProperty('Laporan History Pembelian Operasional','Laporan History Pembelian Operasional','Laporan History Pembelian Operasional');
-		$this->excel->setData($header, $row);
-		$this->excel->getData('Laporan History Pembelian Operasional', 'Laporan History Pembelian Operasional', 4, 5 );
-
-		$this->excel->getExcel('Laporan History Pembelian Operasional');		
-		
-	}
-
-
-	/**
-	 * 
-	 */
-	public function get_last_id(){
-		if($_SERVER['REQUEST_METHOD'] == "POST"){
-			$proyek = isset($_POST['get_proyek']) ? $this->validation->validInput($_POST['get_proyek']) : false;
-
-			$id_temp = ($proyek) ? 'OPRY-'.$proyek.'-' : 'OPRY-[ID_PROYEK]-';
-
-			$data = !empty($this->Operasional_proyekModel->getLastID($id_temp)['id']) ? $this->Operasional_proyekModel->getLastID($id_temp)['id'] : false;
-
-			if(!$data) $id = $id_temp.'0001';
-			else{
-				$noUrut = (int)substr($data, 17, 4);
-				$noUrut++;
-
-				$id = $id_temp.sprintf("%04s", $noUrut);
-			}
-
-			echo json_encode($id);
-		}		
-
-	}
-
-	/**
-	 * 
-	 */
-	public function get_nama_proyek_lama($id = false){
-		$this->model('ProyekModel');
-		$data_nama_proyek = (!$id) ? $this->ProyekModel->getAll() : $this->ProyekModel->getById($id);
-		
-		$data = array();
-
-		if(!$id){
-			foreach($data_nama_proyek as $row){
-				$dataRow = array();
-				$dataRow['id'] = $row['id'];
-				$dataRow['text'] = $row['id'].' - '.$row['pembangunan'];
-
-				$data[] = $dataRow;
-			}
 		}
-		else{
-			$data[] = array(
-				'id' => $data_nama_proyek['id'],
-					'text' => $data_nama_proyek['id'].' - '.$data_nama_proyek['pembangunan']
+		else { $this->helper->requestError(403, true); }
+	}
+
+	/**
+	 * Method getIncrement
+	 */
+	public function get_increment() {
+		if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
+
+			$this->model('IncrementModel');
+			$proyek = isset($_POST['id_proyek']) && !empty($_POST['id_proyek']) ? 
+				$this->validation->validInput($_POST['id_proyek']) : '-[ID_PROYEK]-';
+			$operasionalProyek = isset($_POST['id_operasional_proyek']) && !empty($_POST['id_operasional_proyek']) ? 
+				$this->validation->validInput($_POST['id_operasional_proyek']) : false;
+			
+			$increment_number = '';
+
+			if(!$operasionalProyek) {
+				$increment = $this->IncrementModel->get_increment('operasional_proyek');
+            
+				if($increment['success']) {
+					$getMask = explode('-', $increment['mask']);
+					$increment_number = $getMask[0].date('Y').$proyek.sprintf("%04s", $increment['increment']);
+				}
+			}
+			else {
+				// OPR2019-[ID_PROYEK]-0051
+				$temp_id_operasional_proyek = explode('-', $operasionalProyek);
+				if(count($temp_id_operasional_proyek) > 1) {
+					$increment_number = $temp_id_operasional_proyek[0].$proyek.$temp_id_operasional_proyek[2];
+				}
+				else {
+					$increment_number = substr($operasionalProyek, 0, 7).$proyek.substr($operasionalProyek, 18, 4);
+				}
+			}
+
+            echo json_encode($increment_number);
+		}
+		else { $this->helper->requestError(403, true); }
+	}
+
+	/**
+	 * 
+	 */
+	public function get_nama_proyek($filterById = false) {
+		if($_SERVER['REQUEST_METHOD'] == "POST") {
+			$this->model('ProyekModel');
+			
+			$dataProyek = ($filterById && !empty($filterById)) ? $this->ProyekModel->getById($filterById) : $this->ProyekModel->getAll();
+			$data = array();
+
+			if($filterById && !empty($filterById)) {
+				$data[] = array(
+					'id' => $dataProyek['id'],
+					'text' => $dataProyek['id'].' - '.$dataProyek['pembangunan']
 				);
+			}
+			else {
+				foreach($dataProyek as $row){
+					$dataRow = array();
+					$dataRow['id'] = $row['id'];
+					$dataRow['text'] = $row['id'].' - '.$row['pembangunan'];
+
+					$data[] = $dataRow;
+				}
+			}
+			
+
+			echo json_encode($data);
 		}
-
-		echo json_encode($data);
-
-		// var_dump($data);
-	}
-
-	/**
-	 * 
-	 */
-	public function get_nama_proyek(){
-		$this->model('ProyekModel');
-		$data_nama_proyek = $this->ProyekModel->getAll();
-		$data = array();
-
-		foreach($data_nama_proyek as $row){
-			$dataRow = array();
-			$dataRow['id'] = $row['id'];
-			$dataRow['text'] = $row['id'].' - '.$row['pembangunan'];
-
-			$data[] = $dataRow;
-		}
-
-		echo json_encode($data);
+		else { $this->helper->requestError(403, true); }
 	}
 
 	/**
@@ -774,7 +719,7 @@ class Operasional_proyek extends CrudAbstract{
 	 * @return data {object} array berupa json
 	 */
 	public function get_nama_bank(){
-		if($_SERVER['REQUEST_METHOD'] == "POST"){
+		if($_SERVER['REQUEST_METHOD'] == "POST") {
 			$data_bank = $this->Operasional_proyekModel->get_selectBank();
 			$data = array();
 
@@ -788,7 +733,7 @@ class Operasional_proyek extends CrudAbstract{
 
 			echo json_encode($data);
 		}
-		else { $this->redirect(); }
+		else { $this->helper->requestError(403, true); }
 	}
 	
 
@@ -875,7 +820,7 @@ class Operasional_proyek extends CrudAbstract{
 	/**
 	 * 
 	 */
-	public function get_list_history_pembelian($id){
+	public function get_list_history_pembelian($id) {
 		if($_SERVER['REQUEST_METHOD'] == "POST"){
 			$config_dataTable = array(
 				'tabel' => 'v_history_pembelian_operasionalproyek',
