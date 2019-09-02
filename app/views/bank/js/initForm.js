@@ -107,28 +107,31 @@ function submit() {
 		contentType: false,
 		cache: false,
 		processData: false,
-		beforeSend: function(){
+		beforeSend: function() {
 			$('#submit_bank').prop('disabled', true);
 			$('#submit_bank').prepend('<i class="fa fa-spin fa-refresh"></i> ');
 		},
-		success: function(response){
-			console.log('Response submit Bank: ', response);
+		success: function(response) {
+			console.log('%c Response submit Bank: ', logStyle.success, response);
 			if(!response.success) {
 				$('#submit_bank').prop('disabled', false);
 				$('#submit_bank').html($('#submit_bank').text());
 				setError(response.error);
-				toastr.warning(response.notif.message, response.notif.title);
 			}
-			else{
-				toastr.success(response.notif.message, response.notif.title);
+			else {
 				resetForm();
 				$("#modalBank").modal('hide');
 				$("#bankTable").DataTable().ajax.reload();
 			}
+			setNotif(response.notif);
 		},
-		error: function (jqXHR, textStatus, errorThrown){ // error handling
+		error: function (jqXHR, textStatus, errorThrown) {
 			$("#modalBank").modal('hide');
-            console.log('Response Error submit Bank: ', jqXHR, textStatus, errorThrown);
+			console.log('%c Response Error submit Bank: ', logStyle.error, {
+				jqXHR: jqXHR, 
+				textStatus: textStatus, 
+				errorThrown: errorThrown
+			});
             swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
         }
 	})
@@ -141,7 +144,8 @@ function submit() {
  * @return {object} response
  */
 function getEdit(id) {
-	console.log('edit clicked');
+	console.log('Button Edit Bank Clicked...');
+
 	resetForm();
 	$('.field-saldo').css('display', 'none');
 	$('#submit_bank').prop('value', 'action-edit');
@@ -153,15 +157,19 @@ function getEdit(id) {
 		type: 'post',
 		dataType: 'json',
 		data: {},
-		beforeSend: function(){
+		beforeSend: function() {
 		},
-		success: function(response){
-			console.log('%cResponse Get Edit Bank: ', 'color: green; font-weight: bold', response);
+		success: function(response) {
+			console.log('%c Response Get Edit Bank: ', logStyle.success, response);
 			setValue(response);
 			$('#modalBank').modal({backdrop: 'static'});
 		},
-		error: function (jqXHR, textStatus, errorThrown){ // error handling
-            console.log('Response Error getEdit Bank: ', jqXHR, textStatus, errorThrown);
+		error: function (jqXHR, textStatus, errorThrown) {
+            console.log('%c Response Error getEdit Bank: ', logStyle.error, {
+				jqXHR: jqXHR, 
+				textStatus: textStatus, 
+				errorThrown: errorThrown
+			});
 			swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
 			$('#modalBank').modal('hide');
         }
@@ -174,13 +182,13 @@ function getEdit(id) {
  * Proses menampilkan pesan error di field-field yang terdapat kesalahan 
  * @param {object} error 
  */
-function setError(error){
-	$.each(error, function(index, item){
+function setError(error) {
+	$.each(error, function(index, item) {
 		if(item != ""){
 			$('.field-'+index).removeClass('has-success').addClass('has-error');
 			$('.pesan-'+index).text(item);
 		}
-		else{
+		else {
 			$('.field-'+index).removeClass('has-error').addClass('has-success');
 			$('.pesan-'+index).text('');	
 		}
@@ -192,8 +200,8 @@ function setError(error){
  * Proses menampilkan value ke field-field yang dibutuhkan
  * @param {object} value 
  */
-function setValue(value){
-	$.each(value, function(index, item){
+function setValue(value) {
+	$.each(value, function(index, item) {
 		item = (parseFloat(item)) ? (parseFloat(item)) : item;
 		if(index == 'status') {
 			$('#'+index).val(item).trigger('change');
@@ -214,7 +222,7 @@ function setStatus() {
 		{value: "NONAKTIF", text: "NONAKTIF"},
 	];
 
-	$.each(status, function(index, item){
+	$.each(status, function(index, item) {
 		var option = new Option(item.text, item.value);
 		$("#status").append(option).trigger('change');
 	});
