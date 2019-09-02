@@ -1,13 +1,13 @@
-$(document).ready(function(){
+$(document).ready(function() {
 	init();
 
 	// event on click button tambah
-	$('#tambah').on('click', function(){
+	$('#tambah').on('click', function() {
 		onClickAdd();
 	});
 
 	// event on submit
-	$('#form_kas_besar').submit(function(e){
+	$('#form_kas_besar').submit(function(e) {
 		e.preventDefault();
 		submit();
 
@@ -15,7 +15,7 @@ $(document).ready(function(){
 	});
 
 	// on change field
-	$('.field').on('change', function(){
+	$('.field').on('change', function() {
 		onChangeField(this);
 	});
 
@@ -35,6 +35,10 @@ function init() {
 	$('#submit_kas_besar').prop('disabled', true);
 	$('#id').prop('disabled', true);
 
+	$('#status').select2({
+    	placeholder: "Pilih Status",
+		allowClear: true
+	});
 	setStatus();
 }
 
@@ -68,7 +72,7 @@ function onClickAdd() {
  * untuk mendapatkan semua value di field
  * @return {object} data
  */
-function getDataForm(){
+function getDataForm() {
 	var data = new FormData();
 	var status = ($('#status').val() != "" && $('#status').val() != null) ? $('#status').val().trim() : "";
 
@@ -85,7 +89,7 @@ function getDataForm(){
 		data.append('alamat', $('#alamat').val().trim()); // alamat kas besar
 		data.append('no_telp', $('#no_telp').val().trim()); // no_telp kas besar
 		data.append('email', $('#email').val().trim()); // email kas besar
-		data.append('status', $('#status').val().trim()); // status kas besar
+		data.append('status', status); // status kas besar
 		data.append('password', ''); // password kas besar
 		data.append('password_confirm', ''); // password kas besar
 	} 
@@ -105,7 +109,7 @@ function getDataForm(){
  * Proses submit data ke server baik saat add / edit
  * @return {object} response
  */
-function submit(){
+function submit() {
 	var data = getDataForm();
 
 	$.ajax({
@@ -120,8 +124,8 @@ function submit(){
 			$('#submit_kas_besar').prop('disabled', true);
 			$('#submit_kas_besar').prepend('<i class="fa fa-spin fa-refresh"></i> ');
 		},
-		success: function(response){
-			console.log(response);
+		success: function(response) {
+			console.log('%c Response submit Kas Besar: ', logStyle.success, response);
 			if(!response.success) {
 				$('#submit_kas_besar').prop('disabled', false);
 				$('#submit_kas_besar').html($('#submit_kas_besar').text());
@@ -137,7 +141,12 @@ function submit(){
 			setNotif(response.notif);
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling
-            console.log(jqXHR, textStatus, errorThrown);
+            console.log('%c Response Error submit: ', logStyle.error, {
+				jqXHR: jqXHR, 
+				textStatus: textStatus, 
+				errorThrown: errorThrown
+			});
+
 			swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
 			$('#submit_kas_besar').prop('disabled', false);
 			$('#submit_kas_besar').html($('#submit_kas_besar').text());
@@ -148,7 +157,7 @@ function submit(){
 /**
 *
 */
-function getEdit(id){
+function getEdit(id) {
 	resetForm();
 	$('.field-password').css('display', 'none');
 	$('.field-email').css('display', 'none');
@@ -163,17 +172,23 @@ function getEdit(id){
 		type: 'post',
 		dataType: 'json',
 		data: {},
-		beforeSend: function(){
-
+		beforeSend: function() {
 		},
-		success: function(output){
-			if(output){
+		success: function(response) {
+			console.log('%c Response getEdit Distributor: ', logStyle.success, response);
+
+			if(response) {
 				$('#modalKasBesar').modal();
-				setValue(output);
+				setValue(response);
 			}	
 		},
-		error: function (jqXHR, textStatus, errorThrown){ // error handling
-			console.log(jqXHR, textStatus, errorThrown);
+		error: function (jqXHR, textStatus, errorThrown) {
+			console.log('%c Response Error getEdit: ', logStyle.error, {
+				jqXHR: jqXHR, 
+				textStatus: textStatus, 
+				errorThrown: errorThrown
+			});
+			swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
 		}
 	})
 }
@@ -183,13 +198,13 @@ function getEdit(id){
  * Proses menampilkan pesan error di field-field yang terdapat kesalahan 
  * @param {object} error 
  */
-function setError(error){
-	$.each(error, function(index, item){
-		if(item != ""){
+function setError(error) {
+	$.each(error, function(index, item) {
+		if(item != "") {
 			$('.field-'+index).removeClass('has-success').addClass('has-error');
 			$('.pesan-'+index).text(item);
 		}
-		else{
+		else {
 			$('.field-'+index).removeClass('has-error').addClass('has-success');
 			$('.pesan-'+index).text('');	
 		}
@@ -201,9 +216,9 @@ function setError(error){
  * Proses pengisian value di field2 saat proses edit
  * @param {object} value 
  */
-function setValue(value){
+function setValue(value) {
 	$.each(value, function(index, item){
-		item = (parseFloat(item)) ? (parseFloat(item)) : item;
+		item = (parseFloat(item) && index != 'no_telp') ? (parseFloat(item)) : item;
 		$('#'+index).val(item);
 	});
 }
@@ -229,10 +244,11 @@ function setStatus() {
  * Function resetForm
  * Proses reset form kas besar
  */
-function resetForm(){
+function resetForm() {
 	// trigger reset form
 	$('#form_kas_besar').trigger('reset');
-
+	$('#status').val(null).trigger('change');
+	
 	// hapus semua pesan
 	$('.pesan').text('');
 
@@ -260,7 +276,7 @@ function getLastIncrement(callback) {
 		beforeSend: function() {
 		},
 		success: function(response) {
-			console.log('%c Response getLastIncrement: ', 'color: green; font-weight: bold', response);
+			console.log('%c Response getLastIncrement: ', logStyle.success, response);
 			
 			callback({
 				success: true,
@@ -268,14 +284,13 @@ function getLastIncrement(callback) {
 			});	
 		},
 		error: function (jqXHR, textStatus, errorThrown) {
-            console.log('%c Response Error getLastIncrement: ', 'color: red; font-weight: bold', {
+            console.log('%c Response Error getLastIncrement: ', logStyle.error, {
 				jqXHR: jqXHR, 
 				textStatus: textStatus, 
 				errorThrown: errorThrown
 			});
 
 			swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
-
 			callback({success: false});
         }
 	})
