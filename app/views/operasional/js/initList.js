@@ -77,73 +77,64 @@ $(document).ready(function() {
 /**
 *
 */
-function export_excel() {
-   
-    console.log('Export Detail Clicked');
-
-    var tgl_awal = $('#tgl_awal').val().trim();
-    var tgl_akhir = $('#tgl_akhir').val().trim();
-
-    if(tgl_awal == '' && tgl_akhir != ''){
-        swal({
-            type: 'error',
-            title: 'Tanggal Awal Harus Diisi!',
-            text: 'Isi atau kosongkan keduanya !'
-        })
-    } else if(tgl_awal != '' && tgl_akhir == ''){
-        swal({
-            type: 'error',
-            title: 'Tanggal Akhir Harus Diisi!',
-            text: 'Isi atau kosongkan keduanya !'
-        })
-    } else {
-    window.location.href = BASE_URL+'operasional/export?tgl_awal=' + tgl_awal + '&tgl_akhir=' + tgl_akhir;
+function getView(id) {
+    if(LEVEL === 'KAS BESAR' || LEVEL === 'OWNER') {
+        window.location.href = BASE_URL+'operasional/detail/'+id.toLowerCase();
+        return;
     }
-}
 
-/**
-*
-*/
-function getView(id){
 	window.location.href = BASE_URL+'operasional/detail/'+id.toLowerCase();
 }
 
 /**
 *
 */
-function getDelete(id){
+function getDelete(id) {
+	console.log('Button Hapus Operasional clicked...');
 
-		swal({
-			title: "Pesan Konfirmasi",
-			text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
-			type: "warning",
-	        showCancelButton: true,
-	        confirmButtonColor: "#DD6B55",
-	        confirmButtonText: "Ya, Hapus!",
-	        cancelButtonText: "Batal",
-	        closeOnConfirm: false,
-		}, function(){
-			$.ajax({
-				url: BASE_URL+'operasional/delete/'+id.toLowerCase(),
-				type: 'post',
-				dataType: 'json',
-				data: {},
-				beforeSend: function(){
+    if(LEVEL !== 'KAS BESAR') {
+        setNotif(notifAccessDenied, 'swal');
+        return;
+    }
 
-				},
-				success: function(output){
-					console.log(output);
-					if(output){
-						swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
-						$("#operasionalTable").DataTable().ajax.reload();
-					}
-				},
-				error: function (jqXHR, textStatus, errorThrown){ // error handling
-		            console.log(jqXHR, textStatus, errorThrown);
-                    swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
-		        }
-			})
-		});
-	
-   
+	swal({
+		title: "Pesan Konfirmasi",
+		text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
+		type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#DD6B55",
+        confirmButtonText: "Ya, Hapus!",
+        cancelButtonText: "Batal",
+        closeOnConfirm: false,
+	}, function() {
+		$.ajax({
+			url: BASE_URL+'operasional/delete/'+id,
+			type: 'post',
+			dataType: 'json',
+			data: {},
+			beforeSend: function() {
+                $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+			},
+			success: function(response) {
+				console.log('%c Response getDelete Operasional: ', logStyle.success, response);
+                
+                $('.box .overlay').remove();
+
+                if(response.success) { operasionalTable.ajax.reload(); }
+                swal(response.notif.title, response.notif.message, response.notif.type);
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+	            console.log('%c Response Error getDelete: ', logStyle.error, {
+                    jqXHR: jqXHR, 
+                    textStatus: textStatus, 
+                    errorThrown: errorThrown
+                });
+
+                $('.box .overlay').remove();
+
+                swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+                operasionalTable.ajax.reload();
+	        }
+		})
+	});	
 }

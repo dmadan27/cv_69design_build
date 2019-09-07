@@ -325,50 +325,32 @@
 			try {
 				$this->koneksi->beginTransaction();
 
-				$this->hapusOperasional($data);
+				$query = "CALL p_hapus_operasional (:id, :tgl, :ket, :modified_by);";
+				$statement = $this->koneksi->prepare($query);
+				$statement->execute(
+					array(
+						':id' => $data['id'],
+						':tgl' => $data['tgl'],
+						':ket' => $ket_mutasi,
+						':modified_by' => $_SESSION['sess_email']
+					)
+				);
+				$statement->closeCursor();
 
 				$this->koneksi->commit();
 
-				return true;
-			 	
+				return array(
+					'success' => true,
+					'error' => null
+				);
 			}
 			catch (PDOException $e) {
 				$this->koneksi->rollback();
-				die($e->getMessage());
-				// return false;
-			 	
+				return array(
+					'success' => false,
+					'error' => $e->getMessage()
+				);
 			}
-		}
-
-		/**
-		 * 
-		 */
-		public function hapusOperasional($data) {
-
-			$uang = number_format($data['nominal'],2,",",".");
-
-			$ket_mutasi = '';
-
-			if($data['jenis'] == 'UANG MASUK'){
-				$ket_mutasi = "UANG KELUAR SEBESAR Rp.".$uang." DIKARENAKAN ADANYA PENGHAPUSAN DATA DI OPERASIONAL DENGAN ID ".$data['id'];
-			} else if($data['jenis'] == 'UANG KELUAR') {
-				$ket_mutasi = "UANG MASUK SEBESAR Rp.".$uang." DIKARENAKAN ADANYA PENGHAPUSAN DATA DI OPERASIONAL DENGAN ID ".$data['id'];
-			}
-
-			$query = "CALL p_hapus_operasional (
-				:id,
-				:tgl,
-				:ket, :modified_by);";
-			$statement = $this->koneksi->prepare($query);
-			$statement->execute(
-				array(
-					':id' => $data['id'],
-					':tgl' => $data['tgl'],
-					':ket' => $ket_mutasi,
-					':modified_by' => $_SESSION['sess_email']
-				)
-			);
-			$statement->closeCursor();
 		}
 
 		// METHOD EXPORT ===============VVVVVVVVVV====================================================================

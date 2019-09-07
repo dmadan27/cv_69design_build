@@ -401,20 +401,50 @@ class Operasional extends Controller
 	public function delete($id) {
 		if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
 			$id = strtoupper($id);
-			
+			if(empty($id) || $id == "") { $this->redirect(BASE_URL."operasional/"); }
+
 			$dataOperasional = $this->OperasionalModel->getById($id);
+			
+			$uang = number_format($dataOperasional['nominal'],2,",",".");
+			$ket_mutasi = '';
+			if($dataOperasional['jenis'] == 'UANG MASUK'){
+				$ket_mutasi = "UANG KELUAR SEBESAR Rp.".$uang." DIKARENAKAN ADANYA PENGHAPUSAN DATA DI OPERASIONAL DENGAN ID ".$id;
+			} 
+			else if($dataOperasional['jenis'] == 'UANG KELUAR') {
+				$ket_mutasi = "UANG MASUK SEBESAR Rp.".$uang." DIKARENAKAN ADANYA PENGHAPUSAN DATA DI OPERASIONAL DENGAN ID ".$id;
+			}
 
 			$data = array(
 				'id' => $id,
 				'jenis' => $dataOperasional['jenis'],
 				'nominal' => $dataOperasional['nominal'],
 				'tgl' => date('Y-m-d'),
-				'ket' => '',	
+				'ket' => $ket_mutasi,	
 			);
 
-			if($this->OperasionalModel->delete($data)) $this->success = true;
+			$deleteOperasional = $this->OperasionalModel->delete($data);
+			if($deleteOperasional) {
+				$this->success = true;
+				$this->notif = array(
+					'type' => 'success',
+					'title' => 'Pesan Sukses',
+					'message' => 'Data Berhasil Dihapus',
+				);
+			}
+			else {
+				$this->message = $delete_bank['error'];
+				$this->notif = array(
+					'type' => 'error',
+					'title' => 'Pesan Error',
+					'message' => 'Terjadi Kesalahan Teknis, Silahkan Coba Kembali',
+				);
+			}
 
-			echo json_encode($this->success);
+			echo json_encode(array(
+				'success' => $this->success,
+				'message' => $this->message,
+				'notif' => $this->notif
+			));
 		}
 		else { $this->helper->requestError(403, true); }
 	}
