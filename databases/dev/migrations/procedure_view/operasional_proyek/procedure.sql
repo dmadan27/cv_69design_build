@@ -543,10 +543,19 @@
 		DECLARE get_total_sebelum double(12,2);
 		DECLARE get_saldo_bank_lama double(12,2);
 		DECLARE get_saldo_bank_baru double(12,2);
+		DECLARE get_total_op double(12,2);
+		DECLARE get_total_dtl double(12,2);
 
 		-- get id_bank dan total sebelum diedit
 		SELECT id_bank INTO get_bank_sebelum FROM detail_operasional_proyek WHERE id = id_detail_param;
 		SELECT total INTO get_total_sebelum FROM detail_operasional_proyek WHERE id = id_detail_param;
+
+		-- total di op.proyek
+		SELECT total INTO get_total_op FROM operasional_proyek where id = id_operasional_proyek_param;
+
+		-- total di detail op proyek
+		SELECT sum(total) INTO get_total_dtl FROM detail_operasional_proyek
+			 where id_operasional_proyek = id_operasional_proyek_param;	
 
 		-- jika ada perubahan di bank
 		IF get_bank_sebelum != id_bank_param THEN
@@ -582,6 +591,11 @@
 			VALUES 
 				(id_bank_param, tgl_detail_param, 0, total_detail_param, (get_saldo - total_detail_param), 
 				ket_mutasi_keluar_param, modified_by_param, modified_by_param);
+
+			UPDATE operasional_proyek SET
+				sisa = get_total_op - get_total_dtl
+			WHERE id = id_operasional_proyek_param;
+
 		ELSE
 			-- jika bank sama
 			-- jika ada perubahan di total
@@ -604,6 +618,10 @@
 					VALUES 
 						(id_bank_param, tgl_detail_param, 0, (total_detail_param - get_total_sebelum), (get_saldo - (total_detail_param - get_total_sebelum)), 
 						ket_mutasi_kondisi_param, modified_by_param, modified_by_param);
+					
+					UPDATE operasional_proyek SET
+						sisa = get_total_op - get_total_dtl
+					WHERE id = id_operasional_proyek_param;
 				
 				ELSE IF total_detail_param < get_total_sebelum THEN
 
@@ -623,6 +641,10 @@
 						(id_bank_param, tgl_detail_param, (get_total_sebelum - total_detail_param), 0, (get_saldo + (get_total_sebelum - total_detail_param)), 
 						ket_mutasi_kondisi_param, modified_by_param, modified_by_param);
 					
+					UPDATE operasional_proyek SET
+						sisa = get_total_op - get_total_dtl
+					WHERE id = id_operasional_proyek_param;
+					
 					END IF;
 
 				END IF;
@@ -636,6 +658,10 @@
 			id_bank = id_bank_param, nama = nama_detail_param, tgl = tgl_detail_param, total = total_detail_param,
 			modified_by = modified_by_param
 		WHERE id = id_detail_param;
+
+		UPDATE operasional_proyek SET
+			sisa = get_total_op - get_total_dtl
+		where id = id_operasional_proyek_param;
 
 	END //
 
