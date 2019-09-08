@@ -204,7 +204,7 @@ function setValue(value) {
 	$.each(value, function(index, item) {
 		item = (parseFloat(item)) ? (parseFloat(item)) : item;
 		if(index == 'status') {
-			$('#'+index).val(item).trigger('change');
+			$('#'+index).val(item);
 		} 
 		else {
 			$('#'+index).val(item);
@@ -224,7 +224,7 @@ function setStatus() {
 
 	$.each(status, function(index, item) {
 		var option = new Option(item.text, item.value);
-		$("#status").append(option).trigger('change');
+		$("#status").append(option);
 	});
 
 	$('#status').val(null).trigger('change');
