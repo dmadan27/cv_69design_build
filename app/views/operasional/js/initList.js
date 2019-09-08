@@ -75,8 +75,8 @@ $(document).ready(function() {
 });
 
 /**
-*
-*/
+ * 
+ */
 function getView(id) {
     if(LEVEL === 'KAS BESAR' || LEVEL === 'OWNER') {
         window.location.href = BASE_URL+'operasional/detail/'+id.toLowerCase();
@@ -87,8 +87,8 @@ function getView(id) {
 }
 
 /**
-*
-*/
+ * 
+ */
 function getDelete(id) {
 	console.log('Button Hapus Operasional clicked...');
 
