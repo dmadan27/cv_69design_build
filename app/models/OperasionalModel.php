@@ -331,7 +331,7 @@
 					array(
 						':id' => $data['id'],
 						':tgl' => $data['tgl'],
-						':ket' => $ket_mutasi,
+						':ket' => $data['ket'],
 						':modified_by' => $_SESSION['sess_email']
 					)
 				);
