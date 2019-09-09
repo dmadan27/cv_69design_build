@@ -2,27 +2,12 @@ $(document).ready(function () {
 	init();
 	// button tambah
 	$('#tambah').on('click', function () {
-		resetForm();
-		generateID();
-
-		$('#id_pengajuan').prop('disabled', true);
-		$('#submit_pengajuan_kas_kecil').prop('value', 'action-add');
-		$('#submit_pengajuan_kas_kecil').prop('disabled', false);
-		$('#submit_pengajuan_kas_kecil').html('Simpan Data');
-
-		$('#modalPengajuan_kasKecil').modal();
+		onClickAdd();
 	});
 
 	// on change field
 	$('.field').on('change', function () {
-		if (this.value !== "") {
-			$('.field-' + this.id).removeClass('has-error').addClass('has-success');
-			$(".pesan-" + this.id).text('');
-		}
-		else {
-			$('.field-' + this.id).removeClass('has-error').removeClass('has-success');
-			$(".pesan-" + this.id).text('');
-		}
+		onChangeField(this);
 	});
 
 	// submit pengajuan kas kecil
@@ -84,7 +69,24 @@ function init() {
 	// $('#')/
 }
 
+/**
+ * 
+ */
+function onClickAdd() {
+	resetForm();
+	getLastIncrement(response => {
+		if(response.success) {
+			$('#id_pengajuan').val(response.data);
+			$('#id_pengajuan').prop('disabled', true);
+		} 
+		
+		$('#submit_pengajuan_kas_kecil').prop('value', 'action-add');
+		$('#submit_pengajuan_kas_kecil').prop('disabled', false);
+		$('#submit_pengajuan_kas_kecil').html('Simpan Data');
 
+		$('#modalPengajuan_kasKecil').modal();
+	});
+}
 
 /**
  * Fungsi getDataForm()
@@ -302,22 +304,35 @@ function setValue(value) {
 }
 
 /**
- * 
+ * Method getLastIncrement
  */
-function generateID() {
+function getLastIncrement(callback) {
 	$.ajax({
-		url: BASE_URL + 'pengajuan-kas-kecil/get-last-id/',
+		url: BASE_URL+'pengajuan-kas-kecil/get-increment/',
 		type: 'post',
 		dataType: 'json',
 		data: {},
-		beforeSend: function () { },
-		success: function (output) {
-			$('#id_pengajuan').val(output);
+		beforeSend: function() {
 		},
-		error: function (jqXHR, textStatus, errorThrown) { // error handling
-			console.log(jqXHR, textStatus, errorThrown);
+		success: function(response) {
+			console.log('%c Response getLastIncrement: ', logStyle.success, response);
+			
+			callback({
+				success: true,
+				data: response
+			});	
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+            console.log('%c Response Error getLastIncrement: ', logStyle.error, {
+				jqXHR: jqXHR, 
+				textStatus: textStatus, 
+				errorThrown: errorThrown
+			});
+
 			swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
-		}
+
+			callback({success: false});
+        }
 	})
 }
 
@@ -334,7 +349,7 @@ function setNamaBank() {
 			console.log('%cResponse setNamaBank Operasional Proyek: ', 'font-style: italic', response);
 			$.each(response, function (index, item) {
 				var newOption = new Option(item.text, item.id);
-				$('#id_bank_pengajuan').append(newOption).trigger('change');
+				$('#id_bank_pengajuan').append(newOption);
 			});
 			$('#id_bank_pengajuan').val(null).trigger('change');
 
@@ -377,4 +392,6 @@ function resetForm() {
 
 	// hapus semua feedback
 	$('.form-group').removeClass('has-success').removeClass('has-error');
+
+	$('#id_bank_pengajuan').val(null).trigger('change');
 }

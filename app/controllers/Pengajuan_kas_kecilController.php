@@ -4,7 +4,8 @@ Defined("BASE_PATH") or die(ACCESS_DENIED);
 /**
  * 
  */
-class Pengajuan_kas_kecil extends Crud_modalsAbstract{
+class Pengajuan_kas_kecil extends Controller 
+{
 
 	private $success = false;
 	private $notif = array();
@@ -24,15 +25,16 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 		$this->model('UserModel');
 		$this->helper();
 		$this->validation();
-		$this->excel();
 	}	
 
 	/**
 	 * Function index
 	 * menjalankan method list
 	 */
-	public function index(){
-		$this->list();
+	public function index() {
+		if($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'KAS KECIL'
+			|| $_SESSION['sess_level'] === 'OWNER') { $this->list(); }
+		else { $this->helper->requestError(403); }
 	}
 
 	/**
@@ -40,7 +42,7 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 	 * setting layouting list utama
 	 * generate token list dan add
 	 */
-	protected function list(){
+	protected function list() {
 		// set config untuk layouting
 		$saldo_kasKecil = $this->UserModel->getKasKecil($_SESSION['sess_email']);
 		$css = array(
@@ -84,11 +86,12 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 	 * generate token edit dan delete
 	 * return json
 	 */
-	public function get_list(){
-		if($_SERVER['REQUEST_METHOD'] == "POST"){
+	public function get_list() {
+		if($_SERVER['REQUEST_METHOD'] == "POST" && ($_SESSION['sess_level'] === 'KAS BESAR' 
+			|| $_SESSION['sess_level'] === 'KAS KECIL' || $_SESSION['sess_level'] === 'OWNER')) {
 			
 			$level = $_SESSION['sess_level'];
-			if($level == "KAS BESAR"){
+			if($level == "KAS BESAR") {
 				$kondisi = false;
 			} else if($level == "KAS KECIL") {
 				$kondisi = 'where id_kas_kecil = "'.$_SESSION['sess_id'].'"';
@@ -182,8 +185,7 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 
 			echo json_encode($output);	
 		}
-		else $this->redirect();
-				
+		else { $this->helper->requestError(403, true); }
 	}
 
 	/**
@@ -194,8 +196,8 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 	 * notif => pesan yang akan ditampilkan disistem
 	 * error => error apa saja yang ada dari hasil validasi
 	 */
-	public function action_add(){
-		if($_SERVER['REQUEST_METHOD'] == "POST"){
+	public function action_add() {
+		if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS KECIL') {
 			$data = isset($_POST) ? $_POST : false;
 					
 			$error = $notif = array();
@@ -217,7 +219,7 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 					// validasi inputan
 					$data = array(
 						'id' => $this->validation->validInput($data['id']),
-						'id_kas_kecil' =>$_SESSION['sess_id'],
+						'id_kas_kecil' => $_SESSION['sess_id'],
 						'tgl' => $this->validation->validInput($data['tgl']),
 						'nama' => $this->validation->validInput($data['nama']),
 						'total' => $this->validation->validInput($data['total']),
@@ -263,7 +265,7 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 
 			echo json_encode($output);	
 		}
-		else $this->redirect();
+		else { $this->helper->requestError(403, true); }
 	}
 
 	/**
@@ -272,12 +274,18 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 	 * param $id didapat dari url
 	 * return berupa json
 	 */
-	public function edit($id){
-		$data = !empty($this->Pengajuan_kasKecilModel->getById($id)) ? $this->Pengajuan_kasKecilModel->getById($id) : false;
-		$saldo = $this->Pengajuan_kasKecilModel->getSaldoKK($data['id_kas_kecil']);
-		$data['tgl_full'] = $this->helper->cetakTgl($data['tgl'], 'full');
-		$data['saldo'] = $saldo;
-		echo json_encode($data);
+	public function edit($id) {
+		if($_SERVER['REQUEST_METHOD'] == "POST" && ($_SESSION['sess_level'] === 'KAS BESAR' 
+			|| $_SESSION['sess_level'] === 'KAS KECIL')) {
+
+			$data = !empty($this->Pengajuan_kasKecilModel->getById($id)) ? $this->Pengajuan_kasKecilModel->getById($id) : false;
+			$saldo = $this->Pengajuan_kasKecilModel->getSaldoKK($data['id_kas_kecil']);
+			$data['tgl_full'] = $this->helper->cetakTgl($data['tgl'], 'full');
+			$data['saldo'] = $saldo;
+
+			echo json_encode($data);
+		}
+		else { $this->helper->requestError(403, true); }
 	}
 
 	/**
@@ -288,91 +296,96 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 	 * notif => pesan yang akan ditampilkan disistem
 	 * error => error apa saja yang ada dari hasil validasi
 	 */
-	public function action_edit(){
-		$data = isset($_POST) ? $_POST : false;
-		$level = $_SESSION['sess_level'];
+	public function action_edit() {
+		if($_SERVER['REQUEST_METHOD'] == "POST" && ($_SESSION['sess_level'] === 'KAS BESAR' 
+			|| $_SESSION['sess_level'] === 'KAS KECIL')) {
+			
+			$data = isset($_POST) ? $_POST : false;
+			$level = $_SESSION['sess_level'];
 
-		$this->error = $this->notif = array();
-		if(!$data){
-			$this->notif = array(
-				'type' => "error",
-				'title' => "Pesan Pemberitahuan",
-				'message' => "Silahkan Cek Kembali Form Isian",
-			);
-		}
-		else{
-			// validasi data
-			$validasi = $this->set_validation($data);
-			$cek = $validasi['cek'];
-			$this->error = $validasi['error'];
-
-			if($cek){
-
-				if($level == "KAS BESAR"){
-					
-					// validasi inputan
-					$data = array(
-						'id' => $this->validation->validInput($data['id']),
-						'id_kas_kecil' => $this->validation->validInput($data['id_kas_kecil']),
-						'tgl' => $this->validation->validInput($data['tgl']),
-						'id_bank' => $this->validation->validInput($data['id_bank']),
-						'total_disetujui' => $this->validation->validInput($data['total_disetujui']),
-						'ket' => $data['ket'],
-						'status' => $this->validation->validInput($data['status'])
-					);
-
-				} else if($level == "KAS KECIL") {
-
-					// validasi inputan
-					$data = array(
-						'id' => $this->validation->validInput($data['id']),
-						'nama' => $this->validation->validInput($data['nama']),
-						'tgl' => $this->validation->validInput($data['tgl']),
-						'total' => $this->validation->validInput($data['total']),
-						'status' => '0'
-					);
-					
-				}
-
-				$res = $this->Pengajuan_kasKecilModel->update($data);
-				// To Model
-				if($res['success']) {
-					$this->success = true;
-					$this->notif = array(
-						'type' => "success",
-						'title' => "Pesan Berhasil",
-						'message' => "Edit Data Pengajuan Kas Kecil Berhasil",
-					);
-				} else if($res['tolakdana']) {
-					$this->notif = array(
-						'type' => "warning",
-						'title' => "Pesan Pemberitahuan",
-						'message' => "Saldo anda masih mencukupi",
-					);
-				} else {
-					$this->notif = array(
-						'type' => "error",
-						'title' => "Pesan Gagal",
-						'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
-					);
-				}
-			} else {
+			$this->error = $this->notif = array();
+			if(!$data) {
 				$this->notif = array(
-					'type' => 'warning',
+					'type' => "error",
 					'title' => "Pesan Pemberitahuan",
 					'message' => "Silahkan Cek Kembali Form Isian",
-				);	
+				);
 			}
+			else {
+				// validasi data
+				$validasi = $this->set_validation($data);
+				$cek = $validasi['cek'];
+				$this->error = $validasi['error'];
+
+				if($cek) {
+
+					if($level == "KAS BESAR"){
+						
+						// validasi inputan
+						$data = array(
+							'id' => $this->validation->validInput($data['id']),
+							'id_kas_kecil' => $this->validation->validInput($data['id_kas_kecil']),
+							'tgl' => $this->validation->validInput($data['tgl']),
+							'id_bank' => $this->validation->validInput($data['id_bank']),
+							'total_disetujui' => $this->validation->validInput($data['total_disetujui']),
+							'ket' => $data['ket'],
+							'status' => $this->validation->validInput($data['status'])
+						);
+
+					} else if($level == "KAS KECIL") {
+
+						// validasi inputan
+						$data = array(
+							'id' => $this->validation->validInput($data['id']),
+							'nama' => $this->validation->validInput($data['nama']),
+							'tgl' => $this->validation->validInput($data['tgl']),
+							'total' => $this->validation->validInput($data['total']),
+							'status' => '0'
+						);
+						
+					}
+
+					$res = $this->Pengajuan_kasKecilModel->update($data);
+					// To Model
+					if($res['success']) {
+						$this->success = true;
+						$this->notif = array(
+							'type' => "success",
+							'title' => "Pesan Berhasil",
+							'message' => "Edit Data Pengajuan Kas Kecil Berhasil",
+						);
+					} else if($res['tolakdana']) {
+						$this->notif = array(
+							'type' => "warning",
+							'title' => "Pesan Pemberitahuan",
+							'message' => "Saldo anda masih mencukupi",
+						);
+					} else {
+						$this->notif = array(
+							'type' => "error",
+							'title' => "Pesan Gagal",
+							'message' => "Terjadi Kesalahan Sistem, Silahkan Coba Lagi",
+						);
+					}
+				} else {
+					$this->notif = array(
+						'type' => 'warning',
+						'title' => "Pesan Pemberitahuan",
+						'message' => "Silahkan Cek Kembali Form Isian",
+					);	
+				}
+			}
+
+			$output = array(
+				'status' => $this->success,
+				'notif' => $this->notif,
+				'error' => $this->error,
+				'data' => $data
+			);
+
+			echo json_encode($output);
 		}
-
-		$output = array(
-			'status' => $this->success,
-			'notif' => $this->notif,
-			'error' => $this->error,
-			'data' => $data
-		);
-
-		echo json_encode($output);
+		else { $this->helper->requestError(403, true); }
 	}
 
 	/**
@@ -380,64 +393,68 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 	 * method untuk get data detail dan setting layouting detail
 	 * param $id didapat dari url
 	 */
-	public function detail($id){
-		$id = strtoupper($id);
-		$data_detail = !empty($this->Pengajuan_kasKecilModel->getById($id)) ? $this->Pengajuan_kasKecilModel->getById($id) : false;
+	public function detail($id) {
+		if($_SERVER['REQUEST_METHOD'] == "POST" && ($_SESSION['sess_level'] === 'KAS BESAR' 
+			|| $_SESSION['sess_level'] === 'KAS KECIL' || $_SESSION['sess_level'] === 'OWNER')) {
+			
+			$id = strtoupper($id);
+			$data_detail = !empty($this->Pengajuan_kasKecilModel->getById($id)) ? $this->Pengajuan_kasKecilModel->getById($id) : false;
 
-		if((empty($id) || $id == "") || !$data_detail) $this->redirect(BASE_URL."pengajuan-kas-kecil/");
+			if((empty($id) || $id == "") || !$data_detail) $this->redirect(BASE_URL."pengajuan-kas-kecil/");
 
-		$css = array(
-			'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
-			'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
-		);
-		$js = array(
-			'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
-			'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
-			'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',	
-			'assets/plugins/input-mask/jquery.inputmask.bundle.js',
-			'app/views/pengajuan_kas_kecil/js/initView.js'
-				
-		);
+			$css = array(
+				'assets/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css',
+				'assets/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css',
+			);
+			$js = array(
+				'assets/bower_components/datatables.net/js/jquery.dataTables.min.js', 
+				'assets/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js',
+				'assets/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js',	
+				'assets/plugins/input-mask/jquery.inputmask.bundle.js',
+				'app/views/pengajuan_kas_kecil/js/initView.js'
+					
+			);
 
-		$config = array(
-			'title' => 'Menu Pengajuan Kas Kecil - Detail',
-			'property' => array(
-				'main' => 'Data Pengajuan Kas Kecil',
-				'sub' => 'Detail Data Pengajuan Kas Kecil',
-			),
-			'css' => $css,
-			'js' => $js,
-		);
+			$config = array(
+				'title' => 'Menu Pengajuan Kas Kecil - Detail',
+				'property' => array(
+					'main' => 'Data Pengajuan Kas Kecil',
+					'sub' => 'Detail Data Pengajuan Kas Kecil',
+				),
+				'css' => $css,
+				'js' => $js,
+			);
 
-		// $status = ($data_detail['status'] == "AKTIF") ? 
-		// 	'<span class="label label-success">'.$data_detail['status'].'</span>' : 
-		// 	'<span class="label label-danger">'.$data_detail['status'].'</span>';
+			// $status = ($data_detail['status'] == "AKTIF") ? 
+			// 	'<span class="label label-success">'.$data_detail['status'].'</span>' : 
+			// 	'<span class="label label-danger">'.$data_detail['status'].'</span>';
 
-		if($data_detail['status'] == '0'){
-			$data_detail['status'] = "PENDING";
-		} else if($data_detail['status'] == '1'){
-			$data_detail['status'] = "PERBAIKI";
-		} else if($data_detail['status'] == '2'){
-			$data_detail['status'] = "DISETUJUI";
-		} else if($data_detail['status'] == '3'){
-			$data_detail['status'] = "DITOLAK";	
-		} 
+			if($data_detail['status'] == '0'){
+				$data_detail['status'] = "PENDING";
+			} else if($data_detail['status'] == '1'){
+				$data_detail['status'] = "PERBAIKI";
+			} else if($data_detail['status'] == '2'){
+				$data_detail['status'] = "DISETUJUI";
+			} else if($data_detail['status'] == '3'){
+				$data_detail['status'] = "DITOLAK";	
+			} 
 
-		$data = array(
-			'id' => $data_detail['id'],
-			'id_kas_kecil' => $data_detail['id_kas_kecil'],
-			'kas_kecil' => $data_detail['kas_kecil'],
-			'tgl' => $this->helper->cetakTgl($data_detail['tgl'], 'full'),
-			'nama' => $data_detail['nama'],
-			'total' => $this->helper->cetakRupiah($data_detail['total']),
-			'total_disetujui' => $this->helper->cetakRupiah($data_detail['total_disetujui']),
-			'ket' => $data_detail['ket'],
-			'status' => $data_detail['status']
-		);
+			$data = array(
+				'id' => $data_detail['id'],
+				'id_kas_kecil' => $data_detail['id_kas_kecil'],
+				'kas_kecil' => $data_detail['kas_kecil'],
+				'tgl' => $this->helper->cetakTgl($data_detail['tgl'], 'full'),
+				'nama' => $data_detail['nama'],
+				'total' => $this->helper->cetakRupiah($data_detail['total']),
+				'total_disetujui' => $this->helper->cetakRupiah($data_detail['total_disetujui']),
+				'ket' => $data_detail['ket'],
+				'status' => $data_detail['status']
+			);
 
-		// $this->layout('pengajuan_kas_kecil/view', $config, $data);
-		echo json_encode($data);
-		
+			// $this->layout('pengajuan_kas_kecil/view', $config, $data);
+			echo json_encode($data);
+		}
+		else { $this->helper->requestError(403, true); }
 	}
 
 	/**
@@ -446,8 +463,10 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 	 * param $id didapat dari url
 	 * return json
 	 */
-	public function delete($id){			
-		if($_SERVER['REQUEST_METHOD'] == "POST"){
+	public function delete($id) {			
+		if($_SERVER['REQUEST_METHOD'] == "POST" && ($_SESSION['sess_level'] === 'KAS BESAR' 
+			|| $_SESSION['sess_level'] === 'KAS KECIL')) {
+			
 			$id = strtoupper($id);
 			if(empty($id) || $id == "") $this->redirect(BASE_URL."pengajuan-kas-kecil/");
 
@@ -455,35 +474,7 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 
 			echo json_encode($this->status);
 		}
-		else $this->redirect();	
-	}
-
-	/**
-	 * Function get_mutasi
-	 * method yang berfungsi untuk get data mutasi bank sesuai dengan id
-	 * dipakai di detail data
-	 */
-	public function get_mutasi(){
-		
-	}
-
-	/**
-	 * Export data ke format Excel
-	 */
-	public function export(){
-		
-		$tgl_awal = $_GET['tgl_awal'];
-		$tgl_akhir = $_GET['tgl_akhir'];
-
-		$row = $this->Pengajuan_kasKecilModel->getExport($tgl_awal, $tgl_akhir);
-		$header = array_keys($row[0]); 
-		$header[6] = 'ID KAS KECIL';
-		$this->excel->setProperty('Laporan Pengajuan Kas Kecil','Laporan Pengajuan Kas Kecil','Data Laporan Pengajuan Kas Kecil');
-		$this->excel->setData($header, $row);
-		$this->excel->getData('Data Pengajuan Kas Kecil', 'Data Pengajuan Kas Kecil', 4, 5 );
-
-		$this->excel->getExcel('Data Pengajuan Kas Kecil');		
-
+		else { $this->helper->requestError(403, true); }
 	}
 
 	/**
@@ -492,7 +483,7 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 	 * param $data didapat dari post yang dilakukan oleh user
 	 * return berupa array, status hasil pengecekan dan error tiap validasi inputan
 	 */
-	private function set_validation($data){
+	private function set_validation($data) {
 		// $required = ($action =="action-add") ? 'not_required' : 'required';
 	
 		if($data['action'] == 'action-add'){
@@ -530,7 +521,7 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 	/**
 	 * 
 	 */
-	public function get_notif(){
+	public function get_notif() {
 		$notif = $this->Pengajuan_kasKecilModel->getAll_pending();
 		$jumlah = $this->Pengajuan_kasKecilModel->getTotal_pending();
 
@@ -556,19 +547,18 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 	/**
 	 * 
 	 */
-	public function get_nama_kas_kecil(){
+	public function get_nama_kas_kecil() {
 		$this->model('Kas_kecilModel');
 		$data_kas_kecil =  $this->Kas_kecilModel->getAll();
 		$data = array();
 
+		foreach ($data_kas_kecil as $row) {
+			$dataRow = array();
+			$dataRow['id'] = $row['id'];
+			$dataRow['text'] = $row['id'].' - '.$row['nama'];
 
-			foreach ($data_kas_kecil as $row) {
-				$dataRow = array();
-				$dataRow['id'] = $row['id'];
-				$dataRow['text'] = $row['id'].' - '.$row['nama'];
-
-				$data[] = $dataRow;
-			}
+			$data[] = $dataRow;
+		}
 			
 
 		echo json_encode($data);
@@ -577,7 +567,7 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 	/**
 	 * 
 	 */
-	public function get_nama_bank(){
+	public function get_nama_bank() {
 		$this->model('BankModel');
 		$data_nama_bank = $this->BankModel->getAll();
 		$data = array();
@@ -596,7 +586,7 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 	/**
 	 * 
 	 */
-	public function get_id_pengajuan(){
+	public function get_id_pengajuan() {
 		$this->model('Pengajuan_sub_kas_kecilModel');
 
 		$data_SKK = $this->Pengajuan_sub_kas_kecilModel->getAll();
@@ -613,9 +603,30 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 	}
 
 	/**
+	 * Method getIncrement
+	 */
+	public function get_increment() {
+		if($_SERVER['REQUEST_METHOD'] == "POST" && ($_SESSION['sess_level'] === 'KAS BESAR' 
+			|| $_SESSION['sess_level'] === 'KAS KECIL')) {
+
+			$this->model('IncrementModel');
+            $increment_number = '';
+            $increment = $this->IncrementModel->get_increment('pengajuan_kas_kecil');
+            
+            if($increment['success']) {
+                $getMask = explode('-', $increment['mask']);
+                $increment_number = $getMask[0].date('Y').sprintf("%04s", $increment['increment']);
+            }
+
+            echo json_encode($increment_number);
+		}
+		else { $this->helper->requestError(403, true); }
+	}
+
+	/**
 	 * 
 	 */
-	public function get_last_id(){
+	public function get_last_id() {
 		if($_SERVER['REQUEST_METHOD'] == "POST"){
 			$data = !empty($this->Pengajuan_kasKecilModel->getLastID()['id']) ? $this->Pengajuan_kasKecilModel->getLastID()['id'] : false;
 
@@ -636,7 +647,7 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 	/**
 	 * 
 	 */
-	public function count_pengajuan_kas_kecil_disetujui(){
+	public function count_pengajuan_kas_kecil_disetujui() {
 		$this->model('Pengajuan_kasKecilModel');
 		$data_pkk_disetujui = $this->Pengajuan_kasKecilModel->getTotal_setujui();
 
@@ -651,7 +662,7 @@ class Pengajuan_kas_kecil extends Crud_modalsAbstract{
 	/**
 	 * 
 	 */
-	public function get_pengajuan_sub_kas_kecil(){
+	public function get_pengajuan_sub_kas_kecil() {
 		if($_SERVER['REQUEST_METHOD'] == "POST"){
 			
 			// config datatable

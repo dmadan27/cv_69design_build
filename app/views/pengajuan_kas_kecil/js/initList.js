@@ -70,10 +70,10 @@ $(document).ready(function () {
     });
 
     // auto refresh every 1 minutes
-    setInterval(function () {
-        console.log('%cAutomatically refresh table..', 'color: blue; font-style: italic');
-        pengajuanKasKecilTable.ajax.reload(null, false);
-    }, 60000);
+    // setInterval(function () {
+    //     console.log('%cAutomatically refresh table..', 'color: blue; font-style: italic');
+    //     pengajuanKasKecilTable.ajax.reload(null, false);
+    // }, 60000);
 
 });
 
