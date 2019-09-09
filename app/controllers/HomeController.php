@@ -319,4 +319,38 @@
 				$this->redirect();
 			}		
 		}
+
+
+		public function get_sisa_kredit() {
+			if($_SERVER['REQUEST_METHOD'] == "POST"){
+				// config datatable
+				$config_dataTable = array(
+					'tabel' => 'v_sisa_kredit_operasionalProyek',
+					'kolomOrder' => array('nama', 'sisa'),
+					'kolomCari' => array('nama', 'sisa'),
+					'orderBy' => array('nama' => 'asc'),
+					'kondisi' => false,
+				);
+
+				$datasisaKredit = $this->HomeModel->getAllDataTable($config_dataTable);
+	
+				$data = array();
+				foreach($datasisaKredit as $row){	
+					$dataRow = array();
+					$dataRow[] = $row['nama'];
+					$dataRow[] = $this->helper->cetakRupiah($row['sisa']);
+					$data[] = $dataRow;
+				}
+
+				$output = array(
+					'draw' => $_POST['draw'],
+					'recordsTotal' => $this->HomeModel->recordTotal(),
+					'recordsFiltered' => $this->HomeModel->recordFilter(),
+					'data' => $data,
+				);
+				echo json_encode($output);
+			} else { 
+				$this->redirect();
+			}		
+		}
 	}

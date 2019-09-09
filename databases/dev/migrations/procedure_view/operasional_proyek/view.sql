@@ -83,4 +83,23 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
 	LEFT JOIN distributor d ON opr.id_distributor = d.id;
 -- End View Export history pembelian
 
+
+/*
+	VIEW SISA KREDIT OPERASIONAL PROYEK
+*/
+
+	CREATE OR REPLACE VIEW v_sisa_kredit_operasionalProyek AS
+	 	SELECT
+			dst.nama,
+			op.sisa
+	FROM
+		operasional_proyek op LEFT JOIN distributor dst
+			ON op.id_distributor = dst.id
+		WHERE op.status = 'KREDIT';
+
+
+
+
+-- End of VIEW SISA KREDIT OPERASIONAL PROYEK 
+
 # End View Operasional Proyek #

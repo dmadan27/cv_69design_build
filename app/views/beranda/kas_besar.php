@@ -139,6 +139,45 @@
 			</div>
 		</div>
 
+
+    <div class="row">
+      <div class="col-xs-12 col-lg-12 col-md-12 col-sm-12">
+         <!-- TABLE: LATEST ORDERS -->
+         <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Kontra Bon Operasional Proyek</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <!-- <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button> -->
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+            <div class="table-responsive">
+                <table id="listSisaKredit" class="table table-bordered table-hover no-margin">
+                  <thead>
+                  <tr>
+                    <th width="150px">Nama Distributor</th>
+                    <th class="text-right">Sisa Kredit</th>
+                  </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+              <!-- /.table-responsive -->
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer clearfix">
+              <a href="javascript:void(0)" class="btn btn-sm btn-default btn-flat pull-right">More Info</a>
+            </div>
+            <!-- /.box-footer -->
+          </div>
+          <!-- /.box -->
+      </div>
+    </div>
+
 		<div class="row">
 			<!-- <div class="col-xs-12 col-lg-6 col-md-6 col-sm-6"> -->
 			<!-- <div class="box box-solid">
