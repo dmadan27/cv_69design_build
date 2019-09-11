@@ -265,7 +265,9 @@ function setIdBank(callback) {
 		},
 		error: function (jqXHR, textStatus, errorThrown){ // error handling
             console.log(jqXHR, textStatus, errorThrown);
-            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+			swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+			
+			callback(false);
         }
 	});
 }
