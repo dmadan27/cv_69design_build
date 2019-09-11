@@ -1,4 +1,4 @@
-<?php Defined("BASE_PATH") or die("Dilarang Mengakses File Secara Langsung"); ?>
+<?php Defined("BASE_PATH") or die(ACCESS_DENIED); ?>
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -76,7 +76,7 @@
 	</section>
 	<!-- /.content -->
 	<!-- load form -->
-<?php include_once('form.php'); ?>
-<?php include_once('modal.php'); ?>
-<?php include_once(__DIR__.'/../form_export/form_start_end_date.php'); ?>
+	<?php include_once('form.php'); ?>
+	<?php include_once('modal.php'); ?>
+	<?php include_once(__DIR__.'/../form_export/form_start_end_date.php'); ?>
 </div>

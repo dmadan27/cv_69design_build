@@ -81,42 +81,51 @@ $(document).ready(function () {
 *
 */
 function getView(id) {
-    // window.location.href = BASE_URL+'pengajuan-kas-kecil/detail/'+id;
-    $('#modalView_PKK').modal();
-    $.ajax({
-        url: BASE_URL + 'pengajuan-kas-kecil/detail/' + id.toLowerCase(),
-        type: 'post',
-        dataType: 'json',
-        data: {},
-        beforeSend: function () {
+    if(LEVEL === 'KAS BESAR' || LEVEL === 'KAS KECIL' || LEVEL === 'OWNER') {
+        $.ajax({
+            url: BASE_URL + 'pengajuan-kas-kecil/detail/' + id.toLowerCase(),
+            type: 'post',
+            dataType: 'json',
+            data: {},
+            beforeSend: function () {
 
-        },
-        success: function (output) {
+            },
+            success: function (output) {
 
-            $('#modalView_PKK').modal();
-            console.log('%cgetView Response:', '', output);
+                $('#modalView_PKK').modal();
+                console.log('%cgetView Response:', '', output);
 
-            $('#res_id').html(output.id);
-            $('#id').html(output.id_kas_kecil);
-            $('#kas_kecil').html(output.kas_kecil);
-            $('#tgl').html(output.tgl);
-            $('#nama').html(output.nama);
-            $('#total').html(output.total);
-            $('#total_disetujui').html(output.total_disetujui);
-            $('#status').html(output.status);
-            $('#alasan_perbaiki').html(output.ket || "-");
-            
-        },
-        error: function (jqXHR, textStatus, errorThrown) { // error handling
-            console.log(jqXHR, textStatus, errorThrown);
-        }
-    })
+                $('#res_id').html(output.id);
+                $('#id').html(output.id_kas_kecil);
+                $('#kas_kecil').html(output.kas_kecil);
+                $('#tgl').html(output.tgl);
+                $('#nama').html(output.nama);
+                $('#total').html(output.total);
+                $('#total_disetujui').html(output.total_disetujui);
+                $('#status').html(output.status);
+                $('#alasan_perbaiki').html(output.ket || "-");
+                
+            },
+            error: function (jqXHR, textStatus, errorThrown) { // error handling
+                console.log(jqXHR, textStatus, errorThrown);
+            }
+        })   
+
+        return;
+    }
+
+    setNotif(notifAccessDenied, 'swal');
 }
 
 /**
 *
 */
-function getDelete(id, token) {
+function getDelete(id) {
+    if(LEVEL !== 'KAS BESAR' || LEVEL !== 'KAS KECIL') {
+        setNotif(notifAccessDenied, 'swal');
+        return;
+    }
+
     swal({
         title: "Pesan Konfirmasi",
         text: "Apakah Anda Yakin Akan Menghapus Data Ini !!",
@@ -133,17 +142,27 @@ function getDelete(id, token) {
             dataType: 'json',
             data: {},
             beforeSend: function () {
-
+                $('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
             },
             success: function (output) {
                 console.log(output);
+
+                $('.box .overlay').remove();
                 if (output) {
                     swal("Pesan Berhasil", "Data Berhasil Dihapus", "success");
-                    $("#pengajuanKasKecilTable").DataTable().ajax.reload();
+                    pengajuanKasKecilTable.ajax.reload();
                 }
             },
-            error: function (jqXHR, textStatus, errorThrown) { // error handling
-                console.log(jqXHR, textStatus, errorThrown);
+            error: function (jqXHR, textStatus, errorThrown) {
+                console.log('%c Response Error getDelete: ', 'color: red; font-weight: bold', {
+                    jqXHR: jqXHR, 
+                    textStatus: textStatus, 
+                    errorThrown: errorThrown
+                });
+
+                $('.box .overlay').remove();
+                pengajuanKasKecilTable.ajax.reload();
+
                 swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
             }
         })

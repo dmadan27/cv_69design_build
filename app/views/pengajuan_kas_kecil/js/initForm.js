@@ -57,34 +57,50 @@ function init() {
 	});
 
 	setStatus();
-	setNamaBank();
 
 	$('#id_pengajuan').prop('disabled', true);
 	$('#id_bank_pengajuan').prop('disabled', true);
 	$('#total_disetujui_pengajuan').prop('disabled', true);
 	$('#submit_pengajuan_kas_kecil').prop('disabled', true);
 	$('#ket').prop('disabled', true);
-
-	// DISABLED 
-	// $('#')/
 }
 
 /**
  * 
  */
 function onClickAdd() {
-	resetForm();
-	getLastIncrement(response => {
-		if(response.success) {
-			$('#id_pengajuan').val(response.data);
-			$('#id_pengajuan').prop('disabled', true);
-		} 
-		
-		$('#submit_pengajuan_kas_kecil').prop('value', 'action-add');
-		$('#submit_pengajuan_kas_kecil').prop('disabled', false);
-		$('#submit_pengajuan_kas_kecil').html('Simpan Data');
-
-		$('#modalPengajuan_kasKecil').modal();
+	setNamaBank(response => {
+		if(response) {
+			resetForm();
+			getLastIncrement(response => {
+				if(response.success) {
+					$('#id_pengajuan').val(response.data);
+					$('#id_pengajuan').prop('disabled', true);
+				} 
+				
+				fetch(`${BASE_URL}pengajuan-kas-kecil/get-last-saldo/${$('#id_kas_kecil').val()}`, {
+					method: 'POST',
+					headers: new Headers()
+				})
+				.then(response => {
+					response.json().then(response => {
+						if(response.success) {
+							$('#submit_pengajuan_kas_kecil').prop('value', 'action-add');
+							$('#submit_pengajuan_kas_kecil').prop('disabled', false);
+							$('#submit_pengajuan_kas_kecil').html('Simpan Data');
+	
+							$('#saldo_pengajuan').val(response.saldo);
+	
+							$('#modalPengajuan_kasKecil').modal();
+						}
+					})
+				})
+				.catch(error => {
+					console.error(error);
+					swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+				});
+			});
+		}
 	});
 }
 
@@ -196,72 +212,73 @@ function submit() {
  * @param {*} id  
  */
 function getEdit(id) {
-	// if(token != ""){
-	resetForm();
-	// $('.field-saldo').css('display', 'none');
-	$('#submit_pengajuan_kas_kecil').prop('value', 'action-edit');
-	$('#submit_pengajuan_kas_kecil').prop('disabled', false);
-	$('#submit_pengajuan_kas_kecil').html('Edit Data');
+	
+	setNamaBank(response => {
+		if(response) {
+			resetForm();
+			// $('.field-saldo').css('display', 'none');
+			$('#submit_pengajuan_kas_kecil').prop('value', 'action-edit');
+			$('#submit_pengajuan_kas_kecil').prop('disabled', false);
+			$('#submit_pengajuan_kas_kecil').html('Edit Data');
 
-	$.ajax({
-		url: BASE_URL + 'pengajuan-kas-kecil/edit/' + id.toLowerCase(),
-		type: 'post',
-		dataType: 'json',
-		data: {},
-		beforeSend: function () {
+			$.ajax({
+				url: BASE_URL + 'pengajuan-kas-kecil/edit/' + id.toLowerCase(),
+				type: 'post',
+				dataType: 'json',
+				data: {},
+				beforeSend: function () {
+				},
+				success: function (output) {
+					console.log('%cgetEdit Response:', '', output);
 
-		},
-		success: function (output) {
-			console.log('%cgetEdit Response:', '', output);
+					$('#status_pengajuan').on('change', function () {
+						
+						// DISETUJUI
+						if ($('#status_pengajuan').val() == "2") {
+							$('#id_bank_pengajuan').prop('disabled', false);
+							$('#total_disetujui_pengajuan').prop('disabled', false);
+							$('#ket').prop('disabled', false);
 
-			$('#status_pengajuan').on('change', function () {
-				// DISETUJUI
-				if ($('#status_pengajuan').val() == "2") {
-					$('#id_bank_pengajuan').prop('disabled', false);
-					$('#total_disetujui_pengajuan').prop('disabled', false);
-					$('#ket').prop('disabled', false);
+							var total_disetujui = output.total - output.saldo;
+							$('#total_disetujui_pengajuan').val(total_disetujui);
 
-					var total_disetujui = output.total - output.saldo;
-					$('#total_disetujui_pengajuan').val(total_disetujui);
+						}
+						// DIPERBAIKI
+						else if ($('#status_pengajuan').val() == "1") {
 
-				}
-				// DIPERBAIKI
-				else if ($('#status_pengajuan').val() == "1") {
+							// kunci kolom ket jika form dibuka oleh kas kecil
+							if (LEVEL == "KAS BESAR") {
+								$('#id_bank_pengajuan').prop('disabled', true);
+								$('#total_disetujui_pengajuan').prop('disabled', true);
+								$('#id_bank_pengajuan').val(null).trigger('change');
+								$('#total_disetujui_pengajuan').val(null).trigger('change');
 
-					// kunci kolom ket jika form dibuka oleh kas kecil
-					if ($('#level').val() == "KAS BESAR") {
-						$('#id_bank_pengajuan').prop('disabled', true);
-						$('#total_disetujui_pengajuan').prop('disabled', true);
-						$('#id_bank_pengajuan').val(null).trigger('change');
-						$('#total_disetujui_pengajuan').val(null).trigger('change');
+								$('#ket').prop('disabled', false);
+							} else {
+								$('#ket').prop('disabled', true);
+							}
+						}
+						else {
+							$('#id_bank_pengajuan').prop('disabled', true);
+							$('#id_bank_pengajuan').val(null).trigger('change');
+							$('#total_disetujui_pengajuan').prop('disabled', true);
+							$('#total_disetujui_pengajuan').val(null).trigger('change');
+							$('#ket').prop('disabled', true);
+							$('#ket').val(null).trigger('change');
+						}
+					});
 
-						$('#ket').prop('disabled', false);
-					} else {
-						$('#ket').prop('disabled', true);
+					if (output) {
+						$('#modalPengajuan_kasKecil').modal();
+						setValue(output);
 					}
+				},
+				error: function (jqXHR, textStatus, errorThrown) { // error handling
+					console.log(jqXHR, textStatus, errorThrown);
 				}
-				else {
-					$('#id_bank_pengajuan').prop('disabled', true);
-					$('#id_bank_pengajuan').val(null).trigger('change');
-					$('#total_disetujui_pengajuan').prop('disabled', true);
-					$('#total_disetujui_pengajuan').val(null).trigger('change');
-					$('#ket').prop('disabled', true);
-					$('#ket').val(null).trigger('change');
-				}
-			});
-
-			if (output) {
-				$('#modalPengajuan_kasKecil').modal();
-				// $('#token_form').val(token);
-				setValue(output);
-			}
-		},
-		error: function (jqXHR, textStatus, errorThrown) { // error handling
-			console.log(jqXHR, textStatus, errorThrown);
+			})
 		}
-	})
-	// }
-	// else swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+	});
 }
 
 /**
@@ -288,19 +305,21 @@ function setError(error) {
  * @param {*} value 
  */
 function setValue(value) {
-	$.each(value, function (index, item) {
-		item = (parseFloat(item)) ? (parseFloat(item)) : item;
-		$('#' + index).val(item);
-		$('#id_pengajuan').val(value.id);
-		$('#id_kas_kecil').val(value.id_kas_kecil);
-		$('#tgl_pengajuan').val(value.tgl);
-		$('#nama_pengajuan').val(value.nama);
-		$('#total_pengajuan').val(value.total);
-		$('#saldo_pengajuan').val(value.saldo);
-		$('#status_pengajuan').val(value.status).trigger('change');
-		$('#ket').val(value.ket);
+	// $.each(value, function (index, item) {
+	// 	item = (parseFloat(item)) ? (parseFloat(item)) : item;
+	// 	$('#' + index).val(item);
+		
 
-	});
+	// });
+
+	$('#id_pengajuan').val(value.id);
+	$('#id_kas_kecil').val(value.id_kas_kecil);
+	$('#tgl_pengajuan').val(value.tgl);
+	$('#nama_pengajuan').val(value.nama);
+	$('#total_pengajuan').val(value.total);
+	$('#saldo_pengajuan').val(value.saldo);
+	$('#status_pengajuan').val(value.status).trigger('change');
+	$('#ket').val(value.ket);
 }
 
 /**
@@ -339,7 +358,9 @@ function getLastIncrement(callback) {
 /**
  * 
  */
-function setNamaBank() {
+function setNamaBank(callback) {
+	$('#id_bank_pengajuan').find('option').remove();
+
 	$.ajax({
 		url: BASE_URL + 'operasional-proyek/get-nama-bank',
 		type: 'post',
@@ -353,10 +374,13 @@ function setNamaBank() {
 			});
 			$('#id_bank_pengajuan').val(null).trigger('change');
 
+			callback(true);
 		},
 		error: function (jqXHR, textStatus, errorThrown) {
 			console.log('%cResponse Error setBank Proyek: ', 'color: red; font-style: italic', jqXHR, textStatus, errorThrown);
 			swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+
+			callback(false);
 		}
 	})
 }

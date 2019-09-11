@@ -478,6 +478,22 @@ class Pengajuan_kas_kecil extends Controller
 	}
 
 	/**
+	 * 
+	 */
+	public function get_last_saldo($id) {
+		if($_SERVER['REQUEST_METHOD'] == "POST" && ($_SESSION['sess_level'] === 'KAS BESAR' 
+			|| $_SESSION['sess_level'] === 'KAS KECIL')) {
+				
+			$saldo = $this->Pengajuan_kasKecilModel->getSaldoKK($id);
+			echo json_encode(array(
+				'success' => true,
+				'saldo' => $saldo
+			));
+		}
+		else { $this->helper->requestError(403, true); }
+	}
+
+	/**
 	 * Fungsi set_validation
 	 * method yang berfungsi untuk validasi inputan secara server side
 	 * param $data didapat dari post yang dilakukan oleh user
@@ -621,27 +637,6 @@ class Pengajuan_kas_kecil extends Controller
             echo json_encode($increment_number);
 		}
 		else { $this->helper->requestError(403, true); }
-	}
-
-	/**
-	 * 
-	 */
-	public function get_last_id() {
-		if($_SERVER['REQUEST_METHOD'] == "POST"){
-			$data = !empty($this->Pengajuan_kasKecilModel->getLastID()['id']) ? $this->Pengajuan_kasKecilModel->getLastID()['id'] : false;
-
-			if(!$data) $id = 'PKK0001';
-			else{
-				$kode = 'PKK';
-				$noUrut = (int)substr($data, 3, 4);
-				$noUrut++;
-
-				$id = $kode.sprintf("%04s", $noUrut);
-			}
-
-			echo json_encode($id);
-		}
-		else $this->redirect();
 	}
 
 	/**
