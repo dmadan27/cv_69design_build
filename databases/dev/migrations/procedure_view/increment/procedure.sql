@@ -9,7 +9,7 @@
         DECLARE table_id_param int;
         DECLARE last_increment_param int;
 
-        SELECT id INTO table_id_param FROM menu WHERE table_name = table_name_param;
+        SELECT id INTO table_id_param FROM menu WHERE table_name = table_name_param LIMIT 1;
         SELECT last_increment INTO last_increment_param FROM increment WHERE menu_id = table_id_param;
 
         UPDATE increment SET last_increment = (last_increment_param + 1) WHERE menu_id = table_id_param;
