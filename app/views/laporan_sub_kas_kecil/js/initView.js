@@ -146,6 +146,7 @@ function submit() {
 		dataType: 'json',
 		data: {
 			id: $('#id').val().trim(),
+			id_skk: $("#id_sub_kas_kecil").html().trim(),
 			status_laporan: $('#status_laporan').val().trim(),
 			ket: $('#keterangan').val().trim(),
 		},

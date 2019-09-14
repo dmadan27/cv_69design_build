@@ -179,6 +179,9 @@ class Laporan_sub_kas_kecil extends Controller
 				$this->error = $validasi['error'];
 
 				if($cek) {
+					// mendapatkan id sub kas kecil (untuk notifikasi ke android dan perbaiki laporan)
+					$id_skk = explode("-",$data["id_skk"])[0];
+
 					// status disetujui, ditolak, atau masih pending
 					if($data['status_laporan'] != '2' && $data['status_laporan'] != '0') {
 						$data_update = array(
@@ -194,7 +197,6 @@ class Laporan_sub_kas_kecil extends Controller
 							$this->success = true;
 
 							// KIRIM NOTIF KE ANDROID
-							$id_skk = explode("-",$data_update['id'])[2];
 							$status_laporan = $this->helper->getNamaStatusLaporanSKK($data_update['status_laporan']);
 							$this->helper->sendNotif(array(
 								'show' => "1",
@@ -222,7 +224,7 @@ class Laporan_sub_kas_kecil extends Controller
 					else if($data['status_laporan'] == '2' && $data['status_laporan'] != '0') { // diperbaiki
 						$data_update = array(
 							'id' => $this->validation->validInput($data['id']),
-							'id_sub_kas_kecil' => explode("-", $this->validation->validInput($data['id']))[2],
+							'id_sub_kas_kecil' => $id_skk,
 							'ket' => ($data['ket'] != "") ? $this->validation->validInput($data['ket']) : "-",
 							'modified_by' => $_SESSION['sess_email']
 						);

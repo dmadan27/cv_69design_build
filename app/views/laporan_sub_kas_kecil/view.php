@@ -46,7 +46,7 @@
                             <!-- SKK -->
                             <tr>
                                 <td><strong>Sub Kas Kecil</strong></td>
-                                <td><?= $laporan['skk'] ?></td>
+                                <td id="id_sub_kas_kecil"><?= $laporan['skk'] ?></td>
                             </tr>
 
                             <!-- Tanggal -->

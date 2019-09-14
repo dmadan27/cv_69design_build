@@ -114,6 +114,7 @@ function getDataForm(){
 	var status = ($('#status_order').val() != "" && $('#status_order').val() != null) ? $('#status_order').val().trim() : "";
 
 	data.append('id', $('#id').val().trim());
+	data.append('id_skk', $('#id_sub_kas_kecil').val().trim()); // id sub kas kecil
 	data.append('status', status); // status
 	data.append('action', $('#submit_pengajuan_skc').val().trim()); // action
 	data.append('dana_disetujui', dana_disetujui); // dana disetujui

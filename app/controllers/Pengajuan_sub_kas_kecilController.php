@@ -214,6 +214,9 @@
 					$this->error = $validasi['error'];
 
 					if($cek) {
+						// mendapatkan id sub kas kecil (untuk kirim notif ke android)
+						$id_skk = explode("-",$data['id_skk'])[0];
+
 						// status disetujui
 						if($data['status'] == '3') {
 	
@@ -239,7 +242,6 @@
 									$this->success = true;
 
 									// KIRIM NOTIF KE ANDROID
-									$id_skk = explode("-",$data['id'])[2];
 									$this->helper->sendNotif(array(
 										'show' => "1",
 										'id_skk' => $id_skk,
@@ -278,7 +280,6 @@
 								$this->success = true;
 
 								// KIRIM NOTIF KE ANDROID
-								$id_skk = explode("-",$data['id'])[2];
 								$status_pengajuan = $this->helper->getNamaStatusPengajuanSKK($data['status']);
 								$body = ($data['status'] == "5") ? "Pengajuan ".$data['id']." ditolak karena ".$data['ket'] : "Pengajuan ".$data['id']." ".$status_pengajuan.".";
 								$this->helper->sendNotif(array(
