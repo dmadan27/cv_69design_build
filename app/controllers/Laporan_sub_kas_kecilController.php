@@ -180,7 +180,7 @@ class Laporan_sub_kas_kecil extends Controller
 
 				if($cek) {
 					// mendapatkan id sub kas kecil (untuk notifikasi ke android dan perbaiki laporan)
-					$id_skk = explode("-",$data["id_skk"])[0];
+					$id_skk = trim(explode("-", $this->validation->validInput($data['id_skk']))[0]);
 
 					// status disetujui, ditolak, atau masih pending
 					if($data['status_laporan'] != '2' && $data['status_laporan'] != '0') {

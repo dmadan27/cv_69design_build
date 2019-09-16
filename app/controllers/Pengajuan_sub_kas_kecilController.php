@@ -215,7 +215,7 @@
 
 					if($cek) {
 						// mendapatkan id sub kas kecil (untuk kirim notif ke android)
-						$id_skk = explode("-",$data['id_skk'])[0];
+						$id_skk = trim(explode("-", $this->validation->validInput($data['id_skk']))[0]);
 
 						// status disetujui
 						if($data['status'] == '3') {
