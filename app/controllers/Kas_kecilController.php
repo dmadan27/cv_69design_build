@@ -29,7 +29,7 @@ class Kas_kecil extends Controller
 	 */
 	public function index() {
 		if($_SESSION['sess_level'] === 'KAS BESAR' 
-			|| $_SESSION['sess_level'] === 'OWNER') { $this->list(); }
+			|| $_SESSION['sess_level'] === 'OWNER' || $_SESSION['sess_level'] === 'KAS KECIL' ) { $this->list(); }
 		else { $this->helper->requestError(403); }
 	}
 
@@ -73,7 +73,7 @@ class Kas_kecil extends Controller
 	 */
 	public function get_list() {
 		if($_SERVER['REQUEST_METHOD'] == "POST" && 
-			($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER')) {
+			($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER' || $_SESSION['sess_level'] === 'KAS KECIL')) {
 			// config datatable
 			$config_dataTable = array(
 				'tabel' => 'kas_kecil',
