@@ -613,10 +613,11 @@ class Proyek extends Controller
 
 		$total_pelaksana_utama = $dataProyek['total'] + $dataProyek['cco'];
 		$nilaiTermint_diTerima = $this->ProyekModel->getTermintMasuk($id)['total_termint'];
-		$keluaran_tunai = $this->ProyekModel->getKeluaranTunai($id);
-		$keluaran_kredit = $this->ProyekModel->getPengeluaran_operasionalProyek($id, 'KREDIT')['total'];
-		$saldo_kas_pelaksanaan = $total_pelaksana_utama - ($keluaran_tunai + $keluaran_kredit);
-		$selisih = $nilaiTermint_diTerima - $keluaran_tunai;
+		$total_pengeluaran = $this->ProyekModel->getTotalPengeluaran($id);
+		$operasional_proyek_tunai = $this->ProyekModel->getPengeluaran_operasionalProyek($id, 'TUNAI')['total'];
+		$operasional_proyek_kredit = $this->ProyekModel->getPengeluaran_operasionalProyek($id, 'KREDIT')['total'];
+		$saldo_kas_pelaksanaan = $total_pelaksana_utama - $total_pengeluaran;
+		$selisih = $nilaiTermint_diTerima - $total_pengeluaran;
 
 		$dataArus = array(
 			'total_pelaksana_utama' => $this->helper->cetakRupiah($total_pelaksana_utama),
@@ -626,8 +627,9 @@ class Proyek extends Controller
 			'sisa_terment_project' => $this->helper->cetakRupiah($total_pelaksana_utama - $nilaiTermint_diTerima),
 			'nilai_terment_masuk' => $this->helper->cetakRupiah($nilaiTermint_diTerima),
 			'total_pelaksana_project' => $this->helper->cetakRupiah($total_pelaksana_utama),
-			'keluaran_tunai' => $this->helper->cetakRupiah($keluaran_tunai),
-			'keluaran_kredit' => $this->helper->cetakRupiah($keluaran_kredit),
+			'total_pengeluaran' => $this->helper->cetakRupiah($total_pengeluaran),
+			'operasional_proyek_tunai' => $this->helper->cetakRupiah($operasional_proyek_tunai),
+			'operasional_proyek_kredit' => $this->helper->cetakRupiah($operasional_proyek_kredit),
 			'saldo_kas_pelaksanaan' => $this->helper->cetakRupiah($saldo_kas_pelaksanaan),
 			'selisih' => $this->helper->cetakRupiah($selisih)
 		);

@@ -236,13 +236,17 @@
                                             <td class="text-right"><strong><?= $arus['total_pelaksana_project'] ?></strong></td>
                                         </tr>
                                         <tr>
-                                            <td>Keluaran Tunai + Operasional Proyek (Lunas)</td>
-                                            <td class="text-right"><?= $arus['keluaran_tunai'] ?></td>
+                                            <td>Keluaran Tunai + Operasional Proyek</td>
+                                            <td class="text-right"><?= $arus['total_pengeluaran'] ?></td>
                                         </tr>
-                                        <!-- <tr>
-                                            <td>Keluaran Operasional Proyek (Kredit)</td>
-                                            <td class="text-right"><?= $arus['keluaran_kredit'] ?></td>
-                                        </tr> -->
+                                        <tr>
+                                            <td>Operasional Proyek (TUNAI)</td>
+                                            <td class="text-right"><?= $arus['operasional_proyek_tunai'] ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Operasional Proyek (KREDIT)</td>
+                                            <td class="text-right"><?= $arus['operasional_proyek_kredit'] ?></td>
+                                        </tr>
                                         <tr>
                                             <td><strong>Saldo Kas Pelaksanaan</strong></td>
                                             <td class="text-right"><strong><?= $arus['saldo_kas_pelaksanaan'] ?></strong></td>

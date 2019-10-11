@@ -108,9 +108,9 @@ class ProyekModel extends Database implements ModelInterface
 	/**
 	 * 
 	 */
-	public function getKeluaranTunai($id) {
-		$total_sub_kas_kecil = $this->getPengeluaran_SubKasKecil($id)['total'];
-		$total_operasional_proyek = $this->getPengeluaran_operasionalProyek($id, 'TUNAI')['total'];
+	public function getTotalPengeluaran($id) {
+		$total_sub_kas_kecil = !empty($this->getPengeluaran_SubKasKecil($id)['total']) ? $this->getPengeluaran_SubKasKecil($id)['total'] : 0;
+		$total_operasional_proyek = !empty($this->getPengeluaran_operasionalProyek($id)['total']) ? $this->getPengeluaran_operasionalProyek($id)['total'] : 0;
 
 		return $total_sub_kas_kecil + $total_operasional_proyek;
 	}
@@ -131,18 +131,26 @@ class ProyekModel extends Database implements ModelInterface
 	/**
 	 * 
 	 */
-	public function getPengeluaran_operasionalProyek($id_proyek, $status) {
-		$query = "SELECT total FROM v_get_pengeluaran_operasional_proyek ";
-		$query .= "WHERE id_proyek = :id_proyek AND status = :status;";
-		$statement = $this->koneksi->prepare($query);
-		$statement->execute(
-			array(
-				':id_proyek' => $id_proyek,
-				':status' => $status,
-			)
-		);
-		$result = $statement->fetch(PDO::FETCH_ASSOC);
+	public function getPengeluaran_operasionalProyek($id_proyek, $status = '') {
+		if($status == '') {
+			$query = "SELECT SUM(total) total FROM v_get_pengeluaran_operasional_proyek WHERE id_proyek = :id_proyek;";
+			$statement = $this->koneksi->prepare($query);
+			$statement->bindParam(':id_proyek', $id_proyek);
+			$statement->execute();
+		}
+		else {
+			$query = "SELECT total, status FROM v_get_pengeluaran_operasional_proyek ";
+			$query .= "WHERE id_proyek = :id_proyek AND status = :status;";
+			$statement = $this->koneksi->prepare($query);
+			$statement->execute(
+				array(
+					':id_proyek' => $id_proyek,
+					':status' => $status,
+				)
+			);
+		}
 
+		$result = $statement->fetch(PDO::FETCH_ASSOC);
 		return $result;
 	}
 

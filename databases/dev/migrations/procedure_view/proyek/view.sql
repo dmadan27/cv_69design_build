@@ -22,9 +22,10 @@
     CREATE OR REPLACE VIEW v_get_pengeluaran_operasional_proyek AS
     SELECT 
         p.id id_proyek, SUM(dop.total) total, op.status status 
-    FROM detail_operasional_proyek dop JOIN operasional_proyek op ON op.id = dop.id_operasional_proyek 
+    FROM detail_operasional_proyek dop 
+    JOIN operasional_proyek op ON op.id = dop.id_operasional_proyek 
     JOIN proyek p ON p.id = op.id_proyek 
-    GROUP BY p.id;
+    GROUP BY p.id, op.status;
 -- End View get pengeluran operasional proyek
 
 -- View get pengeluaran sub kas kecil
