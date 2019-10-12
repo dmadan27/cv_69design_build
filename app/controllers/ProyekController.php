@@ -81,7 +81,7 @@ class Proyek extends Controller
 				'kolomOrder' => array(null, 'id', 'pemilik', 'tgl', 'pembangunan', 'kota', 'total', 'progress', 'status',null),
 				'kolomCari' => array('id', 'pemilik', 'tgl', 'pembangunan', 'luas_area', 'kota', 'total', 'status', 'progress'),
 				'orderBy' => array('id' => 'desc', 'status' => 'asc'),
-				'kondisi' => false,
+				'kondisi' => FALSE,
 			);
 
 			$dataProyek = $this->DataTableModel->getAllDataTable($config_dataTable);

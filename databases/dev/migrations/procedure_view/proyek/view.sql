@@ -114,7 +114,7 @@
 
 -- View proyek list 
     CREATE OR REPLACE VIEW v_proyek_list AS
-    SELECT id, pemilik, tgl, pembangunan, kota, SUM(total+cco) AS 'total', progress, status
+    SELECT id, pemilik, tgl, pembangunan, kota, total, progress, status
         FROM proyek;
 -- End View proyek list
 

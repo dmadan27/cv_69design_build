@@ -1101,7 +1101,7 @@ JOIN menu m ON m.id = am.menu_id;
         DECLARE table_id_param int;
         DECLARE last_increment_param int;
 
-        SELECT id INTO table_id_param FROM menu WHERE table_name = table_name_param;
+        SELECT id INTO table_id_param FROM menu WHERE table_name = table_name_param LIMIT 1;
         SELECT last_increment INTO last_increment_param FROM increment WHERE menu_id = table_id_param;
 
         UPDATE increment SET last_increment = (last_increment_param + 1) WHERE menu_id = table_id_param;
@@ -2981,6 +2981,25 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
 	LEFT JOIN distributor d ON opr.id_distributor = d.id;
 -- End View Export history pembelian
 
+
+/*
+	VIEW SISA KREDIT OPERASIONAL PROYEK
+*/
+
+	CREATE OR REPLACE VIEW v_sisa_kredit_operasionalProyek AS
+	 	SELECT
+			dst.nama,
+			op.sisa
+	FROM
+		operasional_proyek op LEFT JOIN distributor dst
+			ON op.id_distributor = dst.id
+		WHERE op.status = 'KREDIT';
+
+
+
+
+-- End of VIEW SISA KREDIT OPERASIONAL PROYEK 
+
 # End View Operasional Proyek #
 
 # Procedure, Function, and Trigger Pengajuan Kas Kecil #
@@ -3709,9 +3728,10 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
     CREATE OR REPLACE VIEW v_get_pengeluaran_operasional_proyek AS
     SELECT 
         p.id id_proyek, SUM(dop.total) total, op.status status 
-    FROM detail_operasional_proyek dop JOIN operasional_proyek op ON op.id = dop.id_operasional_proyek 
+    FROM detail_operasional_proyek dop 
+    JOIN operasional_proyek op ON op.id = dop.id_operasional_proyek 
     JOIN proyek p ON p.id = op.id_proyek 
-    GROUP BY p.id;
+    GROUP BY p.id, op.status;
 -- End View get pengeluran operasional proyek
 
 -- View get pengeluaran sub kas kecil
@@ -3800,7 +3820,7 @@ Kebutuhan untuk melihat data pembelian di 'DISTRIBUTOR' dari setiap pengajuan Op
 
 -- View proyek list 
     CREATE OR REPLACE VIEW v_proyek_list AS
-    SELECT id, pemilik, tgl, pembangunan, kota, SUM(total+cco) AS 'total', progress, status
+    SELECT id, pemilik, tgl, pembangunan, kota, total, progress, status
         FROM proyek;
 -- End View proyek list
 
@@ -4291,7 +4311,7 @@ INSERT INTO increment (id, menu_id, mask, last_increment) VALUES
 (3, 5, 'OPR-yyyy-{PRY0001}-0001', 0),
 (4, 6, 'OPR-yyyy-0001', 0),
 (5, 7, 'PKK-yyyy-0001', 0),
-(6, 8, 'PSKK-yyyy-0001', 0),
+(6, 8, 'PSKK-{PRY20190001}-0001', 0),
 (7, 11, 'KB-001', 4),
 (8, 12, 'KK-001', 6),
 (9, 13, 'SKK-001', 6);
