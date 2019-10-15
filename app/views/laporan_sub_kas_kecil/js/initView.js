@@ -180,7 +180,7 @@ function setStatus() {
 		{value: "1", text: "PENDING"},
 		{value: "2", text: "PERBAIKI"},
 		{value: "3", text: "DISETUJUI"},
-		{value: "4", text: "DITOLAK"},
+		// {value: "4", text: "DITOLAK"},
 	];
 
 	$.each(status, function(index, item){
