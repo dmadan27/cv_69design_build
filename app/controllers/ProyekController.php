@@ -79,7 +79,7 @@ class Proyek extends Controller
 			$config_dataTable = array(
 				'tabel' => 'v_proyek_list',
 				'kolomOrder' => array(null, 'id', 'pemilik', 'tgl', 'pembangunan', 'kota', 'total', 'progress', 'status',null),
-				'kolomCari' => array('id', 'pemilik', 'tgl', 'pembangunan', 'luas_area', 'kota', 'total', 'status', 'progress'),
+				'kolomCari' => array('id', 'pemilik', 'tgl', 'pembangunan', 'kota', 'total', 'progress', 'status'),
 				'orderBy' => array('id' => 'desc', 'status' => 'asc'),
 				'kondisi' => FALSE,
 			);
