@@ -8,7 +8,7 @@ $(document).ready(function () {
 
     // event on change tgl
     $('#tgl').on('change', function(){
-    	if($('#submit_proyek').val() == 'action-add'){ generateID(this.value.split('-')[0]); }
+    	
     });
 
     // event on click button tambah detail
@@ -125,8 +125,23 @@ function init(){
 	setSkk();
 	setBank();
 
-	if($('#submit_proyek').val() == 'action-add') { generateID(); }
+	if($('#submit_proyek').val() == 'action-add') { isAddMode(); }
 	else if($('#submit_proyek').val() == 'action-edit') { getEdit($('#id').val().trim()); }
+}
+
+/**
+ * 
+ */
+function isAddMode() {
+	console.log('mode tambah')
+
+	getLastIncrement(function(response) {
+		if(response.success) {
+			$('#id').val(response.data);
+		}
+
+		$('#id').prop('disabled', true);
+	});
 }
 
 // ===================== Function skk ======================== //
@@ -776,27 +791,34 @@ function setBank(){
 }
 
 /**
- * Function generateID
- * Proses request ID proyek ke server
- * @param {string} tahun default null
- * @return {object} response
+ * Method getLastIncrement
  */
-function generateID(tahun = null){
+function getLastIncrement(callback) {
 	$.ajax({
-		url: BASE_URL+'proyek/generate-id/',
+		url: BASE_URL+'proyek/get-increment/',
 		type: 'post',
 		dataType: 'json',
-		data: {
-			'get_tahun': tahun,
+		data: {},
+		beforeSend: function() {
 		},
-		beforeSend: function(){},
-		success: function(response){
-			console.log('%cResponse generateID Proyek: ', 'color: blue; font-style: italic', response);
-			$('#id').val(response);
+		success: function(response) {
+			console.log('%c Response getLastIncrement: ', logStyle.success, response);
+			
+			callback({
+				success: true,
+				data: response
+			});	
 		},
-		error: function (jqXHR, textStatus, errorThrown){
-            console.log('%cResponse Error generateID Proyek: ', 'color: red; font-style: italic', jqXHR, textStatus, errorThrown);
-            swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+		error: function (jqXHR, textStatus, errorThrown) {
+            console.log('%c Response Error getLastIncrement: ', logStyle.error, {
+				jqXHR: jqXHR, 
+				textStatus: textStatus, 
+				errorThrown: errorThrown
+			});
+
+			swal("Pesan Gagal", "Terjadi Kesalahan Teknis, Silahkan Coba Kembali", "error");
+
+			callback({success: false});
         }
 	})
 }
@@ -838,7 +860,7 @@ function resetModal(){
  * Function reset
  * Proses reset semua form yang ada di proyek
  */
-function reset(){
+function reset() {
 	resetForm();
 	resetModal();
 	$('#detail_proyekTable tbody tr').remove();
@@ -846,5 +868,4 @@ function reset(){
 	indexDetail = indexSkk = 0;
 	listDetail = listSkk = [];
 	checkDP = false;
-	generateID();
 }

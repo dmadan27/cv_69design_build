@@ -860,29 +860,23 @@ class Proyek extends Controller
 	}
 
 	/**
-	 * Method generate_id
-	 * Proses generate id proyek
-	 * @return result {object} string berupa json
+	 * Method getIncrement
 	 */
-	public function generate_id() {
+	public function get_increment() {
 		if($_SERVER['REQUEST_METHOD'] == "POST" && $_SESSION['sess_level'] === 'KAS BESAR') {
-			$tahun = isset($_POST['get_tahun']) ? $this->validation->validInput($_POST['get_tahun']) : false;
 
-			$id_temp = ($tahun) ? 'PRY'.$tahun : 'PRY'.date('Y');
+			$this->model('IncrementModel');
+            $increment_number = '';
+            $increment = $this->IncrementModel->get_increment('proyek');
+            
+            if($increment['success']) {
+                $getMask = explode('-', $increment['mask']);
+                $increment_number = $getMask[0].date('Y').sprintf("%04s", $increment['increment']);
+            }
 
-			$data = !empty($this->ProyekModel->getLastID($id_temp)['id']) ? $this->ProyekModel->getLastID($id_temp)['id'] : false;
-
-			if(!$data) { $id = $id_temp.'0001'; }
-			else {
-				$noUrut = (int)substr($data, 7, 4);
-				$noUrut++;
-
-				$id = $id_temp.sprintf("%04s", $noUrut);
-			}
-			
-			echo json_encode($id);				
+            echo json_encode($increment_number);
 		}
-		else { die(ACCESS_DENIED); }	
+		else { $this->helper->requestError(403, true); }
 	}
 
 	/**
