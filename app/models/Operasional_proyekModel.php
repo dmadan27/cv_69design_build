@@ -641,7 +641,7 @@ class Operasional_proyekModel extends Database implements ModelInterface
 		//Mutasi Jika Ganti Bank
 		$ket_mutasi_keluar = "UANG KELUAR SEBESAR Rp. ".number_format($uang,2,",",".")." DIKARENAKAN ADANYA PERUBAHAN DATA DI OPERASIONAL PROYEK DENGAN ID ".$id;
 		$ket_mutasi_masuk = "UANG MASUK SEBESAR Rp. ".number_format($total,2,",",".")." DIKARENAKAN ADANYA PERUBAHAN DATA DI OPERASIONAL PROYEK DENGAN ID ".$id;
-
+		$ket_mutasi_kondisi = "";
 		if($uang > $total){
 		//Mutasi Jika Saldo Berubah Lebih Besar
 			$selisih = $uang - $total;

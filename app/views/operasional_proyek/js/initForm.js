@@ -178,12 +178,15 @@ function isEditMode() {
 	$('.field-id_bank_form').css('display', 'none');
 
 	// loading
+	$('.box').append('<div class="overlay"><i class="fa fa-refresh fa-spin"></i></div>');
+
 	setLookup(function(response) {
 		if(response) {
 			getEdit($('#id').val().trim(), function(response) {
 				if(response) {
 					// stop loading
-
+					$('.box .overlay').remove();
+					
 					return;
 				}
 
