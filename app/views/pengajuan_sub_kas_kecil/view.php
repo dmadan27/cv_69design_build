@@ -118,21 +118,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php
-                                        if(!empty($detail)) {
-                                            foreach($detail as $row) {
-                                                echo '<tr>';
-                                                echo '<td>'.$row['no_urut'].'</td>';
-                                                echo '<td>'.$row['nama'].'</td>';
-                                                echo '<td>'.$row['jenis'].'</td>';
-                                                echo '<td>'.$row['satuan'].'</td>';
-                                                echo '<td>'.$row['qty'].'</td>';
-                                                echo '<td>'.$row['harga'].'</td>';
-                                                echo '<td>'.$row['subtotal'].'</td>';
-                                                echo '</tr>';
-                                            }
-                                        }
-                                    ?>
                                 </tbody>
                             </table>
                         </div>
@@ -149,7 +134,7 @@
                     	<div class="row">
                     		<div class="col-md-12 col-xs-12">
                     			<div class="btn-group">
-									<a href="<?= BASE_URL.'pengajuan-sub-kas-kecil/'; ?>" class="btn btn-default btn-flat btn-lg" role="button">Kembali</a>
+                                    <button class="btn btn-default btn-flat btn-lg" onclick="goBack()">Kembali</button>
 								</div>		
                        		</div>
                     	</div>

@@ -5,7 +5,11 @@
     SELECT
         pskk.id, pskk.id_sub_kas_kecil, skk.nama nama_skk, pskk.tgl,
         pskk.id_proyek, p.pemilik, p.pembangunan,
-        pskk.nama nama_pengajuan, pskk.total, pskk.dana_disetujui,
+        pskk.nama nama_pengajuan, pskk.total, pskk.dana_disetujui, 
+        (CASE 
+            WHEN SUM(dp.harga_asli) IS NULL THEN 0
+            ELSE SUM(dp.harga_asli) END
+        ) dana_terpakai,
         (CASE 
             WHEN pskk.status = '1' THEN 'PENDING'
             WHEN pskk.status = '2' THEN 'PERBAIKI'
@@ -21,9 +25,26 @@
         ) status_laporan, 
         pskk.tgl_laporan, pskk.status status_order, pskk.status_laporan status_laporan_order, pskk.ket
     FROM pengajuan_sub_kas_kecil pskk
+    LEFT JOIN detail_pengajuan_sub_kas_kecil dp ON dp.id_pengajuan = pskk.id
     JOIN proyek p ON p.id = pskk.id_proyek
-    JOIN sub_kas_kecil skk ON skk.id = pskk.id_sub_kas_kecil;
+    JOIN sub_kas_kecil skk ON skk.id = pskk.id_sub_kas_kecil
+    GROUP BY 
+        pskk.id, pskk.id_sub_kas_kecil, skk.nama, pskk.tgl, pskk.id_proyek, p.pemilik, p.pembangunan,
+        pskk.nama, pskk.total, pskk.dana_disetujui, pskk.tgl_laporan, pskk.status, pskk.status_laporan, pskk.ket;
 -- End View Pengajuan Sub Kas Kecil v2
+
+-- View Detail Pengajuan Sub Kas Kecil
+    CREATE OR REPLACE VIEW v_detail_pengajuan_sub_kas_kecil AS
+    SELECT
+        id, id_pengajuan, nama, 
+        (CASE 
+            WHEN jenis = 'T' THEN 'TEKNIS' 
+            WHEN jenis = 'N' THEN 'NON-TEKNIS' 
+            ELSE '' 
+        END) jenis, 
+        satuan, qty, harga, subtotal, harga_asli, sisa
+    FROM detail_pengajuan_sub_kas_kecil;
+-- End View Detail Pengajuan Sub Kas Kecil
 
 -- View Pengajuan Sub Kas Kecil
     CREATE OR REPLACE VIEW v_pengajuan_sub_kas_kecil_full AS
