@@ -77,9 +77,9 @@ class Proyek extends Controller
 	public function get_list() {
 		if($_SERVER['REQUEST_METHOD'] == "POST") {
 			$config_dataTable = array(
-				'tabel' => 'v_proyek_list',
-				'kolomOrder' => array(null, 'id', 'pemilik', 'tgl', 'pembangunan', 'kota', 'total', 'progress', 'status',null),
-				'kolomCari' => array('id', 'pemilik', 'tgl', 'pembangunan', 'kota', 'total', 'progress', 'status'),
+				'tabel' => 'proyek',
+				'kolomOrder' => array(null, 'id', 'pemilik', 'tgl', 'pembangunan', 'kota', 'total', 'progress', 'status', null),
+				'kolomCari' => array('id', 'pemilik', 'tgl', 'pembangunan', 'luas_area', 'kota', 'total', 'status', 'progress'),
 				'orderBy' => array('id' => 'desc', 'status' => 'asc'),
 				'kondisi' => FALSE,
 			);
@@ -122,7 +122,7 @@ class Proyek extends Controller
 				$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
 				$dataRow[] = $row['pembangunan'];
 				$dataRow[] = $row['kota'];
-				$dataRow[] = $this->helper->cetakRupiah($row['total']);
+				$dataRow[] = $this->helper->cetakRupiah(($row['total']+$row['cco']));
 				$dataRow[] = $progress;
 				$dataRow[] = $status;
 				$dataRow[] = $aksi;
@@ -341,7 +341,6 @@ class Proyek extends Controller
 			echo json_encode($output);
 		}
 		else { die(ACCESS_DENIED); }
-			
 	}
 
 	/**
@@ -614,6 +613,7 @@ class Proyek extends Controller
 		$total_pelaksana_utama = $dataProyek['total'] + $dataProyek['cco'];
 		$nilaiTermint_diTerima = $this->ProyekModel->getTermintMasuk($id)['total_termint'];
 		$total_pengeluaran = $this->ProyekModel->getTotalPengeluaran($id);
+		$pengeluaran_sub_kas_kecil = !empty($this->ProyekModel->getPengeluaran_SubKasKecil($id)) ? $this->ProyekModel->getPengeluaran_SubKasKecil($id)['total'] : 0;
 		$operasional_proyek_tunai = $this->ProyekModel->getPengeluaran_operasionalProyek($id, 'TUNAI')['total'];
 		$operasional_proyek_kredit = $this->ProyekModel->getPengeluaran_operasionalProyek($id, 'KREDIT')['total'];
 		$saldo_kas_pelaksanaan = $total_pelaksana_utama - $total_pengeluaran;
@@ -628,6 +628,7 @@ class Proyek extends Controller
 			'nilai_terment_masuk' => $this->helper->cetakRupiah($nilaiTermint_diTerima),
 			'total_pelaksana_project' => $this->helper->cetakRupiah($total_pelaksana_utama),
 			'total_pengeluaran' => $this->helper->cetakRupiah($total_pengeluaran),
+			'pengeluaran_sub_kas_kecil' => $this->helper->cetakRupiah($pengeluaran_sub_kas_kecil),
 			'operasional_proyek_tunai' => $this->helper->cetakRupiah($operasional_proyek_tunai),
 			'operasional_proyek_kredit' => $this->helper->cetakRupiah($operasional_proyek_kredit),
 			'saldo_kas_pelaksanaan' => $this->helper->cetakRupiah($saldo_kas_pelaksanaan),
@@ -639,11 +640,6 @@ class Proyek extends Controller
 			'data_skk' => $dataSkk,
 			'data_arus' => $dataArus,
 		);
-
-		// echo '<pre>';
-		// var_dump($data);
-		// echo '</pre>';
-		// die();
 
 		$this->layout('proyek/view', $config, $data);
 	}
@@ -706,7 +702,7 @@ class Proyek extends Controller
 			// config datatable
 			$config_dataTable = array(
 				'tabel' => 'v_pengajuan_sub_kas_kecil_v2',
-				'kolomOrder' => array(null, 'id', 'tgl', 'nama_pengajuan', 'nama_skk', 'total', 'dana_disetujui', 'status', null),
+				'kolomOrder' => array(null, 'tgl', 'nama_pengajuan', 'nama_skk', 'total', 'dana_disetujui', 'dana_terpakai', 'status', null),
 				'kolomCari' => array('id_pengajuan', 'tgl', 'nama_pengajuan', 'id_sub_kas_kecil', 'nama_skk', 'total', 'dana_disetujui', 'status'),
 				'orderBy' => array('tgl' => 'desc'),
 				'kondisi' => 'WHERE id_proyek = "'.$id.'"',
@@ -742,12 +738,12 @@ class Proyek extends Controller
 				
 				$dataRow = array();
 				$dataRow[] = $no_urut;
-				$dataRow[] = $row['id'];
 				$dataRow[] = $this->helper->cetakTgl($row['tgl'], 'full');
 				$dataRow[] = $row['nama_pengajuan'];
 				$dataRow[] = $row['id_sub_kas_kecil'].' - '.$row['nama_skk'];
 				$dataRow[] = $this->helper->cetakRupiah($row['total']);
 				$dataRow[] = $this->helper->cetakRupiah($row['dana_disetujui']);
+				$dataRow[] = $this->helper->cetakRupiah($row['dana_terpakai']);
 				$dataRow[] = $status;
 				$dataRow[] = $aksi;
 
@@ -778,7 +774,7 @@ class Proyek extends Controller
 			// config datatable
 			$config_dataTable = array(
 				'tabel' => 'v_operasional_proyek',
-				'kolomOrder' => array(null, 'id', 'tgl_operasional', 'nama_operasional', 'nama_kas_besar', 'jenis_pembayaran', 'status_lunas', 'total', null),
+				'kolomOrder' => array(null, 'tgl_operasional', 'nama_operasional', 'nama_kas_besar', 'jenis_pembayaran', 'status_lunas', 'total', null),
 				'kolomCari' => array('tgl_operasional', 'nama_operasional', 'id_kas_besar', 'nama_kas_besar', 'jenis_pembayaran', 'status_lunas', 'total'),
 				'orderBy' => array('tgl_operasional' => 'desc'),
 				'kondisi' => 'WHERE id_proyek = "'.$proyek.'"',
@@ -802,7 +798,6 @@ class Proyek extends Controller
 
 				$dataRow = array();
 				$dataRow[] = $no_urut;
-				$dataRow[] = $row['id'];
 				$dataRow[] = $this->helper->cetakTgl($row['tgl_operasional'], 'full');
 				$dataRow[] = $row['nama_operasional'];
 				$dataRow[] = $row['id_kas_besar'].' - '.$row['nama_kas_besar'];

@@ -118,7 +118,7 @@ class ProyekModel extends Database implements ModelInterface
 	/**
 	 * 
 	 */
-	private function getPengeluaran_SubKasKecil($id_proyek) {
+	public function getPengeluaran_SubKasKecil($id_proyek) {
 		$query = "SELECT total FROM v_get_pengeluaran_sub_kas_kecil WHERE id_proyek = :id_proyek;";
 		$statement = $this->koneksi->prepare($query);
 		$statement->bindParam(':id_proyek', $id_proyek);

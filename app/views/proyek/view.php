@@ -236,8 +236,12 @@
                                             <td class="text-right"><strong><?= $arus['total_pelaksana_project'] ?></strong></td>
                                         </tr>
                                         <tr>
-                                            <td>Keluaran Tunai + Operasional Proyek</td>
+                                            <td><strong>Keluaran Tunai + Operasional Proyek<strong></td>
                                             <td class="text-right"><?= $arus['total_pengeluaran'] ?></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Pengeluaran Sub Kas Kecil</td>
+                                            <td class="text-right"><?= $arus['pengeluaran_sub_kas_kecil'] ?></td>
                                         </tr>
                                         <tr>
                                             <td>Operasional Proyek (TUNAI)</td>
@@ -286,12 +290,12 @@
                                 <thead>
                                     <tr>
                                         <th class="text-right" style="width: 35px">No</th>
-                                        <th>ID</th>
                                         <th>Tanggal</th>
                                         <th>Pengajuan</th>
                                         <th>Sub Kas Kecil</th>
                                         <th class="text-right">Total Pengajuan</th>
                                         <th class="text-right">Dana Disetuji</th>
+                                        <th class="text-right">Dana Terpakai</th>
                                         <th>Status</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -327,7 +331,6 @@
                                 <thead>
                                     <tr>
                                         <th class="text-right" style="width: 35px">No</th>
-                                        <th>ID</th>
                                         <th>Tanggal</th>
                                         <th>Nama Pengajuan</th>
                                         <th>Kas Besar</th>

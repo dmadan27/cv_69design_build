@@ -109,10 +109,10 @@ var pengajuan_skkTable = $("#pengajuan_skkTable").DataTable({
         }
     ],
     createdRow: function (row, data, dataIndex) {
-        // if($(data[7]).text().toLowerCase() == "selesai") $(row).addClass('danger');
-        for (var i = 0; i < 7; i++) {
-            if (i == 0 || i == 5 || i == 6) $('td:eq(' + i + ')', row).addClass('text-right');
-        }
+        if(data[0]) $('td:eq(0)', row).addClass('text-right');
+        if(data[4]) $('td:eq(4)', row).addClass('text-right');
+        if(data[5]) $('td:eq(5)', row).addClass('text-right');
+        if(data[6]) $('td:eq(6)', row).addClass('text-right');
     }
 });
 
@@ -145,15 +145,13 @@ var operasional_proyekTable = $("#operasional_proyekTable").DataTable({
     },
     "columnDefs": [
         {
-            "targets": [0, 8],
+            "targets": [0, 7],
             "orderable": false,
         }
     ],
     createdRow: function (row, data, dataIndex) {
-        // if($(data[7]).text().toLowerCase() == "selesai") $(row).addClass('danger');
-        for (var i = 0; i < 7; i++) {
-            if (i == 0 || i == 7) $('td:eq(' + i + ')', row).addClass('text-right');
-        }
+        if(data[0]) $('td:eq(0)', row).addClass('text-right');
+        if(data[6]) $('td:eq(6)', row).addClass('text-right');
     }
 });
 // end init datatable
