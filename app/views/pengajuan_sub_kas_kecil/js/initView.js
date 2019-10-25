@@ -21,7 +21,7 @@ var table_detail = $("#table_detail").DataTable({
 	processing: true,
 	serverSide: true,
 	ajax: {
-		url: `${BASE_URL}pengajuan-sub-kas-kecil/get-list-detail/${$('#id').val().trim()}`,
+		url: `${BASE_URL}pengajuan-sub-kas-kecil/get-list-detail/${$('#id_pengajuan').val().trim()}`,
 		type: 'POST',
 		data: {}
 	},
@@ -314,6 +314,13 @@ function setError(error){
  * 
  */
 function setValue(value) {	
+	var total = (parseFloat(value.total) < 0) ? (parseFloat(value.total) / 10) : value.total;
+	var total_pengajuan = (parseFloat(value.total_pengajuan) < 0) ? (parseFloat(value.total_pengajuan) / 10) : value.total_pengajuan;
+	var saldo_sub_kas_kecil = (parseFloat(value.saldo_sub_kas_kecil) < 0) ? (parseFloat(value.saldo_sub_kas_kecil) / 10) : value.saldo_sub_kas_kecil;
+	var sisa_saldo_sub_kas_kecil = (parseFloat(value.sisa_saldo_sub_kas_kecil) < 0) ? (parseFloat(value.sisa_saldo_sub_kas_kecil) / 10) : value.sisa_saldo_sub_kas_kecil;
+	var saldo_kas_kecil = (parseFloat(value.saldo_kas_kecil) < 0) ? (parseFloat(value.saldo_kas_kecil) / 10) : value.saldo_kas_kecil;
+	var dana_disetujui = (parseFloat(value.dana_disetujui) < 0) ? (parseFloat(value.dana_disetujui) / 10) : value.dana_disetujui;
+
 	ket_pengajuan_skk = value.ket;
 
 	$('#id').val(value.id);
@@ -321,10 +328,12 @@ function setValue(value) {
 	$('#sub_kas_kecil').val(value.id_sub_kas_kecil + " - " + value.nama_skk);
 	$('#tgl').val(value.tgl);
 	$('#nama_pengajuan').val(value.nama_pengajuan);
-	$('#total').val(value.total);
-	$('#saldo_sub_kas_kecil').val(value.saldo_sub_kas_kecil);
-	$('#saldo_kas_kecil').val(value.saldo_kas_kecil);
-	$('#dana_disetujui').val(value.dana_disetujui);
+	$('#total').val(total);
+	$('#total_pengajuan').val(total_pengajuan);
+	$('#sisa_saldo_sub_kas_kecil').val(sisa_saldo_sub_kas_kecil);
+	$('#saldo_sub_kas_kecil').val(saldo_sub_kas_kecil);
+	$('#saldo_kas_kecil').val(saldo_kas_kecil);
+	$('#dana_disetujui').val(dana_disetujui);
 	$('#status_order').val(value.status_order).trigger('change');
 }
 

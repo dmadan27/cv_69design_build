@@ -22,7 +22,7 @@
 
 	<!-- Main content -->
 	<section class="content container-fluid">
-		<input type="hidden" id="id" value="<?= strtolower($pengajuan['id']); ?>">
+		<input type="hidden" id="id_pengajuan" value="<?= strtolower($pengajuan['id']); ?>">
 		<div class="row">
             <!-- Data pengajuan -->
             <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">

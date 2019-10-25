@@ -79,7 +79,8 @@ class Pengajuan_sub_kas_kecil extends Controller
 	 * @return output {object} array berupa json
 	 */
 	public function get_list() {
-		if($_SERVER['REQUEST_METHOD'] == "POST") {
+		if($_SERVER['REQUEST_METHOD'] == "POST" && ($_SESSION['sess_level'] === 'KAS BESAR' 
+			|| $_SESSION['sess_level'] === 'KAS KECIL' || $_SESSION['sess_level'] === 'OWNER')) {
 			// config datatable
 			$config = array(
 				'tabel' => 'v_pengajuan_sub_kas_kecil_v2',
@@ -335,7 +336,8 @@ class Pengajuan_sub_kas_kecil extends Controller
 	 * 
 	 */
 	public function detail($id) {
-		if($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'OWNER') {
+		if($_SESSION['sess_level'] === 'KAS BESAR' || $_SESSION['sess_level'] === 'KAS KECIL' 
+			|| $_SESSION['sess_level'] === 'OWNER') {
 			$id = strtoupper($id);
 			$dataPengajuan = !empty($this->Pengajuan_sub_kas_kecilModel->getById($id)) ? $this->Pengajuan_sub_kas_kecilModel->getById($id) : false;
 
